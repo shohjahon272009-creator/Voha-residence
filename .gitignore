@@ -25,8 +25,8 @@
 *.pem
 
 # local data store & user uploads (not source code)
-*.db
-/public/uploads
+# *.db  <-- removed so qurilish.db is deployed to Vercel with real data
+# /public/uploads  <-- removed so real images deploy
 
 # debug
 npm-debug.log*
