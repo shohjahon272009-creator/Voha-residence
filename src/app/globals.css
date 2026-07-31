@@ -1,0 +1,284 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   VOHA RESIDENCE — Design System
+   Brand: primary #014242 (deep teal) · accent #D18E5B (bronze)
+   ============================================================ */
+
+:root {
+  /* Brand (overridden at runtime by layout.tsx from DB settings) */
+  --color-primary: #014242;
+  --color-accent: #D18E5B;
+  --primary: #014242;
+  --accent: #D18E5B;
+
+  --background: #f4efe4;
+  --foreground: #2b2b2b;
+  --card: #ffffff;
+  --card-foreground: #333333;
+  --border: #e7e2da;
+  --input: #e2e8f0;
+  --ring: #014242;
+  --radius: 0.75rem;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+
+  /* Tints derived from brand for backgrounds */
+  --cream: #FDFBF7;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: 'Inter', 'Montserrat', sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'ss01', 'cv01', 'kern';
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* Tighter tracking on big display headings for a premium feel */
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+}
+
+/* Brand text selection */
+::selection {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* Luxury Scroller — brand teal thumb on a soft track */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #eceae5;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 10px;
+  border: 2px solid #eceae5;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* ============================================================
+   Layout helpers
+   ============================================================ */
+@layer components {
+  /* Centered content container used across every section */
+  .max-container {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+  }
+
+  /* Section eyebrow: small label with a flanking bronze rule */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-accent);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 2.25rem;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-accent));
+    border-radius: 2px;
+  }
+  .eyebrow--center {
+    justify-content: center;
+  }
+  .eyebrow--center::after {
+    content: '';
+    width: 2.25rem;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent), transparent);
+    border-radius: 2px;
+  }
+
+  /* Frosted glass surface */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+  }
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+@layer utilities {
+  /* Bronze gradient text */
+  .text-gradient-accent {
+    background: linear-gradient(120deg, var(--color-accent), #f0c89e 55%, var(--color-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Subtle dotted grid backdrop for dark sections */
+  .bg-grid {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  /* Dotted texture for light sections (dark teal dots) */
+  .bg-dots-light {
+    background-image: radial-gradient(rgba(1, 66, 66, 0.07) 1.2px, transparent 1.2px);
+    background-size: 26px 26px;
+  }
+
+  /* Fine diagonal line pattern for light sections */
+  .bg-lines-light {
+    background-image: repeating-linear-gradient(45deg, rgba(1, 66, 66, 0.035) 0, rgba(1, 66, 66, 0.035) 1px, transparent 1px, transparent 14px);
+  }
+
+  /* Architectural blueprint grid for light sections */
+  .bg-blueprint {
+    background-image:
+      linear-gradient(rgba(1, 66, 66, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(1, 66, 66, 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  /* Branded mesh background — official Voha palette (teal + bronze + olive) on warm sand.
+     Layered radial glows + a hair-fine architectural grid + a soft central highlight
+     give a premium, dimensional feel. Reusable across light sections. */
+  .bg-brand-mesh {
+    background-color: #f3ede1;
+    background-image:
+      radial-gradient(ellipse 70% 55% at 88% -6%, rgba(1, 66, 66, 0.16), transparent 62%),
+      radial-gradient(ellipse 62% 52% at 3% 94%, rgba(209, 142, 91, 0.22), transparent 60%),
+      radial-gradient(ellipse 55% 46% at 82% 114%, rgba(130, 140, 76, 0.16), transparent 56%),
+      radial-gradient(circle at 50% 26%, rgba(255, 251, 242, 0.6), transparent 58%),
+      linear-gradient(rgba(1, 66, 66, 0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(1, 66, 66, 0.028) 1px, transparent 1px);
+    background-size: auto, auto, auto, auto, 46px 46px, 46px 46px;
+    background-position: center, center, center, center, center, center;
+  }
+
+  /* Richer variant for hero-adjacent / feature sections: adds a warm top sheen
+     and a faint bronze corner glow over the branded mesh. */
+  .bg-brand-mesh-lux {
+    background-color: #f4efe4;
+    background-image:
+      linear-gradient(180deg, rgba(255, 252, 245, 0.9) 0%, transparent 26%),
+      radial-gradient(ellipse 75% 60% at 92% -8%, rgba(1, 66, 66, 0.17), transparent 60%),
+      radial-gradient(ellipse 60% 55% at -4% 88%, rgba(209, 142, 91, 0.24), transparent 58%),
+      radial-gradient(ellipse 58% 48% at 78% 116%, rgba(130, 140, 76, 0.15), transparent 55%),
+      linear-gradient(rgba(1, 66, 66, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(1, 66, 66, 0.025) 1px, transparent 1px);
+    background-size: auto, auto, auto, auto, 52px 52px, 52px 52px;
+  }
+
+  /* Soft radial glow */
+  .bg-radial-glow {
+    background: radial-gradient(circle at center, rgba(209, 142, 91, 0.18), transparent 60%);
+  }
+
+  /* Hairline gradient divider */
+  .rule-accent {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  }
+
+  /* Loading shimmer for skeletons */
+  .shimmer {
+    background: linear-gradient(110deg, #e9e5dd 8%, #f6f3ed 18%, #e9e5dd 33%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+  }
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1; }
+}
+.animate-pulse-slow {
+  animation: pulse-slow 6s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100%      { transform: translateX(0); }
+  20%, 60%      { transform: translateX(-6px); }
+  40%, 80%      { transform: translateX(6px); }
+}
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 24px rgba(209, 142, 91, 0.25); }
+  50%      { box-shadow: 0 0 40px rgba(209, 142, 91, 0.55); }
+}
+.animate-glow {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+@keyframes scroll-hint {
+  0%   { transform: translateY(0); opacity: 0; }
+  40%  { opacity: 1; }
+  100% { transform: translateY(14px); opacity: 0; }
+}

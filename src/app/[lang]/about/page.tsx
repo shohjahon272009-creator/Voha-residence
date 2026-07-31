@@ -1,0 +1,76 @@
+import React from 'react';
+import WebsiteLayout from '@/components/website/WebsiteLayout';
+import AnimatedReveal from '@/components/website/AnimatedReveal';
+import VohaLogo from '@/components/common/VohaLogo';
+import { Locale } from '@/lib/dictionaries';
+import db from '@/lib/db';
+
+export default async function AboutPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  const localeLang = lang as Locale;
+
+  const settingsRows = db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
+  const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
+  const companyName = settings.company_name || 'Voha Residence';
+
+  const aboutText: Record<Locale, { tag: string; title: string; accent: string; desc: string; stat1value: string; stat1label: string; stat2value: string; stat2label: string }> = {
+    uz: { tag: 'BIZ HAQIMIZDA', title: '', accent: 'Sifatli', desc: "Biz yillar tajribasi asosida O'zbekiston bozorida xalqaro standartlarga javob beruvchi yirik turar-joy majmualarini barpo etib kelmoqdamiz.", stat1value: 'Katta', stat1label: 'Tajriba', stat2value: "Ko'p", stat2label: 'Barpo etilgan loyihalar' },
+    ru: { tag: 'О НАС', title: '', accent: 'Качественное', desc: 'На основе многолетнего опыта мы возводим современные жилые комплексы, соответствующие международным стандартам.', stat1value: 'Много', stat1label: 'Опыта', stat2value: 'Много', stat2label: 'Проектов' },
+    en: { tag: 'ABOUT US', title: '', accent: 'Quality', desc: "Based on years of experience, we've been building modern residential complexes that meet international standards.", stat1value: 'Great', stat1label: 'Experience', stat2value: 'Many', stat2label: 'Projects built' },
+  };
+  const about = aboutText[localeLang] || aboutText.uz;
+
+  return (
+    <WebsiteLayout lang={localeLang} companyName={companyName}>
+      <div className="pt-28 min-h-screen bg-[#FDFBF7]">
+        <section id="about" className="py-20 px-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-accent/20 to-transparent z-0"></div>
+          <div className="max-container grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+             <AnimatedReveal direction="left" className="relative">
+                <div className="aspect-square rounded-[40px] overflow-hidden border-[15px] border-white shadow-2xl relative z-10 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
+                   <img src="/voha-actual-bg.png" alt="About Us" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-accent rounded-[40px] -z-0 opacity-40 transform rotate-6" />
+             </AnimatedReveal>
+             
+             <AnimatedReveal direction="right">
+                <span className="text-accent font-bold uppercase tracking-widest text-sm mb-4 block flex items-center gap-4">
+                   <span className="w-10 h-[2px] bg-accent"></span> {about.tag}
+                </span>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-8 leading-tight flex flex-col items-start gap-y-4">
+                   <VohaLogo isScrolled={true} className="w-56 sm:w-64 lg:w-72 h-auto shrink-0" />
+                   <span>
+                      {localeLang === 'uz' && settings.about_title ? settings.about_title : 
+                        <>{about.title}<span className="text-accent">{about.accent}</span>{localeLang === 'uz' ? ' va ishonchli qurilish' : (localeLang === 'ru' ? ' строительство' : ' construction')}</>
+                      }
+                   </span>
+                </h2>
+                <p className="text-gray-600 text-lg mb-10 leading-relaxed font-medium">
+                   {localeLang === 'uz' && settings.about_desc ? settings.about_desc : about.desc}
+                </p>
+                
+                <div className="grid grid-cols-2 gap-8 bg-white p-8 rounded-3xl shadow-xl shadow-accent/5">
+                   <div className="flex flex-col">
+                      <div className="text-4xl font-black text-primary mb-2 tracking-tighter">
+                         {localeLang === 'uz' && settings.about_stat1_value ? settings.about_stat1_value : about.stat1value}
+                      </div>
+                      <div className="text-sm text-gray-500 uppercase font-bold tracking-widest">
+                         {localeLang === 'uz' && settings.about_stat1_label ? settings.about_stat1_label : about.stat1label}
+                      </div>
+                   </div>
+                   <div className="flex flex-col border-l-2 border-gray-100 pl-8">
+                      <div className="text-4xl font-black text-accent mb-2 tracking-tighter">
+                         {localeLang === 'uz' && settings.about_stat2_value ? settings.about_stat2_value : about.stat2value}
+                      </div>
+                      <div className="text-sm text-gray-500 uppercase font-bold tracking-widest">
+                         {localeLang === 'uz' && settings.about_stat2_label ? settings.about_stat2_label : about.stat2label}
+                      </div>
+                   </div>
+                </div>
+             </AnimatedReveal>
+          </div>
+        </section>
+      </div>
+    </WebsiteLayout>
+  );
+}

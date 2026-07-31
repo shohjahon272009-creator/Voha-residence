@@ -1,0 +1,25 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dastur-write",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "5599", "--directory", "C:/Users/user/Documents/dastur-write"],
+      "port": 5599
+    },
+    {
+      "name": "sozkarta",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:\\Users\\user\\Documents\\sozkarta", "run", "dev"],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "qurilish",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:\\Users\\user\\Documents\\qurilish", "run", "dev"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

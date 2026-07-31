@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shohjahon Rajabboyev — Full-Stack Developer</title>
+<style>
+  :root{ --teal:#0f6e56; --teal2:#0a3f33; --dark:#0e1a17; --ink:#16242b; --bg:#f7faf8; --card:#fff; --muted:#5b6770; --accent:#c77b3b; --line:#e3e8e6; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{ font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; }
+  .wrap{ max-width:1000px; margin:0 auto; padding:0 20px; }
+  a{ color:inherit; text-decoration:none; }
+
+  header{ background:linear-gradient(160deg,#0f6e56,#0a3f33); color:#fff; }
+  nav{ display:flex; justify-content:space-between; align-items:center; padding:18px 0; }
+  nav .logo{ font-weight:700; font-size:18px; }
+  nav .logo span{ color:#e7b584; }
+  nav a.tg{ background:rgba(255,255,255,.14); padding:8px 16px; border-radius:20px; font-size:14px; font-weight:600; border:1px solid rgba(255,255,255,.25); }
+  .hero{ padding:60px 0 70px; }
+  .hero .eyebrow{ color:#e7b584; font-weight:700; letter-spacing:2px; font-size:13px; text-transform:uppercase; }
+  .hero h1{ font-size:44px; line-height:1.1; margin:12px 0 14px; }
+  .hero h1 span{ color:#e7b584; }
+  .hero p{ color:#cbe0da; font-size:18px; max-width:640px; }
+  .hero .cta{ margin-top:26px; display:flex; gap:12px; flex-wrap:wrap; }
+  .hero .cta a{ padding:12px 22px; border-radius:12px; font-weight:600; font-size:15px; }
+  .hero .cta .primary{ background:#e7b584; color:#3a2410; }
+  .hero .cta .ghost{ border:1px solid rgba(255,255,255,.35); color:#fff; }
+  .tags{ display:flex; gap:8px; flex-wrap:wrap; margin-top:28px; }
+  .tags span{ background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); color:#dfece8; padding:6px 12px; border-radius:20px; font-size:13px; }
+
+  section{ padding:56px 0; }
+  h2.title{ font-size:28px; margin-bottom:6px; }
+  .sub{ color:var(--muted); margin-bottom:28px; }
+
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; }
+  .svc{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px; }
+  .svc .ic{ width:46px; height:46px; border-radius:12px; background:#e4efea; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:12px; }
+  .svc h3{ font-size:17px; margin-bottom:6px; }
+  .svc p{ font-size:14px; color:var(--muted); }
+
+  .proj{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+  .card .top{ height:120px; background:linear-gradient(135deg,#0f6e56,#0a3f33); display:flex; align-items:center; justify-content:center; color:#fff; font-size:40px; }
+  .card .top.alt{ background:linear-gradient(135deg,#c77b3b,#9a5a26); }
+  .card .top.alt2{ background:linear-gradient(135deg,#185fa5,#0c447c); }
+  .card .body{ padding:18px; }
+  .card .body h3{ font-size:18px; margin-bottom:4px; }
+  .card .body .cat{ font-size:12px; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .card .body p{ font-size:14px; color:var(--muted); margin-top:8px; }
+  .card .body .stack{ margin-top:12px; display:flex; gap:6px; flex-wrap:wrap; }
+  .card .body .stack span{ font-size:12px; background:#eef3f1; color:var(--teal); padding:3px 9px; border-radius:20px; }
+
+  .skills{ display:flex; gap:10px; flex-wrap:wrap; }
+  .skills span{ background:var(--card); border:1px solid var(--line); padding:9px 16px; border-radius:20px; font-size:14px; font-weight:500; }
+
+  .contact{ background:var(--dark); color:#fff; text-align:center; }
+  .contact h2{ font-size:30px; margin-bottom:10px; }
+  .contact p{ color:#a9bdb6; margin-bottom:24px; }
+  .contact .btns{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .contact .btns a{ padding:13px 24px; border-radius:12px; font-weight:600; }
+  .contact .btns .tg{ background:#e7b584; color:#3a2410; }
+  .contact .btns .mail{ border:1px solid rgba(255,255,255,.3); color:#fff; }
+  footer{ text-align:center; padding:24px; font-size:13px; color:var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="logo">Shohjahon<span>.dev</span></div>
+      <a class="tg" href="https://t.me/founderambassador">Telegram →</a>
+    </nav>
+    <div class="hero">
+      <div class="eyebrow">Full-Stack Developer</div>
+      <h1>I build <span>websites, web apps</span> &amp; Telegram bots for business.</h1>
+      <p>Modern, fast and reliable digital products — from a clean landing page to a full platform with an admin dashboard. Based in Uzbekistan, working worldwide.</p>
+      <div class="cta">
+        <a class="primary" href="https://t.me/founderambassador">Hire me on Telegram</a>
+        <a class="ghost" href="#projects">View my work</a>
+      </div>
+      <div class="tags">
+        <span>Next.js</span><span>React</span><span>TypeScript</span><span>Node.js</span><span>Telegram Bot API</span><span>PostgreSQL</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="services">
+  <div class="wrap">
+    <h2 class="title">What I do</h2>
+    <p class="sub">Real products, not just pages.</p>
+    <div class="grid">
+      <div class="svc">
+        <div class="ic">🌐</div>
+        <h3>Web Development</h3>
+        <p>Business websites, landing pages and full web apps with Next.js &amp; React.</p>
+      </div>
+      <div class="svc">
+        <div class="ic">🤖</div>
+        <h3>Telegram Bots</h3>
+        <p>Booking, orders, notifications and automation bots that save time and money.</p>
+      </div>
+      <div class="svc">
+        <div class="ic">📊</div>
+        <h3>Business Systems</h3>
+        <p>Admin dashboards, CRM, booking &amp; inventory systems tailored to your workflow.</p>
+      </div>
+      <div class="svc">
+        <div class="ic">📱</div>
+        <h3>QR Menu &amp; E-commerce</h3>
+        <p>Multilingual QR menus and online-order mini-shops for cafes and sellers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects" style="background:#eef3f1;">
+  <div class="wrap">
+    <h2 class="title">Selected work</h2>
+    <p class="sub">A few things I've built.</p>
+    <div class="proj">
+      <div class="card">
+        <div class="top">🏢</div>
+        <div class="body">
+          <div class="cat">Real-estate platform</div>
+          <h3>Voha Residence</h3>
+          <p>Multilingual (UZ/RU/EN) real-estate website with apartment availability, booking system, admin dashboard and Telegram notifications.</p>
+          <div class="stack"><span>Next.js</span><span>React</span><span>SQLite</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="top alt">🍽️</div>
+        <div class="body">
+          <div class="cat">QR Menu system</div>
+          <h3>Digital QR Menu</h3>
+          <p>Modern, mobile-first, 3-language QR menu with categories and in-app ordering for restaurants and cafes.</p>
+          <div class="stack"><span>HTML/CSS</span><span>JavaScript</span><span>Responsive</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="top alt2">🤖</div>
+        <div class="body">
+          <div class="cat">Automation</div>
+          <h3>Telegram Bots</h3>
+          <p>Custom bots for orders, bookings and business alerts — connected to admin panels and databases.</p>
+          <div class="stack"><span>Node.js</span><span>Bot API</span><span>PostgreSQL</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <h2 class="title">Skills &amp; tools</h2>
+    <p class="sub">The stack I work with.</p>
+    <div class="skills">
+      <span>Next.js</span><span>React</span><span>TypeScript</span><span>JavaScript</span><span>Node.js</span><span>Telegram Bot API</span><span>PostgreSQL</span><span>SQLite</span><span>Tailwind CSS</span><span>REST API</span><span>Responsive Design</span><span>Git</span>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2>Let's build something great</h2>
+    <p>Have a project or an idea? I usually reply within a few hours.</p>
+    <div class="btns">
+      <a class="tg" href="https://t.me/founderambassador">Message me on Telegram</a>
+      <a class="mail" href="mailto:shohjahon272009@gmail.com">shohjahon272009@gmail.com</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © Shohjahon Rajabboyev · Full-Stack Developer · Uzbekistan · <a href="https://t.me/founderambassador" style="color:var(--teal)">@founderambassador</a>
+</footer>
+
+</body>
+</html>

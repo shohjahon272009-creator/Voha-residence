@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Dashboard — Ombor & Sotuv boshqaruvi</title>
+<style>
+  :root{ --teal:#0f6e56; --teal2:#0a3f33; --dark:#0e1a17; --ink:#1a2730; --bg:#eef2f1; --card:#fff; --muted:#7a857f; --accent:#c77b3b; --line:#e5eae8; --green:#1d9e75; --red:#d85a30; --blue:#2f7ed8; }
+  *{ box-sizing:border-box; margin:0; padding:0; font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
+  body{ background:var(--bg); color:var(--ink); }
+  .app{ display:flex; min-height:100vh; }
+
+  /* sidebar */
+  .side{ width:230px; background:linear-gradient(180deg,#0f6e56,#0a3f33); color:#fff; padding:20px 0; flex:0 0 auto; }
+  .side .brand{ padding:0 22px 20px; font-weight:700; font-size:19px; }
+  .side .brand span{ color:#e7b584; }
+  .side .nav a{ display:flex; align-items:center; gap:12px; padding:12px 22px; color:#cfe0da; text-decoration:none; font-size:14.5px; }
+  .side .nav a.active{ background:rgba(255,255,255,.12); color:#fff; border-left:3px solid #e7b584; font-weight:600; }
+  .side .nav a .i{ font-size:17px; width:20px; text-align:center; }
+  .side .foot{ padding:18px 22px; margin-top:20px; font-size:12px; color:#9fb8b0; border-top:1px solid rgba(255,255,255,.1); }
+
+  /* main */
+  .main{ flex:1; padding:22px 26px; overflow:auto; }
+  .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+  .top h1{ font-size:22px; }
+  .top .sub{ color:var(--muted); font-size:13px; margin-top:2px; }
+  .top .user{ display:flex; align-items:center; gap:10px; }
+  .top .user .av{ width:40px; height:40px; border-radius:50%; background:var(--teal); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .top .user .nm{ font-size:14px; font-weight:600; }
+  .top .user .rl{ font-size:12px; color:var(--muted); }
+
+  /* kpi */
+  .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px; }
+  .kpi{ background:var(--card); border-radius:14px; padding:18px; border:1px solid var(--line); }
+  .kpi .lbl{ font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+  .kpi .lbl .dot{ width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .kpi .val{ font-size:24px; font-weight:700; margin-top:10px; }
+  .kpi .chg{ font-size:12px; margin-top:4px; font-weight:600; }
+  .up{ color:var(--green); } .down{ color:var(--red); }
+
+  .row2{ display:grid; grid-template-columns:1.6fr 1fr; gap:16px; margin-bottom:20px; }
+  .panel{ background:var(--card); border-radius:14px; padding:18px 20px; border:1px solid var(--line); }
+  .panel h3{ font-size:15px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
+  .panel h3 span.mini{ font-size:12px; color:var(--muted); font-weight:400; }
+
+  /* bar chart */
+  .bars{ display:flex; align-items:flex-end; gap:14px; height:180px; padding-top:10px; }
+  .bars .b{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; height:100%; justify-content:flex-end; }
+  .bars .b .bar{ width:100%; max-width:34px; background:linear-gradient(180deg,#1d9e75,#0f6e56); border-radius:6px 6px 0 0; }
+  .bars .b .bar.hi{ background:linear-gradient(180deg,#c77b3b,#9a5a26); }
+  .bars .b .d{ font-size:12px; color:var(--muted); }
+
+  /* donut */
+  .donut-wrap{ display:flex; align-items:center; gap:18px; }
+  .donut{ width:130px; height:130px; border-radius:50%; background:conic-gradient(#0f6e56 0 42%, #c77b3b 42% 68%, #2f7ed8 68% 85%, #d3d1c7 85% 100%); position:relative; flex:0 0 auto; }
+  .donut::after{ content:"1 240"; position:absolute; inset:26px; background:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; }
+  .legend div{ display:flex; align-items:center; gap:8px; font-size:13px; margin-bottom:8px; }
+  .legend .sw{ width:12px; height:12px; border-radius:3px; }
+
+  /* table */
+  table{ width:100%; border-collapse:collapse; }
+  th{ text-align:left; font-size:12px; color:var(--muted); font-weight:600; padding:8px 6px; border-bottom:1px solid var(--line); }
+  td{ padding:11px 6px; font-size:13.5px; border-bottom:1px solid var(--line); }
+  .badge{ font-size:11.5px; padding:3px 10px; border-radius:20px; font-weight:600; }
+  .b-ok{ background:#e1f5ee; color:#0f6e56; }
+  .b-wait{ background:#faeeda; color:#854f0b; }
+  .b-debt{ background:#faece7; color:#993c1d; }
+
+  .low li{ list-style:none; display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px; }
+  .low li:last-child{ border:none; }
+  .low .q{ font-weight:700; }
+  .low .q.warn{ color:var(--red); }
+  .foot-note{ text-align:center; color:var(--muted); font-size:12.5px; margin-top:8px; }
+  .foot-note b{ color:var(--teal); }
+
+  @media(max-width:900px){ .kpis{ grid-template-columns:repeat(2,1fr); } .row2{ grid-template-columns:1fr; } .side{ display:none; } }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">Demo<span>ERP</span></div>
+    <nav class="nav">
+      <a class="active" href="#"><span class="i">📊</span> Boshqaruv paneli</a>
+      <a href="#"><span class="i">📦</span> Ombor / Tovarlar</a>
+      <a href="#"><span class="i">🛒</span> Sotuvlar</a>
+      <a href="#"><span class="i">👥</span> Mijozlar</a>
+      <a href="#"><span class="i">💳</span> Qarzdorlik</a>
+      <a href="#"><span class="i">📈</span> Hisobotlar</a>
+      <a href="#"><span class="i">⚙️</span> Sozlamalar</a>
+    </nav>
+    <div class="foot">Demo ERP tizimi<br>Ombor · Sotuv · Foyda</div>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <div>
+        <h1>Boshqaruv paneli</h1>
+        <div class="sub">Xush kelibsiz — bugungi ko'rsatkichlar</div>
+      </div>
+      <div class="user">
+        <div class="av">DB</div>
+        <div><div class="nm">Demo Biznes</div><div class="rl">Rahbar</div></div>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi">
+        <div class="lbl"><span class="dot" style="background:#e1f5ee;color:#0f6e56">💰</span> Bugungi sotuv</div>
+        <div class="val">4 250 000</div>
+        <div class="chg up">▲ 12% · kechagiga nisbatan</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl"><span class="dot" style="background:#faeeda;color:#854f0b">📈</span> Oylik foyda</div>
+        <div class="val">38.5 mln</div>
+        <div class="chg up">▲ 8%</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl"><span class="dot" style="background:#e6f1fb;color:#185fa5">📦</span> Tovar turlari</div>
+        <div class="val">1 240</div>
+        <div class="chg down">▼ 18 ta kam qoldi</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl"><span class="dot" style="background:#faece7;color:#993c1d">💳</span> Qarzdorlik</div>
+        <div class="val">12.3 mln</div>
+        <div class="chg down">7 mijoz</div>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="panel">
+        <h3>Haftalik sotuv <span class="mini">so'm (mln)</span></h3>
+        <div class="bars">
+          <div class="b"><div class="bar" style="height:52%"></div><div class="d">Du</div></div>
+          <div class="b"><div class="bar" style="height:68%"></div><div class="d">Se</div></div>
+          <div class="b"><div class="bar" style="height:45%"></div><div class="d">Ch</div></div>
+          <div class="b"><div class="bar" style="height:80%"></div><div class="d">Pa</div></div>
+          <div class="b"><div class="bar hi" style="height:95%"></div><div class="d">Ju</div></div>
+          <div class="b"><div class="bar" style="height:72%"></div><div class="d">Sh</div></div>
+          <div class="b"><div class="bar" style="height:60%"></div><div class="d">Ya</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Kategoriya bo'yicha</h3>
+        <div class="donut-wrap">
+          <div class="donut"></div>
+          <div class="legend">
+            <div><span class="sw" style="background:#0f6e56"></span> Oziq-ovqat · 42%</div>
+            <div><span class="sw" style="background:#c77b3b"></span> Maishiy · 26%</div>
+            <div><span class="sw" style="background:#2f7ed8"></span> Kiyim · 17%</div>
+            <div><span class="sw" style="background:#d3d1c7"></span> Boshqa · 15%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="panel">
+        <h3>So'nggi sotuvlar <span class="mini">bugun</span></h3>
+        <table>
+          <thead><tr><th>Mijoz</th><th>Tovar</th><th>Summa</th><th>Holat</th></tr></thead>
+          <tbody>
+            <tr><td>Baraka Savdo</td><td>Un · 50 qop</td><td>3 200 000</td><td><span class="badge b-ok">To'landi</span></td></tr>
+            <tr><td>Oqtepa do'kon</td><td>Yog' · 30 quti</td><td>1 850 000</td><td><span class="badge b-debt">Qarz</span></td></tr>
+            <tr><td>Nasiba market</td><td>Shakar · 40 qop</td><td>2 400 000</td><td><span class="badge b-ok">To'landi</span></td></tr>
+            <tr><td>Diyor optom</td><td>Guruch · 25 qop</td><td>4 100 000</td><td><span class="badge b-wait">Kutilmoqda</span></td></tr>
+            <tr><td>Sardor aka</td><td>Choy · 60 quti</td><td>980 000</td><td><span class="badge b-ok">To'landi</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h3>Tugab qolayotgan tovar <span class="mini">ogohlantirish</span></h3>
+        <ul class="low">
+          <li><span>Un (oliy nav)</span><span class="q warn">4 qop</span></li>
+          <li><span>Kungaboqar yog'i</span><span class="q warn">7 quti</span></li>
+          <li><span>Guruch (lazer)</span><span class="q">12 qop</span></li>
+          <li><span>Shakar</span><span class="q">15 qop</span></li>
+          <li><span>Makaron</span><span class="q">20 quti</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot-note">Bu — <b>demo boshqaruv paneli</b>. Sizning biznesingiz uchun ham shunday tizim qilaman. 📞 [Telefon] · Telegram [@founderambassador]</div>
+  </main>
+</div>
+</body>
+</html>

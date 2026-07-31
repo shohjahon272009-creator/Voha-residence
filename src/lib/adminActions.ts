@@ -1,0 +1,625 @@
+ 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
+ 
+ 
+'use server';
+
+import db from './db';
+import { revalidatePath } from 'next/cache';
+import fs from 'fs/promises';
+import path from 'path';
+
+// Bir nechta galereya rasmini saqlaydi va URL ro'yxatini qaytaradi (ixtiyoriy)
+async function saveGalleryFiles(files: File[]): Promise<string[]> {
+  const urls: string[] = [];
+  const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+  for (const f of files) {
+    if (!f || !f.name || f.size === 0) continue;
+    try {
+      const buffer = Buffer.from(await f.arrayBuffer());
+      const safeName = f.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `${Date.now()}-g${urls.length}-${safeName}`;
+      await fs.mkdir(uploadDir, { recursive: true });
+      await fs.writeFile(path.join(uploadDir, fileName), buffer);
+      urls.push(`/uploads/${fileName}`);
+    } catch (error) {
+      console.error('Error saving gallery image:', error);
+    }
+  }
+  return urls;
+}
+
+// Loyihaga yangi xonadon qo'shish (admin qo'lda kiritadi)
+export async function addApartment(formData: FormData) {
+  const project_id = parseInt(formData.get('project_id') as string);
+  if (!project_id) return;
+  const floor = parseInt(formData.get('floor') as string) || 1;
+  const number = (formData.get('number') as string || `${floor}01`).trim();
+  const rooms = parseInt(formData.get('rooms') as string) || 1;
+  const area = parseFloat(formData.get('area') as string) || 0;
+  const status = (formData.get('status') as string) || "Bo'sh";
+
+  // Chizma (plan) rasmi — ixtiyoriy
+  let planUrl = '';
+  const planFile = formData.get('plan_image') as File | null;
+  if (planFile && planFile.name && planFile.size > 0) {
+    try {
+      const buffer = Buffer.from(await planFile.arrayBuffer());
+      const safeName = planFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `${Date.now()}-plan-${safeName}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      await fs.writeFile(path.join(uploadDir, fileName), buffer);
+      planUrl = `/uploads/${fileName}`;
+    } catch (error) {
+      console.error('Error saving plan image:', error);
+    }
+  }
+
+  db.prepare(`INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, price_installment, status, plan_image, image, orientation, note)
+    VALUES (?, ?, ?, ?, ?, 0, NULL, ?, ?, '', '', '')`).run(project_id, floor, number, rooms, area, status, planUrl);
+
+  revalidatePath('/admin/apartments');
+  revalidatePath('/admin/dashboard');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+
+// Bitta sozlamani (masalan xonadonlar bo'limi ko'rinishi) tez yoqish/o'chirish uchun
+export async function setSiteSetting(key: string, value: string) {
+  // Faqat ko'rinish (show_*) sozlamalariga ruxsat
+  if (!key.startsWith('show_')) return;
+  db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run(key, value, value);
+  revalidatePath('/admin/apartments');
+  revalidatePath('/admin/settings');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+
+export async function addProject(formData: FormData) {
+  const name_uz = formData.get('name_uz') as string;
+  const name_ru = formData.get('name_ru') as string;
+  const name_en = formData.get('name_en') as string;
+  const description_uz = formData.get('description_uz') as string;
+  const description_ru = formData.get('description_ru') as string;
+  const description_en = formData.get('description_en') as string;
+  const city = formData.get('city') as string;
+  const district = formData.get('district') as string;
+  const status = formData.get('status') as string;
+  const total_floors = parseInt(formData.get('total_floors') as string) || 0;
+  const apts_per_floor = parseInt(formData.get('apts_per_floor') as string) || 4;
+  const min_price = Math.round((parseFloat(formData.get('min_price') as string) || 0) * 1000000);
+  const days_left = parseInt(formData.get('days_left') as string) || 0;
+  const virtual_tour_url = (formData.get('virtual_tour_url') as string || '').trim();
+  const is_sold_out = formData.get('is_sold_out') === 'true';
+  
+  const imageFile = formData.get('main_image') as File | null;
+  let imageUrl = '/voha-actual-bg.png';
+
+  if (imageFile && imageFile.name && imageFile.size > 0) {
+    try {
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      
+      // Clean filename
+      const safeName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `${Date.now()}-${safeName}`;
+      
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      
+      const filePath = path.join(uploadDir, fileName);
+      await fs.writeFile(filePath, buffer);
+      
+      imageUrl = `/uploads/${fileName}`;
+    } catch (error) {
+      console.error('Error saving image:', error);
+    }
+  }
+
+  // 360° panorama image upload takes precedence over an external tour URL
+  let finalTourUrl: string | null = virtual_tour_url || null;
+  const tourImageFile = formData.get('virtual_tour_image') as File | null;
+  if (tourImageFile && tourImageFile.name && tourImageFile.size > 0) {
+    try {
+      const bytes = await tourImageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const safeName = tourImageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `${Date.now()}-360-${safeName}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      await fs.writeFile(path.join(uploadDir, fileName), buffer);
+      finalTourUrl = `/uploads/${fileName}`;
+    } catch (error) {
+      console.error('Error saving 360 image:', error);
+    }
+  }
+
+  // Qo'shimcha rasmlar (gallery) — ixtiyoriy, bir nechta fayl
+  const galleryUrls = await saveGalleryFiles(formData.getAll('gallery_images') as File[]);
+
+  const stmt = db.prepare(`
+    INSERT INTO projects (
+      name_uz, name_ru, name_en,
+      description_uz, description_ru, description_en,
+      city, district, address,
+      status, total_floors, apts_per_floor, min_price, main_image, gallery, days_left, virtual_tour_url
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  const result = stmt.run(
+    name_uz, name_ru, name_en,
+    description_uz, description_ru, description_en,
+    city, district, '',
+    status, total_floors, apts_per_floor, min_price, imageUrl, JSON.stringify(galleryUrls), days_left, finalTourUrl
+  );
+
+  const projectId = result.lastInsertRowid;
+
+  // Auto-generate apartments per floor
+  const aptStmt = db.prepare(`
+    INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  for (let floor = 1; floor <= total_floors; floor++) {
+    for (let num = 1; num <= apts_per_floor; num++) {
+      aptStmt.run(projectId, floor, `${floor}0${num}`, (num % 2) + 1, 45 + num * 10, min_price + (floor * 10000000), is_sold_out ? "Band" : "Bo'sh");
+    }
+  }
+
+  revalidatePath('/admin/projects');
+  revalidatePath('/admin/sold-out');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+export async function deleteProject(id: number) {
+  // First delete all bookings related to apartments in this project
+  const apartments = db.prepare('SELECT id FROM apartments WHERE project_id = ?').all(id) as { id: number }[];
+  for (const apt of apartments) {
+    db.prepare('DELETE FROM bookings WHERE apartment_id = ?').run(apt.id);
+  }
+  // Delete all apartments in this project
+  db.prepare('DELETE FROM apartments WHERE project_id = ?').run(id);
+  
+  // Finally delete the project
+  db.prepare('DELETE FROM projects WHERE id = ?').run(id);
+  
+  revalidatePath('/admin/projects');
+  revalidatePath('/admin/sold-out');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+
+export async function updateProject(id: number, formData: FormData) {
+  const name_uz = formData.get('name_uz') as string;
+  const name_ru = formData.get('name_ru') as string;
+  const name_en = formData.get('name_en') as string;
+  const description_uz = formData.get('description_uz') as string;
+  const description_ru = formData.get('description_ru') as string;
+  const description_en = formData.get('description_en') as string;
+  const city = formData.get('city') as string;
+  const district = formData.get('district') as string;
+  const status = formData.get('status') as string;
+  const total_floors = parseInt(formData.get('total_floors') as string) || 0;
+  const apts_per_floor = parseInt(formData.get('apts_per_floor') as string) || 4;
+  const min_price = Math.round((parseFloat(formData.get('min_price') as string) || 0) * 1000000);
+  const days_left = parseInt(formData.get('days_left') as string) || 0;
+  const virtual_tour_url = (formData.get('virtual_tour_url') as string || '').trim();
+
+  const imageFile = formData.get('main_image') as File | null;
+  let imageUrl = null;
+
+  if (imageFile && imageFile.name && imageFile.size > 0) {
+    try {
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      
+      const safeName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `${Date.now()}-${safeName}`;
+      
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      
+      const filePath = path.join(uploadDir, fileName);
+      await fs.writeFile(filePath, buffer);
+      
+      imageUrl = `/uploads/${fileName}`;
+    } catch (error) {
+      console.error('Error saving image:', error);
+    }
+  }
+
+  // 360° panorama image upload takes precedence over an external tour URL
+  let finalTourUrl: string | null = virtual_tour_url || null;
+  const tourImageFile = formData.get('virtual_tour_image') as File | null;
+  if (tourImageFile && tourImageFile.name && tourImageFile.size > 0) {
+    try {
+      const bytes = await tourImageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const safeName = tourImageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `${Date.now()}-360-${safeName}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      await fs.writeFile(path.join(uploadDir, fileName), buffer);
+      finalTourUrl = `/uploads/${fileName}`;
+    } catch (error) {
+      console.error('Error saving 360 image:', error);
+    }
+  }
+
+  if (imageUrl) {
+    const stmt = db.prepare(`
+      UPDATE projects SET
+        name_uz = ?, name_ru = ?, name_en = ?,
+        description_uz = ?, description_ru = ?, description_en = ?,
+        city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, main_image = ?, days_left = ?, virtual_tour_url = ?
+      WHERE id = ?
+    `);
+    stmt.run(
+      name_uz, name_ru, name_en,
+      description_uz, description_ru, description_en,
+      city, district, status, total_floors, apts_per_floor, min_price, imageUrl, days_left, finalTourUrl, id
+    );
+  } else {
+    const stmt = db.prepare(`
+      UPDATE projects SET
+        name_uz = ?, name_ru = ?, name_en = ?,
+        description_uz = ?, description_ru = ?, description_en = ?,
+        city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, days_left = ?, virtual_tour_url = ?
+      WHERE id = ?
+    `);
+    stmt.run(
+      name_uz, name_ru, name_en,
+      description_uz, description_ru, description_en,
+      city, district, status, total_floors, apts_per_floor, min_price, days_left, finalTourUrl, id
+    );
+  }
+
+  // Yangi galereya rasmlari yuklangan bo'lsa — mavjudlariga qo'shamiz (ixtiyoriy)
+  const newGallery = await saveGalleryFiles(formData.getAll('gallery_images') as File[]);
+  if (newGallery.length > 0) {
+    const row = db.prepare('SELECT gallery FROM projects WHERE id = ?').get(id) as { gallery: string } | undefined;
+    let existing: string[] = [];
+    try { existing = row?.gallery ? JSON.parse(row.gallery) : []; } catch { existing = []; }
+    db.prepare('UPDATE projects SET gallery = ? WHERE id = ?').run(JSON.stringify([...existing, ...newGallery]), id);
+  }
+
+  revalidatePath('/admin/projects');
+  revalidatePath('/admin/sold-out');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+export async function saveSettings(formData: FormData) {
+  const company_name = formData.get('company_name') as string;
+  const meta_title_uz = formData.get('meta_title_uz') as string;
+  const meta_description = formData.get('meta_description') as string;
+  const bot_token = formData.get('bot_token') as string;
+  const admin_chat_id = formData.get('admin_chat_id') as string;
+
+  const updateSetting = (key: string, value: string) => {
+    db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run(key, value, value);
+  };
+
+  if (company_name) updateSetting('company_name', company_name);
+  if (meta_title_uz) updateSetting('meta_title_uz', meta_title_uz);
+  if (meta_description) updateSetting('meta_description', meta_description);
+  if (bot_token) updateSetting('bot_token', bot_token);
+  if (admin_chat_id) updateSetting('admin_chat_id', admin_chat_id);
+
+  const primary_color = formData.get('primary_color') as string;
+  const accent_color = formData.get('accent_color') as string;
+  if (primary_color) updateSetting('primary_color', primary_color);
+  if (accent_color) updateSetting('accent_color', accent_color);
+
+  const hero_title = formData.get('hero_title') as string;
+  const hero_desc = formData.get('hero_desc') as string;
+  const about_title = formData.get('about_title') as string;
+  const about_desc = formData.get('about_desc') as string;
+  const about_stat1_value = formData.get('about_stat1_value') as string;
+  const about_stat1_label = formData.get('about_stat1_label') as string;
+  const about_stat2_value = formData.get('about_stat2_value') as string;
+  const about_stat2_label = formData.get('about_stat2_label') as string;
+
+  if (hero_title) updateSetting('hero_title', hero_title);
+  if (hero_desc) updateSetting('hero_desc', hero_desc);
+  if (about_title) updateSetting('about_title', about_title);
+  if (about_desc) updateSetting('about_desc', about_desc);
+  if (about_stat1_value) updateSetting('about_stat1_value', about_stat1_value);
+  if (about_stat1_label) updateSetting('about_stat1_label', about_stat1_label);
+  if (about_stat2_value) updateSetting('about_stat2_value', about_stat2_value);
+  if (about_stat2_label) updateSetting('about_stat2_label', about_stat2_label);
+
+  const show_projects = formData.get('show_projects') as string;
+  const show_search = formData.get('show_search') as string;
+  const show_apartments = formData.get('show_apartments') as string;
+  const show_mortgage = formData.get('show_mortgage') as string;
+  const show_about = formData.get('show_about') as string;
+  const show_news = formData.get('show_news') as string;
+  const show_contact = formData.get('show_contact') as string;
+
+  updateSetting('show_projects', show_projects ? 'true' : 'false');
+  updateSetting('show_search', show_search ? 'true' : 'false');
+  updateSetting('show_apartments', show_apartments ? 'true' : 'false');
+  updateSetting('show_mortgage', show_mortgage ? 'true' : 'false');
+  updateSetting('show_about', show_about ? 'true' : 'false');
+  updateSetting('show_news', show_news ? 'true' : 'false');
+  updateSetting('show_contact', show_contact ? 'true' : 'false');
+
+  const logoFile = formData.get('company_logo') as File | null;
+  if (logoFile && logoFile.name && logoFile.size > 0) {
+    try {
+      const bytes = await logoFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const safeName = logoFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `logo-${Date.now()}-${safeName}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, fileName);
+      await fs.writeFile(filePath, buffer);
+      updateSetting('company_logo', `/uploads/${fileName}`);
+    } catch (error) {
+      console.error('Error saving logo:', error);
+    }
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+export async function updateApartment(id: number, formData: FormData) {
+  const rooms = parseInt(formData.get('rooms') as string) || 1;
+  const area = parseFloat(formData.get('area') as string) || 0;
+  const price_cash = parseFloat(formData.get('price_cash') as string) || 0;
+  const status = formData.get('status') as string;
+
+  const imageFile = formData.get('plan_image') as File | null;
+  let planUrl = null;
+
+  if (imageFile && imageFile.name && imageFile.size > 0) {
+    try {
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const safeName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `${Date.now()}-plan-${safeName}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, fileName);
+      await fs.writeFile(filePath, buffer);
+      planUrl = `/uploads/${fileName}`;
+    } catch (error) {
+      console.error('Error saving plan image:', error);
+    }
+  }
+
+  const regularImageFile = formData.get('image') as File | null;
+  let regularImageUrl = null;
+
+  if (regularImageFile && regularImageFile.name && regularImageFile.size > 0) {
+    try {
+      const bytes = await regularImageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const safeName = regularImageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `${Date.now()}-apt-${safeName}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, fileName);
+      await fs.writeFile(filePath, buffer);
+      regularImageUrl = `/uploads/${fileName}`;
+    } catch (error) {
+      console.error('Error saving regular image:', error);
+    }
+  }
+
+  const updateFields: string[] = ['rooms = ?', 'area = ?', 'price_cash = ?', 'status = ?'];
+   
+  const updateValues: any[] = [rooms, area, price_cash, status];
+
+  if (planUrl) {
+    updateFields.push('plan_image = ?');
+    updateValues.push(planUrl);
+  }
+  
+  if (regularImageUrl) {
+    updateFields.push('image = ?');
+    updateValues.push(regularImageUrl);
+  }
+
+  updateValues.push(id);
+
+  db.prepare(`UPDATE apartments SET ${updateFields.join(', ')} WHERE id = ?`).run(...updateValues);
+
+  const client_name = formData.get('client_name') as string;
+  const client_phone = formData.get('client_phone') as string;
+
+  if (client_name && client_phone && (status === 'Band' || status === 'Bronlangan')) {
+    db.prepare(`
+      INSERT INTO bookings (apartment_id, client_name, client_phone, status, note)
+      VALUES (?, ?, ?, 'Tasdiqlangan', ?)
+    `).run(id, client_name, client_phone, "Admin tomonidan tahrirlash darchasi orqali qo'shildi");
+  }
+
+  revalidatePath('/admin/apartments');
+  revalidatePath('/admin/bookings');
+  revalidatePath('/admin/customers');
+  revalidatePath('/admin');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+
+export async function addNews(formData: FormData) {
+  const title_uz = formData.get('title_uz') as string;
+  const title_ru = formData.get('title_ru') as string;
+  const title_en = formData.get('title_en') as string;
+  const content_uz = formData.get('content_uz') as string;
+  const content_ru = formData.get('content_ru') as string;
+  const content_en = formData.get('content_en') as string;
+  const category = formData.get('category') as string || 'General';
+
+  const imageFile = formData.get('image') as File | null;
+  let imageUrl = null;
+
+  if (imageFile && imageFile.name && imageFile.size > 0) {
+    try {
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const safeName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `${Date.now()}-news-${safeName}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, fileName);
+      await fs.writeFile(filePath, buffer);
+      imageUrl = `/uploads/${fileName}`;
+    } catch (error) {
+      console.error('Error saving news image:', error);
+    }
+  }
+
+  db.prepare(`
+    INSERT INTO news (
+      title_uz, title_ru, title_en,
+      content_uz, content_ru, content_en,
+      category, image, visible
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
+  `).run(
+    title_uz, title_ru || title_uz, title_en || title_uz,
+    content_uz, content_ru || content_uz, content_en || content_uz,
+    category, imageUrl
+  );
+
+  revalidatePath('/admin/news');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+
+export async function updateBookingStatus(formData: FormData) {
+  const id = parseInt(formData.get('id') as string);
+  const status = formData.get('status') as string;
+  const actionType = formData.get('action_type') as string;
+  if (!id || !status) return;
+
+   
+  const booking = db.prepare("SELECT * FROM bookings WHERE id = ?").get(id) as any;
+  if (!booking) return;
+
+  db.prepare("UPDATE bookings SET status = ? WHERE id = ?").run(status, id);
+
+  if (status === 'Tasdiqlangan' && booking.apartment_id) {
+    if (actionType === 'sell') {
+      db.prepare("UPDATE apartments SET status = 'Band' WHERE id = ?").run(booking.apartment_id);
+    } else {
+      db.prepare("UPDATE apartments SET status = 'Bronlangan' WHERE id = ?").run(booking.apartment_id);
+    }
+  } else if (status === 'Bekor qilingan' && booking.apartment_id) {
+    db.prepare("UPDATE apartments SET status = ? WHERE id = ?").run("Bo'sh", booking.apartment_id);
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/admin/bookings');
+  revalidatePath('/admin/apartments');
+}
+
+export async function addSale(formData: FormData) {
+  const apartment_id = parseInt(formData.get('apartment_id') as string);
+  const client_name = formData.get('client_name') as string;
+  const client_phone = formData.get('client_phone') as string;
+
+  if (!apartment_id || !client_name || !client_phone) return;
+
+  db.prepare("UPDATE apartments SET status = 'Band' WHERE id = ?").run(apartment_id);
+
+  db.prepare(`
+    INSERT INTO bookings (apartment_id, client_name, client_phone, status, note)
+    VALUES (?, ?, ?, 'Tasdiqlangan', ?)
+  `).run(apartment_id, client_name, client_phone, "Sotuvlar bo'limidan admin kiritdi");
+
+  revalidatePath('/admin/sales');
+  revalidatePath('/admin/apartments');
+  revalidatePath('/admin/bookings');
+  revalidatePath('/admin/customers');
+  revalidatePath('/admin/dashboard');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+
+export async function deleteNews(id: number) {
+  db.prepare('DELETE FROM news WHERE id = ?').run(id);
+  revalidatePath('/admin/news');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+
+export async function updateNews(id: number, formData: FormData) {
+  const title_uz = formData.get('title_uz') as string;
+  const title_ru = formData.get('title_ru') as string;
+  const title_en = formData.get('title_en') as string;
+  const content_uz = formData.get('content_uz') as string;
+  const content_ru = formData.get('content_ru') as string;
+  const content_en = formData.get('content_en') as string;
+  const category = formData.get('category') as string;
+  
+  if (!title_uz || !content_uz) return;
+
+  const imageFile = formData.get('image') as File | null;
+  let imageUrl: string | null = null;
+
+  if (imageFile && imageFile.name && imageFile.size > 0) {
+    try {
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const safeName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const fileName = `${Date.now()}-news-${safeName}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, fileName);
+      await fs.writeFile(filePath, buffer);
+      imageUrl = `/uploads/${fileName}`;
+    } catch (error) {
+      console.error('Error saving news image:', error);
+    }
+  }
+
+  if (imageUrl) {
+    db.prepare(`
+      UPDATE news SET
+        title_uz = ?, title_ru = ?, title_en = ?,
+        content_uz = ?, content_ru = ?, content_en = ?,
+        category = ?, image = ?
+      WHERE id = ?
+    `).run(
+      title_uz, title_ru || title_uz, title_en || title_uz,
+      content_uz, content_ru || content_uz, content_en || content_uz,
+      category, imageUrl, id
+    );
+  } else {
+    db.prepare(`
+      UPDATE news SET
+        title_uz = ?, title_ru = ?, title_en = ?,
+        content_uz = ?, content_ru = ?, content_en = ?,
+        category = ?
+      WHERE id = ?
+    `).run(
+      title_uz, title_ru || title_uz, title_en || title_uz,
+      content_uz, content_ru || content_uz, content_en || content_uz,
+      category, id
+    );
+  }
+
+  revalidatePath('/admin/news');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}

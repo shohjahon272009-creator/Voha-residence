@@ -1,0 +1,192 @@
+ 
+ 
+ 
+ 
+ 
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Locale, getDictionary } from '@/lib/dictionaries';
+import VohaLogo from '@/components/common/VohaLogo';
+
+export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTitle, heroDesc, images = [] }: { lang: Locale, companyName?: string, heroTitle?: string, heroDesc?: string, images?: string[] }) {
+  const dict = getDictionary(lang);
+
+  // Bosh sahifa slider — loyiha rasmlari avtomatik almashib turadi (5 soniyada bir)
+  const slides = images.length > 0 ? images : ['/voha-actual-bg.png'];
+  const [current, setCurrent] = useState(0);
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const id = setInterval(() => setCurrent((c) => (c + 1) % slides.length), 5000);
+    return () => clearInterval(id);
+  }, [slides.length]);
+
+  const heroText: Record<Locale, { tag: string; titleHuge: string; title2: string; desc: string; btn2: string }> = {
+    uz: {
+      tag: 'Premium Toifadagi Turar-Joy Majmuasi',
+      titleHuge: companyName.toUpperCase(),
+      title2: 'Kelajagingiz uchun betakror maskan',
+      desc: 'Mukammal arxitektura va zamonaviy yechimlar uyg\'unligi. O\'zingiz va oilangiz uchun Xorazmning eng prestijli nuqtasida chinakam qulaylikni kashf eting.',
+      btn2: 'Loyiha bilan tanishish',
+    },
+    ru: {
+      tag: 'Жилой Комплекс Премиум Класса',
+      titleHuge: companyName.toUpperCase(),
+      title2: 'Неповторимое пространство для вашего будущего',
+      desc: 'Гармония совершенной архитектуры и современных решений. Откройте для себя истинный комфорт в самой престижной точке Хорезма.',
+      btn2: 'Ознакомиться с проектом',
+    },
+    en: {
+      tag: 'Premium Class Residential Complex',
+      titleHuge: companyName.toUpperCase(),
+      title2: 'A unique space for your future',
+      desc: 'The harmony of perfect architecture and modern solutions. Discover true comfort in the most prestigious location of Khorezm.',
+      btn2: 'Explore Projects',
+    },
+  };
+  const t = heroText[lang] || heroText.uz;
+
+  const stats: Record<Locale, Array<{label: string; value: string}>> = {
+    uz: [
+      { label: 'Tajriba', value: '14 Yil' },
+      { label: 'Loyiha', value: '15+' },
+      { label: 'Mijoz', value: '5000+' },
+      { label: 'Sifat', value: 'A\'lo' },
+    ],
+    ru: [
+      { label: 'Опыт', value: '14 лет' },
+      { label: 'Проектов', value: '15+' },
+      { label: 'Клиентов', value: '5000+' },
+      { label: 'Качество', value: 'Отличное' },
+    ],
+    en: [
+      { label: 'Experience', value: '14 Years' },
+      { label: 'Projects', value: '15+' },
+      { label: 'Clients', value: '5000+' },
+      { label: 'Quality', value: 'Excellent' },
+    ],
+  };
+  const currentStats = stats[lang] || stats.uz;
+
+  return (
+    <section className="relative h-[100dvh] w-full overflow-hidden flex flex-col justify-between pt-24 pb-6 md:pb-10">
+      {/* Background slider — loyiha rasmlari sekin almashib turadi (fade + zoom) */}
+      <div className="absolute inset-0 bg-primary/20 z-0">
+        {slides.map((src, i) => (
+          <div
+            key={i}
+            className="absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out"
+            style={{
+              backgroundImage: `url("${src}")`,
+              opacity: i === current ? 1 : 0,
+              animation: i === current ? 'subtle-zoom 8s ease-out forwards' : 'none',
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* General dark overlay for overall text readability */}
+        <div className="absolute inset-0 bg-black/60" />
+        
+        {/* Gradient at the top for Navbar readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent" style={{ height: '30%' }} />
+        
+        {/* Gradient at the bottom to blend with the rest of the page */}
+        <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/80 to-transparent opacity-100" style={{ height: '60%', top: '40%' }} />
+      </div>
+
+      <div className="max-container relative z-10 px-4 sm:px-6 w-full text-center flex-1 flex flex-col items-center justify-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: 'easeOut' }}
+          className="flex flex-col items-center w-full my-auto"
+        >
+          <motion.span 
+            initial={{ opacity: 0, y: 20, letterSpacing: '0em' }}
+            animate={{ opacity: 1, y: 0, letterSpacing: '0.25em' }}
+            transition={{ delay: 0.3, duration: 1.2, ease: "easeOut" }}
+            className="text-accent font-bold uppercase text-[10px] md:text-sm lg:text-base mb-2 md:mb-4 block drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] tracking-[0.3em] opacity-90"
+          >
+            {t.tag}
+          </motion.span>
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
+            className="w-full max-w-[220px] sm:max-w-[280px] md:max-w-[400px] lg:max-w-[480px] mb-4 md:mb-6 opacity-90 mix-blend-plus-lighter"
+          >
+             <VohaLogo isScrolled={false} className="w-full h-auto" style={{ filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.5))' }} />
+          </motion.div>
+          
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 1.2, ease: "easeOut" }}
+            className="text-lg md:text-2xl lg:text-3xl text-white font-medium mb-2 md:mb-4 max-w-3xl tracking-wide drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-tight"
+          >
+            {lang === 'uz' && heroTitle ? heroTitle : t.title2}
+          </motion.h2>
+
+          <p className="text-xs md:text-sm lg:text-base text-white/90 mb-4 md:mb-6 max-w-2xl leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] font-medium px-4">
+            {lang === 'uz' && heroDesc ? heroDesc : t.desc}
+          </p>
+          
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4 mt-2">
+             <a href={`/${lang}#about`} className="px-6 md:px-10 py-3 md:py-4 bg-accent text-primary font-bold rounded-full hover:bg-white transition-all transform hover:-translate-y-1 shadow-[0_0_30px_rgba(250,218,165,0.4)] tracking-wide inline-block text-sm md:text-base">
+                {dict.hero.details}
+             </a>
+             <a href={`/${lang}#projects`} className="px-6 md:px-10 py-3 md:py-4 bg-transparent backdrop-blur-sm text-white font-bold rounded-full border-2 border-white/30 hover:bg-white hover:text-primary transition-all transform hover:-translate-y-1 inline-block text-sm md:text-base">
+                {t.btn2}
+             </a>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Slider indikatorlari (nuqtalar) */}
+      {slides.length > 1 && (
+        <div className="relative z-20 flex justify-center gap-2 mb-6">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              aria-label={`Slayd ${i + 1}`}
+              className={`h-2 rounded-full transition-all duration-300 ${i === current ? 'w-8 bg-accent' : 'w-2 bg-white/40 hover:bg-white/70'}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Stats at bottom */}
+      <div className="w-full relative z-20 mt-4 md:mt-8">
+        <div className="max-container px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto">
+            {currentStats.map((stat, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 + i * 0.1, duration: 0.8 }}
+                className="group bg-white/5 backdrop-blur-md border border-white/10 p-4 md:p-5 rounded-3xl text-center shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:bg-white/10 hover:border-white/20 hover:-translate-y-2 transition-all duration-500 cursor-default"
+              >
+                <div className="text-accent font-black text-2xl md:text-3xl lg:text-4xl mb-1 drop-shadow-md group-hover:scale-105 transition-transform duration-500">{stat.value}</div>
+                <div className="text-white/80 text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold group-hover:text-white transition-colors duration-300">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      {/* Add subtle-zoom keyframes to global CSS or handle it inline */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes subtle-zoom {
+          0% { transform: scale(1.02); }
+          100% { transform: scale(1.1); }
+        }
+      `}} />
+    </section>
+  );
+}

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Cafe — QR Menu</title>
+<style>
+  :root{ --teal:#0f6e56; --dark:#16242b; --accent:#c77b3b; --bg:#faf7f1; --card:#fff; --muted:#7a857f; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body{ font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; background:var(--bg); color:var(--dark); max-width:480px; margin:0 auto; padding-bottom:80px; }
+  .hero{ background:linear-gradient(160deg,#0f6e56,#0a3f33); color:#fff; padding:28px 20px 22px; border-radius:0 0 24px 24px; }
+  .hero .badge{ font-size:12px; letter-spacing:2px; color:#e7b584; font-weight:700; text-transform:uppercase; }
+  .hero h1{ font-size:28px; margin:6px 0 2px; }
+  .hero p{ color:#cbe0da; font-size:14px; }
+  .hero .row{ display:flex; gap:14px; margin-top:14px; font-size:12px; color:#cbe0da; }
+  .hero .row span{ display:flex; align-items:center; gap:5px; }
+  .langs{ display:flex; gap:8px; margin-top:16px; }
+  .langs button{ border:1px solid rgba(255,255,255,.35); background:transparent; color:#fff; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:600; }
+  .langs button.active{ background:#fff; color:var(--teal); border-color:#fff; }
+  .tabs{ display:flex; gap:8px; overflow-x:auto; padding:16px 20px 6px; position:sticky; top:0; background:var(--bg); z-index:5; }
+  .tabs button{ white-space:nowrap; border:none; background:#eae4da; color:var(--dark); padding:9px 16px; border-radius:20px; font-size:14px; font-weight:600; }
+  .tabs button.active{ background:var(--teal); color:#fff; }
+  .section{ padding:8px 16px; }
+  .section h2{ font-size:16px; margin:14px 4px 10px; color:var(--teal); }
+  .item{ background:var(--card); border-radius:16px; padding:14px; margin-bottom:12px; display:flex; gap:14px; align-items:center; box-shadow:0 1px 4px rgba(0,0,0,.05); }
+  .item .pic{ width:66px; height:66px; border-radius:14px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:34px; background:#f1ede6; }
+  .item .info{ flex:1; }
+  .item .info .name{ font-weight:600; font-size:15px; }
+  .item .info .desc{ font-size:12.5px; color:var(--muted); margin-top:2px; line-height:1.35; }
+  .item .info .price{ font-weight:700; color:var(--accent); margin-top:6px; font-size:15px; }
+  .item .add{ width:34px; height:34px; border-radius:50%; border:none; background:var(--teal); color:#fff; font-size:20px; flex:0 0 auto; }
+  .cart{ position:fixed; left:50%; transform:translateX(-50%); bottom:16px; width:calc(100% - 32px); max-width:448px; background:var(--dark); color:#fff; border-radius:16px; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 6px 20px rgba(0,0,0,.25); }
+  .cart .l{ font-size:13px; color:#c8d3ce; }
+  .cart .l b{ color:#fff; font-size:16px; }
+  .cart button{ background:var(--accent); color:#fff; border:none; padding:10px 18px; border-radius:12px; font-weight:700; font-size:14px; }
+  .foot{ text-align:center; padding:20px; font-size:12px; color:var(--muted); }
+  .foot b{ color:var(--teal); }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="badge">QR Menu · Demo</div>
+    <h1>Demo Cafe</h1>
+    <p>Zamonaviy menyu — telefon orqali</p>
+    <div class="row">
+      <span>⭐ 4.9</span><span>🕒 09:00–23:00</span><span>📍 Urganch</span>
+    </div>
+    <div class="langs">
+      <button class="active">O'zbek</button><button>Русский</button><button>English</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="active">🔥 Ommabop</button><button>🍽 Asosiy</button><button>🥗 Salatlar</button><button>☕ Ichimlik</button><button>🍰 Shirinlik</button>
+  </div>
+
+  <div class="section">
+    <h2>🔥 Ommabop taomlar</h2>
+
+    <div class="item">
+      <div class="pic">🍔</div>
+      <div class="info">
+        <div class="name">Klassik Burger</div>
+        <div class="desc">Mol go'shti, cheddar, maxsus sous, kartoshka fri bilan</div>
+        <div class="price">42 000 so'm</div>
+      </div>
+      <button class="add">+</button>
+    </div>
+
+    <div class="item">
+      <div class="pic">🍕</div>
+      <div class="info">
+        <div class="name">Pepperoni Pitsa</div>
+        <div class="desc">Mozzarella, pepperoni, tomat sousi (30 sm)</div>
+        <div class="price">65 000 so'm</div>
+      </div>
+      <button class="add">+</button>
+    </div>
+
+    <div class="item">
+      <div class="pic">🍝</div>
+      <div class="info">
+        <div class="name">Karbonara</div>
+        <div class="desc">Qaymoqli sous, bekon, parmezan</div>
+        <div class="price">48 000 so'm</div>
+      </div>
+      <button class="add">+</button>
+    </div>
+
+    <h2>☕ Ichimliklar</h2>
+
+    <div class="item">
+      <div class="pic">☕</div>
+      <div class="info">
+        <div class="name">Kapuchino</div>
+        <div class="desc">Ikki porsiya espresso, sut ko'pigi</div>
+        <div class="price">22 000 so'm</div>
+      </div>
+      <button class="add">+</button>
+    </div>
+
+    <div class="item">
+      <div class="pic">🥤</div>
+      <div class="info">
+        <div class="name">Limonli Mohito</div>
+        <div class="desc">Yalpiz, laym, gazli suv, muz</div>
+        <div class="price">26 000 so'm</div>
+      </div>
+      <button class="add">+</button>
+    </div>
+
+    <h2>🍰 Shirinliklar</h2>
+
+    <div class="item">
+      <div class="pic">🍰</div>
+      <div class="info">
+        <div class="name">Cheesecake</div>
+        <div class="desc">Nyu-York uslubida, mevali sous bilan</div>
+        <div class="price">32 000 so'm</div>
+      </div>
+      <button class="add">+</button>
+    </div>
+  </div>
+
+  <div class="cart">
+    <div class="l">Buyurtma: <b>3 ta</b> · <b>109 000 so'm</b></div>
+    <button>Buyurtma berish →</button>
+  </div>
+
+  <div class="foot">
+    Bu — <b>demo QR-menu</b>. Sizning kafengiz uchun ham shunday qilaman.<br>
+    📞 [Telefon] · Telegram [@username]
+  </div>
+</body>
+</html>
