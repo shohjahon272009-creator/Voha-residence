@@ -3,8 +3,8 @@
  
  
  
-import { redirect } from 'next/navigation';
+import HomePage from './[lang]/page';
 
-export default function RootPage() {
-  redirect('/uz');
+export default async function RootPage() {
+  return <HomePage params={Promise.resolve({ lang: 'uz' })} />;
 }
