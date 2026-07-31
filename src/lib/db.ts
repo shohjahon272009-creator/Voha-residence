@@ -12,7 +12,25 @@ import { hashPassword } from './password';
 // handle each time, eventually exhausting file handles / locking the file.
 const globalForDb = globalThis as unknown as { __qurilishDb?: Database.Database };
 
-const dbPath = path.join(process.cwd(), 'qurilish.db');
+const isVercel = Boolean(process.env.VERCEL);
+let dbPath = path.join(process.cwd(), 'qurilish.db');
+
+if (isVercel) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const fs = require('fs');
+    const tmpPath = path.join('/tmp', 'qurilish.db');
+    if (fs.existsSync(dbPath) && !fs.existsSync(tmpPath)) {
+      fs.copyFileSync(dbPath, tmpPath);
+    }
+    if (fs.existsSync(tmpPath)) {
+      dbPath = tmpPath;
+    }
+  } catch (e) {
+    console.error('Vercel db copy error:', e);
+  }
+}
+
 const db = globalForDb.__qurilishDb ?? new Database(dbPath);
 if (process.env.NODE_ENV !== 'production') globalForDb.__qurilishDb = db;
 
