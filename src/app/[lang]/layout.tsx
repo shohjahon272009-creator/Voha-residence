@@ -5,6 +5,10 @@
  
 import React from 'react';
 
+export function generateStaticParams() {
+  return [{ lang: 'uz' }, { lang: 'ru' }, { lang: 'en' }];
+}
+
 // The public site reads live data from SQLite, so it must be rendered on demand
 // rather than statically prerendered. Static generation runs the native
 // better-sqlite3 module inside Turbopack worker processes, which crash with
