@@ -13,10 +13,10 @@ export default function SalesOfficesSection({ lang }: { lang: Locale }) {
       subtitle: "Mutaxassislarimiz sizni kutib oladi va barcha savollaringizga javob beradi.",
       badge: "Asosiy ofis",
       officeName: "Voha Residence Sotuv Ofisi",
-      address: "Xorazm viloyati, Urganch shahri",
+      address: "Xorazm viloyati, Urganch sh., Ulug'bek ko'chasi",
       phoneLabel: "Telefon",
       hoursLabel: "Ish vaqti",
-      hours: "Dush — Shan, 09:00 – 18:00",
+      hours: "Har kuni, 09:00 – 18:00",
       directions: "Yo'l ko'rsatish",
       loading: "Xarita yuklanmoqda…",
       onMap: "Xaritada",
@@ -27,10 +27,10 @@ export default function SalesOfficesSection({ lang }: { lang: Locale }) {
       subtitle: "Наши специалисты встретят вас и ответят на все вопросы.",
       badge: "Главный офис",
       officeName: "Офис продаж Voha Residence",
-      address: "Хорезмская область, г. Ургенч",
+      address: "Хорезмская область, г. Ургенч, ул. Улугбека",
       phoneLabel: "Телефон",
       hoursLabel: "Время работы",
-      hours: "Пн — Сб, 09:00 – 18:00",
+      hours: "Ежедневно, 09:00 – 18:00",
       directions: "Построить маршрут",
       loading: "Загрузка карты…",
       onMap: "На карте",
@@ -41,10 +41,10 @@ export default function SalesOfficesSection({ lang }: { lang: Locale }) {
       subtitle: "Our specialists will welcome you and answer all your questions.",
       badge: "Head office",
       officeName: "Voha Residence Sales Office",
-      address: "Khorezm region, Urgench city",
+      address: "Khorezm region, Urgench, Ulugbek street",
       phoneLabel: "Phone",
       hoursLabel: "Working hours",
-      hours: "Mon — Sat, 09:00 – 18:00",
+      hours: "Every day, 09:00 – 18:00",
       directions: "Get directions",
       loading: "Loading map…",
       onMap: "On the map",
@@ -55,16 +55,21 @@ export default function SalesOfficesSection({ lang }: { lang: Locale }) {
       subtitle: "Mutaxassislarimiz sizni kutib oladi va barcha savollaringizga javob beradi.",
       badge: "Asosiy ofis",
       officeName: "Voha Residence Sotuv Ofisi",
-      address: "Xorazm viloyati, Urganch shahri",
+      address: "Xorazm viloyati, Urganch sh., Ulug'bek ko'chasi",
       phoneLabel: "Telefon",
       hoursLabel: "Ish vaqti",
-      hours: "Dush — Shan, 09:00 – 18:00",
+      hours: "Har kuni, 09:00 – 18:00",
       directions: "Yo'l ko'rsatish",
       loading: "Xarita yuklanmoqda…",
       onMap: "Xaritada",
   };
 
-  const directionsUrl = "https://www.google.com/maps/dir/?api=1&destination=Urgench%2C%20Xorazm%2C%20Uzbekistan";
+  // Sotuv ofisining aniq koordinatasi (Urganch, Ulug'bek ko'chasi).
+  // Yandex: https://yandex.uz/maps/org/voha_residence/8272760691 (ll=60.593944,41.550782)
+  const OFFICE_LAT = 41.550782;
+  const OFFICE_LNG = 60.593944;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${OFFICE_LAT},${OFFICE_LNG}`;
+  const mapEmbedUrl = `https://maps.google.com/maps?q=${OFFICE_LAT},${OFFICE_LNG}&z=16&output=embed`;
 
   // Lazy-mount the heavy Google Maps iframe only when the section approaches the viewport.
   const mapRef = useRef<HTMLDivElement | null>(null);
@@ -200,7 +205,7 @@ export default function SalesOfficesSection({ lang }: { lang: Locale }) {
               {/* Heavy embed mounts only once the section is near the viewport */}
               {showMap && (
                 <iframe
-                  src="https://maps.google.com/maps?q=Urgench,%20Xorazm%20Region,%20220100,%20Uzbekistan&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                  src={mapEmbedUrl}
                   title="Voha Residence — Urganch"
                   width="100%"
                   height="100%"
