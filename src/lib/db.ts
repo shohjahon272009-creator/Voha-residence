@@ -47,11 +47,11 @@ function createFallbackDb() {
   return {
     pragma: () => {},
     exec: () => {},
-    transaction: (fn: any) => fn(),
+    transaction: (fn: () => unknown) => fn(),
     prepare: (sql: string) => {
       const lower = sql.toLowerCase();
       return {
-        all: (...args: any[]) => {
+        all: () => {
           if (lower.includes('from projects')) return dummyProjects;
           if (lower.includes('from apartments')) return dummyApartments;
           if (lower.includes('from settings')) return dummySettings;
@@ -59,22 +59,23 @@ function createFallbackDb() {
           if (lower.includes('pragma table_info')) return [{ name: 'visible' }];
           return [];
         },
-        get: (...args: any[]) => {
+        get: () => {
           if (lower.includes('count(*)')) return { count: 5 };
           if (lower.includes('from projects')) return dummyProjects[0];
           if (lower.includes('from apartments')) return dummyApartments[0];
-          if (lower.includes('from users')) return { id: 1, email: 'admin@test.com', password: hashPassword('admin123') };
+          // Fallback login: seed bilan bir xil (admin@qurilish.uz / admin123)
+          if (lower.includes('from users')) return { id: 1, name: 'Admin', email: 'admin@qurilish.uz', password: hashPassword('admin123'), role: 'superadmin' };
           if (lower.includes('from settings')) return dummySettings[0];
           if (lower.includes('sqlite_master')) return { sql: 'CREATE TABLE projects' };
           return undefined;
         },
-        run: (...args: any[]) => ({ changes: 1, lastInsertRowid: 1 })
+        run: () => ({ changes: 1, lastInsertRowid: 1 })
       };
     }
   };
 }
 
-let db: any;
+let db: Database.Database;
 const isVercel = Boolean(process.env.VERCEL);
 let dbPath = path.join(process.cwd(), 'qurilish.db');
 
@@ -99,7 +100,7 @@ try {
   if (process.env.NODE_ENV !== 'production') globalForDb.__qurilishDb = db;
 } catch (err) {
   console.warn("Using fallback database mode:", err);
-  db = createFallbackDb();
+  db = createFallbackDb() as unknown as Database.Database;
 }
 
 try {

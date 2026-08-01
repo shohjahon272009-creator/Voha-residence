@@ -36,7 +36,9 @@ export default async function RootLayout({
     const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
     if (settings.primary_color) primaryColor = settings.primary_color;
     if (settings.accent_color) accentColor = settings.accent_color;
-  } catch (e) {}
+  } catch {
+    // sozlamalar o'qilmasa, standart ranglar ishlatiladi
+  }
 
   return (
     <html lang="uz" className={`${inter.variable} ${montserrat.variable} ${bebas.variable}`}>

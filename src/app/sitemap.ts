@@ -29,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   // Loyiha sahifalari
-  let projectRoutes: MetadataRoute.Sitemap = [];
+  const projectRoutes: MetadataRoute.Sitemap = [];
   try {
     const projects = getProjects();
     for (const project of projects) {

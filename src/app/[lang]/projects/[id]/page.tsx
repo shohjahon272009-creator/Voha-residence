@@ -1,8 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
- 
- 
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import FloorPlanWrapper from '@/components/website/FloorPlanWrapper';
