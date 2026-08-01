@@ -1,8 +1,58 @@
 # Voha Residence — Ishlab chiqarishga (Production) joylash qo'llanmasi
 
-Bu sayt **Next.js 16 + SQLite (`better-sqlite3`)** asosida. SQLite fayl (`qurilish.db`) va yuklangan rasmlar (`public/uploads/`) **doimiy diskni** talab qiladi, `better-sqlite3` esa **native modul**. Shu sababli:
+Bu sayt **Next.js 16 + libSQL/SQLite** asosida. Ma'lumot bazasi ikki xil ishlaydi:
 
-> ⚠️ **Vercel/Netlify (serverless) MOS EMAS.** Doimiy diskka ega **Node server** kerak: VPS (Ubuntu) yoki doimiy hajm (persistent volume) beradigan platforma (Railway, Render, Fly.io).
+- **Turso (bulut)** ulansa — Vercel kabi serverlessда ham to'liq ishlaydi va admin
+  o'zgarishlari **doimiy saqlanadi**. Pastdagi "Vercel + Turso" bo'limiga qarang.
+- Ulanmasa — lokal `qurilish.db` fayli ishlatiladi (ishlab chiqish yoki VPS uchun).
+
+> 💡 Rasmlar (`public/uploads/`) hamon fayl tizimiga saqlanadi. Vercel'da yuklangan
+> rasmlar vaqtinchalik bo'ladi — doimiy rasm saqlash uchun tashqi xotira (masalan
+> Cloudinary yoki S3) kerak, yoki rasmlarni ham repozitoriyga commit qiling.
+
+---
+
+## 🚀 Vercel + Turso (bulutli baza — admin o'zgarishlari saqlanadi)
+
+Bu sayt allaqachon Vercel'da. Faqat quyidagi 6 qadam bilan bazani doimiy qiling:
+
+### 1. Turso hisobi va CLI
+1. https://turso.tech → bepul ro'yxatdan o'ting (GitHub bilan).
+2. CLI o'rnating (Windows — PowerShell):
+   ```powershell
+   irm https://tur.so/install.ps1 | iex
+   ```
+   Keyin: `turso auth login`
+
+### 2. Mavjud ma'lumotni bulutga ko'chirish
+Loyihada `qurilish.db` da sizning haqiqiy ma'lumotingiz bor. Uni to'g'ridan-to'g'ri import qiling:
+```bash
+turso db create voha-residence --from-file ./qurilish.db
+```
+
+### 3. Ulanish ma'lumotlarini olish
+```bash
+turso db show voha-residence --url          # TURSO_DATABASE_URL (libsql://...)
+turso db tokens create voha-residence       # TURSO_AUTH_TOKEN
+```
+
+### 4. Vercel'da muhit o'zgaruvchilarini o'rnatish
+Vercel loyihasi → **Settings → Environment Variables** → qo'shing (Production):
+| Nomi | Qiymati |
+|---|---|
+| `TURSO_DATABASE_URL` | `libsql://voha-residence-....turso.io` (3-qadamdan) |
+| `TURSO_AUTH_TOKEN` | (3-qadamdan olingan token) |
+| `AUTH_SECRET` | tasodifiy 64-belgili hex (agar hali yo'q bo'lsa) |
+
+### 5. Qayta deploy
+Vercel → **Deployments → ... → Redeploy** (yoki yangi commit push qiling).
+
+### 6. Tekshirish
+Admin panelга kiring, yangi loyiha qo'shing, sahifani yangilang — o'zgarish **saqlanib
+qoladi**. (Env o'rnatilmagunча sayt eski holatда — lokal fayl bilan — ishlaydi.)
+
+> Lokal ishlab chiqishда `.env.local` ga (namuna: `.env.local.example`) yozsangiz,
+> lokalда ham Turso'ga ulanasiz. Aks holда `qurilish.db` fayli ishlatiladi.
 
 ---
 

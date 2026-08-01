@@ -9,9 +9,9 @@ export function generateStaticParams() {
   return [{ lang: 'uz' }, { lang: 'ru' }, { lang: 'en' }];
 }
 
-// The public site reads live data from SQLite, so it must be rendered on demand
-// rather than statically prerendered. Static generation runs the native
-// better-sqlite3 module inside Turbopack worker processes, which crash with
+// The public site reads live data from SQLite/libSQL, so it must be rendered on
+// demand rather than statically prerendered. Static generation runs the native
+// libsql module inside Turbopack worker processes, which crash with
 // "Jest worker encountered child process exceptions". force-dynamic (cascading to
 // every /[lang]/* page) keeps rendering in the main server process where it works.
 export const dynamic = 'force-dynamic';
