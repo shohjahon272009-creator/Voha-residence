@@ -49,19 +49,19 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
 
   const stats: Record<Locale, Array<{label: string; value: string}>> = {
     uz: [
-      { label: 'Tajriba', value: '14 Yil' },
+      { label: 'Tajriba', value: '15 Yil' },
       { label: 'Loyiha', value: '15+' },
       { label: 'Mijoz', value: '5000+' },
       { label: 'Sifat', value: 'A\'lo' },
     ],
     ru: [
-      { label: 'Опыт', value: '14 лет' },
+      { label: 'Опыт', value: '15 лет' },
       { label: 'Проектов', value: '15+' },
       { label: 'Клиентов', value: '5000+' },
       { label: 'Качество', value: 'Отличное' },
     ],
     en: [
-      { label: 'Experience', value: '14 Years' },
+      { label: 'Experience', value: '15 Years' },
       { label: 'Projects', value: '15+' },
       { label: 'Clients', value: '5000+' },
       { label: 'Quality', value: 'Excellent' },

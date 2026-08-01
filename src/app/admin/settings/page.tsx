@@ -87,7 +87,7 @@ export default function AdminSettings() {
                </div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Statistika 1: Raqam</label>
-                  <input name="about_stat1_value" type="text" defaultValue={settings.about_stat1_value || "14 yil"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <input name="about_stat1_value" type="text" defaultValue={settings.about_stat1_value || "15 yil"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Statistika 1: Nomi</label>
