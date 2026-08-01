@@ -9,7 +9,6 @@ import Hero from '@/components/website/Hero';
 import { getProjects, getApartments } from '@/lib/actions';
 import ProjectsList from '@/components/website/ProjectsList';
 import ApartmentSearch from '@/components/website/ApartmentSearch';
-import ApartmentAvailability from '@/components/website/ApartmentAvailability';
 import MortgageCalculator from '@/components/website/MortgageCalculator';
 import NewsSection from '@/components/website/NewsSection';
 import SalesOfficesSection from '@/components/website/SalesOfficesSection';
@@ -51,7 +50,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} />
       {settings.show_search !== 'false' && <ApartmentSearch apartments={searchApartments} projects={allProjects} lang={localeLang} limit={4} />}
       {settings.show_projects !== 'false' && <ProjectsList lang={localeLang} companyName={companyName} limit={6} />}
-      {settings.show_apartments !== 'false' && <ApartmentAvailability lang={localeLang} />}
       {settings.show_mortgage !== 'false' && <MortgageCalculator lang={localeLang} />}
       
       {/* About Section */}

@@ -1,7 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import ApartmentSearch from '@/components/website/ApartmentSearch';
-import ApartmentAvailability from '@/components/website/ApartmentAvailability';
 import { Locale } from '@/lib/dictionaries';
 import { getApartments, getProjects } from '@/lib/actions';
 import db from '@/lib/db';
@@ -24,7 +23,6 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     <WebsiteLayout lang={localeLang} companyName={companyName}>
       <div className="pt-24 min-h-screen">
         <ApartmentSearch apartments={apartments} projects={projects} lang={localeLang} />
-        {settings.show_apartments !== 'false' && <ApartmentAvailability lang={localeLang} />}
       </div>
     </WebsiteLayout>
   );

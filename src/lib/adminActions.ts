@@ -338,7 +338,6 @@ export async function saveSettings(formData: FormData) {
 
   const show_projects = formData.get('show_projects') as string;
   const show_search = formData.get('show_search') as string;
-  const show_apartments = formData.get('show_apartments') as string;
   const show_mortgage = formData.get('show_mortgage') as string;
   const show_about = formData.get('show_about') as string;
   const show_news = formData.get('show_news') as string;
@@ -346,7 +345,6 @@ export async function saveSettings(formData: FormData) {
 
   updateSetting('show_projects', show_projects ? 'true' : 'false');
   updateSetting('show_search', show_search ? 'true' : 'false');
-  updateSetting('show_apartments', show_apartments ? 'true' : 'false');
   updateSetting('show_mortgage', show_mortgage ? 'true' : 'false');
   updateSetting('show_about', show_about ? 'true' : 'false');
   updateSetting('show_news', show_news ? 'true' : 'false');

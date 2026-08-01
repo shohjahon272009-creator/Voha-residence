@@ -114,7 +114,6 @@ export default function AdminSettings() {
                {[
                  { id: 'show_projects', label: 'Loyihalar ro\'yxati' },
                  { id: 'show_search', label: 'Xonadon qidiruvi (filtr)' },
-                 { id: 'show_apartments', label: 'Xonadonlar holati (shaxmatka)' },
                  { id: 'show_mortgage', label: 'Ipoteka kalkulyatori' },
                  { id: 'show_about', label: 'Biz haqimizda' },
                  { id: 'show_news', label: 'Yangiliklar' },

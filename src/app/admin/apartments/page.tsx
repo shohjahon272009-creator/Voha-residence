@@ -37,12 +37,6 @@ export default function AdminApartments() {
               label="Xonadon tanlash (qidiruv)"
               hint="filtr + chizma"
             />
-            <SiteVisibilityToggle
-              settingKey="show_apartments"
-              initialOn={settings.show_apartments !== 'false'}
-              label="Xonadonlar holati (shaxmatka)"
-              hint="bo‘sh/band jadval"
-            />
          </div>
       </div>
 
