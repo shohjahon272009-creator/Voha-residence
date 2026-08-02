@@ -1,55 +1,95 @@
-import type { Client, InArgs } from '@libsql/client';
+import type { InArgs } from '@libsql/client';
 import { hashPassword } from './password';
 
 /*
-  Ma'lumotlar bazasi — libSQL / Turso.
+  Ma'lumotlar bazasi — ikki rejimli, chidamli:
 
-  • TURSO_DATABASE_URL (libsql://...) + TURSO_AUTH_TOKEN o'rnatilsa — `@libsql/client/web`
-    (SOF JavaScript, HTTP — native modul YO'Q) orqali bulutli Turso'ga ulanadi.
-    Vercel serverlessда to'liq ishlaydi va admin o'zgarishlari DOIMIY saqlanadi.
-  • Aks holda — lokal `qurilish.db` fayli (ishlab chiqish rejimi, native drayver).
+  • TURSO_DATABASE_URL + TURSO_AUTH_TOKEN o'rnatilsa → bulutli Turso
+    (@libsql/client/web, sof JS/HTTP). Vercel serverlessда doimiy saqlaydi.
+  • Aks holda → mahalliy `qurilish.db` (better-sqlite3). Vercel'da ham o'qish
+    ishlaydi (fayl /tmp ga nusxalanadi), shuning uchun sayt hech qachon 500
+    bermaydi — Turso sozlanmagan bo'lsa ham kamida ko'rsatadi.
 
-  Client dinamik import qilinadi: Vercel'da faqat web (native'siz) versiya yuklanadi.
-  API async: db.prepare(sql).get/all/run(...) — hammasi Promise qaytaradi.
-  Turso sozlash: DEPLOY.md -> "Vercel + Turso".
+  API async: db.prepare(sql).get/all/run(...) → Promise. Turso: DEPLOY.md.
 */
-
-const globalForDb = globalThis as unknown as { __qurilishClientP?: Promise<Client> };
-
-function getClient(): Promise<Client> {
-  if (globalForDb.__qurilishClientP) return globalForDb.__qurilishClientP;
-  const p = (async (): Promise<Client> => {
-    const rawUrl = process.env.TURSO_DATABASE_URL;
-    const authToken = process.env.TURSO_AUTH_TOKEN;
-    if (rawUrl) {
-      // libsql:// (WebSocket) Vercel serverlessда ishlamaydi — HTTP (https://) ga
-      // o'tkazamiz. Turso xosti ikkalasini ham qabul qiladi.
-      const url = rawUrl.replace(/^libsql:\/\//, 'https://');
-      // Bulut: sof JS web client (Vercel serverless uchun xavfsiz — native yo'q)
-      const { createClient } = await import('@libsql/client/web');
-      return createClient({ url, authToken });
-    }
-    // Lokal fayl: node client (native drayver — faqat ishlab chiqishда)
-    const { createClient } = await import('@libsql/client');
-    return createClient({ url: 'file:qurilish.db' });
-  })();
-  globalForDb.__qurilishClientP = p;
-  return p;
-}
 
 type Row = Record<string, unknown>;
 type RunResult = { changes: number; lastInsertRowid: number | bigint | undefined };
 
-// undefined -> null (libsql undefined argumentni qabul qilmaydi)
-function normArgs(args: unknown[]): InArgs {
-  return args.map((a) => (a === undefined ? null : a)) as InArgs;
+interface Backend {
+  all(sql: string, args: unknown[]): Promise<Row[]>;
+  get(sql: string, args: unknown[]): Promise<Row | undefined>;
+  run(sql: string, args: unknown[]): Promise<RunResult>;
+  exec(sql: string): Promise<void>;
 }
 
-// --- Sxema init + seed (bir marta, async) ---
-let initPromise: Promise<void> | null = null;
-function ensureInit(): Promise<void> {
-  if (!initPromise) initPromise = doInit();
-  return initPromise;
+const globalForDb = globalThis as unknown as { __qurilishBackend?: Promise<Backend> };
+
+async function makeTursoBackend(): Promise<Backend> {
+  const { createClient } = await import('@libsql/client/web');
+  // libsql:// (WebSocket) serverlessда ishlamaydi — https:// (HTTP) ishlatamiz.
+  const url = (process.env.TURSO_DATABASE_URL || '').replace(/^libsql:\/\//, 'https://');
+  const c = createClient({ url, authToken: process.env.TURSO_AUTH_TOKEN });
+  const norm = (a: unknown[]) => a.map((x) => (x === undefined ? null : x)) as InArgs;
+  return {
+    async all(sql, args) {
+      return (await c.execute({ sql, args: norm(args) })).rows as unknown as Row[];
+    },
+    async get(sql, args) {
+      return (await c.execute({ sql, args: norm(args) })).rows[0] as Row | undefined;
+    },
+    async run(sql, args) {
+      const r = await c.execute({ sql, args: norm(args) });
+      return {
+        changes: Number(r.rowsAffected),
+        lastInsertRowid: r.lastInsertRowid != null ? Number(r.lastInsertRowid) : undefined,
+      };
+    },
+    async exec(sql) {
+      await c.executeMultiple(sql);
+    },
+  };
+}
+
+async function makeLocalBackend(): Promise<Backend> {
+  /* eslint-disable @typescript-eslint/no-require-imports */
+  const path = require('path');
+  const fs = require('fs');
+  const Database = require('better-sqlite3');
+  /* eslint-enable @typescript-eslint/no-require-imports */
+  let dbPath = path.join(process.cwd(), 'qurilish.db');
+  if (process.env.VERCEL) {
+    try {
+      const tmp = path.join('/tmp', 'qurilish.db');
+      if (fs.existsSync(dbPath) && !fs.existsSync(tmp)) fs.copyFileSync(dbPath, tmp);
+      if (fs.existsSync(tmp)) dbPath = tmp;
+    } catch { /* eng yomon holatda cwd fayli */ }
+  }
+  const bs = new Database(dbPath);
+  try { bs.pragma('journal_mode = WAL'); } catch { /* muhim emas */ }
+  return {
+    async all(sql, args) { return bs.prepare(sql).all(...args) as Row[]; },
+    async get(sql, args) { return bs.prepare(sql).get(...args) as Row | undefined; },
+    async run(sql, args) {
+      const r = bs.prepare(sql).run(...args);
+      return {
+        changes: Number(r.changes),
+        lastInsertRowid: typeof r.lastInsertRowid === 'bigint' ? Number(r.lastInsertRowid) : r.lastInsertRowid,
+      };
+    },
+    async exec(sql) { bs.exec(sql); },
+  };
+}
+
+function getBackend(): Promise<Backend> {
+  if (globalForDb.__qurilishBackend) return globalForDb.__qurilishBackend;
+  const p = (async () => {
+    const backend = process.env.TURSO_DATABASE_URL ? await makeTursoBackend() : await makeLocalBackend();
+    await initSchema(backend);
+    return backend;
+  })();
+  globalForDb.__qurilishBackend = p;
+  return p;
 }
 
 const TABLE_DDLS = [
@@ -98,89 +138,58 @@ const TABLE_DDLS = [
   `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT);`,
 ];
 
-async function ensureColumn(c: Client, table: string, column: string, definition: string) {
-  const res = await c.execute(`PRAGMA table_info(${table})`);
-  if (!res.rows.some((r) => (r as Row).name === column)) {
-    await c.execute(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+async function ensureColumn(b: Backend, table: string, column: string, definition: string) {
+  const cols = await b.all(`PRAGMA table_info(${table})`, []);
+  if (!cols.some((c) => c.name === column)) {
+    await b.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
   }
 }
 
-async function doInit(): Promise<void> {
-  const c = await getClient();
-  for (const ddl of TABLE_DDLS) {
-    await c.execute(ddl);
-  }
-  await ensureColumn(c, 'projects', 'apts_per_floor', 'INTEGER DEFAULT 4');
-  await ensureColumn(c, 'projects', 'days_left', 'INTEGER DEFAULT 0');
-  await ensureColumn(c, 'projects', 'virtual_tour_url', 'TEXT');
-  await ensureColumn(c, 'projects', 'tour_scenes', 'TEXT');
-  await ensureColumn(c, 'apartments', 'image', 'TEXT');
+async function initSchema(b: Backend): Promise<void> {
+  for (const ddl of TABLE_DDLS) await b.exec(ddl);
+  await ensureColumn(b, 'projects', 'apts_per_floor', 'INTEGER DEFAULT 4');
+  await ensureColumn(b, 'projects', 'days_left', 'INTEGER DEFAULT 0');
+  await ensureColumn(b, 'projects', 'virtual_tour_url', 'TEXT');
+  await ensureColumn(b, 'projects', 'tour_scenes', 'TEXT');
+  await ensureColumn(b, 'apartments', 'image', 'TEXT');
 
-  // Seed (faqat bo'sh bazada)
-  const users = await c.execute('SELECT count(*) as count FROM users');
-  if (Number((users.rows[0] as Row).count) > 0) return;
+  const users = await b.get('SELECT count(*) as count FROM users', []);
+  if (Number((users as Row)?.count) > 0) return;
 
-  console.log('Seeding database...');
-  await c.execute({
-    sql: 'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
-    args: ['Admin', 'admin@qurilish.uz', hashPassword('admin123'), 'superadmin'],
-  });
-
+  await b.run('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [
+    'Admin', 'admin@qurilish.uz', hashPassword('admin123'), 'superadmin',
+  ]);
   const projects = [
     { name_uz: 'Oltin Vodiy', name_ru: 'Золотая Долина', name_en: 'Golden Valley', address: 'Amir Temur ko\'chasi', city: 'Xorazm', district: 'Urganch', status: 'Jarayonda', min_price: 800000000, total_floors: 12 },
     { name_uz: 'Crystal Tower', name_ru: 'Кристальная Башня', name_en: 'Crystal Tower', address: 'Xonqa ko\'chasi', city: 'Xorazm', district: 'Urganch', status: 'Tez kunda', min_price: 1200000000, total_floors: 16 },
   ];
   for (const p of projects) {
-    const r = await c.execute({
-      sql: 'INSERT INTO projects (name_uz, name_ru, name_en, address, city, district, status, min_price, total_floors) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      args: [p.name_uz, p.name_ru, p.name_en, p.address, p.city, p.district, p.status, p.min_price, p.total_floors],
-    });
+    const r = await b.run(
+      'INSERT INTO projects (name_uz, name_ru, name_en, address, city, district, status, min_price, total_floors) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [p.name_uz, p.name_ru, p.name_en, p.address, p.city, p.district, p.status, p.min_price, p.total_floors],
+    );
     const pid = Number(r.lastInsertRowid);
     for (let floor = 1; floor <= p.total_floors; floor++) {
       for (let num = 1; num <= 2; num++) {
-        const status = num % 2 === 0 ? 'Band' : "Bo'sh";
-        await c.execute({
-          sql: 'INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
-          args: [pid, floor, `${floor}0${num}`, (num % 2) + 1, 45 + num * 10, p.min_price + num * 50000000, status],
-        });
+        await b.run(
+          'INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          [pid, floor, `${floor}0${num}`, (num % 2) + 1, 45 + num * 10, p.min_price + num * 50000000, num % 2 === 0 ? 'Band' : "Bo'sh"],
+        );
       }
     }
   }
-  console.log('Database seeded successfully!');
 }
 
-// --- better-sqlite3 ga o'xshash, lekin ASYNC API ---
+// --- better-sqlite3 ga o'xshash ASYNC API ---
 const db = {
   prepare(sql: string) {
     return {
-      get: async (...args: unknown[]): Promise<Row | undefined> => {
-        await ensureInit();
-        const c = await getClient();
-        const r = await c.execute({ sql, args: normArgs(args) });
-        return r.rows[0] as Row | undefined;
-      },
-      all: async (...args: unknown[]): Promise<Row[]> => {
-        await ensureInit();
-        const c = await getClient();
-        const r = await c.execute({ sql, args: normArgs(args) });
-        return r.rows as unknown as Row[];
-      },
-      run: async (...args: unknown[]): Promise<RunResult> => {
-        await ensureInit();
-        const c = await getClient();
-        const r = await c.execute({ sql, args: normArgs(args) });
-        return {
-          changes: Number(r.rowsAffected),
-          lastInsertRowid: r.lastInsertRowid != null ? Number(r.lastInsertRowid) : undefined,
-        };
-      },
+      get: async (...args: unknown[]) => (await getBackend()).get(sql, args),
+      all: async (...args: unknown[]) => (await getBackend()).all(sql, args),
+      run: async (...args: unknown[]) => (await getBackend()).run(sql, args),
     };
   },
-  exec: async (sql: string): Promise<void> => {
-    await ensureInit();
-    const c = await getClient();
-    await c.executeMultiple(sql);
-  },
+  exec: async (sql: string) => (await getBackend()).exec(sql),
 };
 
 export default db;

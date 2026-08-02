@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  serverExternalPackages: ['@libsql/client', 'libsql'],
+  serverExternalPackages: ['better-sqlite3', '@libsql/client', 'libsql'],
 };
 
 export default nextConfig;
