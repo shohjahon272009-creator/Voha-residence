@@ -12,10 +12,10 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' });
 const bebas = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--font-bebas' });
 
-// The whole app is backed by SQLite/libSQL (a native module). Static prerendering
-// runs it inside Turbopack worker processes that crash ("Jest worker ... child
-// process exceptions"). Forcing dynamic rendering app-wide keeps every route in the
-// main server process where libsql works.
+// The whole app is backed by SQLite (a native module). Static prerendering runs it
+// inside Turbopack worker processes that crash ("Jest worker ... child process
+// exceptions"). Forcing dynamic rendering app-wide keeps every route in the main
+// server process where better-sqlite3 works.
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
