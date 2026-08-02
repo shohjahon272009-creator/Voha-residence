@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { Apartment, Project } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
@@ -73,7 +73,7 @@ export default function ApartmentSearch({ apartments, projects, lang, limit }: P
   const projName = (p: Project) => (p as unknown as Record<string, string>)[`name_${lang}`] || p.name_uz;
 
   const filtered = useMemo(() => {
-    return activeApartments.filter((a) => {
+    const list = activeApartments.filter((a) => {
       if (rooms !== null) {
         if (rooms === 4 ? a.rooms < 4 : a.rooms !== rooms) return false;
       }
@@ -83,11 +83,26 @@ export default function ApartmentSearch({ apartments, projects, lang, limit }: P
       if (a.area < areaMin || a.area > areaMax) return false;
       return true;
     });
+    // Turli loyihalardan aralash ko'rsatamiz (navbatma-navbat), bir loyiha ketma-ket kelmasin
+    const groups = new Map<number, Apartment[]>();
+    for (const a of list) {
+      if (!groups.has(a.project_id)) groups.set(a.project_id, []);
+      groups.get(a.project_id)!.push(a);
+    }
+    const arrs = [...groups.values()];
+    const mixed: Apartment[] = [];
+    for (let i = 0; mixed.length < list.length; i++) {
+      for (const arr of arrs) if (arr[i]) mixed.push(arr[i]);
+    }
+    return mixed;
   }, [activeApartments, rooms, projectId, status, floorMax, areaMin, areaMax]);
 
-  // Bosh sahifada faqat bir nechta karta; /apartments sahifasida hammasi
-  const shown = limit ? filtered.slice(0, limit) : filtered;
-  const hasMore = limit ? filtered.length > limit : false;
+  // Boshida faqat 2 qator (8 ta) — qolgani "Davomini ko'rish" bilan
+  const initialCount = limit ?? 8;
+  const [visible, setVisible] = useState(initialCount);
+  useEffect(() => { setVisible(initialCount); }, [rooms, projectId, status, floorMax, areaMin, areaMax, initialCount]);
+  const shown = filtered.slice(0, visible);
+  const hasMore = filtered.length > visible;
 
   const reset = () => {
     setRooms(null); setProjectId('all'); setStatus('all');
@@ -245,13 +260,23 @@ export default function ApartmentSearch({ apartments, projects, lang, limit }: P
 
         {hasMore && (
           <div className="text-center mt-12">
-            <Link
-              href={`/${lang}/apartments`}
-              className="inline-flex items-center gap-2 px-9 py-4 bg-primary text-white font-bold rounded-full shadow-lg shadow-primary/20 hover:bg-accent hover:text-primary transition-all"
-            >
-              {lang === 'ru' ? 'Смотреть все квартиры' : lang === 'en' ? 'View all apartments' : 'Hamma xonadonlarni ko‘rish'}
-              <span className="opacity-80">({filtered.length})</span>
-            </Link>
+            {limit ? (
+              <Link
+                href={`/${lang}/apartments`}
+                className="inline-flex items-center gap-2 px-9 py-4 bg-primary text-white font-bold rounded-full shadow-lg shadow-primary/20 hover:bg-accent hover:text-primary transition-all"
+              >
+                {lang === 'ru' ? 'Смотреть все квартиры' : lang === 'en' ? 'View all apartments' : 'Hamma xonadonlarni ko‘rish'}
+                <span className="opacity-80">({filtered.length})</span>
+              </Link>
+            ) : (
+              <button
+                onClick={() => setVisible((v) => v + 8)}
+                className="inline-flex items-center gap-2 px-9 py-4 bg-primary text-white font-bold rounded-full shadow-lg shadow-primary/20 hover:bg-accent hover:text-primary transition-all"
+              >
+                {lang === 'ru' ? 'Показать ещё' : lang === 'en' ? 'Show more' : 'Davomini ko‘rish'}
+                <span className="opacity-80">(+{Math.min(8, filtered.length - visible)})</span>
+              </button>
+            )}
           </div>
         )}
       </div>
