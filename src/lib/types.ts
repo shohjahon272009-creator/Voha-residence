@@ -31,6 +31,9 @@ export interface Project {
   days_left: number;
   virtual_tour_url?: string; // 360° virtual tour embed/share URL (single panorama or external)
   tour_scenes?: string;      // JSON string of TourScene[] — multi-scene tour with hotspots
+  discount_label?: string;   // admin badge, e.g. "Chegirma 50 mln gacha"
+  gift_label?: string;       // admin badge, e.g. "Ta'mir sovg'a"
+  categories: string[];      // Parsed from JSON string — infratuzilma kategoriyalari
 }
 
 // One hotspot inside a panorama that teleports the viewer to another scene.

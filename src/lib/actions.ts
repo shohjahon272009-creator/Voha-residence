@@ -24,7 +24,8 @@ export const getProjects = async (): Promise<Project[]> => {
   return projects.map(p => ({
     ...p,
     gallery: p.gallery ? JSON.parse(p.gallery) : [],
-    amenities: p.amenities ? JSON.parse(p.amenities) : []
+    amenities: p.amenities ? JSON.parse(p.amenities) : [],
+    categories: p.categories ? JSON.parse(p.categories) : []
   }));
 };
 
@@ -35,7 +36,8 @@ export const getProjectBySlug = async (id: number): Promise<Project | null> => {
   return {
     ...p,
     gallery: p.gallery ? JSON.parse(p.gallery) : [],
-    amenities: p.amenities ? JSON.parse(p.amenities) : []
+    amenities: p.amenities ? JSON.parse(p.amenities) : [],
+    categories: p.categories ? JSON.parse(p.categories) : []
   };
 };
 

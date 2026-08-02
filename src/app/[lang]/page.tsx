@@ -8,6 +8,7 @@ import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Hero from '@/components/website/Hero';
 import { getProjects } from '@/lib/actions';
 import ProjectsList from '@/components/website/ProjectsList';
+import CategoryShowcase from '@/components/website/CategoryShowcase';
 import MortgageCalculator from '@/components/website/MortgageCalculator';
 import NewsSection from '@/components/website/NewsSection';
 import SalesOfficesSection from '@/components/website/SalesOfficesSection';
@@ -45,6 +46,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     <WebsiteLayout lang={localeLang} companyName={companyName}>
       <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} />
       {settings.show_projects !== 'false' && <ProjectsList lang={localeLang} companyName={companyName} limit={6} />}
+      <CategoryShowcase projects={allProjects} lang={localeLang} />
       {settings.show_mortgage !== 'false' && <MortgageCalculator lang={localeLang} />}
       
       {/* About Section */}

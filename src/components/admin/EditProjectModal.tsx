@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { X, Loader2, Edit2 } from 'lucide-react';
 import { updateProject } from '@/lib/adminActions';
 import { translateText } from '@/lib/translateAction';
+import { CATEGORIES } from '@/lib/categories';
 
  
 export default function EditProjectModal({ project }: { project: any }) {
@@ -181,6 +182,30 @@ export default function EditProjectModal({ project }: { project: any }) {
                   <div>
                     <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tashqi tur havolasi</span>
                     <input type="url" name="virtual_tour_url" defaultValue={project.virtual_tour_url || ''} placeholder="https://... (atlasvr, kuula, momento360 va h.k.)" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">🏷️ Chegirma belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
+                    <input name="discount_label" defaultValue={project.discount_label || ''} placeholder="Masalan: Chegirma 50 mln gacha" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">🎁 Sovg&apos;a belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
+                    <input name="gift_label" defaultValue={project.gift_label || ''} placeholder="Masalan: Ta'mir sovg'a" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-2">📍 Joylashuv kategoriyalari (saytda ko&apos;rinadi)</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {CATEGORIES.map((c) => (
+                      <label key={c.key} className="flex items-center gap-2 text-sm bg-white border border-gray-100 rounded-lg px-3 py-2 cursor-pointer hover:border-primary">
+                        <input type="checkbox" name="categories" value={c.key} defaultChecked={Array.isArray(project.categories) && project.categories.includes(c.key)} className="w-4 h-4 accent-primary" />
+                        <span>{c.emoji} {c.label.uz}</span>
+                      </label>
+                    ))}
                   </div>
                 </div>
               </div>

@@ -95,7 +95,10 @@ export async function addProject(formData: FormData) {
   const days_left = parseInt(formData.get('days_left') as string) || 0;
   const virtual_tour_url = (formData.get('virtual_tour_url') as string || '').trim();
   const is_sold_out = formData.get('is_sold_out') === 'true';
-  
+  const discount_label = (formData.get('discount_label') as string || '').trim() || null;
+  const gift_label = (formData.get('gift_label') as string || '').trim() || null;
+  const categories = JSON.stringify(formData.getAll('categories'));
+
   const imageFile = formData.get('main_image') as File | null;
   let imageUrl = '/voha-actual-bg.png';
 
@@ -146,15 +149,17 @@ export async function addProject(formData: FormData) {
       name_uz, name_ru, name_en,
       description_uz, description_ru, description_en,
       city, district, address,
-      status, total_floors, apts_per_floor, min_price, main_image, gallery, days_left, virtual_tour_url
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      status, total_floors, apts_per_floor, min_price, main_image, gallery, days_left, virtual_tour_url,
+      discount_label, gift_label, categories
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const result = await stmt.run(
     name_uz, name_ru, name_en,
     description_uz, description_ru, description_en,
     city, district, '',
-    status, total_floors, apts_per_floor, min_price, imageUrl, JSON.stringify(galleryUrls), days_left, finalTourUrl
+    status, total_floors, apts_per_floor, min_price, imageUrl, JSON.stringify(galleryUrls), days_left, finalTourUrl,
+    discount_label, gift_label, categories
   );
 
   const projectId = result.lastInsertRowid;
@@ -211,6 +216,9 @@ export async function updateProject(id: number, formData: FormData) {
   const min_price = Math.round((parseFloat(formData.get('min_price') as string) || 0) * 1000000);
   const days_left = parseInt(formData.get('days_left') as string) || 0;
   const virtual_tour_url = (formData.get('virtual_tour_url') as string || '').trim();
+  const discount_label = (formData.get('discount_label') as string || '').trim() || null;
+  const gift_label = (formData.get('gift_label') as string || '').trim() || null;
+  const categories = JSON.stringify(formData.getAll('categories'));
 
   const imageFile = formData.get('main_image') as File | null;
   let imageUrl = null;
@@ -258,26 +266,30 @@ export async function updateProject(id: number, formData: FormData) {
       UPDATE projects SET
         name_uz = ?, name_ru = ?, name_en = ?,
         description_uz = ?, description_ru = ?, description_en = ?,
-        city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, main_image = ?, days_left = ?, virtual_tour_url = ?
+        city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, main_image = ?, days_left = ?, virtual_tour_url = ?,
+        discount_label = ?, gift_label = ?, categories = ?
       WHERE id = ?
     `);
     await stmt.run(
       name_uz, name_ru, name_en,
       description_uz, description_ru, description_en,
-      city, district, status, total_floors, apts_per_floor, min_price, imageUrl, days_left, finalTourUrl, id
+      city, district, status, total_floors, apts_per_floor, min_price, imageUrl, days_left, finalTourUrl,
+      discount_label, gift_label, categories, id
     );
   } else {
     const stmt = db.prepare(`
       UPDATE projects SET
         name_uz = ?, name_ru = ?, name_en = ?,
         description_uz = ?, description_ru = ?, description_en = ?,
-        city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, days_left = ?, virtual_tour_url = ?
+        city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, days_left = ?, virtual_tour_url = ?,
+        discount_label = ?, gift_label = ?, categories = ?
       WHERE id = ?
     `);
     await stmt.run(
       name_uz, name_ru, name_en,
       description_uz, description_ru, description_en,
-      city, district, status, total_floors, apts_per_floor, min_price, days_left, finalTourUrl, id
+      city, district, status, total_floors, apts_per_floor, min_price, days_left, finalTourUrl,
+      discount_label, gift_label, categories, id
     );
   }
 
