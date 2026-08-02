@@ -19,9 +19,12 @@ const globalForDb = globalThis as unknown as { __qurilishClientP?: Promise<Clien
 function getClient(): Promise<Client> {
   if (globalForDb.__qurilishClientP) return globalForDb.__qurilishClientP;
   const p = (async (): Promise<Client> => {
-    const url = process.env.TURSO_DATABASE_URL;
+    const rawUrl = process.env.TURSO_DATABASE_URL;
     const authToken = process.env.TURSO_AUTH_TOKEN;
-    if (url) {
+    if (rawUrl) {
+      // libsql:// (WebSocket) Vercel serverlessда ishlamaydi — HTTP (https://) ga
+      // o'tkazamiz. Turso xosti ikkalasini ham qabul qiladi.
+      const url = rawUrl.replace(/^libsql:\/\//, 'https://');
       // Bulut: sof JS web client (Vercel serverless uchun xavfsiz — native yo'q)
       const { createClient } = await import('@libsql/client/web');
       return createClient({ url, authToken });
