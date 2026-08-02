@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Project } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
 import { motion } from 'framer-motion';
+import { MapPin } from 'lucide-react';
 import ProjectStatusBadge from './ProjectStatusBadge';
 
 interface ProjectCardProps {
@@ -52,13 +53,19 @@ export default function ProjectCard({ project, lang, soldOut = false }: ProjectC
           )}
         </div>
 
-        {/* Minimal caption: label · name · price */}
+        {/* Caption: label · name · district · price */}
         <div className="px-3 pt-5 pb-3">
-          <p className="text-[13px] text-gray-400 mb-2">{t.complex}</p>
-          <div className="flex items-baseline justify-between gap-4">
-            <h3 className="text-[26px] leading-tight font-bold text-primary tracking-tight group-hover:text-accent transition-colors">
-              {projectName}
-            </h3>
+          <p className="text-[13px] text-gray-400 mb-1.5">{t.complex}</p>
+          <h3 className="text-[26px] leading-tight font-bold text-primary tracking-tight group-hover:text-accent transition-colors mb-3">
+            {projectName}
+          </h3>
+          <div className="flex items-center justify-between gap-3">
+            {(project.district || project.city) && (
+              <span className="flex items-center gap-1.5 text-sm font-medium text-gray-500 truncate">
+                <MapPin size={15} className="text-accent shrink-0" />
+                {[project.district, project.city].filter(Boolean).join(', ')}
+              </span>
+            )}
             <span className="text-sm text-gray-400 shrink-0">{t.price}</span>
           </div>
         </div>

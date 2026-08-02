@@ -6,9 +6,8 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Hero from '@/components/website/Hero';
-import { getProjects, getApartments } from '@/lib/actions';
+import { getProjects } from '@/lib/actions';
 import ProjectsList from '@/components/website/ProjectsList';
-import ApartmentSearch from '@/components/website/ApartmentSearch';
 import MortgageCalculator from '@/components/website/MortgageCalculator';
 import NewsSection from '@/components/website/NewsSection';
 import SalesOfficesSection from '@/components/website/SalesOfficesSection';
@@ -35,9 +34,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     .filter((img): img is string => Boolean(img))
     .slice(0, 8);
 
-  // Xonadon qidiruvi uchun (narxlar mijozga yuborilmaydi)
-  const searchApartments = (await getApartments()).map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
-
   const aboutText: Record<Locale, { tag: string; title: string; accent: string; desc: string; stat1value: string; stat1label: string; stat2value: string; stat2label: string }> = {
     uz: { tag: 'BIZ HAQIMIZDA', title: ``, accent: 'Sifatli', desc: "Biz yillar tajribasi asosida O'zbekiston bozorida xalqaro standartlarga javob beruvchi yirik turar-joy majmualarini barpo etib kelmoqdamiz.", stat1value: 'Katta', stat1label: 'Tajriba', stat2value: 'Ko\'p', stat2label: 'Barpo etilgan loyihalar' },
     ru: { tag: 'О НАС', title: ``, accent: 'Качественное', desc: 'На основе многолетнего опыта мы возводим современные жилые комплексы, соответствующие международным стандартам.', stat1value: 'Много', stat1label: 'Опыта', stat2value: 'Много', stat2label: 'Проектов' },
@@ -48,7 +44,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
       <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} />
-      {settings.show_search !== 'false' && <ApartmentSearch apartments={searchApartments} projects={allProjects} lang={localeLang} limit={4} />}
       {settings.show_projects !== 'false' && <ProjectsList lang={localeLang} companyName={companyName} limit={6} />}
       {settings.show_mortgage !== 'false' && <MortgageCalculator lang={localeLang} />}
       
