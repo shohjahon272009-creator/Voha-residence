@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const results = [];
     
     // Search projects
-    const projects = db.prepare("SELECT id, title_uz as title FROM projects WHERE title_uz LIKE ? OR title_ru LIKE ? OR title_en LIKE ? LIMIT 3").all(query, query, query) as any[];
+    const projects = await db.prepare("SELECT id, title_uz as title FROM projects WHERE title_uz LIKE ? OR title_ru LIKE ? OR title_en LIKE ? LIMIT 3").all(query, query, query) as any[];
     if (projects.length > 0) {
       results.push({ 
         group: 'Loyihalar', 
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     }
     
     // Search bookings
-    const bookings = db.prepare("SELECT id, client_name as title, phone FROM bookings WHERE client_name LIKE ? OR phone LIKE ? LIMIT 3").all(query, query) as any[];
+    const bookings = await db.prepare("SELECT id, client_name as title, phone FROM bookings WHERE client_name LIKE ? OR phone LIKE ? LIMIT 3").all(query, query) as any[];
     if (bookings.length > 0) {
       results.push({ 
         group: 'Buyurtmalar', 
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
     }
     
     // Search apartments
-    const apartments = db.prepare(`
+    const apartments = await db.prepare(`
       SELECT a.id, a.number, p.title_uz as project_title 
       FROM apartments a 
       LEFT JOIN projects p ON a.project_id = p.id

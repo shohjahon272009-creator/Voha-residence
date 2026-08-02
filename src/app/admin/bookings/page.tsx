@@ -10,12 +10,12 @@ import { updateBookingStatus } from '@/lib/adminActions';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminBookings() {
+export default async function AdminBookings() {
   // Mark all new bookings as viewed when this page is opened
-  db.prepare("UPDATE bookings SET status = 'Ko''rib chiqilmoqda' WHERE status = 'Yangi' AND apartment_id IS NOT NULL").run();
+  await db.prepare("UPDATE bookings SET status = 'Ko''rib chiqilmoqda' WHERE status = 'Yangi' AND apartment_id IS NOT NULL").run();
 
   // Fetch actual bookings from DB
-  const bookings = db.prepare(`
+  const bookings = await db.prepare(`
     SELECT b.*, a.number as apartment_number, p.name_uz as project_name 
     FROM bookings b
     JOIN apartments a ON b.apartment_id = a.id

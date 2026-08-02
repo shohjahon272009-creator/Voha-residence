@@ -14,17 +14,17 @@ import db from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   // Fetch unread counts (both New and Under Review)
-  const bookingsCountRow = db.prepare("SELECT COUNT(*) as c FROM bookings WHERE status IN ('Yangi', 'Ko''rib chiqilmoqda') AND apartment_id IS NOT NULL").get() as { c: number };
-  const inquiriesCountRow = db.prepare("SELECT COUNT(*) as c FROM bookings WHERE status = 'Yangi' AND apartment_id IS NULL").get() as { c: number };
+  const bookingsCountRow = await db.prepare("SELECT COUNT(*) as c FROM bookings WHERE status IN ('Yangi', 'Ko''rib chiqilmoqda') AND apartment_id IS NOT NULL").get() as { c: number };
+  const inquiriesCountRow = await db.prepare("SELECT COUNT(*) as c FROM bookings WHERE status = 'Yangi' AND apartment_id IS NULL").get() as { c: number };
 
   const newBookingsCount = bookingsCountRow.c;
   const newInquiriesCount = inquiriesCountRow.c;
   const totalNotifications = newBookingsCount + newInquiriesCount;
 
   // Fetch recent notifications
-  const recentNotifications = db.prepare(`
+  const recentNotifications = await db.prepare(`
     SELECT b.id, b.client_name, b.created_at, b.apartment_id, a.number as apartment_number
     FROM bookings b
     LEFT JOIN apartments a ON b.apartment_id = a.id
@@ -33,7 +33,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     LIMIT 5
   `).all() as any[];
 
-  const settingsRows = db.prepare("SELECT key, value FROM settings WHERE key IN ('company_logo', 'company_name')").all() as {key: string, value: string}[];
+  const settingsRows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('company_logo', 'company_name')").all() as {key: string, value: string}[];
   const settings = settingsRows.reduce((acc, row) => ({...acc, [row.key]: row.value}), {} as Record<string, string>);
 
   const sidebar = (

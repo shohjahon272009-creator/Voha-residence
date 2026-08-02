@@ -11,13 +11,13 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
   const { lang } = await params;
   const localeLang = lang as Locale;
 
-  const settingsRows = db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
+  const settingsRows = await db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
   const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
   const companyName = settings.company_name || 'Voha Residence';
 
   // SECURITY: strip real prices before apartment data reaches the client bundle.
-  const apartments = getApartments().map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
-  const projects = getProjects();
+  const apartments = (await getApartments()).map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
+  const projects = await getProjects();
 
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>

@@ -10,10 +10,10 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminDashboard() {
-  const stats = getApartmentStats();
-  const projects = getProjects();
-  const allApts = getApartments();
+export default async function AdminDashboard() {
+  const stats = await getApartmentStats();
+  const projects = await getProjects();
+  const allApts = await getApartments();
 
   const statCards = [
     { label: 'Jami xonadonlar', value: stats.total, icon: Building2, color: 'text-primary', bg: 'bg-primary/10', href: '/admin/apartments' },

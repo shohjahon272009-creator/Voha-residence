@@ -12,9 +12,9 @@ import ProjectRowActions from '@/components/admin/ProjectRowActions';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminProjects() {
-  const projects = getProjects();
-  const allApts = getApartments();
+export default async function AdminProjects() {
+  const projects = await getProjects();
+  const allApts = await getApartments();
 
   return (
     <div className="space-y-10">

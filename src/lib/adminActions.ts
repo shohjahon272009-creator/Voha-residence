@@ -57,7 +57,7 @@ export async function addApartment(formData: FormData) {
     }
   }
 
-  db.prepare(`INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, price_installment, status, plan_image, image, orientation, note)
+  await db.prepare(`INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, price_installment, status, plan_image, image, orientation, note)
     VALUES (?, ?, ?, ?, ?, 0, NULL, ?, ?, '', '', '')`).run(project_id, floor, number, rooms, area, status, planUrl);
 
   revalidatePath('/admin/apartments');
@@ -71,7 +71,7 @@ export async function addApartment(formData: FormData) {
 export async function setSiteSetting(key: string, value: string) {
   // Faqat ko'rinish (show_*) sozlamalariga ruxsat
   if (!key.startsWith('show_')) return;
-  db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run(key, value, value);
+  await db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run(key, value, value);
   revalidatePath('/admin/apartments');
   revalidatePath('/admin/settings');
   revalidatePath('/uz');
@@ -150,7 +150,7 @@ export async function addProject(formData: FormData) {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
-  const result = stmt.run(
+  const result = await stmt.run(
     name_uz, name_ru, name_en,
     description_uz, description_ru, description_en,
     city, district, '',
@@ -167,7 +167,7 @@ export async function addProject(formData: FormData) {
 
   for (let floor = 1; floor <= total_floors; floor++) {
     for (let num = 1; num <= apts_per_floor; num++) {
-      aptStmt.run(projectId, floor, `${floor}0${num}`, (num % 2) + 1, 45 + num * 10, min_price + (floor * 10000000), is_sold_out ? "Band" : "Bo'sh");
+      await aptStmt.run(projectId, floor, `${floor}0${num}`, (num % 2) + 1, 45 + num * 10, min_price + (floor * 10000000), is_sold_out ? "Band" : "Bo'sh");
     }
   }
 
@@ -179,15 +179,15 @@ export async function addProject(formData: FormData) {
 }
 export async function deleteProject(id: number) {
   // First delete all bookings related to apartments in this project
-  const apartments = db.prepare('SELECT id FROM apartments WHERE project_id = ?').all(id) as { id: number }[];
+  const apartments = await db.prepare('SELECT id FROM apartments WHERE project_id = ?').all(id) as { id: number }[];
   for (const apt of apartments) {
-    db.prepare('DELETE FROM bookings WHERE apartment_id = ?').run(apt.id);
+    await db.prepare('DELETE FROM bookings WHERE apartment_id = ?').run(apt.id);
   }
   // Delete all apartments in this project
-  db.prepare('DELETE FROM apartments WHERE project_id = ?').run(id);
-  
+  await db.prepare('DELETE FROM apartments WHERE project_id = ?').run(id);
+
   // Finally delete the project
-  db.prepare('DELETE FROM projects WHERE id = ?').run(id);
+  await db.prepare('DELETE FROM projects WHERE id = ?').run(id);
   
   revalidatePath('/admin/projects');
   revalidatePath('/admin/sold-out');
@@ -261,7 +261,7 @@ export async function updateProject(id: number, formData: FormData) {
         city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, main_image = ?, days_left = ?, virtual_tour_url = ?
       WHERE id = ?
     `);
-    stmt.run(
+    await stmt.run(
       name_uz, name_ru, name_en,
       description_uz, description_ru, description_en,
       city, district, status, total_floors, apts_per_floor, min_price, imageUrl, days_left, finalTourUrl, id
@@ -274,7 +274,7 @@ export async function updateProject(id: number, formData: FormData) {
         city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, days_left = ?, virtual_tour_url = ?
       WHERE id = ?
     `);
-    stmt.run(
+    await stmt.run(
       name_uz, name_ru, name_en,
       description_uz, description_ru, description_en,
       city, district, status, total_floors, apts_per_floor, min_price, days_left, finalTourUrl, id
@@ -284,10 +284,10 @@ export async function updateProject(id: number, formData: FormData) {
   // Yangi galereya rasmlari yuklangan bo'lsa — mavjudlariga qo'shamiz (ixtiyoriy)
   const newGallery = await saveGalleryFiles(formData.getAll('gallery_images') as File[]);
   if (newGallery.length > 0) {
-    const row = db.prepare('SELECT gallery FROM projects WHERE id = ?').get(id) as { gallery: string } | undefined;
+    const row = await db.prepare('SELECT gallery FROM projects WHERE id = ?').get(id) as { gallery: string } | undefined;
     let existing: string[] = [];
     try { existing = row?.gallery ? JSON.parse(row.gallery) : []; } catch { existing = []; }
-    db.prepare('UPDATE projects SET gallery = ? WHERE id = ?').run(JSON.stringify([...existing, ...newGallery]), id);
+    await db.prepare('UPDATE projects SET gallery = ? WHERE id = ?').run(JSON.stringify([...existing, ...newGallery]), id);
   }
 
   revalidatePath('/admin/projects');
@@ -303,20 +303,20 @@ export async function saveSettings(formData: FormData) {
   const bot_token = formData.get('bot_token') as string;
   const admin_chat_id = formData.get('admin_chat_id') as string;
 
-  const updateSetting = (key: string, value: string) => {
-    db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run(key, value, value);
+  const updateSetting = async (key: string, value: string) => {
+    await db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run(key, value, value);
   };
 
-  if (company_name) updateSetting('company_name', company_name);
-  if (meta_title_uz) updateSetting('meta_title_uz', meta_title_uz);
-  if (meta_description) updateSetting('meta_description', meta_description);
-  if (bot_token) updateSetting('bot_token', bot_token);
-  if (admin_chat_id) updateSetting('admin_chat_id', admin_chat_id);
+  if (company_name) await updateSetting('company_name', company_name);
+  if (meta_title_uz) await updateSetting('meta_title_uz', meta_title_uz);
+  if (meta_description) await updateSetting('meta_description', meta_description);
+  if (bot_token) await updateSetting('bot_token', bot_token);
+  if (admin_chat_id) await updateSetting('admin_chat_id', admin_chat_id);
 
   const primary_color = formData.get('primary_color') as string;
   const accent_color = formData.get('accent_color') as string;
-  if (primary_color) updateSetting('primary_color', primary_color);
-  if (accent_color) updateSetting('accent_color', accent_color);
+  if (primary_color) await updateSetting('primary_color', primary_color);
+  if (accent_color) await updateSetting('accent_color', accent_color);
 
   const hero_title = formData.get('hero_title') as string;
   const hero_desc = formData.get('hero_desc') as string;
@@ -327,14 +327,14 @@ export async function saveSettings(formData: FormData) {
   const about_stat2_value = formData.get('about_stat2_value') as string;
   const about_stat2_label = formData.get('about_stat2_label') as string;
 
-  if (hero_title) updateSetting('hero_title', hero_title);
-  if (hero_desc) updateSetting('hero_desc', hero_desc);
-  if (about_title) updateSetting('about_title', about_title);
-  if (about_desc) updateSetting('about_desc', about_desc);
-  if (about_stat1_value) updateSetting('about_stat1_value', about_stat1_value);
-  if (about_stat1_label) updateSetting('about_stat1_label', about_stat1_label);
-  if (about_stat2_value) updateSetting('about_stat2_value', about_stat2_value);
-  if (about_stat2_label) updateSetting('about_stat2_label', about_stat2_label);
+  if (hero_title) await updateSetting('hero_title', hero_title);
+  if (hero_desc) await updateSetting('hero_desc', hero_desc);
+  if (about_title) await updateSetting('about_title', about_title);
+  if (about_desc) await updateSetting('about_desc', about_desc);
+  if (about_stat1_value) await updateSetting('about_stat1_value', about_stat1_value);
+  if (about_stat1_label) await updateSetting('about_stat1_label', about_stat1_label);
+  if (about_stat2_value) await updateSetting('about_stat2_value', about_stat2_value);
+  if (about_stat2_label) await updateSetting('about_stat2_label', about_stat2_label);
 
   const show_projects = formData.get('show_projects') as string;
   const show_search = formData.get('show_search') as string;
@@ -343,12 +343,12 @@ export async function saveSettings(formData: FormData) {
   const show_news = formData.get('show_news') as string;
   const show_contact = formData.get('show_contact') as string;
 
-  updateSetting('show_projects', show_projects ? 'true' : 'false');
-  updateSetting('show_search', show_search ? 'true' : 'false');
-  updateSetting('show_mortgage', show_mortgage ? 'true' : 'false');
-  updateSetting('show_about', show_about ? 'true' : 'false');
-  updateSetting('show_news', show_news ? 'true' : 'false');
-  updateSetting('show_contact', show_contact ? 'true' : 'false');
+  await updateSetting('show_projects', show_projects ? 'true' : 'false');
+  await updateSetting('show_search', show_search ? 'true' : 'false');
+  await updateSetting('show_mortgage', show_mortgage ? 'true' : 'false');
+  await updateSetting('show_about', show_about ? 'true' : 'false');
+  await updateSetting('show_news', show_news ? 'true' : 'false');
+  await updateSetting('show_contact', show_contact ? 'true' : 'false');
 
   const logoFile = formData.get('company_logo') as File | null;
   if (logoFile && logoFile.name && logoFile.size > 0) {
@@ -361,7 +361,7 @@ export async function saveSettings(formData: FormData) {
       await fs.mkdir(uploadDir, { recursive: true });
       const filePath = path.join(uploadDir, fileName);
       await fs.writeFile(filePath, buffer);
-      updateSetting('company_logo', `/uploads/${fileName}`);
+      await updateSetting('company_logo', `/uploads/${fileName}`);
     } catch (error) {
       console.error('Error saving logo:', error);
     }

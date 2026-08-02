@@ -11,9 +11,9 @@ import AddProjectModal from '@/components/admin/AddProjectModal';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminSoldOutProjects() {
-  const allProjects = getProjects();
-  const allApts = getApartments();
+export default async function AdminSoldOutProjects() {
+  const allProjects = await getProjects();
+  const allApts = await getApartments();
 
   // Filter projects where there are NO available ("Bo'sh") apartments
   const projects = allProjects.filter(project => {

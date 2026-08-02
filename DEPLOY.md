@@ -1,8 +1,44 @@
 # Voha Residence — Ishlab chiqarishga (Production) joylash qo'llanmasi
 
-Bu sayt **Next.js 16 + SQLite (`better-sqlite3`)** asosida. SQLite fayl (`qurilish.db`) va yuklangan rasmlar (`public/uploads/`) **doimiy diskni** talab qiladi, `better-sqlite3` esa **native modul**. Shu sababli:
+Bu sayt **Next.js 16 + libSQL** asosida. Ma'lumot bazasi ikki xil ishlaydi:
 
-> ⚠️ **Vercel/Netlify (serverless) MOS EMAS.** Doimiy diskka ega **Node server** kerak: VPS (Ubuntu) yoki doimiy hajm (persistent volume) beradigan platforma (Railway, Render, Fly.io).
+- **Turso (bulut)** — TURSO_DATABASE_URL + TURSO_AUTH_TOKEN o'rnatilsa, `@libsql/client`
+  HTTP orqali ulanadi (sof JavaScript, native modul YO'Q). **Vercel serverlessда to'liq
+  ishlaydi** va admin o'zgarishlari doimiy saqlanadi. Pastdagi "Vercel + Turso"ga qarang.
+- **Lokal fayl** — env yo'q bo'lsa, `qurilish.db` (ishlab chiqish yoki VPS).
+
+> ⚠️ Vercel'да **TURSO env'lari SHART**. Ularsiz Vercel lokal fayl rejimiga tushadi
+> (native drayver) va serverlessда ishlamaydi. Avval Turso'ni sozlang, keyin deploy.
+
+---
+
+## 🚀 Vercel + Turso (admin o'zgarishlari saqlanadi)
+
+### 1. Turso hisobi + CLI
+1. https://turso.tech → bepul ro'yxat (GitHub bilan).
+2. CLI (Windows Git Bash / WSL): `curl -sSfL https://get.tur.so/install.sh | bash`, keyin `turso auth login`.
+
+### 2. Baza yaratish + mavjud ma'lumotni ko'chirish
+```bash
+turso db create voha-residence --from-file ./qurilish.db
+```
+> Baza allaqachon bo'lsa, ma'lumotni import qilish uchun ishlab chiqaruvchiga murojaat qiling.
+
+### 3. Ulanish kalitlari (token TO'LIQ — read-write bo'lsin!)
+```bash
+turso db show voha-residence --url        # TURSO_DATABASE_URL
+turso db tokens create voha-residence     # TURSO_AUTH_TOKEN (--read-only QO'YMANG)
+```
+
+### 4. Vercel → Settings → Environment Variables (Production)
+| Nomi | Qiymati |
+|---|---|
+| `TURSO_DATABASE_URL` | `libsql://...turso.io` |
+| `TURSO_AUTH_TOKEN` | to'liq token |
+| `AUTH_SECRET` | tasodifiy 64-belgili hex |
+
+### 5. Redeploy → tekshirish
+Vercel → Deployments → Redeploy. Admin paneldan o'zgartiring — saqlanib qoladi.
 
 ---
 

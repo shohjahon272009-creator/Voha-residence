@@ -9,8 +9,8 @@ import db from '@/lib/db';
 import { saveSettings } from '@/lib/adminActions';
 import ChangePasswordForm from '@/components/admin/ChangePasswordForm';
 
-export default function AdminSettings() {
-  const settingsRows = db.prepare('SELECT * FROM settings').all() as { key: string, value: string }[];
+export default async function AdminSettings() {
+  const settingsRows = await db.prepare('SELECT * FROM settings').all() as { key: string, value: string }[];
   const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
 
   return (

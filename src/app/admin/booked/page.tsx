@@ -9,8 +9,8 @@ import { Building2, Phone, CalendarClock, Clock } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminBooked() {
-  const booked = db.prepare(`
+export default async function AdminBooked() {
+  const booked = await db.prepare(`
     SELECT a.id as apt_id, a.number as apartment_number, a.price_cash, p.name_uz as project_name,
            b.id as booking_id, b.client_name, b.client_phone, b.created_at
     FROM apartments a

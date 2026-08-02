@@ -24,19 +24,19 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const localeLang = lang as Locale;
   const dict = getDictionary(localeLang);
 
-  const settingsRows = db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
+  const settingsRows = await db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
   const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
   const companyName = settings.company_name || 'Qurilish';
 
   // Bosh sahifa slideri uchun loyiha rasmlari (eng yangi loyihalar oldinda)
-  const allProjects = getProjects();
+  const allProjects = await getProjects();
   const heroImages = allProjects
     .map((p) => p.main_image)
     .filter((img): img is string => Boolean(img))
     .slice(0, 8);
 
   // Xonadon qidiruvi uchun (narxlar mijozga yuborilmaydi)
-  const searchApartments = getApartments().map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
+  const searchApartments = (await getApartments()).map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
 
   const aboutText: Record<Locale, { tag: string; title: string; accent: string; desc: string; stat1value: string; stat1label: string; stat2value: string; stat2label: string }> = {
     uz: { tag: 'BIZ HAQIMIZDA', title: ``, accent: 'Sifatli', desc: "Biz yillar tajribasi asosida O'zbekiston bozorida xalqaro standartlarga javob beruvchi yirik turar-joy majmualarini barpo etib kelmoqdamiz.", stat1value: 'Katta', stat1label: 'Tajriba', stat2value: 'Ko\'p', stat2label: 'Barpo etilgan loyihalar' },

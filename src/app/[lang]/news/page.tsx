@@ -20,7 +20,7 @@ export default async function NewsPage({ params }: { params: Promise<{ lang: str
     en: { title: "All News", empty: "No news yet." }
   }[localeLang] || { title: "Barcha Yangiliklar", empty: "Hozircha yangiliklar yo'q." };
 
-  const dbNews = db.prepare('SELECT * FROM news WHERE visible = 1 ORDER BY date DESC').all() as any[];
+  const dbNews = await db.prepare('SELECT * FROM news WHERE visible = 1 ORDER BY date DESC').all() as any[];
 
   const newsList = dbNews.map(item => ({
     id: item.id,

@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getProjects } from '@/lib/actions';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://voharesidence.uz';
   const langs = ['uz', 'ru', 'en'];
 
@@ -31,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Loyiha sahifalari
   const projectRoutes: MetadataRoute.Sitemap = [];
   try {
-    const projects = getProjects();
+    const projects = await getProjects();
     for (const project of projects) {
       for (const lang of langs) {
         projectRoutes.push({

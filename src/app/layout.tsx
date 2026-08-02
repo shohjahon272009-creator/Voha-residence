@@ -32,7 +32,7 @@ export default async function RootLayout({
   let accentColor = '#D18E5B';
 
   try {
-    const settingsRows = db.prepare("SELECT key, value FROM settings WHERE key IN ('primary_color', 'accent_color')").all() as { key: string, value: string }[];
+    const settingsRows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('primary_color', 'accent_color')").all() as { key: string, value: string }[];
     const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
     if (settings.primary_color) primaryColor = settings.primary_color;
     if (settings.accent_color) accentColor = settings.accent_color;

@@ -9,7 +9,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
   const { lang } = await params;
   const localeLang = lang as Locale;
 
-  const settingsRows = db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
+  const settingsRows = await db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
   const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
   const companyName = settings.company_name || 'Voha Residence';
 

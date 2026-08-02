@@ -11,11 +11,11 @@ import { getProjects, getApartments } from '@/lib/actions';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminSales() {
-  const projects = getProjects();
-  const apartments = getApartments();
+export default async function AdminSales() {
+  const projects = await getProjects();
+  const apartments = await getApartments();
 
-  const sales = db.prepare(`
+  const sales = await db.prepare(`
     SELECT a.id as apt_id, a.number as apartment_number, a.price_cash, p.name_uz as project_name,
            b.id as booking_id, b.client_name, b.client_phone, b.created_at
     FROM apartments a

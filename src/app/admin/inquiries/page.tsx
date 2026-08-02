@@ -9,11 +9,11 @@ import { MessageSquare, Phone, CalendarClock } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminInquiries() {
+export default async function AdminInquiries() {
   // Mark all new inquiries as viewed when this page is opened
-  db.prepare("UPDATE bookings SET status = 'Ko''rib chiqilmoqda' WHERE status = 'Yangi' AND apartment_id IS NULL").run();
+  await db.prepare("UPDATE bookings SET status = 'Ko''rib chiqilmoqda' WHERE status = 'Yangi' AND apartment_id IS NULL").run();
 
-  const messages = db.prepare("SELECT * FROM bookings WHERE apartment_id IS NULL ORDER BY created_at DESC").all() as any[];
+  const messages = await db.prepare("SELECT * FROM bookings WHERE apartment_id IS NULL ORDER BY created_at DESC").all() as any[];
 
   return (
     <div className="space-y-6">

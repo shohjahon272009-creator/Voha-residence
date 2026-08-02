@@ -20,17 +20,17 @@ export default async function RootPage() {
   const localeLang: Locale = 'uz';
   const dict = getDictionary(localeLang);
 
-  const settingsRows = db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
+  const settingsRows = await db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
   const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
   const companyName = settings.company_name || 'Qurilish';
 
-  const allProjects = getProjects();
+  const allProjects = await getProjects();
   const heroImages = allProjects
     .map((p) => p.main_image)
     .filter((img): img is string => Boolean(img))
     .slice(0, 8);
 
-  const searchApartments = getApartments().map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
+  const searchApartments = (await getApartments()).map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
 
   const about = {
     tag: 'BIZ HAQIMIZDA',

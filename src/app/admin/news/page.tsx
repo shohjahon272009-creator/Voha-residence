@@ -11,8 +11,8 @@ import NewsRowActions from './NewsRowActions';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminNews() {
-  const news = db.prepare('SELECT * FROM news ORDER BY date DESC').all() as any[];
+export default async function AdminNews() {
+  const news = await db.prepare('SELECT * FROM news ORDER BY date DESC').all() as any[];
 
   return (
     <div className="space-y-6">

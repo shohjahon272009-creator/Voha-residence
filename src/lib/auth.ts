@@ -22,7 +22,7 @@ export async function login(_prevState: LoginState, formData: FormData): Promise
     return { error: 'Email va parolni kiriting' };
   }
 
-  const user = db.prepare('SELECT id, email, password FROM users WHERE email = ?').get(email) as
+  const user = await db.prepare('SELECT id, email, password FROM users WHERE email = ?').get(email) as
     | UserRow
     | undefined;
 
@@ -32,7 +32,7 @@ export async function login(_prevState: LoginState, formData: FormData): Promise
 
   // Transparently upgrade a legacy plaintext password to a salted hash.
   if (!isHashed(user.password)) {
-    db.prepare('UPDATE users SET password = ? WHERE id = ?').run(hashPassword(password), user.id);
+    await db.prepare('UPDATE users SET password = ? WHERE id = ?').run(hashPassword(password), user.id);
   }
 
   const token = await createSessionToken(user.id);
@@ -76,13 +76,13 @@ export async function changePassword(
   if (next.length < 6) return { error: "Yangi parol kamida 6 ta belgidan iborat bo'lsin." };
   if (next !== confirm) return { error: 'Yangi parollar bir-biriga mos kelmadi.' };
 
-  const user = db.prepare('SELECT id, password FROM users WHERE id = ?').get(userId) as
+  const user = await db.prepare('SELECT id, password FROM users WHERE id = ?').get(userId) as
     | { id: number; password: string }
     | undefined;
   if (!user || !verifyPassword(current, user.password)) {
     return { error: "Joriy parol noto'g'ri." };
   }
 
-  db.prepare('UPDATE users SET password = ? WHERE id = ?').run(hashPassword(next), userId);
+  await db.prepare('UPDATE users SET password = ? WHERE id = ?').run(hashPassword(next), userId);
   return { success: true };
 }

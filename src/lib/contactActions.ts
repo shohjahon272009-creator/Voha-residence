@@ -16,14 +16,14 @@ export async function submitContact(formData: FormData) {
 
   try {
     // Insert into bookings table as a general lead (apartment_id = NULL)
-    db.prepare(`
+    await db.prepare(`
       INSERT INTO bookings (client_name, client_phone, note, status)
       VALUES (?, ?, ?, 'Yangi')
     `).run(name, phone, message);
 
     // Send Telegram Notification if configured
-    const tokenRow = db.prepare('SELECT value FROM settings WHERE key = ?').get('bot_token') as { value: string } | undefined;
-    const chatIdRow = db.prepare('SELECT value FROM settings WHERE key = ?').get('admin_chat_id') as { value: string } | undefined;
+    const tokenRow = await db.prepare('SELECT value FROM settings WHERE key = ?').get('bot_token') as { value: string } | undefined;
+    const chatIdRow = await db.prepare('SELECT value FROM settings WHERE key = ?').get('admin_chat_id') as { value: string } | undefined;
 
     if (tokenRow?.value && chatIdRow?.value) {
       const text = `🔔 *Yangi xabar (Saytdan)*\n\n👤 *Ism:* ${name}\n📞 *Telefon:* ${phone}\n💬 *Xabar:* ${message || "Yo'q"}`;
@@ -57,18 +57,18 @@ export async function submitBooking(formData: FormData) {
 
   try {
     // Insert into bookings table
-    db.prepare(`
+    await db.prepare(`
       INSERT INTO bookings (apartment_id, client_name, client_phone, payment_type, note, status)
       VALUES (?, ?, ?, ?, ?, 'Yangi')
     `).run(parseInt(apartmentId), name, phone, paymentType, message || null);
 
     // Update apartment status to Bronlangan
-    db.prepare(`
+    await db.prepare(`
       UPDATE apartments SET status = 'Bronlangan' WHERE id = ?
     `).run(parseInt(apartmentId));
 
     // Get apartment details for the notification
-    const aptDetails = db.prepare(`
+    const aptDetails = await db.prepare(`
       SELECT a.number, p.name_uz as project_name 
       FROM apartments a 
       JOIN projects p ON a.project_id = p.id 
@@ -76,8 +76,8 @@ export async function submitBooking(formData: FormData) {
     `).get(parseInt(apartmentId)) as { number: string, project_name: string } | undefined;
 
     // Send Telegram Notification if configured
-    const tokenRow = db.prepare('SELECT value FROM settings WHERE key = ?').get('bot_token') as { value: string } | undefined;
-    const chatIdRow = db.prepare('SELECT value FROM settings WHERE key = ?').get('admin_chat_id') as { value: string } | undefined;
+    const tokenRow = await db.prepare('SELECT value FROM settings WHERE key = ?').get('bot_token') as { value: string } | undefined;
+    const chatIdRow = await db.prepare('SELECT value FROM settings WHERE key = ?').get('admin_chat_id') as { value: string } | undefined;
 
     if (tokenRow?.value && chatIdRow?.value) {
       const aptInfo = aptDetails ? `${aptDetails.project_name}, №${aptDetails.number} xonadon` : `ID: ${apartmentId}`;
@@ -111,13 +111,13 @@ export async function submitPriceRequest(formData: FormData) {
 
   try {
     // Insert into bookings table as a Price Inquiry
-    db.prepare(`
+    await db.prepare(`
       INSERT INTO bookings (apartment_id, client_name, client_phone, payment_type, note, status)
       VALUES (?, ?, ?, 'Narxini bilish', ?, 'Yangi')
     `).run(parseInt(apartmentId), name, phone, message || null);
 
     // Get apartment details for the notification
-    const aptDetails = db.prepare(`
+    const aptDetails = await db.prepare(`
       SELECT a.number, p.name_uz as project_name 
       FROM apartments a 
       JOIN projects p ON a.project_id = p.id 
@@ -125,8 +125,8 @@ export async function submitPriceRequest(formData: FormData) {
     `).get(parseInt(apartmentId)) as { number: string, project_name: string } | undefined;
 
     // Send Telegram Notification if configured
-    const tokenRow = db.prepare('SELECT value FROM settings WHERE key = ?').get('bot_token') as { value: string } | undefined;
-    const chatIdRow = db.prepare('SELECT value FROM settings WHERE key = ?').get('admin_chat_id') as { value: string } | undefined;
+    const tokenRow = await db.prepare('SELECT value FROM settings WHERE key = ?').get('bot_token') as { value: string } | undefined;
+    const chatIdRow = await db.prepare('SELECT value FROM settings WHERE key = ?').get('admin_chat_id') as { value: string } | undefined;
 
     if (tokenRow?.value && chatIdRow?.value) {
       const aptInfo = aptDetails ? `${aptDetails.project_name}, №${aptDetails.number} xonadon` : `ID: ${apartmentId}`;

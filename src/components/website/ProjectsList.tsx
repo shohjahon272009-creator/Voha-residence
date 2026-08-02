@@ -10,9 +10,9 @@ import { Locale } from '@/lib/dictionaries';
 import AnimatedReveal from './AnimatedReveal';
 import VohaLogo from '@/components/common/VohaLogo';
 
-export default function ProjectsList({ lang, companyName = 'QURILISH KOMPANIYA', limit }: { lang: Locale, companyName?: string, limit?: number }) {
-  const projects = getProjects();
-  const allApartments = getApartments();
+export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPANIYA', limit }: { lang: Locale, companyName?: string, limit?: number }) {
+  const projects = await getProjects();
+  const allApartments = await getApartments();
   // Compute availability server-side. Only a `soldOut` boolean is sent to the client —
   // the exact remaining count and the real price never leave the server.
   const allCards = projects.map(p => {

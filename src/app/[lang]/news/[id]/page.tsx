@@ -21,7 +21,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ lan
     en: { back: "Back", notFound: "News not found" }
   }[localeLang] || { back: "Orqaga", notFound: "Yangilik topilmadi" };
 
-  const newsItem = db.prepare('SELECT * FROM news WHERE id = ? AND visible = 1').get(id) as any;
+  const newsItem = await db.prepare('SELECT * FROM news WHERE id = ? AND visible = 1').get(id) as any;
 
   if (!newsItem) {
     redirect(`/${localeLang}/news`);

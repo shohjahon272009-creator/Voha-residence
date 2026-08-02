@@ -12,11 +12,11 @@ import db from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminApartments() {
-  const projects = getProjects();
-  const allApartments = getApartments();
+export default async function AdminApartments() {
+  const projects = await getProjects();
+  const allApartments = await getApartments();
 
-  const settingsRows = db.prepare('SELECT key, value FROM settings').all() as { key: string; value: string }[];
+  const settingsRows = await db.prepare('SELECT key, value FROM settings').all() as { key: string; value: string }[];
   const settings = settingsRows.reduce((acc, r) => ({ ...acc, [r.key]: r.value }), {} as Record<string, string>);
 
   return (

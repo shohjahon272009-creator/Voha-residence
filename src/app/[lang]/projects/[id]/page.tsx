@@ -13,8 +13,8 @@ import { MapPin, CheckCircle } from 'lucide-react';
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ lang: string, id: string }> }) {
   const { lang, id } = await params;
-  const project = getProjectBySlug(parseInt(id));
-  const apartments = getApartments(parseInt(id));
+  const project = await getProjectBySlug(parseInt(id));
+  const apartments = await getApartments(parseInt(id));
 
   if (!project) return notFound();
 
