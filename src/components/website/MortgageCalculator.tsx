@@ -2,203 +2,201 @@
 
 import React, { useState } from 'react';
 import { Locale } from '@/lib/dictionaries';
-import { Calculator, Info } from 'lucide-react';
+import { Calculator, Info, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function MortgageCalculator({ lang }: { lang: Locale }) {
-  const [price, setPrice] = useState(800000000);
-  const [downPercent, setDownPercent] = useState(30);       // boshlang'ich to'lov %
-  const [installPercent, setInstallPercent] = useState(20); // 0% muddatli ulush %
-  const [installMonths, setInstallMonths] = useState(12);   // muddatli muddati (oy)
-  const [rate, setRate] = useState(18);                     // ipoteka yillik foizi
-  const [years, setYears] = useState(15);                   // ipoteka muddati (yil)
-
-  // Ulushlar: boshlang'ich + muddatli + ipoteka = 100%. Ipoteka = qolgani.
-  const mortgagePercent = Math.max(0, 100 - downPercent - installPercent);
+  const [price, setPrice] = useState(1000000000);
+  const [income, setIncome] = useState<'official' | 'unofficial'>('official');
+  const [downPercent, setDownPercent] = useState(15);
+  const [months, setMonths] = useState(24);
+  const [rate, setRate] = useState(18);
+  const [payType, setPayType] = useState<'annuity' | 'diff'>('annuity');
 
   const downAmount = Math.round(price * (downPercent / 100));
-  const installTotal = Math.round(price * (installPercent / 100));
-  const mortgageAmount = Math.round(price * (mortgagePercent / 100));
-
-  // 0% muddatli oylik to'lov (foizsiz)
-  const installMonthly = installMonths > 0 ? Math.round(installTotal / installMonths) : 0;
-
-  // Ipoteka oylik to'lovi — annuitet (amortizatsiya) formulasi
-  const n = years * 12;
+  const loan = Math.max(0, price - downAmount);
   const r = rate / 100 / 12;
-  const mortgageMonthly = mortgageAmount > 0
-    ? (r > 0
-        ? Math.round((mortgageAmount * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1))
-        : Math.round(mortgageAmount / (n || 1)))
-    : 0;
+  const n = months || 1;
 
-  const nf = (x: number) => x.toLocaleString();
+  // Annuitet: har oy bir xil
+  const annuityMonthly = r > 0
+    ? (loan * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1)
+    : loan / n;
+  const annuityTotal = annuityMonthly * n;
 
-  const t = {
+  // Differensial: birinchi oy eng katta, keyin kamayadi
+  const diffFirst = loan / n + loan * r;
+  const diffLast = loan / n + (loan / n) * r;
+  const diffTotal = loan + (loan * r * (n + 1)) / 2;
+
+  const monthly = payType === 'annuity' ? annuityMonthly : diffFirst;
+  const totalPay = payType === 'annuity' ? annuityTotal : diffTotal;
+  const grandTotal = downAmount + totalPay;
+
+  const nf = (x: number) => Math.round(x).toLocaleString('ru-RU');
+
+  const t = ({
     uz: {
-      tag: "GIBRID TO'LOV",
-      title: "Gibrid to'lov",
-      desc: "To'lovni uch qismga bo'ling: boshlang'ich to'lov, qurilish davomida 0% muddatli, qolgani esa bank ipotekasi orqali.",
-      price: "Xonadon narxi (UZS)",
-      down: "Boshlang'ich to'lov (%)",
-      install: "0% muddatli ulush (%)",
-      installM: "Muddatli muddati (oy)",
-      rate: "Ipoteka yillik foizi (%)",
-      years: "Ipoteka muddati (yil)",
-      mo: "oy", yr: "yil",
-      downAmount: "Boshlang'ich to'lov:",
-      installMonthly: "0% muddatli (oylik):",
-      installNote: (m: number) => `${m} oy davomida, foizsiz`,
-      mortgageMonthly: "Ipoteka (oylik):",
-      mortgageNote: (y: number, rr: number) => `${y} yil, ${rr}% yillik`,
-      mortgageAmount: "Ipoteka summasi:",
-      details: "Batafsil ma'lumot olish",
-      info: "Hisob-kitoblar taxminiy. Aniq shartlar loyiha va bankka qarab o'zgarishi mumkin.",
-      monthlyHint: "Qurilishdan keyin oylik ipoteka",
+      tag: 'IPOTEKA KALKULYATORI', title: 'Ipoteka kalkulyatori',
+      price: 'Xonadon narxi (UZS)', income: 'Daromad', official: 'Rasmiy', unofficial: 'Norasmiy',
+      down: 'Boshlang‘ich to‘lov (%)', term: 'Kredit muddati (oy)', rate: 'Foiz stavkasi (%)',
+      loan: 'Kredit summasi (UZS)', monthly: 'Oylik to‘lovingiz', totalPay: 'Umumiy to‘lovlar summasi',
+      total: 'Jami', payType: 'Oylik to‘lov turi', annuity: 'Annuitet', diff: 'Differensial',
+      consult: 'Konsultatsiya', schedule: 'To‘lov jadvali', diffNote: (a: string, b: string) => `${a} → ${b} gacha kamayadi`,
+      note: '* Dastlabki hisob-kitob ma‘lumot uchun. Yakuniy shartlar bank tomonidan belgilanadi.',
+      mo: 'oy',
     },
     ru: {
-      tag: "ГИБРИДНАЯ ОПЛАТА",
-      title: "Гибридная оплата",
-      desc: "Разделите оплату на три части: первоначальный взнос, рассрочка 0% на период строительства и остаток через ипотеку банка.",
-      price: "Цена квартиры (UZS)",
-      down: "Первоначальный взнос (%)",
-      install: "Доля рассрочки 0% (%)",
-      installM: "Срок рассрочки (мес)",
-      rate: "Годовая ставка ипотеки (%)",
-      years: "Срок ипотеки (лет)",
-      mo: "мес", yr: "лет",
-      downAmount: "Первоначальный взнос:",
-      installMonthly: "Рассрочка 0% (в месяц):",
-      installNote: (m: number) => `в течение ${m} мес, без процентов`,
-      mortgageMonthly: "Ипотека (в месяц):",
-      mortgageNote: (y: number, rr: number) => `${y} лет, ${rr}% годовых`,
-      mortgageAmount: "Сумма ипотеки:",
-      details: "Получить подробную информацию",
-      info: "Расчёты приблизительные. Точные условия зависят от проекта и банка.",
-      monthlyHint: "Ежемесячная ипотека после сдачи",
+      tag: 'ИПОТЕЧНЫЙ КАЛЬКУЛЯТОР', title: 'Ипотечный калькулятор',
+      price: 'Цена квартиры (UZS)', income: 'Доход', official: 'Официальный', unofficial: 'Неофициальный',
+      down: 'Первоначальный взнос (%)', term: 'Срок кредита (мес.)', rate: 'Процентная ставка (%)',
+      loan: 'Сумма кредита (UZS)', monthly: 'Ваш ежемесячный платёж', totalPay: 'Общая сумма выплат',
+      total: 'Всего', payType: 'Тип платежей', annuity: 'Аннуитетные', diff: 'Дифференцированные',
+      consult: 'Консультация', schedule: 'График платежей', diffNote: (a: string, b: string) => `${a} → уменьшается до ${b}`,
+      note: '* Предварительный расчёт носит информационный характер. Условия определяет банк.',
+      mo: 'мес',
     },
     en: {
-      tag: "HYBRID PAYMENT",
-      title: "Hybrid Payment",
-      desc: "Split the payment into three parts: a down payment, a 0% installment during construction, and the rest via a bank mortgage.",
-      price: "Apartment Price (UZS)",
-      down: "Down Payment (%)",
-      install: "0% Installment Share (%)",
-      installM: "Installment Term (months)",
-      rate: "Mortgage Annual Rate (%)",
-      years: "Mortgage Term (years)",
-      mo: "mo", yr: "yr",
-      downAmount: "Down payment:",
-      installMonthly: "0% Installment (monthly):",
-      installNote: (m: number) => `over ${m} months, interest-free`,
-      mortgageMonthly: "Mortgage (monthly):",
-      mortgageNote: (y: number, rr: number) => `${y} years, ${rr}% annual`,
-      mortgageAmount: "Mortgage amount:",
-      details: "Get more details",
-      info: "Calculations are approximate. Exact terms depend on the project and the bank.",
-      monthlyHint: "Monthly mortgage after handover",
+      tag: 'MORTGAGE CALCULATOR', title: 'Mortgage calculator',
+      price: 'Apartment price (UZS)', income: 'Income', official: 'Official', unofficial: 'Unofficial',
+      down: 'Down payment (%)', term: 'Loan term (months)', rate: 'Interest rate (%)',
+      loan: 'Loan amount (UZS)', monthly: 'Your monthly payment', totalPay: 'Total payments',
+      total: 'Total', payType: 'Payment type', annuity: 'Annuity', diff: 'Differentiated',
+      consult: 'Consultation', schedule: 'Payment schedule', diffNote: (a: string, b: string) => `${a} → decreases to ${b}`,
+      note: '* Preliminary calculation for information only. Final terms are set by the bank.',
+      mo: 'mo',
     },
-  }[lang] || ({} as never);
+  } as const)[lang] || ({} as never);
 
-  const Slider = ({ label, value, display, min, max, step, onChange, delay }: {
-    label: string; value: number; display: string; min: number; max: number; step: number;
-    onChange: (v: number) => void; delay: number;
-  }) => (
-    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay }}>
-      <div className="flex justify-between mb-3">
-        <label className="text-sm font-bold text-white/80 uppercase tracking-wider">{label}</label>
-        <span className="font-black text-accent text-lg">{display}</span>
-      </div>
-      <input
-        type="range" min={min} max={max} step={step} value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-2.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-accent outline-none hover:bg-white/20 transition-colors"
-      />
-    </motion.div>
-  );
+  const downPresets = [15, 25, 50];
+  const termPresets = [12, 24, 36, 84];
+
+  const fieldBox = 'bg-white/5 border border-white/10 rounded-2xl p-5';
+  const presetBtn = (on: boolean) =>
+    `px-4 h-10 rounded-xl font-bold text-sm transition-all ${on ? 'bg-accent text-white shadow-lg' : 'bg-white/10 text-white/70 hover:bg-white/20'}`;
 
   return (
-    <section className="py-32 px-6">
+    <section className="py-28 px-6">
       <div className="max-container">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-          className="bg-primary rounded-[40px] overflow-hidden flex flex-col lg:flex-row shadow-2xl border border-primary/20 relative"
+          initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }} transition={{ duration: 0.6 }}
+          className="bg-primary rounded-[40px] overflow-hidden shadow-2xl relative"
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-72 h-72 bg-accent/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 pointer-events-none" />
 
-          <div className="p-10 lg:p-16 lg:w-1/2 text-white relative z-10">
-            <span className="eyebrow mb-6">{t.tag}</span>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 bg-accent rounded-2xl flex items-center justify-center shadow-lg shadow-accent/20">
-                <Calculator className="text-white" size={28} />
+          <div className="relative z-10 p-8 md:p-12">
+            <div className="flex items-center gap-4 mb-2">
+              <div className="w-12 h-12 bg-accent rounded-2xl flex items-center justify-center shadow-lg">
+                <Calculator className="text-white" size={24} />
               </div>
-              <h2 className="text-4xl font-black tracking-tight">{t.title}</h2>
+              <div>
+                <span className="text-accent text-xs font-bold uppercase tracking-widest">{t.tag}</span>
+                <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">{t.title}</h2>
+              </div>
             </div>
-            <p className="text-white/70 mb-10 text-base leading-relaxed font-medium">{t.desc}</p>
 
-            <div className="space-y-7">
-              <Slider label={t.price} value={price} display={nf(price)} min={300000000} max={3000000000} step={10000000} onChange={setPrice} delay={0.3} />
-              <Slider label={t.down} value={downPercent} display={`${downPercent}%`} min={0} max={70} step={5} onChange={(v) => setDownPercent(Math.min(v, 100 - installPercent))} delay={0.35} />
-              <Slider label={t.install} value={installPercent} display={`${installPercent}%`} min={0} max={70} step={5} onChange={(v) => setInstallPercent(Math.min(v, 100 - downPercent))} delay={0.4} />
-              <Slider label={t.installM} value={installMonths} display={`${installMonths} ${t.mo}`} min={3} max={36} step={1} onChange={setInstallMonths} delay={0.45} />
-              <Slider label={t.rate} value={rate} display={`${rate}%`} min={0} max={30} step={0.5} onChange={setRate} delay={0.5} />
-              <Slider label={t.years} value={years} display={`${years} ${t.yr}`} min={1} max={25} step={1} onChange={setYears} delay={0.55} />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+              {/* Chap: kiritmalar */}
+              <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Narx */}
+                <div className={fieldBox}>
+                  <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-2">{t.price}</label>
+                  <input
+                    type="text" inputMode="numeric" value={price.toLocaleString('ru-RU')}
+                    onChange={(e) => setPrice(Number(e.target.value.replace(/\D/g, '')) || 0)}
+                    className="w-full bg-transparent text-white text-2xl font-black outline-none"
+                  />
+                </div>
+                {/* Daromad */}
+                <div className={fieldBox}>
+                  <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-3">{t.income}</label>
+                  <div className="flex gap-2">
+                    {(['official', 'unofficial'] as const).map((k) => (
+                      <button key={k} onClick={() => setIncome(k)} className={presetBtn(income === k) + ' flex-1'}>
+                        {k === 'official' ? t.official : t.unofficial}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {/* Boshlang'ich */}
+                <div className={fieldBox}>
+                  <div className="flex justify-between mb-3">
+                    <label className="text-white/50 text-xs font-bold uppercase tracking-wider">{t.down}</label>
+                    <span className="text-accent font-black text-sm">{nf(downAmount)}</span>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    {downPresets.map((d) => (
+                      <button key={d} onClick={() => setDownPercent(d)} className={presetBtn(downPercent === d)}>{d}%</button>
+                    ))}
+                    <input type="number" min={0} max={90} value={downPercent}
+                      onChange={(e) => setDownPercent(Math.min(90, Math.max(0, Number(e.target.value))))}
+                      className="w-16 h-10 rounded-xl bg-white/10 text-white text-center font-bold text-sm outline-none" />
+                  </div>
+                </div>
+                {/* Muddat */}
+                <div className={fieldBox}>
+                  <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-3">{t.term}</label>
+                  <div className="flex gap-2 flex-wrap">
+                    {termPresets.map((m) => (
+                      <button key={m} onClick={() => setMonths(m)} className={presetBtn(months === m)}>{m}</button>
+                    ))}
+                    <input type="number" min={1} max={360} value={months}
+                      onChange={(e) => setMonths(Math.min(360, Math.max(1, Number(e.target.value))))}
+                      className="w-16 h-10 rounded-xl bg-white/10 text-white text-center font-bold text-sm outline-none" />
+                  </div>
+                </div>
+                {/* Foiz */}
+                <div className={fieldBox}>
+                  <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-2">{t.rate}</label>
+                  <input type="number" min={0} max={40} step={0.5} value={rate}
+                    onChange={(e) => setRate(Number(e.target.value))}
+                    className="w-full bg-transparent text-white text-2xl font-black outline-none" />
+                </div>
+                {/* Kredit summasi */}
+                <div className={fieldBox}>
+                  <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-2">{t.loan}</label>
+                  <div className="text-white text-2xl font-black">{nf(loan)}</div>
+                </div>
+                {/* To'lov turi */}
+                <div className={`${fieldBox} sm:col-span-2`}>
+                  <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-3">{t.payType}</label>
+                  <div className="flex gap-2">
+                    {(['annuity', 'diff'] as const).map((k) => (
+                      <button key={k} onClick={() => setPayType(k)} className={presetBtn(payType === k) + ' flex-1'}>
+                        {k === 'annuity' ? t.annuity : t.diff}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* O'ng: natija */}
+              <div className="bg-white rounded-3xl p-8 flex flex-col shadow-2xl">
+                <div className="text-gray-400 text-xs uppercase font-black tracking-widest mb-2">{t.monthly}</div>
+                <div className="text-3xl md:text-4xl font-black text-primary tracking-tight mb-1">{nf(monthly)} <span className="text-lg text-gray-400">UZS</span></div>
+                {payType === 'diff' && (
+                  <div className="text-[11px] text-accent font-semibold mb-4">{t.diffNote(nf(diffFirst), nf(diffLast))}</div>
+                )}
+                <div className="space-y-3 border-t-2 border-gray-100 pt-5 mt-4 mb-6">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">{t.totalPay}</span>
+                    <span className="font-black text-primary">{nf(totalPay)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">{t.total}</span>
+                    <span className="font-black text-primary">{nf(grandTotal)}</span>
+                  </div>
+                </div>
+                <a href={`/${lang}#contact`} className="mt-auto flex items-center justify-center gap-2 w-full py-4 bg-accent text-white font-bold rounded-2xl hover:bg-opacity-90 transition-all shadow-lg shadow-accent/30">
+                  <Phone size={16} /> {t.consult}
+                </a>
+                <div className="mt-4 flex gap-2 items-start text-[11px] text-gray-400 leading-relaxed">
+                  <Info size={14} className="min-w-3.5 text-accent mt-0.5" />
+                  <span>{t.note}</span>
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div className="bg-white/5 backdrop-blur-3xl lg:w-1/2 p-10 lg:p-16 flex flex-col justify-center border-l border-white/10 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4, type: 'spring', stiffness: 100 }}
-              className="bg-white rounded-[32px] p-10 shadow-2xl relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
-
-              <div className="text-gray-400 text-sm uppercase font-black tracking-widest mb-1">{t.mortgageMonthly}</div>
-              <div className="text-xs text-gray-400 mb-3">{t.monthlyHint}</div>
-              <div className="text-4xl md:text-5xl font-black text-primary mb-8 tracking-tighter">
-                {nf(mortgageMonthly)} <span className="text-2xl text-gray-400 font-bold tracking-normal">UZS</span>
-              </div>
-
-              <div className="space-y-4 border-t-2 border-gray-100 pt-6 mb-8">
-                <div className="flex justify-between items-start text-base">
-                  <span className="text-gray-500 font-medium">{t.downAmount}</span>
-                  <span className="font-black text-primary text-right">{nf(downAmount)} UZS</span>
-                </div>
-                <div className="flex justify-between items-start text-base">
-                  <div>
-                    <span className="text-gray-500 font-medium">{t.installMonthly}</span>
-                    <div className="text-xs text-success font-semibold">{t.installNote(installMonths)}</div>
-                  </div>
-                  <span className="font-black text-primary text-right">{nf(installMonthly)} UZS</span>
-                </div>
-                <div className="flex justify-between items-start text-base">
-                  <div>
-                    <span className="text-gray-500 font-medium">{t.mortgageAmount}</span>
-                    <div className="text-xs text-gray-400 font-semibold">{t.mortgageNote(years, rate)}</div>
-                  </div>
-                  <span className="font-black text-primary text-right">{nf(mortgageAmount)} UZS</span>
-                </div>
-              </div>
-
-              <motion.a
-                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                href={`/${lang}#contact`}
-                className="block text-center w-full py-5 bg-accent text-white font-bold text-lg rounded-2xl hover:bg-opacity-90 transition-all shadow-xl shadow-accent/30"
-              >
-                {t.details}
-              </motion.a>
-              <div className="mt-6 flex gap-3 items-start text-xs text-gray-400 font-medium leading-relaxed bg-gray-50 p-4 rounded-2xl">
-                <Info size={16} className="min-w-4 text-accent mt-0.5" />
-                <span>{t.info}</span>
-              </div>
-            </motion.div>
           </div>
         </motion.div>
       </div>
