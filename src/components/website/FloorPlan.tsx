@@ -36,7 +36,7 @@ export default function FloorPlan({
   const t = {
     uz: {
       title: "Qavat rejasi",
-      subtitle: "Kerakli qavatni tanlang va xonadon holatini ko'ring",
+      subtitle: "Kerakli qavat va xonadonni tanlang",
       floorMap: "Qavat Chizmasi",
       apartmentsTitle: "Xonadonlar:",
       rooms: "xona",
@@ -57,7 +57,7 @@ export default function FloorPlan({
     },
     ru: {
       title: "План этажа",
-      subtitle: "Выберите нужный этаж и посмотрите статус квартиры",
+      subtitle: "Выберите нужный этаж и квартиру",
       floorMap: "План этажа",
       apartmentsTitle: "Квартиры:",
       rooms: "комн.",
@@ -78,7 +78,7 @@ export default function FloorPlan({
     },
     en: {
       title: "Floor Plan",
-      subtitle: "Select the desired floor and see the apartment status",
+      subtitle: "Select the desired floor and apartment",
       floorMap: "Floor Map",
       apartmentsTitle: "Apartments:",
       rooms: "rooms",
@@ -99,7 +99,7 @@ export default function FloorPlan({
     }
   }[lang] || {
       title: "Qavat rejasi",
-      subtitle: "Kerakli qavatni tanlang va xonadon holatini ko'ring",
+      subtitle: "Kerakli qavat va xonadonni tanlang",
       floorMap: "Qavat Chizmasi",
       apartmentsTitle: "Xonadonlar:",
       rooms: "xona",
@@ -117,21 +117,6 @@ export default function FloorPlan({
       priceUnit: "",
       bookNow: "Narxini bilish",
       emptyState: "Batafsil ma'lumot va xonalar ko'rinishini ko'rish uchun chap tomondan xonadonni tanlang"
-  };
-
-  const getStatus = (status: string) => {
-    if (lang === 'uz') return status === 'Bronlangan' ? 'Bron qilindi' : status;
-    if (lang === 'ru') {
-      if (status === "Bo'sh") return "Свободно";
-      if (status === "Band") return "Продано";
-      if (status === "Bronlangan") return "Забронировано";
-    }
-    if (lang === 'en') {
-      if (status === "Bo'sh") return "Available";
-      if (status === "Band") return "Sold";
-      if (status === "Bronlangan") return "Booked";
-    }
-    return status;
   };
 
   return (
@@ -190,19 +175,11 @@ export default function FloorPlan({
                      }}
                      className={cn(
                        "p-4 rounded-xl border-2 transition-all cursor-pointer flex flex-col items-center text-center group",
-                       selectedApt?.id === apt.id ? "border-accent bg-accent/10 shadow-lg" : 
-                       apt.status === 'Bo\'sh' ? "bg-white border-success/20 hover:border-success shadow-sm" : 
-                       apt.status === 'Band' ? "bg-gray-50 border-danger/20 cursor-not-allowed opacity-60" :
-                       "bg-white border-warning/20 hover:border-warning shadow-sm"
+                       selectedApt?.id === apt.id ? "border-accent bg-accent/10 shadow-lg" : "bg-white border-gray-200 hover:border-accent shadow-sm"
                      )}
                    >
-                      <div className="flex justify-between items-center w-full mb-2">
+                      <div className="flex justify-center items-center w-full mb-2">
                          <span className="text-xl font-bold text-primary">{apt.number}</span>
-                         <div className={cn(
-                           "w-3 h-3 rounded-full",
-                           apt.status === 'Bo\'sh' ? "bg-success" : 
-                           apt.status === 'Band' ? "bg-danger" : "bg-warning"
-                         )} />
                       </div>
                       <span className="text-xs uppercase font-bold text-gray-500">{apt.rooms} {t.rooms}<br/>{apt.area} {t.area}</span>
                    </div>
@@ -238,14 +215,6 @@ export default function FloorPlan({
                       <div className="text-xs text-gray-400 uppercase font-bold mb-1">{t.floorLabel}</div>
                       <div className="font-black text-primary text-xl">{selectedApt.floor}</div>
                    </div>
-                   <div className="bg-gray-50 p-4 rounded-xl">
-                      <div className="text-xs text-gray-400 uppercase font-bold mb-1">{t.statusLabel}</div>
-                      <div className={cn(
-                        "font-black text-xl",
-                        selectedApt.status === 'Bo\'sh' ? "text-success" : 
-                        selectedApt.status === 'Band' ? "text-danger" : "text-warning"
-                      )}>{getStatus(selectedApt.status)}</div>
-                   </div>
                 </div>
 
                 {/* Xonalar ko'rinishi (Room Views) */}
@@ -274,18 +243,12 @@ export default function FloorPlan({
                    </div>
                 </div>
 
-                {selectedApt.status === 'Bo\'sh' ? (
-                  <button 
-                    onClick={() => onSelect(selectedApt)}
-                    className="w-full py-4 bg-accent text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-all shadow-[0_4px_15px_rgba(250,218,165,0.4)] tracking-wide"
-                  >
-                    {t.bookNow}
-                  </button>
-                ) : (
-                  <div className="w-full py-4 bg-gray-50 text-gray-400 font-bold rounded-xl text-center border-2 border-dashed border-gray-200">
-                     {getStatus(selectedApt.status)}
-                  </div>
-                )}
+                <button
+                  onClick={() => onSelect(selectedApt)}
+                  className="w-full py-4 bg-accent text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-all shadow-[0_4px_15px_rgba(250,218,165,0.4)] tracking-wide"
+                >
+                  {t.bookNow}
+                </button>
              </div>
            ) : (
              <div className="h-full flex flex-col items-center justify-center text-center text-gray-300 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 p-10">

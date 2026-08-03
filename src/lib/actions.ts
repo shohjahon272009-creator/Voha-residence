@@ -25,7 +25,8 @@ export const getProjects = async (): Promise<Project[]> => {
     ...p,
     gallery: p.gallery ? JSON.parse(p.gallery) : [],
     amenities: p.amenities ? JSON.parse(p.amenities) : [],
-    categories: p.categories ? JSON.parse(p.categories) : []
+    categories: p.categories ? JSON.parse(p.categories) : [],
+    is_sold_out: Boolean(p.is_sold_out)
   }));
 };
 
@@ -37,7 +38,8 @@ export const getProjectBySlug = async (id: number): Promise<Project | null> => {
     ...p,
     gallery: p.gallery ? JSON.parse(p.gallery) : [],
     amenities: p.amenities ? JSON.parse(p.amenities) : [],
-    categories: p.categories ? JSON.parse(p.categories) : []
+    categories: p.categories ? JSON.parse(p.categories) : [],
+    is_sold_out: Boolean(p.is_sold_out)
   };
 };
 

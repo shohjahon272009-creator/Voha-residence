@@ -35,6 +35,7 @@ export interface Project {
   gift_label?: string;       // admin badge, e.g. "Ta'mir sovg'a"
   categories: string[];      // Parsed from JSON string — infratuzilma kategoriyalari
   delivery_year?: number;    // topshirish yili (admin belgilaydi), masalan 2027
+  is_sold_out?: boolean;     // admin belgilaydi — sotib tugatilgan loyiha (xonadon holatidan mustaqil)
 }
 
 // One hotspot inside a panorama that teleports the viewer to another scene.

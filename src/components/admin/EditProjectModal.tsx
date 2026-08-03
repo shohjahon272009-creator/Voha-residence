@@ -148,6 +148,16 @@ export default function EditProjectModal({ project }: { project: any }) {
                      </div>
                   </div>
 
+              {/* Sotib tugatilgan — admin belgilaydi. Belgilansa: saytda "Sotib tugatilgan"
+                  yozuvi chiqadi va loyiha xonadon tanlash bo'limida ko'rinmaydi. */}
+              <label className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors">
+                <input type="checkbox" name="is_sold_out" value="true" defaultChecked={Boolean(project.is_sold_out)} className="w-5 h-5 accent-primary rounded" />
+                <div>
+                  <span className="text-sm font-bold text-primary block">Sotib tugatilgan</span>
+                  <span className="text-[11px] text-gray-400">Belgilansa: saytda &quot;Sotib tugatilgan&quot; deb ko&apos;rsatiladi va xonadon tanlash bo&apos;limida chiqmaydi.</span>
+                </div>
+              </label>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 mb-1">Yangi Asosiy Rasm (Majburiy emas)</label>

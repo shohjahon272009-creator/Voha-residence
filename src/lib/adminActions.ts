@@ -151,8 +151,8 @@ export async function addProject(formData: FormData) {
       description_uz, description_ru, description_en,
       city, district, address,
       status, total_floors, apts_per_floor, min_price, main_image, gallery, days_left, virtual_tour_url,
-      discount_label, gift_label, categories, delivery_year
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      discount_label, gift_label, categories, delivery_year, is_sold_out
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const result = await stmt.run(
@@ -160,12 +160,12 @@ export async function addProject(formData: FormData) {
     description_uz, description_ru, description_en,
     city, district, '',
     status, total_floors, apts_per_floor, min_price, imageUrl, JSON.stringify(galleryUrls), days_left, finalTourUrl,
-    discount_label, gift_label, categories, delivery_year
+    discount_label, gift_label, categories, delivery_year, is_sold_out ? 1 : 0
   );
 
   // Xonadonlar avtomatik yaratilMAYDI — admin har xonadonni o'zi (real maydon,
   // xona, chizma bilan) "Xonadon qo'shish" orqali kiritadi.
-  void result; void is_sold_out;
+  void result;
 
   revalidatePath('/admin/projects');
   revalidatePath('/admin/sold-out');
@@ -211,6 +211,7 @@ export async function updateProject(id: number, formData: FormData) {
   const gift_label = (formData.get('gift_label') as string || '').trim() || null;
   const categories = JSON.stringify(formData.getAll('categories'));
   const delivery_year = parseInt(formData.get('delivery_year') as string) || null;
+  const is_sold_out = formData.get('is_sold_out') === 'true' ? 1 : 0;
 
   const imageFile = formData.get('main_image') as File | null;
   let imageUrl = null;
@@ -259,14 +260,14 @@ export async function updateProject(id: number, formData: FormData) {
         name_uz = ?, name_ru = ?, name_en = ?,
         description_uz = ?, description_ru = ?, description_en = ?,
         city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, main_image = ?, days_left = ?, virtual_tour_url = ?,
-        discount_label = ?, gift_label = ?, categories = ?, delivery_year = ?
+        discount_label = ?, gift_label = ?, categories = ?, delivery_year = ?, is_sold_out = ?
       WHERE id = ?
     `);
     await stmt.run(
       name_uz, name_ru, name_en,
       description_uz, description_ru, description_en,
       city, district, status, total_floors, apts_per_floor, min_price, imageUrl, days_left, finalTourUrl,
-      discount_label, gift_label, categories, delivery_year, id
+      discount_label, gift_label, categories, delivery_year, is_sold_out, id
     );
   } else {
     const stmt = db.prepare(`
@@ -274,14 +275,14 @@ export async function updateProject(id: number, formData: FormData) {
         name_uz = ?, name_ru = ?, name_en = ?,
         description_uz = ?, description_ru = ?, description_en = ?,
         city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, days_left = ?, virtual_tour_url = ?,
-        discount_label = ?, gift_label = ?, categories = ?, delivery_year = ?
+        discount_label = ?, gift_label = ?, categories = ?, delivery_year = ?, is_sold_out = ?
       WHERE id = ?
     `);
     await stmt.run(
       name_uz, name_ru, name_en,
       description_uz, description_ru, description_en,
       city, district, status, total_floors, apts_per_floor, min_price, days_left, finalTourUrl,
-      discount_label, gift_label, categories, delivery_year, id
+      discount_label, gift_label, categories, delivery_year, is_sold_out, id
     );
   }
 
@@ -380,7 +381,8 @@ export async function updateApartment(id: number, formData: FormData) {
   const rooms = parseInt(formData.get('rooms') as string) || 1;
   const area = parseFloat(formData.get('area') as string) || 0;
   const price_cash = parseFloat(formData.get('price_cash') as string) || 0;
-  const status = formData.get('status') as string;
+  // Xonadon holati endi formada yo'q — kelmasa, bazadagi mavjud qiymat saqlanadi.
+  const status = formData.get('status') as string | null;
 
   const imageFile = formData.get('plan_image') as File | null;
   let planUrl = null;
@@ -420,9 +422,14 @@ export async function updateApartment(id: number, formData: FormData) {
     }
   }
 
-  const updateFields: string[] = ['rooms = ?', 'area = ?', 'price_cash = ?', 'status = ?'];
-   
-  const updateValues: any[] = [rooms, area, price_cash, status];
+  const updateFields: string[] = ['rooms = ?', 'area = ?', 'price_cash = ?'];
+
+  const updateValues: any[] = [rooms, area, price_cash];
+
+  if (status) {
+    updateFields.push('status = ?');
+    updateValues.push(status);
+  }
 
   if (planUrl) {
     updateFields.push('plan_image = ?');

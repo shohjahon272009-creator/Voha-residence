@@ -27,7 +27,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const projectName = (project as any)[`name_${lang}`] || project.name_uz;
   const projectDesc = (project as any)[`description_${lang}`] || '';
   const dict = getDictionary(lang as Locale);
-  const isSoldOut = apartments.length > 0 && apartments.filter(a => a.status === "Bo'sh").length === 0;
+  // "Sotib tugatilgan" — admin belgilagan loyiha bayrog'idan (xonadon holatidan emas)
+  const isSoldOut = Boolean((project as any).is_sold_out);
 
   // Parse the optional multi-scene virtual tour (JSON) safely
   let tourScenes: import('@/lib/types').TourScene[] | undefined;

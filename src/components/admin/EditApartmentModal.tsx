@@ -23,13 +23,8 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
     setIsOpen(false);
   };
 
-  const statusColors = {
-    "Bo'sh": "bg-success/10 border-success/30 text-success hover:bg-success hover:text-white",
-    "Bronlangan": "bg-warning/10 border-warning/30 text-warning hover:bg-warning hover:text-white",
-    "Band": "bg-danger/10 border-danger/30 text-danger opacity-70"
-  };
-
-  const bgClass = statusColors[apt.status as keyof typeof statusColors] || statusColors["Band"];
+  // Xonadon holati endi ishlatilmaydi — barcha kartalar bir xil neytral ko'rinishda
+  const bgClass = "bg-primary/5 border-primary/20 text-primary hover:bg-primary hover:text-white";
 
   return (
     <>
@@ -69,33 +64,6 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
               <div>
                 <label className="block text-xs font-bold text-gray-500 mb-1">Narxi (UZS)</label>
                 <input required name="price_cash" type="number" min="0" defaultValue={apt.price_cash} className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-500 mb-1">Holati</label>
-                <select name="status" defaultValue={apt.status} onChange={(e) => {
-                  const val = e.target.value;
-                  const el = document.getElementById(`client_inputs_${apt.id}`);
-                  if (el) {
-                    el.style.display = (val === 'Band' || val === 'Bronlangan') ? 'block' : 'none';
-                  }
-                }} className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary">
-                  <option value="Bo'sh">Bo&apos;sh</option>
-                  <option value="Bronlangan">Bronlangan</option>
-                  <option value="Band">Band</option>
-                </select>
-              </div>
-
-              <div id={`client_inputs_${apt.id}`} style={{ display: (apt.status === 'Band' || apt.status === 'Bronlangan') ? 'block' : 'none' }}>
-                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-3">
-                  <h4 className="text-xs font-bold text-primary mb-2 uppercase">Mijoz ma&apos;lumotlari (Ixtiyoriy)</h4>
-                  <div>
-                    <input name="client_name" type="text" placeholder="F.I.O yoki Ismi" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary text-sm" />
-                  </div>
-                  <div>
-                    <input name="client_phone" type="text" placeholder="Telefon raqami (+998...)" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary text-sm" />
-                  </div>
-                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

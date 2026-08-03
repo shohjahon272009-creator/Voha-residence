@@ -18,7 +18,8 @@ const L: Record<Locale, Record<string, string>> = {
 
 export default function ApartmentBrowser({ apartments, projects, lang }: Props) {
   const t = L[lang] || L.uz;
-  const activeProjects = useMemo(() => projects.filter((p) => p.status !== 'Topshirilgan'), [projects]);
+  // Sotib tugatilgan va topshirilgan loyihalar xonadon tanlash bo'limida ko'rinmaydi
+  const activeProjects = useMemo(() => projects.filter((p) => p.status !== 'Topshirilgan' && !p.is_sold_out), [projects]);
   const activeIds = useMemo(() => new Set(activeProjects.map((p) => p.id)), [activeProjects]);
   const apts = useMemo(() => apartments.filter((a) => activeIds.has(a.project_id)), [apartments, activeIds]);
   const projById = useMemo(() => new Map(activeProjects.map((p) => [p.id, p])), [activeProjects]);

@@ -15,12 +15,8 @@ export default async function AdminSoldOutProjects() {
   const allProjects = await getProjects();
   const allApts = await getApartments();
 
-  // Filter projects where there are NO available ("Bo'sh") apartments
-  const projects = allProjects.filter(project => {
-    const apts = allApts.filter(a => a.project_id === project.id);
-    const available = apts.filter(a => a.status === "Bo'sh").length;
-    return apts.length > 0 && available === 0;
-  });
+  // "Sotib tugatilgan" endi admin belgilagan loyiha bayrog'idan aniqlanadi
+  const projects = allProjects.filter(project => project.is_sold_out);
 
   return (
     <div className="space-y-10">

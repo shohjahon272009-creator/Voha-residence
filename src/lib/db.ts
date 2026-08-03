@@ -155,6 +155,8 @@ async function initSchema(b: Backend): Promise<void> {
   await ensureColumn(b, 'projects', 'gift_label', 'TEXT');
   await ensureColumn(b, 'projects', 'categories', 'TEXT');
   await ensureColumn(b, 'projects', 'delivery_year', 'INTEGER');
+  // Loyiha "sotib tugatilgan" bayrog'i — endi xonadon holatidan emas, admin belgilaydi
+  await ensureColumn(b, 'projects', 'is_sold_out', 'INTEGER DEFAULT 0');
   await ensureColumn(b, 'apartments', 'image', 'TEXT');
 
   const users = await b.get('SELECT count(*) as count FROM users', []);

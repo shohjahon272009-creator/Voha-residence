@@ -9,12 +9,9 @@ export default function MortgageCalculator({ lang }: { lang: Locale }) {
   const [mode, setMode] = useState<'hybrid' | 'mortgage'>('hybrid');
   const [price, setPrice] = useState(800000000);
 
-  // Gibrid: boshlang'ich + 0% muddatli + ipoteka
+  // Gibrid: boshlang'ich to'lov + qolgan summa 0% foizsiz muddatli to'lov
   const [hDown, setHDown] = useState(30);
-  const [hInstall, setHInstall] = useState(20);
   const [hInstallMonths, setHInstallMonths] = useState(12);
-  const [hRate, setHRate] = useState(18);
-  const [hYears, setHYears] = useState(15);
 
   // Ipoteka
   const [income, setIncome] = useState<'official' | 'unofficial'>('official');
@@ -25,14 +22,10 @@ export default function MortgageCalculator({ lang }: { lang: Locale }) {
 
   const nf = (x: number) => Math.round(x).toLocaleString('ru-RU');
 
-  // --- Gibrid hisob ---
-  const hMortgagePercent = Math.max(0, 100 - hDown - hInstall);
+  // --- Gibrid hisob: boshlang'ich to'lov + qolgan summa 0% foizsiz muddatli ---
   const hDownAmount = Math.round(price * (hDown / 100));
-  const hInstallTotal = Math.round(price * (hInstall / 100));
-  const hMortgageAmount = Math.round(price * (hMortgagePercent / 100));
-  const hInstallMonthly = hInstallMonths > 0 ? Math.round(hInstallTotal / hInstallMonths) : 0;
-  const hr = hRate / 100 / 12, hn = hYears * 12;
-  const hMortgageMonthly = hMortgageAmount > 0 ? (hr > 0 ? Math.round((hMortgageAmount * hr * Math.pow(1 + hr, hn)) / (Math.pow(1 + hr, hn) - 1)) : Math.round(hMortgageAmount / hn)) : 0;
+  const hRemaining = Math.max(0, price - hDownAmount);
+  const hInstallMonthly = hInstallMonths > 0 ? Math.round(hRemaining / hInstallMonths) : 0;
 
   // --- Ipoteka hisob ---
   const mDownAmount = Math.round(price * (mDown / 100));
@@ -45,9 +38,9 @@ export default function MortgageCalculator({ lang }: { lang: Locale }) {
   const grandTotal = mDownAmount + totalPay;
 
   const T = ({
-    uz: { tag: 'TO‘LOV KALKULYATORI', hybrid: 'Gibrid to‘lov', mortgage: 'Ipoteka', price: 'Xonadon narxi (UZS)', income: 'Daromad', official: 'Rasmiy', unofficial: 'Norasmiy', down: 'Boshlang‘ich to‘lov (%)', install: '0% muddatli ulush (%)', installM: 'Muddatli muddati (oy)', rate: 'Foiz stavkasi (%)', term: 'Kredit muddati (oy)', years: 'Ipoteka muddati (yil)', loan: 'Kredit summasi (UZS)', payType: 'Oylik to‘lov turi', annuity: 'Annuitet', diff: 'Differensial', mo: 'oy', yr: 'yil', consult: 'Konsultatsiya', note: '* Dastlabki hisob-kitob. Yakuniy shartlar bank/loyihaga bog‘liq.', hMonthly: 'Ipoteka (oylik)', hMonthlyHint: 'Qurilishdan keyin', hDownRow: 'Boshlang‘ich to‘lov', hInstRow: '0% muddatli (oylik)', hMortRow: 'Ipoteka summasi', mMonthly: 'Oylik to‘lovingiz', totalPay: 'Umumiy to‘lovlar', total: 'Jami' },
-    ru: { tag: 'КАЛЬКУЛЯТОР ОПЛАТЫ', hybrid: 'Гибридная', mortgage: 'Ипотека', price: 'Цена квартиры (UZS)', income: 'Доход', official: 'Официальный', unofficial: 'Неофициальный', down: 'Первый взнос (%)', install: 'Доля рассрочки 0% (%)', installM: 'Срок рассрочки (мес)', rate: 'Ставка (%)', term: 'Срок кредита (мес)', years: 'Срок ипотеки (лет)', loan: 'Сумма кредита (UZS)', payType: 'Тип платежей', annuity: 'Аннуитет', diff: 'Дифференц.', mo: 'мес', yr: 'лет', consult: 'Консультация', note: '* Предварительный расчёт. Условия зависят от банка/проекта.', hMonthly: 'Ипотека (в мес)', hMonthlyHint: 'После сдачи', hDownRow: 'Первый взнос', hInstRow: 'Рассрочка 0% (в мес)', hMortRow: 'Сумма ипотеки', mMonthly: 'Ежемесячный платёж', totalPay: 'Общая сумма выплат', total: 'Всего' },
-    en: { tag: 'PAYMENT CALCULATOR', hybrid: 'Hybrid', mortgage: 'Mortgage', price: 'Apartment price (UZS)', income: 'Income', official: 'Official', unofficial: 'Unofficial', down: 'Down payment (%)', install: '0% installment share (%)', installM: 'Installment term (mo)', rate: 'Rate (%)', term: 'Loan term (mo)', years: 'Mortgage term (yr)', loan: 'Loan amount (UZS)', payType: 'Payment type', annuity: 'Annuity', diff: 'Differentiated', mo: 'mo', yr: 'yr', consult: 'Consultation', note: '* Preliminary calculation. Terms depend on the bank/project.', hMonthly: 'Mortgage (monthly)', hMonthlyHint: 'After handover', hDownRow: 'Down payment', hInstRow: '0% installment (monthly)', hMortRow: 'Mortgage amount', mMonthly: 'Monthly payment', totalPay: 'Total payments', total: 'Total' },
+    uz: { tag: 'TO‘LOV KALKULYATORI', hybrid: 'Gibrid to‘lov', mortgage: 'Ipoteka', price: 'Xonadon narxi (UZS)', income: 'Daromad', official: 'Rasmiy', unofficial: 'Norasmiy', down: 'Boshlang‘ich to‘lov (%)', install: '0% muddatli ulush (%)', installM: 'Muddatli muddati (oy)', rate: 'Foiz stavkasi (%)', term: 'Kredit muddati (oy)', years: 'Ipoteka muddati (yil)', loan: 'Kredit summasi (UZS)', payType: 'Oylik to‘lov turi', annuity: 'Annuitet', diff: 'Differensial', mo: 'oy', yr: 'yil', consult: 'Konsultatsiya', note: '* Dastlabki hisob-kitob. Yakuniy shartlar bank/loyihaga bog‘liq.', hMonthly: 'Oylik to‘lov', hMonthlyHint: '0% foizsiz muddatli to‘lov', hDownRow: 'Boshlang‘ich to‘lov', hMortRow: 'Qolgan summa (0%)', hTermRow: 'Muddat', mMonthly: 'Oylik to‘lovingiz', totalPay: 'Umumiy to‘lovlar', total: 'Jami' },
+    ru: { tag: 'КАЛЬКУЛЯТОР ОПЛАТЫ', hybrid: 'Гибридная', mortgage: 'Ипотека', price: 'Цена квартиры (UZS)', income: 'Доход', official: 'Официальный', unofficial: 'Неофициальный', down: 'Первый взнос (%)', install: 'Доля рассрочки 0% (%)', installM: 'Срок рассрочки (мес)', rate: 'Ставка (%)', term: 'Срок кредита (мес)', years: 'Срок ипотеки (лет)', loan: 'Сумма кредита (UZS)', payType: 'Тип платежей', annuity: 'Аннуитет', diff: 'Дифференц.', mo: 'мес', yr: 'лет', consult: 'Консультация', note: '* Предварительный расчёт. Условия зависят от банка/проекта.', hMonthly: 'Ежемесячный платёж', hMonthlyHint: 'Рассрочка 0%', hDownRow: 'Первый взнос', hMortRow: 'Остаток (0%)', hTermRow: 'Срок', mMonthly: 'Ежемесячный платёж', totalPay: 'Общая сумма выплат', total: 'Всего' },
+    en: { tag: 'PAYMENT CALCULATOR', hybrid: 'Hybrid', mortgage: 'Mortgage', price: 'Apartment price (UZS)', income: 'Income', official: 'Official', unofficial: 'Unofficial', down: 'Down payment (%)', install: '0% installment share (%)', installM: 'Installment term (mo)', rate: 'Rate (%)', term: 'Loan term (mo)', years: 'Mortgage term (yr)', loan: 'Loan amount (UZS)', payType: 'Payment type', annuity: 'Annuity', diff: 'Differentiated', mo: 'mo', yr: 'yr', consult: 'Consultation', note: '* Preliminary calculation. Terms depend on the bank/project.', hMonthly: 'Monthly payment', hMonthlyHint: '0% installment', hDownRow: 'Down payment', hMortRow: 'Remaining (0%)', hTermRow: 'Term', mMonthly: 'Monthly payment', totalPay: 'Total payments', total: 'Total' },
   } as const)[lang] || ({} as never);
 
   const box = 'bg-white/5 border border-white/10 rounded-2xl p-5';
@@ -89,20 +82,8 @@ export default function MortgageCalculator({ lang }: { lang: Locale }) {
                       <input type="number" min={0} max={90} value={hDown} onChange={(e) => setHDown(Math.min(90, Math.max(0, Number(e.target.value))))} className="w-full bg-transparent text-white text-2xl font-black outline-none" />
                     </div>
                     <div className={box}>
-                      <div className="flex justify-between mb-2"><label className="text-white/50 text-xs font-bold uppercase tracking-wider">{T.install}</label><span className="text-accent font-black text-sm">{nf(hInstallTotal)}</span></div>
-                      <input type="number" min={0} max={90} value={hInstall} onChange={(e) => setHInstall(Math.min(90, Math.max(0, Number(e.target.value))))} className="w-full bg-transparent text-white text-2xl font-black outline-none" />
-                    </div>
-                    <div className={box}>
                       <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-2">{T.installM}</label>
-                      <input type="number" min={1} max={60} value={hInstallMonths} onChange={(e) => setHInstallMonths(Number(e.target.value))} className="w-full bg-transparent text-white text-2xl font-black outline-none" />
-                    </div>
-                    <div className={box}>
-                      <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-2">{T.rate}</label>
-                      <input type="number" min={0} max={40} step={0.5} value={hRate} onChange={(e) => setHRate(Number(e.target.value))} className="w-full bg-transparent text-white text-2xl font-black outline-none" />
-                    </div>
-                    <div className={box}>
-                      <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-2">{T.years}</label>
-                      <input type="number" min={1} max={25} value={hYears} onChange={(e) => setHYears(Number(e.target.value))} className="w-full bg-transparent text-white text-2xl font-black outline-none" />
+                      <input type="number" min={1} max={15} value={hInstallMonths} onChange={(e) => setHInstallMonths(Math.min(15, Math.max(1, Number(e.target.value))))} className="w-full bg-transparent text-white text-2xl font-black outline-none" />
                     </div>
                   </>
                 ) : (
@@ -141,11 +122,11 @@ export default function MortgageCalculator({ lang }: { lang: Locale }) {
                   <>
                     <div className="text-gray-400 text-xs uppercase font-black tracking-widest mb-1">{T.hMonthly}</div>
                     <div className="text-xs text-gray-400 mb-3">{T.hMonthlyHint}</div>
-                    <div className="text-4xl font-black text-primary tracking-tight mb-6">{nf(hMortgageMonthly)} <span className="text-lg text-gray-400">UZS</span></div>
+                    <div className="text-4xl font-black text-primary tracking-tight mb-6">{nf(hInstallMonthly)} <span className="text-lg text-gray-400">UZS</span></div>
                     <div className="space-y-3 border-t-2 border-gray-100 pt-5 mb-6">
                       <div className="flex justify-between text-sm"><span className="text-gray-500">{T.hDownRow}</span><span className="font-black text-primary">{nf(hDownAmount)}</span></div>
-                      <div className="flex justify-between text-sm"><span className="text-gray-500">{T.hInstRow}</span><span className="font-black text-primary">{nf(hInstallMonthly)}</span></div>
-                      <div className="flex justify-between text-sm"><span className="text-gray-500">{T.hMortRow}</span><span className="font-black text-primary">{nf(hMortgageAmount)}</span></div>
+                      <div className="flex justify-between text-sm"><span className="text-gray-500">{T.hMortRow}</span><span className="font-black text-primary">{nf(hRemaining)}</span></div>
+                      <div className="flex justify-between text-sm"><span className="text-gray-500">{T.hTermRow}</span><span className="font-black text-primary">{hInstallMonths} {T.mo}</span></div>
                     </div>
                   </>
                 ) : (

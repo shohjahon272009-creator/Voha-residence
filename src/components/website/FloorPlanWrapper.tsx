@@ -32,12 +32,7 @@ export default function FloorPlanWrapper({
       <FloorPlan
         apartments={apartments}
         lang={lang}
-        onSelect={(apt) => {
-          // Only open modal for available apartments
-          if (apt.status === "Bo'sh") {
-            setSelectedApt(apt);
-          }
-        }}
+        onSelect={(apt) => setSelectedApt(apt)}
       />
     </>
   );

@@ -5,20 +5,17 @@
  
 import React from 'react';
 import ProjectCard from './ProjectCard';
-import { getProjects, getApartments } from '@/lib/actions';
+import { getProjects } from '@/lib/actions';
 import { Locale } from '@/lib/dictionaries';
 import AnimatedReveal from './AnimatedReveal';
 import VohaLogo from '@/components/common/VohaLogo';
 
 export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPANIYA', limit }: { lang: Locale, companyName?: string, limit?: number }) {
   const projects = await getProjects();
-  const allApartments = await getApartments();
-  // Compute availability server-side. Only a `soldOut` boolean is sent to the client —
-  // the exact remaining count and the real price never leave the server.
+  // "Sotib tugatilgan" endi xonadon holatidan emas, admin belgilagan loyiha bayrog'idan
+  // ('is_sold_out'). Xonadon holati/inventar mijozga umuman yuborilmaydi.
   const allCards = projects.map(p => {
-    const apts = allApartments.filter(a => a.project_id === p.id);
-    const available = apts.filter(a => a.status === "Bo'sh").length;
-    const soldOut = apts.length > 0 && available === 0;
+    const soldOut = Boolean(p.is_sold_out);
     return { project: { ...p, min_price: 0 }, soldOut };
   });
   // Bosh sahifada faqat bir nechta asosiy loyiha; loyihalar bo'limida hammasi.
