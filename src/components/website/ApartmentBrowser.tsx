@@ -1,17 +1,19 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { Apartment, Project } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
+import { CATEGORIES } from '@/lib/categories';
 import { Home, Layers, Maximize2, Building2, CalendarDays, Search, ArrowRight } from 'lucide-react';
 
 type Props = { apartments: Apartment[]; projects: Project[]; lang: Locale };
 
 const L: Record<Locale, Record<string, string>> = {
-  uz: { tag: 'XONADON TANLASH', title: 'O‘zingizga mos xonadonni toping', rooms: 'Xonalar', project: 'Loyiha', area: 'Maydon, m²', year: 'Topshirish', all: 'Barchasi', found: 'Topildi', pcs: 'ta variant', reset: 'Tozalash', roomS: 'xona', floorS: '-qavat', priceLabel: 'Narx', onReq: 'So‘rov bo‘yicha', more: 'Ko‘proq', details: 'Batafsil', empty: 'Bu shartlarga mos xonadon topilmadi', plan: 'chizma' },
-  ru: { tag: 'ПОДБОР КВАРТИРЫ', title: 'Найдите подходящую квартиру', rooms: 'Комнат', project: 'Проект', area: 'Площадь, м²', year: 'Сдача', all: 'Все', found: 'Найдено', pcs: 'вариантов', reset: 'Очистить', roomS: 'комн.', floorS: ' этаж', priceLabel: 'Цена', onReq: 'По запросу', more: 'Ещё', details: 'Подробнее', empty: 'По этим условиям ничего не найдено', plan: 'план' },
-  en: { tag: 'FIND AN APARTMENT', title: 'Find the apartment that fits you', rooms: 'Rooms', project: 'Project', area: 'Area, m²', year: 'Handover', all: 'All', found: 'Found', pcs: 'options', reset: 'Reset', roomS: 'rooms', floorS: ' floor', priceLabel: 'Price', onReq: 'On request', more: 'More', details: 'Details', empty: 'No apartments match these filters', plan: 'plan' },
+  uz: { tag: 'XONADON TANLASH', title: 'O‘zingizga mos xonadonni toping', byLoc: 'Joylashuv bo‘yicha', rooms: 'Xonalar', project: 'Loyiha', area: 'Maydon, m²', year: 'Topshirish', all: 'Barchasi', found: 'Topildi', pcs: 'ta variant', reset: 'Tozalash', roomS: 'xona', floorS: '-qavat', priceLabel: 'Narx', onReq: 'So‘rov bo‘yicha', more: 'Ko‘proq', details: 'Batafsil', empty: 'Bu shartlarga mos xonadon topilmadi', plan: 'chizma' },
+  ru: { tag: 'ПОДБОР КВАРТИРЫ', title: 'Найдите подходящую квартиру', byLoc: 'По расположению', rooms: 'Комнат', project: 'Проект', area: 'Площадь, м²', year: 'Сдача', all: 'Все', found: 'Найдено', pcs: 'вариантов', reset: 'Очистить', roomS: 'комн.', floorS: ' этаж', priceLabel: 'Цена', onReq: 'По запросу', more: 'Ещё', details: 'Подробнее', empty: 'По этим условиям ничего не найдено', plan: 'план' },
+  en: { tag: 'FIND AN APARTMENT', title: 'Find the apartment that fits you', byLoc: 'By location', rooms: 'Rooms', project: 'Project', area: 'Area, m²', year: 'Handover', all: 'All', found: 'Found', pcs: 'options', reset: 'Reset', roomS: 'rooms', floorS: ' floor', priceLabel: 'Price', onReq: 'On request', more: 'More', details: 'Details', empty: 'No apartments match these filters', plan: 'plan' },
 };
 
 export default function ApartmentBrowser({ apartments, projects, lang }: Props) {
@@ -19,6 +21,7 @@ export default function ApartmentBrowser({ apartments, projects, lang }: Props) 
   const activeProjects = useMemo(() => projects.filter((p) => p.status !== 'Topshirilgan'), [projects]);
   const activeIds = useMemo(() => new Set(activeProjects.map((p) => p.id)), [activeProjects]);
   const apts = useMemo(() => apartments.filter((a) => activeIds.has(a.project_id)), [apartments, activeIds]);
+  const projById = useMemo(() => new Map(activeProjects.map((p) => [p.id, p])), [activeProjects]);
   const projName = (p: Project) => (p as unknown as Record<string, string>)[`name_${lang}`] || p.name_uz;
   const years = useMemo(() => Array.from(new Set(activeProjects.map((p) => p.delivery_year).filter(Boolean))).sort() as number[], [activeProjects]);
 
@@ -31,27 +34,30 @@ export default function ApartmentBrowser({ apartments, projects, lang }: Props) 
   const [rooms, setRooms] = useState<number | null>(null);
   const [projectId, setProjectId] = useState<number | 'all'>('all');
   const [year, setYear] = useState<number | 'all'>('all');
+  const [cat, setCat] = useState<string | null>(null);
   const [areaMin, setAreaMin] = useState(bounds.minA);
   const [areaMax, setAreaMax] = useState(bounds.maxA);
 
+  // Har kategoriyaдa nechta xonadon borligi
+  const catCount = (key: string) => apts.filter((a) => projById.get(a.project_id)?.categories?.includes(key)).length;
+
   const filtered = useMemo(() => {
     return apts.filter((a) => {
+      const p = projById.get(a.project_id);
       if (rooms !== null && (rooms === 4 ? a.rooms < 4 : a.rooms !== rooms)) return false;
       if (projectId !== 'all' && a.project_id !== projectId) return false;
       if (a.area < areaMin || a.area > areaMax) return false;
-      if (year !== 'all') {
-        const p = activeProjects.find((x) => x.id === a.project_id);
-        if (p?.delivery_year !== year) return false;
-      }
+      if (year !== 'all' && p?.delivery_year !== year) return false;
+      if (cat && !p?.categories?.includes(cat)) return false;
       return true;
     });
-  }, [apts, rooms, projectId, year, areaMin, areaMax, activeProjects]);
+  }, [apts, rooms, projectId, year, areaMin, areaMax, cat, projById]);
 
   const [visible, setVisible] = useState(9);
-  useEffect(() => { setVisible(9); }, [rooms, projectId, year, areaMin, areaMax]);
+  useEffect(() => { setVisible(9); }, [rooms, projectId, year, areaMin, areaMax, cat]);
   const shown = filtered.slice(0, visible);
 
-  const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setAreaMin(bounds.minA); setAreaMax(bounds.maxA); };
+  const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setCat(null); setAreaMin(bounds.minA); setAreaMax(bounds.maxA); };
 
   if (apts.length === 0) return null;
 
@@ -61,6 +67,39 @@ export default function ApartmentBrowser({ apartments, projects, lang }: Props) 
         <div className="text-center mb-10">
           <span className="eyebrow eyebrow--center mb-4">{t.tag}</span>
           <h2 className="text-4xl md:text-5xl font-bold text-primary">{t.title}</h2>
+        </div>
+
+        {/* Joylashuv bo'yicha rasmli kategoriya filtri */}
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-4 text-sm font-bold text-gray-500 uppercase tracking-wider">
+            <Building2 size={15} className="text-accent" /> {t.byLoc}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+            {CATEGORIES.map((c) => {
+              const isActive = cat === c.key;
+              const n = catCount(c.key);
+              return (
+                <button
+                  key={c.key}
+                  onClick={() => setCat(isActive ? null : c.key)}
+                  className={`group relative h-24 sm:h-28 rounded-2xl overflow-hidden text-left transition-all duration-300 ${
+                    isActive ? 'ring-4 ring-accent shadow-xl -translate-y-1' : 'ring-1 ring-black/5 hover:-translate-y-1 hover:shadow-lg'
+                  }`}
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${c.gradient}`} />
+                  <img src={c.image} alt={c.label[lang]} loading="lazy"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-2.5 text-white">
+                    <div className="text-lg leading-none mb-0.5">{c.emoji}</div>
+                    <div className="font-bold text-xs leading-tight drop-shadow">{c.label[lang]}</div>
+                    {n > 0 && <div className="text-[10px] text-white/80 font-semibold">{n}</div>}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
@@ -126,13 +165,12 @@ export default function ApartmentBrowser({ apartments, projects, lang }: Props) 
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                   {shown.map((a) => {
-                    const p = activeProjects.find((x) => x.id === a.project_id);
+                    const p = projById.get(a.project_id);
                     return (
                       <Link key={a.id} href={`/${lang}/projects/${a.project_id}`}
                         className="group bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                         <div className="relative aspect-[4/3] bg-gray-50 flex items-center justify-center p-4 border-b border-gray-100 overflow-hidden">
                           {a.plan_image ? (
-                            // eslint-disable-next-line @next/next/no-img-element
                             <img src={a.plan_image} alt={`${a.number}-${t.plan}`} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                           ) : (
                             <div className="flex flex-col items-center text-gray-300"><Layers size={40} strokeWidth={1.2} /><span className="text-[11px] font-bold uppercase tracking-widest mt-2">№{a.number}</span></div>

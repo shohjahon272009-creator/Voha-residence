@@ -6,8 +6,8 @@ import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Hero from '@/components/website/Hero';
 import { getProjects, getApartments } from '@/lib/actions';
 import ProjectsList from '@/components/website/ProjectsList';
-import CategoryShowcase from '@/components/website/CategoryShowcase';
 import ApartmentBrowser from '@/components/website/ApartmentBrowser';
+import AboutSection from '@/components/website/AboutSection';
 import MortgageCalculator from '@/components/website/MortgageCalculator';
 import NewsSection from '@/components/website/NewsSection';
 import SalesOfficesSection from '@/components/website/SalesOfficesSection';
@@ -33,73 +33,15 @@ export default async function RootPage() {
 
   const browserApartments = (await getApartments()).map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
 
-  const about = {
-    tag: 'BIZ HAQIMIZDA',
-    title: '',
-    accent: 'Sifatli',
-    desc: "Biz yillar tajribasi asosida O'zbekiston bozorida xalqaro standartlarga javob beruvchi yirik turar-joy majmualarini barpo etib kelmoqdamiz.",
-    stat1value: 'Katta',
-    stat1label: 'Tajriba',
-    stat2value: 'Ko\'p',
-    stat2label: 'Barpo etilgan loyihalar'
-  };
-
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
       <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} />
       {settings.show_projects !== 'false' && <ProjectsList lang={localeLang} companyName={companyName} limit={6} />}
-      <CategoryShowcase projects={allProjects} lang={localeLang} />
       {settings.show_search !== 'false' && <ApartmentBrowser apartments={browserApartments} projects={allProjects} lang={localeLang} />}
       {settings.show_mortgage !== 'false' && <MortgageCalculator lang={localeLang} />}
       
       {/* About Section */}
-      {settings.show_about !== 'false' && (
-      <section id="about" className="py-32 px-6 bg-brand-mesh-lux relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-accent/15 to-transparent z-0"></div>
-        <div className="max-container grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
-           <AnimatedReveal direction="left" className="relative">
-              <div className="aspect-square rounded-[40px] overflow-hidden border-[15px] border-white shadow-2xl relative z-10 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
-                 <img src="/voha-actual-bg.png" alt="About Us" className="w-full h-full object-cover" />
-              </div>
-              <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-accent rounded-[40px] -z-0 opacity-40 transform rotate-6" />
-           </AnimatedReveal>
-           
-           <AnimatedReveal direction="right">
-              <span className="eyebrow mb-5">{about.tag}</span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-8 leading-tight flex flex-col items-start gap-y-4">
-                 <VohaLogo isScrolled={true} className="w-56 sm:w-64 lg:w-72 h-auto shrink-0" />
-                 <span>
-                    {settings.about_title ? settings.about_title :
-                      <>{about.title}<span className="text-gradient-accent">{about.accent}</span> va ishonchli qurilish</>
-                    }
-                 </span>
-              </h2>
-              <p className="text-gray-600 text-lg mb-10 leading-relaxed font-medium">
-                 {settings.about_desc ? settings.about_desc : about.desc}
-              </p>
-              
-              <div className="grid grid-cols-2 gap-8 bg-white p-8 rounded-3xl shadow-xl shadow-accent/5">
-                 <div className="flex flex-col">
-                    <div className="text-4xl font-black text-primary mb-2 tracking-tighter">
-                       {settings.about_stat1_value ? settings.about_stat1_value : about.stat1value}
-                    </div>
-                    <div className="text-sm text-gray-500 uppercase font-bold tracking-widest">
-                       {settings.about_stat1_label ? settings.about_stat1_label : about.stat1label}
-                    </div>
-                 </div>
-                 <div className="flex flex-col border-l-2 border-gray-100 pl-8">
-                    <div className="text-4xl font-black text-accent mb-2 tracking-tighter">
-                       {settings.about_stat2_value ? settings.about_stat2_value : about.stat2value}
-                    </div>
-                    <div className="text-sm text-gray-500 uppercase font-bold tracking-widest">
-                       {settings.about_stat2_label ? settings.about_stat2_label : about.stat2label}
-                    </div>
-                 </div>
-              </div>
-           </AnimatedReveal>
-        </div>
-      </section>
-      )}
+      {settings.show_about !== 'false' && <AboutSection lang={localeLang} settings={settings} />}
 
       {settings.show_news !== 'false' && <NewsSection lang={localeLang} />}
       {settings.show_offices !== 'false' && <SalesOfficesSection lang={localeLang} />}
