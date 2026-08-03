@@ -15,7 +15,7 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
       a: [
         { i: Award, t: 'Xalqaro sifat', d: 'Zamonaviy texnologiya va materiallar' },
         { i: ShieldCheck, t: 'Kafolat', d: 'Har bir loyihaga to‘liq kafolat' },
-        { i: Clock, t: 'O‘z vaqtida', d: 'Belgilangan muddatда topshirish' },
+        { i: Clock, t: 'O‘z vaqtida', d: 'Belgilangan muddatda topshirish' },
         { i: Wallet, t: 'Qulay to‘lov', d: 'Muddatli va ipoteka imkoniyati' },
       ],
     },
@@ -96,9 +96,9 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
           {/* Ustunliklar */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {t.a.map((adv, i) => (
-              <div key={i} className="flex items-start gap-3 bg-white/70 backdrop-blur rounded-2xl p-4 border border-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
-                <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <adv.i className="w-5 h-5 text-primary" />
+              <div key={i} className="group flex items-start gap-3 bg-white/70 backdrop-blur rounded-2xl p-4 border border-white shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div className="w-11 h-11 rounded-xl bg-primary/10 group-hover:bg-primary flex items-center justify-center shrink-0 transition-colors duration-300">
+                  <adv.i className="w-5 h-5 text-primary group-hover:text-white transition-colors duration-300" />
                 </div>
                 <div>
                   <div className="font-bold text-primary text-sm">{adv.t}</div>

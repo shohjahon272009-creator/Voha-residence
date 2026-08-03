@@ -118,7 +118,7 @@ export default function ContactSection({ lang }: { lang: Locale }) {
            
            <div className="lg:col-span-2 space-y-10">
              <div className="flex gap-6 items-start">
-                <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center shrink-0 border border-accent/30 shadow-[0_0_15px_rgba(250,218,165,0.2)]">
+                <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center shrink-0 border border-accent/30 shadow-[0_0_15px_rgba(250,218,165,0.2)] hover:bg-accent/30 hover:scale-105 transition-all duration-300">
                    <MapPin className="text-accent" size={24} />
                 </div>
                 <div>
@@ -128,17 +128,17 @@ export default function ContactSection({ lang }: { lang: Locale }) {
              </div>
              
              <div className="flex gap-6 items-start">
-                <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center shrink-0 border border-accent/30 shadow-[0_0_15px_rgba(250,218,165,0.2)]">
+                <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center shrink-0 border border-accent/30 shadow-[0_0_15px_rgba(250,218,165,0.2)] hover:bg-accent/30 hover:scale-105 transition-all duration-300">
                    <Phone className="text-accent" size={24} />
                 </div>
                 <div>
                    <h4 className="text-lg font-bold text-white mb-2">{t.phoneLabel}</h4>
-                   <p className="text-white/60 text-xl font-medium tracking-wide">+998 91 011 66 66</p>
+                   <a href="tel:+998910116666" className="text-white/60 text-xl font-medium tracking-wide hover:text-accent transition-colors">+998 91 011 66 66</a>
                 </div>
              </div>
 
              <div className="flex gap-6 items-start">
-                <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center shrink-0 border border-accent/30 shadow-[0_0_15px_rgba(250,218,165,0.2)]">
+                <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center shrink-0 border border-accent/30 shadow-[0_0_15px_rgba(250,218,165,0.2)] hover:bg-accent/30 hover:scale-105 transition-all duration-300">
                    <Clock className="text-accent" size={24} />
                 </div>
                 <div>
