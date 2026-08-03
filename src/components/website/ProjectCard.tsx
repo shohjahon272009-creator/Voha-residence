@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Project } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
 import { motion } from 'framer-motion';
-import { MapPin, Gift, Tag } from 'lucide-react';
+import { MapPin, Gift, Tag, ArrowRight } from 'lucide-react';
 import ProjectStatusBadge from './ProjectStatusBadge';
 
 interface ProjectCardProps {
@@ -31,15 +31,17 @@ export default function ProjectCard({ project, lang, soldOut = false }: ProjectC
     <motion.div whileHover={{ y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 24 }}>
       <Link
         href={href}
-        className="group block bg-white rounded-[28px] p-3 shadow-[0_8px_30px_rgba(20,20,40,0.06)] hover:shadow-[0_22px_55px_rgba(1,66,66,0.15)] transition-shadow duration-500"
+        className="group block bg-white rounded-[28px] p-3 ring-1 ring-black/5 shadow-[0_8px_30px_rgba(20,20,40,0.06)] hover:ring-accent/40 hover:shadow-[0_28px_60px_rgba(1,66,66,0.18)] transition-all duration-500"
       >
         {/* Inset "floating" photo with rounded corners */}
         <div className="relative aspect-[16/11] rounded-[22px] overflow-hidden">
           <img
             src={project.main_image || '/voha-actual-bg.png'}
             alt={projectName}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.08]"
           />
+          {/* Depth scrim — deepens on hover for a premium, dimensional look */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-500 pointer-events-none" />
           <div className="absolute top-4 left-4 z-10">
             <ProjectStatusBadge status={project.status} daysLeft={project.days_left} soldOut={soldOut} lang={lang} />
           </div>
@@ -75,18 +77,22 @@ export default function ProjectCard({ project, lang, soldOut = false }: ProjectC
 
         {/* Caption: label · name · district · price */}
         <div className="px-3 pt-5 pb-3">
-          <p className="text-[13px] text-gray-400 mb-1.5">{t.complex}</p>
+          <p className="flex items-center gap-1.5 text-[13px] text-gray-400 mb-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" /> {t.complex}
+          </p>
           <h3 className="text-[26px] leading-tight font-bold text-primary tracking-tight group-hover:text-accent transition-colors mb-3">
             {projectName}
           </h3>
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-3 pt-3 border-t border-gray-100">
             {(project.district || project.city) && (
               <span className="flex items-center gap-1.5 text-sm font-medium text-gray-500 truncate">
                 <MapPin size={15} className="text-accent shrink-0" />
                 {[project.district, project.city].filter(Boolean).join(', ')}
               </span>
             )}
-            <span className="text-sm text-gray-400 shrink-0">{t.price}</span>
+            <span className="flex items-center gap-1.5 text-sm font-bold text-gray-400 shrink-0 group-hover:text-accent transition-colors">
+              {t.price} <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+            </span>
           </div>
         </div>
       </Link>
