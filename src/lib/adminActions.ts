@@ -163,19 +163,9 @@ export async function addProject(formData: FormData) {
     discount_label, gift_label, categories, delivery_year
   );
 
-  const projectId = result.lastInsertRowid;
-
-  // Auto-generate apartments per floor
-  const aptStmt = db.prepare(`
-    INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  for (let floor = 1; floor <= total_floors; floor++) {
-    for (let num = 1; num <= apts_per_floor; num++) {
-      await aptStmt.run(projectId, floor, `${floor}0${num}`, (num % 2) + 1, 45 + num * 10, min_price + (floor * 10000000), is_sold_out ? "Band" : "Bo'sh");
-    }
-  }
+  // Xonadonlar avtomatik yaratilMAYDI — admin har xonadonni o'zi (real maydon,
+  // xona, chizma bilan) "Xonadon qo'shish" orqali kiritadi.
+  void result; void is_sold_out;
 
   revalidatePath('/admin/projects');
   revalidatePath('/admin/sold-out');
