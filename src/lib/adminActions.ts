@@ -98,6 +98,7 @@ export async function addProject(formData: FormData) {
   const discount_label = (formData.get('discount_label') as string || '').trim() || null;
   const gift_label = (formData.get('gift_label') as string || '').trim() || null;
   const categories = JSON.stringify(formData.getAll('categories'));
+  const delivery_year = parseInt(formData.get('delivery_year') as string) || null;
 
   const imageFile = formData.get('main_image') as File | null;
   let imageUrl = '/voha-actual-bg.png';
@@ -150,8 +151,8 @@ export async function addProject(formData: FormData) {
       description_uz, description_ru, description_en,
       city, district, address,
       status, total_floors, apts_per_floor, min_price, main_image, gallery, days_left, virtual_tour_url,
-      discount_label, gift_label, categories
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      discount_label, gift_label, categories, delivery_year
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const result = await stmt.run(
@@ -159,7 +160,7 @@ export async function addProject(formData: FormData) {
     description_uz, description_ru, description_en,
     city, district, '',
     status, total_floors, apts_per_floor, min_price, imageUrl, JSON.stringify(galleryUrls), days_left, finalTourUrl,
-    discount_label, gift_label, categories
+    discount_label, gift_label, categories, delivery_year
   );
 
   const projectId = result.lastInsertRowid;
@@ -219,6 +220,7 @@ export async function updateProject(id: number, formData: FormData) {
   const discount_label = (formData.get('discount_label') as string || '').trim() || null;
   const gift_label = (formData.get('gift_label') as string || '').trim() || null;
   const categories = JSON.stringify(formData.getAll('categories'));
+  const delivery_year = parseInt(formData.get('delivery_year') as string) || null;
 
   const imageFile = formData.get('main_image') as File | null;
   let imageUrl = null;
@@ -267,14 +269,14 @@ export async function updateProject(id: number, formData: FormData) {
         name_uz = ?, name_ru = ?, name_en = ?,
         description_uz = ?, description_ru = ?, description_en = ?,
         city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, main_image = ?, days_left = ?, virtual_tour_url = ?,
-        discount_label = ?, gift_label = ?, categories = ?
+        discount_label = ?, gift_label = ?, categories = ?, delivery_year = ?
       WHERE id = ?
     `);
     await stmt.run(
       name_uz, name_ru, name_en,
       description_uz, description_ru, description_en,
       city, district, status, total_floors, apts_per_floor, min_price, imageUrl, days_left, finalTourUrl,
-      discount_label, gift_label, categories, id
+      discount_label, gift_label, categories, delivery_year, id
     );
   } else {
     const stmt = db.prepare(`
@@ -282,14 +284,14 @@ export async function updateProject(id: number, formData: FormData) {
         name_uz = ?, name_ru = ?, name_en = ?,
         description_uz = ?, description_ru = ?, description_en = ?,
         city = ?, district = ?, status = ?, total_floors = ?, apts_per_floor = ?, min_price = ?, days_left = ?, virtual_tour_url = ?,
-        discount_label = ?, gift_label = ?, categories = ?
+        discount_label = ?, gift_label = ?, categories = ?, delivery_year = ?
       WHERE id = ?
     `);
     await stmt.run(
       name_uz, name_ru, name_en,
       description_uz, description_ru, description_en,
       city, district, status, total_floors, apts_per_floor, min_price, days_left, finalTourUrl,
-      discount_label, gift_label, categories, id
+      discount_label, gift_label, categories, delivery_year, id
     );
   }
 

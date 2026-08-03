@@ -34,6 +34,7 @@ export interface Project {
   discount_label?: string;   // admin badge, e.g. "Chegirma 50 mln gacha"
   gift_label?: string;       // admin badge, e.g. "Ta'mir sovg'a"
   categories: string[];      // Parsed from JSON string — infratuzilma kategoriyalari
+  delivery_year?: number;    // topshirish yili (admin belgilaydi), masalan 2027
 }
 
 // One hotspot inside a panorama that teleports the viewer to another scene.

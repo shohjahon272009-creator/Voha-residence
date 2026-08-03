@@ -177,7 +177,7 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
               </div>
 
               <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-500 mb-1">🏷️ Chegirma belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
                     <input name="discount_label" placeholder="Masalan: Chegirma 50 mln gacha" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
@@ -185,6 +185,10 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
                   <div>
                     <label className="block text-xs font-bold text-gray-500 mb-1">🎁 Sovg&apos;a belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
                     <input name="gift_label" placeholder="Masalan: Ta'mir sovg'a" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">📅 Topshirish yili <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
+                    <input name="delivery_year" type="number" min={2024} max={2035} placeholder="Masalan: 2027" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                 </div>
                 <div>
