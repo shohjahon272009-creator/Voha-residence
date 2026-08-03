@@ -65,9 +65,9 @@ export default function SalesOfficesSection({ lang }: { lang: Locale }) {
   };
 
   // Sotuv ofisining aniq koordinatasi (Urganch, Ulug'bek ko'chasi).
-  // Yandex: https://yandex.uz/maps/org/voha_residence/8272760691 (ll=60.593944,41.550782)
-  const OFFICE_LAT = 41.550782;
-  const OFFICE_LNG = 60.593944;
+  // Yandex org 8272760691 dagi haqiqiy nuqta (ll — xarita markazi emas, org o'zi).
+  const OFFICE_LAT = 41.544682;
+  const OFFICE_LNG = 60.599698;
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${OFFICE_LAT},${OFFICE_LNG}`;
   const mapEmbedUrl = `https://maps.google.com/maps?q=${OFFICE_LAT},${OFFICE_LNG}&z=16&output=embed`;
 
