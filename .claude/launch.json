@@ -20,6 +20,13 @@
       "runtimeArgs": ["--prefix", "C:\\Users\\user\\Documents\\qurilish", "run", "dev"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "voha-residence",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }

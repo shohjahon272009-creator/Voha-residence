@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Apartment, Project } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
@@ -25,18 +25,28 @@ export default function ApartmentBrowser({ apartments, projects, lang }: Props) 
   const projName = (p: Project) => (p as unknown as Record<string, string>)[`name_${lang}`] || p.name_uz;
   const years = useMemo(() => Array.from(new Set(activeProjects.map((p) => p.delivery_year).filter(Boolean))).sort() as number[], [activeProjects]);
 
-  const bounds = useMemo(() => {
-    if (apts.length === 0) return { minA: 0, maxA: 200 };
-    const a = apts.map((x) => x.area);
-    return { minA: Math.floor(Math.min(...a)), maxA: Math.ceil(Math.max(...a)) };
+  // Admin kiritgan real xonadon maydonlaridan avtomatik oraliqlar hosil qilamiz.
+  // Faqat xonadon MAVJUD bo'lgan oraliqlar ko'rsatiladi — shuning uchun mijoz
+  // qaysi birini tanlasa ham har doim natija chiqadi, bo'sh natija bo'lmaydi.
+  const areaRanges = useMemo(() => {
+    const edges = [0, 45, 55, 65, 75, 90, 110, Infinity];
+    const out: { min: number; max: number; label: string; count: number }[] = [];
+    for (let i = 0; i < edges.length - 1; i++) {
+      const lo = edges[i];
+      const hi = edges[i + 1];
+      const count = apts.filter((a) => a.area >= lo && a.area < hi).length;
+      if (count === 0) continue;
+      const label = lo === 0 ? `≤ ${hi}` : hi === Infinity ? `${lo}+` : `${lo}–${hi}`;
+      out.push({ min: lo, max: hi, label, count });
+    }
+    return out;
   }, [apts]);
 
   const [rooms, setRooms] = useState<number | null>(null);
   const [projectId, setProjectId] = useState<number | 'all'>('all');
   const [year, setYear] = useState<number | 'all'>('all');
   const [cat, setCat] = useState<string | null>(null);
-  const [areaMin, setAreaMin] = useState(bounds.minA);
-  const [areaMax, setAreaMax] = useState(bounds.maxA);
+  const [areaSel, setAreaSel] = useState<{ min: number; max: number } | null>(null);
 
   // Har kategoriyaдa nechta xonadon borligi
   const catCount = (key: string) => apts.filter((a) => projById.get(a.project_id)?.categories?.includes(key)).length;
@@ -46,18 +56,24 @@ export default function ApartmentBrowser({ apartments, projects, lang }: Props) 
       const p = projById.get(a.project_id);
       if (rooms !== null && (rooms === 4 ? a.rooms < 4 : a.rooms !== rooms)) return false;
       if (projectId !== 'all' && a.project_id !== projectId) return false;
-      if (a.area < areaMin || a.area > areaMax) return false;
+      if (areaSel && (a.area < areaSel.min || a.area >= areaSel.max)) return false;
       if (year !== 'all' && p?.delivery_year !== year) return false;
       if (cat && !p?.categories?.includes(cat)) return false;
       return true;
     });
-  }, [apts, rooms, projectId, year, areaMin, areaMax, cat, projById]);
+  }, [apts, rooms, projectId, year, areaSel, cat, projById]);
 
+  // Filtr o'zgarganda ko'rinadigan sonni 9 ga qaytaramiz (render vaqtida moslash — React tavsiyasi)
+  const filterSig = `${rooms}|${projectId}|${year}|${areaSel?.min ?? ''}-${areaSel?.max ?? ''}|${cat}`;
   const [visible, setVisible] = useState(9);
-  useEffect(() => { setVisible(9); }, [rooms, projectId, year, areaMin, areaMax, cat]);
+  const [prevSig, setPrevSig] = useState(filterSig);
+  if (filterSig !== prevSig) {
+    setPrevSig(filterSig);
+    setVisible(9);
+  }
   const shown = filtered.slice(0, visible);
 
-  const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setCat(null); setAreaMin(bounds.minA); setAreaMax(bounds.maxA); };
+  const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setCat(null); setAreaSel(null); };
 
   if (apts.length === 0) return null;
 
@@ -139,16 +155,23 @@ export default function ApartmentBrowser({ apartments, projects, lang }: Props) 
                 </div>
               )}
 
-              <div>
-                <label className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"><Maximize2 size={14} /> {t.area}</label>
-                <div className="flex items-center gap-2">
-                  <input type="number" value={areaMin} onChange={(e) => setAreaMin(Number(e.target.value))}
-                    className="w-full h-11 px-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white text-sm text-center" />
-                  <span className="text-gray-300">—</span>
-                  <input type="number" value={areaMax} onChange={(e) => setAreaMax(Number(e.target.value))}
-                    className="w-full h-11 px-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white text-sm text-center" />
+              {areaRanges.length > 0 && (
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"><Maximize2 size={14} /> {t.area}</label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {areaRanges.map((r) => {
+                      const active = areaSel?.min === r.min && areaSel?.max === r.max;
+                      return (
+                        <button key={r.label} onClick={() => setAreaSel(active ? null : { min: r.min, max: r.max })}
+                          className={`px-3 h-9 rounded-lg text-sm font-bold inline-flex items-center gap-1.5 transition-all ${active ? 'bg-primary text-white shadow-lg' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>
+                          {r.label}
+                          <span className={`text-[10px] font-black ${active ? 'text-accent' : 'text-gray-400'}`}>{r.count}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                 <div className="text-sm"><span className="text-gray-400">{t.found}: </span><span className="font-black text-primary">{filtered.length}</span></div>

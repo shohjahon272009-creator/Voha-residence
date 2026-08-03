@@ -7,6 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import VohaLogo from '@/components/common/VohaLogo';
 
@@ -136,8 +137,9 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
           </p>
           
           <div className="flex flex-wrap justify-center gap-3 md:gap-4 mt-2">
-             <a href={`/${lang}#about`} className="px-6 md:px-10 py-3 md:py-4 bg-accent text-primary font-bold rounded-full hover:bg-white transition-all transform hover:-translate-y-1 shadow-[0_0_30px_rgba(250,218,165,0.4)] tracking-wide inline-block text-sm md:text-base">
+             <a href={`/${lang}#about`} className="group px-6 md:px-10 py-3 md:py-4 bg-accent text-primary font-bold rounded-full hover:bg-white transition-all transform hover:-translate-y-1 shadow-[0_0_30px_rgba(250,218,165,0.4)] tracking-wide inline-flex items-center gap-2 text-sm md:text-base">
                 {dict.hero.details}
+                <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
              </a>
              <a href={`/${lang}#projects`} className="px-6 md:px-10 py-3 md:py-4 bg-transparent backdrop-blur-sm text-white font-bold rounded-full border-2 border-white/30 hover:bg-white hover:text-primary transition-all transform hover:-translate-y-1 inline-block text-sm md:text-base">
                 {t.btn2}
