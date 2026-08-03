@@ -113,7 +113,7 @@ export default function MortgageCalculator({ lang }: { lang: Locale }) {
                     </div>
                     <div className={box}>
                       <div className="flex justify-between mb-3"><label className="text-white/50 text-xs font-bold uppercase tracking-wider">{T.down}</label><span className="text-accent font-black text-sm">{nf(mDownAmount)}</span></div>
-                      <div className="flex gap-2 flex-wrap">{[15, 25, 50].map((d) => (<button key={d} onClick={() => setMDown(d)} className={pbtn(mDown === d)}>{d}%</button>))}<input type="number" min={0} max={90} value={mDown} onChange={(e) => setMDown(Math.min(90, Math.max(0, Number(e.target.value))))} className="w-16 h-10 rounded-xl bg-white/10 text-white text-center font-bold text-sm outline-none" /></div>
+                      <div className="flex gap-2 flex-wrap">{[15, 25].map((d) => (<button key={d} onClick={() => setMDown(d)} className={pbtn(mDown === d)}>{d}%</button>))}<input type="number" min={0} max={90} value={mDown} onChange={(e) => setMDown(Math.min(90, Math.max(0, Number(e.target.value))))} className="w-16 h-10 rounded-xl bg-white/10 text-white text-center font-bold text-sm outline-none" /></div>
                     </div>
                     <div className={box}>
                       <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-3">{T.term}</label>
