@@ -48,8 +48,8 @@ export default async function RootPage() {
       {settings.show_about !== 'false' && <AboutSection lang={localeLang} settings={settings} />}
 
       {settings.show_news !== 'false' && <NewsSection lang={localeLang} />}
-      {settings.show_offices !== 'false' && <SalesOfficesSection lang={localeLang} />}
-      {settings.show_contact !== 'false' && <ContactSection lang={localeLang} />}
+      {settings.show_offices !== 'false' && <SalesOfficesSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />}
+      {settings.show_contact !== 'false' && <ContactSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />}
     </WebsiteLayout>
   );
 }

@@ -104,6 +104,29 @@ export default async function AdminSettings() {
             </div>
          </div>
 
+         {/* Aloqa ma'lumotlari */}
+         <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-3 mb-8">
+               <Globe className="text-accent" />
+               <h3 className="font-bold text-xl text-primary">Aloqa ma‘lumotlari</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Telefon raqami</label>
+                  <input name="contact_phone" type="text" defaultValue={settings.contact_phone || "+998 91 011 66 66"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <p className="text-[11px] text-gray-400">Aloqa va sotuv ofisi bo‘limlarida ko‘rinadi.</p>
+               </div>
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Ish vaqti</label>
+                  <input name="contact_hours" type="text" defaultValue={settings.contact_hours || "Har kuni 09:00 dan 18:00 gacha"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+               <div className="col-span-2 space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Manzil</label>
+                  <input name="contact_address" type="text" defaultValue={settings.contact_address || "Xorazm viloyati, Urganch shahri, Amir Temur ko‘chasi, 1A uy"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+            </div>
+         </div>
+
          {/* Integrations */}
          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-3 mb-8">
@@ -117,6 +140,7 @@ export default async function AdminSettings() {
                  { id: 'show_mortgage', label: 'Ipoteka kalkulyatori' },
                  { id: 'show_about', label: 'Biz haqimizda' },
                  { id: 'show_news', label: 'Yangiliklar' },
+                 { id: 'show_offices', label: 'Sotuv ofisi (xarita)' },
                  { id: 'show_contact', label: 'Aloqa bo\'limi' },
                ].map(item => (
                  <div key={item.id} className="flex flex-col gap-2 p-4 bg-gray-50 rounded-xl border border-gray-100">

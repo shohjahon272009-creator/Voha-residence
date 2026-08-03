@@ -335,6 +335,14 @@ export async function saveSettings(formData: FormData) {
 
   if (hero_title) await updateSetting('hero_title', hero_title);
   if (hero_desc) await updateSetting('hero_desc', hero_desc);
+
+  // Aloqa ma'lumotlari — admin boshqaradi (telefon, manzil, ish vaqti)
+  const contact_phone = formData.get('contact_phone') as string;
+  const contact_address = formData.get('contact_address') as string;
+  const contact_hours = formData.get('contact_hours') as string;
+  if (contact_phone) await updateSetting('contact_phone', contact_phone);
+  if (contact_address) await updateSetting('contact_address', contact_address);
+  if (contact_hours) await updateSetting('contact_hours', contact_hours);
   if (about_title) await updateSetting('about_title', about_title);
   if (about_desc) await updateSetting('about_desc', about_desc);
   if (about_stat1_value) await updateSetting('about_stat1_value', about_stat1_value);
@@ -348,6 +356,7 @@ export async function saveSettings(formData: FormData) {
   const show_about = formData.get('show_about') as string;
   const show_news = formData.get('show_news') as string;
   const show_contact = formData.get('show_contact') as string;
+  const show_offices = formData.get('show_offices') as string;
 
   await updateSetting('show_projects', show_projects ? 'true' : 'false');
   await updateSetting('show_search', show_search ? 'true' : 'false');
@@ -355,6 +364,7 @@ export async function saveSettings(formData: FormData) {
   await updateSetting('show_about', show_about ? 'true' : 'false');
   await updateSetting('show_news', show_news ? 'true' : 'false');
   await updateSetting('show_contact', show_contact ? 'true' : 'false');
+  await updateSetting('show_offices', show_offices ? 'true' : 'false');
 
   const logoFile = formData.get('company_logo') as File | null;
   if (logoFile && logoFile.name && logoFile.size > 0) {

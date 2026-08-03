@@ -5,7 +5,7 @@ import { Locale } from '@/lib/dictionaries';
 import { MapPin, Phone, Clock, Navigation, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function SalesOfficesSection({ lang }: { lang: Locale }) {
+export default function SalesOfficesSection({ lang, phone, address, hours }: { lang: Locale; phone?: string; address?: string; hours?: string }) {
   const dict = {
     uz: {
       tag: "JOYLASHUV",
@@ -63,6 +63,12 @@ export default function SalesOfficesSection({ lang }: { lang: Locale }) {
       loading: "Xarita yuklanmoqda…",
       onMap: "Xaritada",
   };
+
+  // Admin sozlagan aloqa ma'lumotlari (bo'sh bo'lsa — standart matn)
+  const phoneVal = phone || '+998 91 011 66 66';
+  const addressVal = address || dict.address;
+  const hoursVal = hours || dict.hours;
+  const telHref = 'tel:' + phoneVal.replace(/[^\d+]/g, '');
 
   // Sotuv ofisining aniq koordinatasi (Urganch, Ulug'bek ko'chasi).
   // Yandex org 8272760691 dagi haqiqiy nuqta (ll — xarita markazi emas, org o'zi).
@@ -135,19 +141,19 @@ export default function SalesOfficesSection({ lang }: { lang: Locale }) {
                   </div>
                   <div>
                     <h3 className="font-bold text-2xl leading-tight mb-1.5">{dict.officeName}</h3>
-                    <p className="text-white/60 text-sm leading-relaxed">{dict.address}</p>
+                    <p className="text-white/60 text-sm leading-relaxed">{addressVal}</p>
                   </div>
                 </div>
 
                 {/* Info rows */}
                 <div className="mt-auto space-y-3">
-                  <a href="tel:+998910116666" className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent/30 transition-all">
+                  <a href={telHref} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-accent/30 transition-all">
                     <div className="w-10 h-10 rounded-xl bg-accent/15 flex items-center justify-center shrink-0">
                       <Phone className="w-5 h-5 text-accent" />
                     </div>
                     <div>
                       <div className="text-[11px] uppercase tracking-widest text-white/40 font-bold">{dict.phoneLabel}</div>
-                      <div className="font-bold text-white tracking-wide">+998 91 011 66 66</div>
+                      <div className="font-bold text-white tracking-wide">{phoneVal}</div>
                     </div>
                   </a>
 
@@ -157,7 +163,7 @@ export default function SalesOfficesSection({ lang }: { lang: Locale }) {
                     </div>
                     <div>
                       <div className="text-[11px] uppercase tracking-widest text-white/40 font-bold">{dict.hoursLabel}</div>
-                      <div className="font-bold text-white">{dict.hours}</div>
+                      <div className="font-bold text-white">{hoursVal}</div>
                     </div>
                   </div>
                 </div>

@@ -10,7 +10,7 @@ import { Locale } from '@/lib/dictionaries';
 import { MapPin, Phone, Clock, Send, CheckCircle2 } from 'lucide-react';
 import { submitContact } from '@/lib/contactActions';
 
-export default function ContactSection({ lang }: { lang: Locale }) {
+export default function ContactSection({ lang, phone, address, hours }: { lang: Locale; phone?: string; address?: string; hours?: string }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -81,6 +81,12 @@ export default function ContactSection({ lang }: { lang: Locale }) {
       errorMsg: "Xatolik yuz berdi. Iltimos qaytadan urinib ko'ring."
   };
 
+  // Admin sozlagan aloqa ma'lumotlari (bo'sh bo'lsa — til bo'yicha standart matn)
+  const phoneVal = phone || '+998 91 011 66 66';
+  const addressVal = address || t.addressValue;
+  const hoursVal = hours || t.timeValue;
+  const telHref = 'tel:' + phoneVal.replace(/[^\d+]/g, '');
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -123,7 +129,7 @@ export default function ContactSection({ lang }: { lang: Locale }) {
                 </div>
                 <div>
                    <h4 className="text-lg font-bold text-white mb-2">{t.addressLabel}</h4>
-                   <p className="text-white/60 leading-relaxed">{t.addressValue}</p>
+                   <p className="text-white/60 leading-relaxed">{addressVal}</p>
                 </div>
              </div>
              
@@ -133,7 +139,7 @@ export default function ContactSection({ lang }: { lang: Locale }) {
                 </div>
                 <div>
                    <h4 className="text-lg font-bold text-white mb-2">{t.phoneLabel}</h4>
-                   <a href="tel:+998910116666" className="text-white/60 text-xl font-medium tracking-wide hover:text-accent transition-colors">+998 91 011 66 66</a>
+                   <a href={telHref} className="text-white/60 text-xl font-medium tracking-wide hover:text-accent transition-colors">{phoneVal}</a>
                 </div>
              </div>
 
@@ -143,7 +149,7 @@ export default function ContactSection({ lang }: { lang: Locale }) {
                 </div>
                 <div>
                    <h4 className="text-lg font-bold text-white mb-2">{t.timeLabel}</h4>
-                   <p className="text-white/60">{t.timeValue}</p>
+                   <p className="text-white/60">{hoursVal}</p>
                 </div>
              </div>
            </div>
@@ -168,7 +174,7 @@ export default function ContactSection({ lang }: { lang: Locale }) {
                     </div>
                     <div className="space-y-2">
                        <label className="text-xs font-bold text-white/70 uppercase tracking-wider">{t.phoneLabel}</label>
-                       <input name="phone" required type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors" placeholder="+998 91 011 66 66" />
+                       <input name="phone" required type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors" placeholder={phoneVal} />
                     </div>
                  </div>
                  <div className="space-y-2">
