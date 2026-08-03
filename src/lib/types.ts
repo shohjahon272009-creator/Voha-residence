@@ -70,6 +70,17 @@ export interface Apartment {
   note: string;
 }
 
+// Xonadon tanlash bo'limidan to'lov kalkulyatoriga uzatiladigan ma'lumot.
+// Narx (price_cash) YO'Q — u faqat serverda ishlatiladi.
+export interface SelectedApartment {
+  id: number;
+  number: string;
+  rooms: number;
+  area: number;
+  floor: number;
+  projectName: string;
+}
+
 export interface Booking {
   id: number;
   apartment_id: number;

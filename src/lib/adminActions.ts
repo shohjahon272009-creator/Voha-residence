@@ -38,6 +38,7 @@ export async function addApartment(formData: FormData) {
   const number = (formData.get('number') as string || `${floor}01`).trim();
   const rooms = parseInt(formData.get('rooms') as string) || 1;
   const area = parseFloat(formData.get('area') as string) || 0;
+  const price_cash = parseFloat(formData.get('price_cash') as string) || 0;
   const status = (formData.get('status') as string) || "Bo'sh";
 
   // Chizma (plan) rasmi — ixtiyoriy
@@ -58,7 +59,7 @@ export async function addApartment(formData: FormData) {
   }
 
   await db.prepare(`INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, price_installment, status, plan_image, image, orientation, note)
-    VALUES (?, ?, ?, ?, ?, 0, NULL, ?, ?, '', '', '')`).run(project_id, floor, number, rooms, area, status, planUrl);
+    VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?, '', '', '')`).run(project_id, floor, number, rooms, area, price_cash, status, planUrl);
 
   revalidatePath('/admin/apartments');
   revalidatePath('/admin/dashboard');

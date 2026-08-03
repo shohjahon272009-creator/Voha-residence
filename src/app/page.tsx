@@ -6,9 +6,8 @@ import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Hero from '@/components/website/Hero';
 import { getProjects, getApartments } from '@/lib/actions';
 import ProjectsList from '@/components/website/ProjectsList';
-import ApartmentBrowser from '@/components/website/ApartmentBrowser';
+import ApartmentAndPayment from '@/components/website/ApartmentAndPayment';
 import AboutSection from '@/components/website/AboutSection';
-import MortgageCalculator from '@/components/website/MortgageCalculator';
 import NewsSection from '@/components/website/NewsSection';
 import SalesOfficesSection from '@/components/website/SalesOfficesSection';
 import ContactSection from '@/components/website/ContactSection';
@@ -37,8 +36,13 @@ export default async function RootPage() {
     <WebsiteLayout lang={localeLang} companyName={companyName}>
       <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} />
       {settings.show_projects !== 'false' && <ProjectsList lang={localeLang} companyName={companyName} limit={6} />}
-      {settings.show_search !== 'false' && <ApartmentBrowser apartments={browserApartments} projects={allProjects} lang={localeLang} />}
-      {settings.show_mortgage !== 'false' && <MortgageCalculator lang={localeLang} />}
+      <ApartmentAndPayment
+        apartments={browserApartments}
+        projects={allProjects}
+        lang={localeLang}
+        showSearch={settings.show_search !== 'false'}
+        showMortgage={settings.show_mortgage !== 'false'}
+      />
       
       {/* About Section */}
       {settings.show_about !== 'false' && <AboutSection lang={localeLang} settings={settings} />}

@@ -65,6 +65,12 @@ export default function AddApartmentModal({ projectId, projectName }: { projectI
               </div>
 
               <div>
+                <label className="block text-xs font-bold text-gray-500 mb-1">Narxi (UZS) <span className="text-gray-300 font-normal">— to‘lov kalkulyatori uchun</span></label>
+                <input name="price_cash" type="number" min={0} step="any" placeholder="800000000" className="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                <p className="text-[11px] text-gray-400 mt-1">Mijozga narx ochiq ko&apos;rsatilmaydi — faqat oylik to&apos;lov hisoblanadi.</p>
+              </div>
+
+              <div>
                 <label className="block text-xs font-bold text-gray-500 mb-1">Chizma (plan) rasmi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
                 <input type="file" name="plan_image" accept="image/*" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-accent/10 file:text-accent hover:file:bg-accent/20 cursor-pointer" />
                 <p className="text-[11px] text-gray-400 mt-1">Xonadon chizmasi — qidiruv kartasida ko&apos;rinadi.</p>

@@ -3,21 +3,22 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Apartment, Project } from '@/lib/types';
+import { Apartment, Project, SelectedApartment } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
 import { CATEGORIES } from '@/lib/categories';
-import { Home, Layers, Maximize2, Building2, CalendarDays, Search, ArrowRight } from 'lucide-react';
+import { Home, Layers, Maximize2, Building2, CalendarDays, Search, ArrowRight, Calculator } from 'lucide-react';
 
-type Props = { apartments: Apartment[]; projects: Project[]; lang: Locale };
+type Props = { apartments: Apartment[]; projects: Project[]; lang: Locale; onSelect?: (apt: SelectedApartment) => void };
 
 const L: Record<Locale, Record<string, string>> = {
-  uz: { tag: 'XONADON TANLASH', title: 'O‘zingizga mos xonadonni toping', byLoc: 'Joylashuv bo‘yicha', rooms: 'Xonalar', project: 'Loyiha', area: 'Maydon, m²', year: 'Topshirish', all: 'Barchasi', found: 'Topildi', pcs: 'ta variant', reset: 'Tozalash', roomS: 'xona', floorS: '-qavat', priceLabel: 'Narx', onReq: 'So‘rov bo‘yicha', more: 'Ko‘proq', details: 'Batafsil', empty: 'Bu shartlarga mos xonadon topilmadi', plan: 'chizma' },
-  ru: { tag: 'ПОДБОР КВАРТИРЫ', title: 'Найдите подходящую квартиру', byLoc: 'По расположению', rooms: 'Комнат', project: 'Проект', area: 'Площадь, м²', year: 'Сдача', all: 'Все', found: 'Найдено', pcs: 'вариантов', reset: 'Очистить', roomS: 'комн.', floorS: ' этаж', priceLabel: 'Цена', onReq: 'По запросу', more: 'Ещё', details: 'Подробнее', empty: 'По этим условиям ничего не найдено', plan: 'план' },
-  en: { tag: 'FIND AN APARTMENT', title: 'Find the apartment that fits you', byLoc: 'By location', rooms: 'Rooms', project: 'Project', area: 'Area, m²', year: 'Handover', all: 'All', found: 'Found', pcs: 'options', reset: 'Reset', roomS: 'rooms', floorS: ' floor', priceLabel: 'Price', onReq: 'On request', more: 'More', details: 'Details', empty: 'No apartments match these filters', plan: 'plan' },
+  uz: { tag: 'XONADON TANLASH', title: 'O‘zingizga mos xonadonni toping', byLoc: 'Joylashuv bo‘yicha', rooms: 'Xonalar', project: 'Loyiha', area: 'Maydon, m²', year: 'Topshirish', all: 'Barchasi', found: 'Topildi', pcs: 'ta variant', reset: 'Tozalash', roomS: 'xona', floorS: '-qavat', priceLabel: 'Narx', onReq: 'So‘rov bo‘yicha', more: 'Ko‘proq', details: 'Batafsil', empty: 'Bu shartlarga mos xonadon topilmadi', plan: 'chizma', calc: 'To‘lovni hisoblash' },
+  ru: { tag: 'ПОДБОР КВАРТИРЫ', title: 'Найдите подходящую квартиру', byLoc: 'По расположению', rooms: 'Комнат', project: 'Проект', area: 'Площадь, м²', year: 'Сдача', all: 'Все', found: 'Найдено', pcs: 'вариантов', reset: 'Очистить', roomS: 'комн.', floorS: ' этаж', priceLabel: 'Цена', onReq: 'По запросу', more: 'Ещё', details: 'Подробнее', empty: 'По этим условиям ничего не найдено', plan: 'план', calc: 'Рассчитать платёж' },
+  en: { tag: 'FIND AN APARTMENT', title: 'Find the apartment that fits you', byLoc: 'By location', rooms: 'Rooms', project: 'Project', area: 'Area, m²', year: 'Handover', all: 'All', found: 'Found', pcs: 'options', reset: 'Reset', roomS: 'rooms', floorS: ' floor', priceLabel: 'Price', onReq: 'On request', more: 'More', details: 'Details', empty: 'No apartments match these filters', plan: 'plan', calc: 'Calculate payment' },
 };
 
-export default function ApartmentBrowser({ apartments, projects, lang }: Props) {
+export default function ApartmentBrowser({ apartments, projects, lang, onSelect }: Props) {
   const t = L[lang] || L.uz;
+  const scrollToCalc = () => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   // Sotib tugatilgan va topshirilgan loyihalar xonadon tanlash bo'limida ko'rinmaydi
   const activeProjects = useMemo(() => projects.filter((p) => p.status !== 'Topshirilgan' && !p.is_sold_out), [projects]);
   const activeIds = useMemo(() => new Set(activeProjects.map((p) => p.id)), [activeProjects]);
@@ -190,9 +191,15 @@ export default function ApartmentBrowser({ apartments, projects, lang }: Props) 
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                   {shown.map((a) => {
                     const p = projById.get(a.project_id);
+                    const pick = () => {
+                      onSelect?.({ id: a.id, number: a.number, rooms: a.rooms, area: a.area, floor: a.floor, projectName: p ? projName(p) : '' });
+                      scrollToCalc();
+                    };
                     return (
-                      <Link key={a.id} href={`/${lang}/projects/${a.project_id}`}
-                        className="group bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                      <div key={a.id} role="button" tabIndex={0}
+                        onClick={pick}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } }}
+                        className="group bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer">
                         <div className="relative aspect-[4/3] bg-gray-50 flex items-center justify-center p-4 border-b border-gray-100 overflow-hidden">
                           {a.plan_image ? (
                             <img src={a.plan_image} alt={`${a.number}-${t.plan}`} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
@@ -213,12 +220,15 @@ export default function ApartmentBrowser({ apartments, projects, lang }: Props) 
                             <div className="flex items-center gap-1.5"><Layers size={13} /> {a.floor}{t.floorS}</div>
                           </div>
                           {p && <div className="mt-3 pt-3 border-t border-gray-50 flex items-center gap-1.5 text-[11px] text-gray-400 font-medium truncate"><Building2 size={12} className="shrink-0" /> {projName(p)}</div>}
-                          <div className="mt-2 flex items-center justify-between text-[11px]"><span className="text-gray-400">{t.priceLabel}</span><span className="font-bold text-primary">{t.onReq}</span></div>
                           <div className="mt-4 w-full py-2.5 rounded-xl bg-primary/5 text-primary text-xs font-bold text-center group-hover:bg-primary group-hover:text-white transition-all flex items-center justify-center gap-1.5">
-                            {t.details} <ArrowRight size={13} />
+                            <Calculator size={13} /> {t.calc}
                           </div>
+                          <Link href={`/${lang}/projects/${a.project_id}`} onClick={(e) => e.stopPropagation()}
+                            className="mt-2 flex items-center justify-center gap-1 text-[11px] text-gray-400 hover:text-primary font-medium transition-colors">
+                            {t.details} <ArrowRight size={11} />
+                          </Link>
                         </div>
-                      </Link>
+                      </div>
                     );
                   })}
                 </div>
