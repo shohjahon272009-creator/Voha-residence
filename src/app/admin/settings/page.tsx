@@ -104,6 +104,57 @@ export default async function AdminSettings() {
             </div>
          </div>
 
+         {/* Bosh ekran statistikasi */}
+         <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-3 mb-2">
+               <Globe className="text-accent" />
+               <h3 className="font-bold text-xl text-primary">Bosh ekran statistikasi</h3>
+            </div>
+            <p className="text-sm text-gray-400 mb-8">Bosh sahifadagi 4 ta raqam (masalan: <b>15 Yil</b> — <b>Tajriba</b>).</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               {[
+                 { v: 'hero_stat1_value', vd: '15 Yil', l: 'hero_stat1_label', ld: 'Tajriba' },
+                 { v: 'hero_stat2_value', vd: '15+', l: 'hero_stat2_label', ld: 'Loyiha' },
+                 { v: 'hero_stat3_value', vd: '5000+', l: 'hero_stat3_label', ld: 'Mijoz' },
+                 { v: 'hero_stat4_value', vd: 'A\'lo', l: 'hero_stat4_label', ld: 'Sifat' },
+               ].map((s, i) => (
+                 <div key={i} className="flex gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="flex-1 space-y-1">
+                       <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Raqam {i + 1}</label>
+                       <input name={s.v} type="text" defaultValue={settings[s.v] || s.vd} className="w-full px-3 py-2 bg-white border border-gray-100 rounded-lg text-sm outline-none focus:border-primary" />
+                    </div>
+                    <div className="flex-1 space-y-1">
+                       <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Nomi</label>
+                       <input name={s.l} type="text" defaultValue={settings[s.l] || s.ld} className="w-full px-3 py-2 bg-white border border-gray-100 rounded-lg text-sm outline-none focus:border-primary" />
+                    </div>
+                 </div>
+               ))}
+            </div>
+         </div>
+
+         {/* Biz haqimizda — afzalliklar */}
+         <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-3 mb-2">
+               <Globe className="text-accent" />
+               <h3 className="font-bold text-xl text-primary">Biz haqimizda — afzalliklar</h3>
+            </div>
+            <p className="text-sm text-gray-400 mb-8">&quot;Biz haqimizda&quot; bo‘limidagi 4 ta afzallik kartasi (sarlavha + tavsif).</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               {[
+                 { t: 'about_adv1_title', td: 'Xalqaro sifat', d: 'about_adv1_desc', dd: 'Zamonaviy texnologiya va materiallar' },
+                 { t: 'about_adv2_title', td: 'Kafolat', d: 'about_adv2_desc', dd: 'Har bir loyihaga to‘liq kafolat' },
+                 { t: 'about_adv3_title', td: 'O‘z vaqtida', d: 'about_adv3_desc', dd: 'Belgilangan muddatda topshirish' },
+                 { t: 'about_adv4_title', td: 'Qulay to‘lov', d: 'about_adv4_desc', dd: 'Muddatli va ipoteka imkoniyati' },
+               ].map((a, i) => (
+                 <div key={i} className="space-y-2 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Karta {i + 1}</label>
+                    <input name={a.t} type="text" defaultValue={settings[a.t] || a.td} placeholder="Sarlavha" className="w-full px-3 py-2 bg-white border border-gray-100 rounded-lg text-sm font-bold outline-none focus:border-primary" />
+                    <input name={a.d} type="text" defaultValue={settings[a.d] || a.dd} placeholder="Tavsif" className="w-full px-3 py-2 bg-white border border-gray-100 rounded-lg text-sm outline-none focus:border-primary" />
+                 </div>
+               ))}
+            </div>
+         </div>
+
          {/* Aloqa ma'lumotlari */}
          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-3 mb-8">
@@ -123,6 +174,15 @@ export default async function AdminSettings() {
                <div className="col-span-2 space-y-2">
                   <label className="text-sm font-bold text-gray-700">Manzil</label>
                   <input name="contact_address" type="text" defaultValue={settings.contact_address || "Xorazm viloyati, Urganch shahri, Amir Temur ko‘chasi, 1A uy"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Xarita — Kenglik (lat)</label>
+                  <input name="office_lat" type="text" defaultValue={settings.office_lat || "41.544716"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Xarita — Uzunlik (lng)</label>
+                  <input name="office_lng" type="text" defaultValue={settings.office_lng || "60.599816"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <p className="text-[11px] text-gray-400">Yandex/Google xaritadan koordinatani nusxalab qo‘ying.</p>
                </div>
             </div>
          </div>

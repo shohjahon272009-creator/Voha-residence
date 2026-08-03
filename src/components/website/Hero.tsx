@@ -11,7 +11,7 @@ import { ArrowRight } from 'lucide-react';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import VohaLogo from '@/components/common/VohaLogo';
 
-export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTitle, heroDesc, images = [] }: { lang: Locale, companyName?: string, heroTitle?: string, heroDesc?: string, images?: string[] }) {
+export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTitle, heroDesc, images = [], settings = {} }: { lang: Locale, companyName?: string, heroTitle?: string, heroDesc?: string, images?: string[], settings?: Record<string, string> }) {
   const dict = getDictionary(lang);
 
   // Bosh sahifa slider — loyiha rasmlari avtomatik almashib turadi (5 soniyada bir)
@@ -68,7 +68,12 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
       { label: 'Quality', value: 'Excellent' },
     ],
   };
-  const currentStats = stats[lang] || stats.uz;
+  const baseStats = stats[lang] || stats.uz;
+  // Admin sozlagan statistika (bo'sh bo'lsa — standart qiymat)
+  const currentStats = baseStats.map((s, i) => ({
+    value: settings[`hero_stat${i + 1}_value`] || s.value,
+    label: settings[`hero_stat${i + 1}_label`] || s.label,
+  }));
 
   return (
     <section className="relative h-[100dvh] w-full overflow-hidden flex flex-col justify-between pt-24 pb-6 md:pb-10">

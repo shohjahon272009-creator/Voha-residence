@@ -101,8 +101,8 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
                   <adv.i className="w-5 h-5 text-primary group-hover:text-white transition-colors duration-300" />
                 </div>
                 <div>
-                  <div className="font-bold text-primary text-sm">{adv.t}</div>
-                  <div className="text-xs text-gray-500 leading-snug">{adv.d}</div>
+                  <div className="font-bold text-primary text-sm">{settings[`about_adv${i + 1}_title`] || adv.t}</div>
+                  <div className="text-xs text-gray-500 leading-snug">{settings[`about_adv${i + 1}_desc`] || adv.d}</div>
                 </div>
               </div>
             ))}

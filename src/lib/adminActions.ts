@@ -343,6 +343,28 @@ export async function saveSettings(formData: FormData) {
   if (contact_phone) await updateSetting('contact_phone', contact_phone);
   if (contact_address) await updateSetting('contact_address', contact_address);
   if (contact_hours) await updateSetting('contact_hours', contact_hours);
+
+  // Hero (bosh ekran) statistikasi — 4 ta (raqam + nomi)
+  for (let i = 1; i <= 4; i++) {
+    const v = formData.get(`hero_stat${i}_value`);
+    const l = formData.get(`hero_stat${i}_label`);
+    if (v !== null) await updateSetting(`hero_stat${i}_value`, String(v));
+    if (l !== null) await updateSetting(`hero_stat${i}_label`, String(l));
+  }
+
+  // About (Biz haqimizda) afzalliklari — 4 ta (sarlavha + tavsif)
+  for (let i = 1; i <= 4; i++) {
+    const tt = formData.get(`about_adv${i}_title`);
+    const dd = formData.get(`about_adv${i}_desc`);
+    if (tt !== null) await updateSetting(`about_adv${i}_title`, String(tt));
+    if (dd !== null) await updateSetting(`about_adv${i}_desc`, String(dd));
+  }
+
+  // Sotuv ofisi xarita koordinatasi
+  const office_lat = formData.get('office_lat') as string;
+  const office_lng = formData.get('office_lng') as string;
+  if (office_lat) await updateSetting('office_lat', office_lat);
+  if (office_lng) await updateSetting('office_lng', office_lng);
   if (about_title) await updateSetting('about_title', about_title);
   if (about_desc) await updateSetting('about_desc', about_desc);
   if (about_stat1_value) await updateSetting('about_stat1_value', about_stat1_value);

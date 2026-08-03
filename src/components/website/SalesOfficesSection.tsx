@@ -5,7 +5,7 @@ import { Locale } from '@/lib/dictionaries';
 import { MapPin, Phone, Clock, Navigation, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function SalesOfficesSection({ lang, phone, address, hours }: { lang: Locale; phone?: string; address?: string; hours?: string }) {
+export default function SalesOfficesSection({ lang, phone, address, hours, officeLat, officeLng }: { lang: Locale; phone?: string; address?: string; hours?: string; officeLat?: string; officeLng?: string }) {
   const dict = {
     uz: {
       tag: "JOYLASHUV",
@@ -72,8 +72,8 @@ export default function SalesOfficesSection({ lang, phone, address, hours }: { l
 
   // Sotuv ofisining aniq koordinatasi (Urganch, Ulug'bek ko'chasi).
   // Yandex org 8272760691 dagi haqiqiy nuqta (ll — xarita markazi emas, org o'zi).
-  const OFFICE_LAT = 41.544716;
-  const OFFICE_LNG = 60.599816;
+  const OFFICE_LAT = officeLat && !isNaN(Number(officeLat)) ? Number(officeLat) : 41.544716;
+  const OFFICE_LNG = officeLng && !isNaN(Number(officeLng)) ? Number(officeLng) : 60.599816;
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${OFFICE_LAT},${OFFICE_LNG}`;
   const mapEmbedUrl = `https://maps.google.com/maps?q=${OFFICE_LAT},${OFFICE_LNG}&z=16&output=embed`;
 

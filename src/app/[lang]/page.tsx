@@ -40,7 +40,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
-      <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} />
+      <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} settings={settings} />
       {settings.show_projects !== 'false' && <ProjectsList lang={localeLang} companyName={companyName} limit={6} />}
       <ApartmentAndPayment
         apartments={browserApartments}
@@ -54,7 +54,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       {settings.show_about !== 'false' && <AboutSection lang={localeLang} settings={settings} />}
 
       {settings.show_news !== 'false' && <NewsSection lang={localeLang} />}
-      {settings.show_offices !== 'false' && <SalesOfficesSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />}
+      {settings.show_offices !== 'false' && <SalesOfficesSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} officeLat={settings.office_lat} officeLng={settings.office_lng} />}
       {settings.show_contact !== 'false' && <ContactSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />}
     </WebsiteLayout>
   );
