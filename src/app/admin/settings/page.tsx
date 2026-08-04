@@ -83,7 +83,7 @@ export default async function AdminSettings() {
                </div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Biz haqimizda: Asosiy matn</label>
-                  <textarea name="about_desc" rows={3} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" defaultValue={settings.about_desc || "Biz yillar tajribasi asosida O'zbekiston bozorida xalqaro standartlarga javob beruvchi yirik turar-joy majmualarini barpo etib kelmoqdamiz."} />
+                  <textarea name="about_desc" rows={4} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" defaultValue={settings.about_desc || "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 50 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzuidagi hayotni topdi."} />
                </div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Statistika 1: Raqam</label>
