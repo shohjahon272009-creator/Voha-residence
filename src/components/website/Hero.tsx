@@ -131,16 +131,16 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
              <VohaLogo isScrolled={false} className="w-full h-auto" style={{ filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.5))' }} />
           </motion.div>
           
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 1.2, ease: "easeOut" }}
-            className="text-lg md:text-2xl lg:text-3xl text-white font-medium mb-2 md:mb-4 max-w-3xl tracking-wide drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-tight"
+            className="text-2xl md:text-4xl lg:text-[3.25rem] text-white font-bold mb-3 md:mb-5 max-w-3xl tracking-tight drop-shadow-[0_6px_18px_rgba(0,0,0,0.85)] leading-[1.08]"
           >
             {lang === 'uz' && heroTitle ? heroTitle : t.title2}
           </motion.h2>
 
-          <p className="text-xs md:text-sm lg:text-base text-white/90 mb-4 md:mb-6 max-w-2xl leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] font-medium px-4">
+          <p className="text-sm md:text-base lg:text-lg text-white/85 mb-5 md:mb-7 max-w-2xl leading-relaxed md:leading-loose drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] font-normal px-4">
             {lang === 'uz' && heroDesc ? heroDesc : t.desc}
           </p>
           
