@@ -6,15 +6,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
+import {
   LayoutDashboard,
   Building2,
   Home,
-  CalendarCheck,
   Newspaper,
   Settings,
   MessageSquare,
-  DollarSign,
   LogOut
 } from 'lucide-react';
 import VohaLogo from '@/components/common/VohaLogo';
@@ -27,10 +25,9 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export default function Sidebar({
-  newBookingsCount,
   newInquiriesCount
 }: {
-  newBookingsCount: number;
+  newBookingsCount?: number;
   newInquiriesCount: number;
   companyLogo?: string;
   companyName?: string;
@@ -41,9 +38,6 @@ export default function Sidebar({
     { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/admin/projects', icon: Building2, label: 'Loyihalar' },
     { href: '/admin/apartments', icon: Home, label: 'Xonadonlar' },
-    { href: '/admin/bookings', icon: CalendarCheck, label: "Bron so'rovlari", badge: newBookingsCount },
-    { href: '/admin/booked', icon: CalendarCheck, label: 'Bronlangan' },
-    { href: '/admin/sales', icon: DollarSign, label: 'Sotuvlar' },
     { href: '/admin/inquiries', icon: MessageSquare, label: 'Murojaatlar', badge: newInquiriesCount },
     { href: '/admin/news', icon: Newspaper, label: 'Yangiliklar' },
     { href: '/admin/settings', icon: Settings, label: 'Sozlamalar' },

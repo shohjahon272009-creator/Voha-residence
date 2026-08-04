@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Plus } from 'lucide-react';
+import { X, Plus, MapPin } from 'lucide-react';
 import { addApartment } from '@/lib/adminActions';
 
 export default function AddApartmentModal({ projectId, projectName }: { projectId: number; projectName: string }) {
@@ -39,6 +39,11 @@ export default function AddApartmentModal({ projectId, projectName }: { projectI
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
+              <div className="flex gap-2.5 items-start p-3 bg-primary/5 rounded-xl text-[12px] text-primary/70 leading-relaxed">
+                <MapPin size={16} className="text-accent shrink-0 mt-0.5" />
+                <span>Joylashuv (Suv bo&apos;yida, Maktab yonida, ...) <b>{projectName}</b> loyihasi sozlamalarida belgilanadi — bu xonadon o&apos;sha joylashuvni avtomatik oladi.</span>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 mb-1">Qavat</label>

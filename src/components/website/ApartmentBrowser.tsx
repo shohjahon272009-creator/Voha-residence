@@ -54,6 +54,9 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   // Har kategoriyaдa nechta xonadon borligi
   const catCount = (key: string) => apts.filter((a) => projById.get(a.project_id)?.categories?.includes(key)).length;
 
+  // Loyihalar tartibi — xonadonlar shu tartibda "ketma-ket" ko'rinadi
+  const projOrder = useMemo(() => new Map(activeProjects.map((p, i) => [p.id, i])), [activeProjects]);
+
   const filtered = useMemo(() => {
     return apts.filter((a) => {
       const p = projById.get(a.project_id);
@@ -63,8 +66,12 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
       if (year !== 'all' && p?.delivery_year !== year) return false;
       if (cat && !p?.categories?.includes(cat)) return false;
       return true;
-    });
-  }, [apts, rooms, projectId, year, areaSel, cat, projById]);
+    }).sort((a, b) =>
+      (projOrder.get(a.project_id) ?? 999) - (projOrder.get(b.project_id) ?? 999) ||
+      a.floor - b.floor ||
+      a.number.localeCompare(b.number)
+    );
+  }, [apts, rooms, projectId, year, areaSel, cat, projById, projOrder]);
 
   // Kategoriya tanlanganda — shu kategoriyaga mos loyihalar (admin belgilagan)
   const matchingProjects = useMemo(
@@ -83,6 +90,57 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   const shown = filtered.slice(0, visible);
 
   const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setCat(null); setAreaSel(null); };
+
+  // Bitta xonadon kartasi (loyiha guruhlari ichida ishlatiladi)
+  const renderCard = (a: Apartment) => {
+    const p = projById.get(a.project_id);
+    const pick = () => {
+      onSelect?.({ id: a.id, number: a.number, rooms: a.rooms, area: a.area, floor: a.floor, projectName: p ? projName(p) : '' });
+      scrollToCalc();
+    };
+    return (
+      <div key={a.id} role="button" tabIndex={0}
+        onClick={pick}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } }}
+        className="group bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+        <div className="relative aspect-[4/3] bg-gray-50 flex items-center justify-center p-4 border-b border-gray-100 overflow-hidden">
+          {a.plan_image ? (
+            <img src={a.plan_image} alt={`${a.number}-${t.plan}`} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
+          ) : (
+            <div className="flex flex-col items-center text-gray-300"><Layers size={40} strokeWidth={1.2} /><span className="text-[11px] font-bold uppercase tracking-widest mt-2">№{a.number}</span></div>
+          )}
+          {p?.delivery_year && (
+            <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 text-primary shadow">{p.delivery_year}</span>
+          )}
+        </div>
+        <div className="p-5">
+          <div className="flex items-baseline justify-between mb-3">
+            <span className="text-2xl font-black text-primary">№{a.number}</span>
+            <span className="text-sm font-bold text-accent">{a.area} m²</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
+            <div className="flex items-center gap-1.5"><Home size={13} /> {a.rooms} {t.roomS}</div>
+            <div className="flex items-center gap-1.5"><Layers size={13} /> {a.floor}{t.floorS}</div>
+          </div>
+          <div className="mt-4 w-full py-2.5 rounded-xl bg-primary/5 text-primary text-xs font-bold text-center group-hover:bg-primary group-hover:text-white transition-all flex items-center justify-center gap-1.5">
+            <Calculator size={13} /> {t.calc}
+          </div>
+          <Link href={`/${lang}/projects/${a.project_id}`} onClick={(e) => e.stopPropagation()}
+            className="mt-2 flex items-center justify-center gap-1 text-[11px] text-gray-400 hover:text-primary font-medium transition-colors">
+            {t.details} <ArrowRight size={11} />
+          </Link>
+        </div>
+      </div>
+    );
+  };
+
+  // Ko'rinadigan xonadonlarni LOYIHA bo'yicha guruhlaymiz (ketma-ket)
+  const groups: { pid: number; items: Apartment[] }[] = [];
+  const groupIdx = new Map<number, number>();
+  for (const a of shown) {
+    if (!groupIdx.has(a.project_id)) { groupIdx.set(a.project_id, groups.length); groups.push({ pid: a.project_id, items: [] }); }
+    groups[groupIdx.get(a.project_id)!].items.push(a);
+  }
 
   if (apts.length === 0) return null;
 
@@ -210,50 +268,20 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
               <div className="text-center py-20 text-gray-400 font-medium">{t.empty}</div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {shown.map((a) => {
-                    const p = projById.get(a.project_id);
-                    const pick = () => {
-                      onSelect?.({ id: a.id, number: a.number, rooms: a.rooms, area: a.area, floor: a.floor, projectName: p ? projName(p) : '' });
-                      scrollToCalc();
-                    };
-                    return (
-                      <div key={a.id} role="button" tabIndex={0}
-                        onClick={pick}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } }}
-                        className="group bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-                        <div className="relative aspect-[4/3] bg-gray-50 flex items-center justify-center p-4 border-b border-gray-100 overflow-hidden">
-                          {a.plan_image ? (
-                            <img src={a.plan_image} alt={`${a.number}-${t.plan}`} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
-                          ) : (
-                            <div className="flex flex-col items-center text-gray-300"><Layers size={40} strokeWidth={1.2} /><span className="text-[11px] font-bold uppercase tracking-widest mt-2">№{a.number}</span></div>
-                          )}
-                          {p?.delivery_year && (
-                            <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 text-primary shadow">{p.delivery_year}</span>
-                          )}
-                        </div>
-                        <div className="p-5">
-                          <div className="flex items-baseline justify-between mb-3">
-                            <span className="text-2xl font-black text-primary">№{a.number}</span>
-                            <span className="text-sm font-bold text-accent">{a.area} m²</span>
-                          </div>
-                          <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
-                            <div className="flex items-center gap-1.5"><Home size={13} /> {a.rooms} {t.roomS}</div>
-                            <div className="flex items-center gap-1.5"><Layers size={13} /> {a.floor}{t.floorS}</div>
-                          </div>
-                          {p && <div className="mt-3 pt-3 border-t border-gray-50 flex items-center gap-1.5 text-[11px] text-gray-400 font-medium truncate"><Building2 size={12} className="shrink-0" /> {projName(p)}</div>}
-                          <div className="mt-4 w-full py-2.5 rounded-xl bg-primary/5 text-primary text-xs font-bold text-center group-hover:bg-primary group-hover:text-white transition-all flex items-center justify-center gap-1.5">
-                            <Calculator size={13} /> {t.calc}
-                          </div>
-                          <Link href={`/${lang}/projects/${a.project_id}`} onClick={(e) => e.stopPropagation()}
-                            className="mt-2 flex items-center justify-center gap-1 text-[11px] text-gray-400 hover:text-primary font-medium transition-colors">
-                            {t.details} <ArrowRight size={11} />
-                          </Link>
-                        </div>
+                {groups.map((g) => {
+                  const proj = projById.get(g.pid);
+                  return (
+                    <div key={g.pid} className="mb-10">
+                      <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-100 text-base font-bold text-primary">
+                        <Building2 size={17} className="text-accent" /> {proj ? projName(proj) : ''}
+                        <span className="text-gray-400 text-sm font-medium">· {g.items.length}</span>
                       </div>
-                    );
-                  })}
-                </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {g.items.map((a) => renderCard(a))}
+                      </div>
+                    </div>
+                  );
+                })}
                 {filtered.length > visible && (
                   <div className="text-center mt-10">
                     <button onClick={() => setVisible((v) => v + 9)}

@@ -173,7 +173,7 @@ export default async function AdminSettings() {
                </div>
                <div className="col-span-2 space-y-2">
                   <label className="text-sm font-bold text-gray-700">Manzil</label>
-                  <input name="contact_address" type="text" defaultValue={settings.contact_address || "Xorazm viloyati, Urganch shahri, Amir Temur ko‘chasi, 1A uy"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <input name="contact_address" type="text" defaultValue={settings.contact_address || "Xorazm viloyati, Urganch sh., Ulug‘bek ko‘chasi"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Xarita — Kenglik (lat)</label>
