@@ -38,9 +38,13 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     // Canonical — Google asosiy domenni (www'siz) tanlaydi, www chalkashligi yo'qoladi
     alternates: { canonical: '/' },
-    // Favicon nisbiy havola (/icon.jpg, public'dan) — joriy domenga mos keladi,
-    // cross-domen (www) muammosi bo'lmaydi. Fayl public/icon.jpg da.
-    icons: { icon: '/icon.jpg', shortcut: '/icon.jpg', apple: '/icon.jpg' },
+    // Favicon: asosiy — vektorли SVG (haqiqiy Voha logotipi, har o'lchamda tiniq),
+    // zaxira — JPEG. Nisbiy havolalar, cross-domen (www) muammosi yo'q.
+    icons: {
+      icon: [{ url: '/icon.svg', type: 'image/svg+xml' }, { url: '/icon.jpg' }],
+      shortcut: '/icon.svg',
+      apple: '/icon.jpg',
+    },
     openGraph: { title, description, type: 'website', url: 'https://voharesidence.uz', images: ['/icon.jpg'], siteName: 'Voha Residence' },
     twitter: { card: 'summary_large_image', title, description },
   };
