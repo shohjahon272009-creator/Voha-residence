@@ -135,12 +135,14 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 1.2, ease: "easeOut" }}
-            className="text-2xl md:text-4xl lg:text-[3.25rem] text-white font-bold mb-3 md:mb-5 max-w-3xl tracking-tight drop-shadow-[0_6px_18px_rgba(0,0,0,0.85)] leading-[1.08]"
+            className="text-2xl md:text-4xl lg:text-[3.25rem] text-white font-bold mb-3 md:mb-5 max-w-3xl tracking-tight leading-[1.08]"
+            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.45), 0 3px 14px rgba(0,0,0,0.35)' }}
           >
             {lang === 'uz' && heroTitle ? heroTitle : t.title2}
           </motion.h2>
 
-          <p className="text-sm md:text-base lg:text-lg text-white/85 mb-5 md:mb-7 max-w-2xl leading-relaxed md:leading-loose drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] font-normal px-4">
+          <p className="text-sm md:text-base lg:text-lg text-white/90 mb-5 md:mb-7 max-w-2xl leading-relaxed md:leading-loose font-normal px-4"
+            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.4), 0 2px 10px rgba(0,0,0,0.3)' }}>
             {lang === 'uz' && heroDesc ? heroDesc : t.desc}
           </p>
           
