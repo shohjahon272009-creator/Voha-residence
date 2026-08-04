@@ -36,6 +36,9 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL('https://voharesidence.uz'),
     title,
     description,
+    // Favicon nisbiy havola (/icon.jpg, public'dan) — joriy domenga mos keladi,
+    // cross-domen (www) muammosi bo'lmaydi. Fayl public/icon.jpg da.
+    icons: { icon: '/icon.jpg', shortcut: '/icon.jpg', apple: '/icon.jpg' },
     openGraph: { title, description, type: 'website', url: 'https://voharesidence.uz', images: ['/icon.jpg'] },
     twitter: { card: 'summary_large_image', title, description },
   };
