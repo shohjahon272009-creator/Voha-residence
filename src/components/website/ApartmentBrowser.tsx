@@ -265,7 +265,15 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
           {/* O'ng: xonadonlar */}
           <div className="flex-1">
             {filtered.length === 0 ? (
-              <div className="text-center py-20 text-gray-400 font-medium">{t.empty}</div>
+              <div className="text-center py-20">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
+                  <Search size={28} className="text-gray-300" />
+                </div>
+                <p className="text-gray-400 font-medium mb-5">{t.empty}</p>
+                <button onClick={reset} className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-full hover:bg-accent hover:text-primary transition-all">
+                  {t.reset}
+                </button>
+              </div>
             ) : (
               <>
                 {groups.map((g) => {
