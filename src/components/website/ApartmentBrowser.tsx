@@ -48,7 +48,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   const [rooms, setRooms] = useState<number | null>(null);
   const [projectId, setProjectId] = useState<number | 'all'>('all');
   const [year, setYear] = useState<number | 'all'>('all');
-  const [cat, setCat] = useState<string | null>(null);
+  const [cats, setCats] = useState<string[]>([]);
   const [areaSel, setAreaSel] = useState<{ min: number; max: number } | null>(null);
 
   // Har kategoriyaдa nechta xonadon borligi
@@ -64,23 +64,24 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
       if (projectId !== 'all' && a.project_id !== projectId) return false;
       if (areaSel && (a.area < areaSel.min || a.area >= areaSel.max)) return false;
       if (year !== 'all' && p?.delivery_year !== year) return false;
-      if (cat && !p?.categories?.includes(cat)) return false;
+      // Ko'p tanlov: loyiha BARCHA tanlangan joylashuvlarga ega bo'lishi kerak (AND)
+      if (cats.length && !cats.every((k) => p?.categories?.includes(k))) return false;
       return true;
     }).sort((a, b) =>
       (projOrder.get(a.project_id) ?? 999) - (projOrder.get(b.project_id) ?? 999) ||
       a.floor - b.floor ||
       a.number.localeCompare(b.number)
     );
-  }, [apts, rooms, projectId, year, areaSel, cat, projById, projOrder]);
+  }, [apts, rooms, projectId, year, areaSel, cats, projById, projOrder]);
 
   // Kategoriya tanlanganda — shu kategoriyaga mos loyihalar (admin belgilagan)
   const matchingProjects = useMemo(
-    () => (cat ? activeProjects.filter((p) => p.categories?.includes(cat)) : []),
-    [cat, activeProjects]
+    () => (cats.length ? activeProjects.filter((p) => cats.every((k) => p.categories?.includes(k))) : []),
+    [cats, activeProjects]
   );
 
   // Filtr o'zgarganda ko'rinadigan sonni 9 ga qaytaramiz (render vaqtida moslash — React tavsiyasi)
-  const filterSig = `${rooms}|${projectId}|${year}|${areaSel?.min ?? ''}-${areaSel?.max ?? ''}|${cat}`;
+  const filterSig = `${rooms}|${projectId}|${year}|${areaSel?.min ?? ''}-${areaSel?.max ?? ''}|${cats.join(',')}`;
   const [visible, setVisible] = useState(9);
   const [prevSig, setPrevSig] = useState(filterSig);
   if (filterSig !== prevSig) {
@@ -89,7 +90,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   }
   const shown = filtered.slice(0, visible);
 
-  const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setCat(null); setAreaSel(null); };
+  const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setCats([]); setAreaSel(null); };
 
   // Bitta xonadon kartasi (loyiha guruhlari ichida ishlatiladi)
   const renderCard = (a: Apartment) => {
@@ -159,12 +160,12 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
             {CATEGORIES.map((c) => {
-              const isActive = cat === c.key;
+              const isActive = cats.includes(c.key);
               const n = catCount(c.key);
               return (
                 <button
                   key={c.key}
-                  onClick={() => setCat(isActive ? null : c.key)}
+                  onClick={() => setCats((prev) => prev.includes(c.key) ? prev.filter((k) => k !== c.key) : [...prev, c.key])}
                   className={`group relative h-24 sm:h-28 rounded-2xl overflow-hidden text-left transition-all duration-300 ${
                     isActive ? 'ring-4 ring-accent shadow-xl -translate-y-1' : 'ring-1 ring-black/5 hover:-translate-y-1 hover:shadow-lg'
                   }`}
@@ -186,7 +187,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
         </div>
 
         {/* Kategoriya tanlanganda — o'sha joyga mos loyihalar (admin belgilagan) */}
-        {cat && matchingProjects.length > 0 && (
+        {cats.length > 0 && matchingProjects.length > 0 && (
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-5 text-sm font-bold text-gray-500 uppercase tracking-wider">
               <Building2 size={15} className="text-accent" /> {t.matchProj}
