@@ -31,9 +31,12 @@ export async function generateMetadata(): Promise<Metadata> {
     // sozlama o'qilmasa — standart matn
   }
   return {
+    // Barcha metadata URL'lari (favicon, Open Graph) asosiy domenga bog'lanadi —
+    // avval www/www'siz nomuvofiqligi favicon ko'rinmasligiga sabab bo'lardi.
+    metadataBase: new URL('https://voharesidence.uz'),
     title,
     description,
-    openGraph: { title, description, type: 'website', images: ['/icon.jpg'] },
+    openGraph: { title, description, type: 'website', url: 'https://voharesidence.uz', images: ['/icon.jpg'] },
     twitter: { card: 'summary_large_image', title, description },
   };
 }
