@@ -18,10 +18,25 @@ const bebas = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--font-
 // server process where better-sqlite3 works.
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: "Qurilish kompaniya - Xorazmdagi yangi xonadonlar",
-  description: "Xorazm va Urganch shahridagi eng zamonaviy turar-joy majmualari.",
-};
+// SEO sarlavha/tavsif admin sozlamalaridan (Meta Title / Meta Description) olinadi
+export async function generateMetadata(): Promise<Metadata> {
+  let title = "Qurilish kompaniya - Xorazmdagi yangi xonadonlar";
+  let description = "Xorazm va Urganch shahridagi eng zamonaviy turar-joy majmualari.";
+  try {
+    const rows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('meta_title_uz', 'meta_description')").all() as { key: string, value: string }[];
+    const s = rows.reduce((acc, r) => ({ ...acc, [r.key]: r.value }), {} as Record<string, string>);
+    if (s.meta_title_uz) title = s.meta_title_uz;
+    if (s.meta_description) description = s.meta_description;
+  } catch {
+    // sozlama o'qilmasa — standart matn
+  }
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: 'website', images: ['/icon.jpg'] },
+    twitter: { card: 'summary_large_image', title, description },
+  };
+}
 
 export default async function RootLayout({
   children,
