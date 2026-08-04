@@ -72,17 +72,17 @@ export default function MortgageCalculator({ lang, selected = null, onClearSelec
     en: { tag: 'PAYMENT CALCULATOR', hybrid: 'Hybrid', mortgage: 'Mortgage', price: 'Apartment price (UZS)', income: 'Income', official: 'Official', unofficial: 'Unofficial', down: 'Down payment (%)', install: '0% installment share (%)', installM: 'Installment term (mo)', rate: 'Rate (%)', term: 'Loan term (mo)', years: 'Mortgage term (yr)', loan: 'Loan amount (UZS)', payType: 'Payment type', annuity: 'Annuity', diff: 'Differentiated', mo: 'mo', yr: 'yr', consult: 'Consultation', note: '* Preliminary calculation. Terms depend on the bank/project.', hMonthly: 'Monthly payment', hMonthlyHint: '0% installment', hDownRow: 'Down payment', hMortRow: 'Remaining', hTermRow: 'Term', hSum: 'total', selApt: 'Selected apartment', xona: 'rooms', mMonthly: 'Monthly payment', totalPay: 'Total payments', total: 'Total' },
   } as const)[lang] || ({} as never);
 
-  const box = 'bg-white/5 border border-white/10 rounded-2xl p-5';
+  const box = 'bg-white/5 border border-white/10 rounded-2xl p-4';
   const pbtn = (on: boolean) => `px-4 h-10 rounded-xl font-bold text-sm transition-all ${on ? 'bg-accent text-white shadow-lg' : 'bg-white/10 text-white/70 hover:bg-white/20'}`;
 
   return (
-    <section id="calculator" className="py-28 px-6 scroll-mt-24">
+    <section id="calculator" className="py-16 px-6 scroll-mt-20">
       <div className="max-container">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-100px' }} transition={{ duration: 0.6 }}
           className="bg-primary rounded-[40px] overflow-hidden shadow-2xl relative">
           <div className="absolute top-0 right-0 w-72 h-72 bg-accent/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 pointer-events-none" />
-          <div className="relative z-10 p-8 md:p-12">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+          <div className="relative z-10 p-6 md:p-8">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-accent rounded-2xl flex items-center justify-center shadow-lg"><Calculator className="text-white" size={24} /></div>
                 <div>
@@ -157,12 +157,12 @@ export default function MortgageCalculator({ lang, selected = null, onClearSelec
               </div>
 
               {/* Natija */}
-              <div className="bg-white rounded-3xl p-8 flex flex-col shadow-2xl">
+              <div className="bg-white rounded-3xl p-6 flex flex-col shadow-2xl">
                 {selected ? (
                   <>
                     <div className="text-gray-400 text-xs uppercase font-black tracking-widest mb-1">{T.hMonthly}</div>
                     <div className="text-xs text-gray-400 mb-3 truncate">№{selected.number} · {selected.rooms} {T.xona} · {selected.area} m²</div>
-                    <div className="text-4xl font-black text-primary tracking-tight mb-6">{srvReady ? nf(srv!.monthly) : '…'} <span className="text-lg text-gray-400">UZS</span></div>
+                    <div className="text-3xl font-black text-primary tracking-tight mb-5">{srvReady ? nf(srv!.monthly) : '…'} <span className="text-lg text-gray-400">UZS</span></div>
                     <div className="space-y-3 border-t-2 border-gray-100 pt-5 mb-6">
                       <div className="flex justify-between text-sm"><span className="text-gray-500">{T.hDownRow}</span><span className="font-black text-primary">{srvReady ? nf(srv!.downAmount) : '…'}</span></div>
                       <div className="flex justify-between text-sm"><span className="text-gray-500">{selTerm} {T.mo} {T.hSum}</span><span className="font-black text-primary">{srvReady ? nf(srv!.monthly * selTerm) : '…'}</span></div>
@@ -173,7 +173,7 @@ export default function MortgageCalculator({ lang, selected = null, onClearSelec
                   <>
                     <div className="text-gray-400 text-xs uppercase font-black tracking-widest mb-1">{T.hMonthly}</div>
                     <div className="text-xs text-gray-400 mb-3">{T.hMonthlyHint}</div>
-                    <div className="text-4xl font-black text-primary tracking-tight mb-6">{nf(hInstallMonthly)} <span className="text-lg text-gray-400">UZS</span></div>
+                    <div className="text-3xl font-black text-primary tracking-tight mb-5">{nf(hInstallMonthly)} <span className="text-lg text-gray-400">UZS</span></div>
                     <div className="space-y-3 border-t-2 border-gray-100 pt-5 mb-6">
                       <div className="flex justify-between text-sm"><span className="text-gray-500">{T.hDownRow}</span><span className="font-black text-primary">{nf(hDownAmount)}</span></div>
                       <div className="flex justify-between text-sm"><span className="text-gray-500">{T.hMortRow}</span><span className="font-black text-primary">{nf(hRemaining)}</span></div>
@@ -183,7 +183,7 @@ export default function MortgageCalculator({ lang, selected = null, onClearSelec
                 ) : (
                   <>
                     <div className="text-gray-400 text-xs uppercase font-black tracking-widest mb-3">{T.mMonthly}</div>
-                    <div className="text-4xl font-black text-primary tracking-tight mb-6">{nf(monthly)} <span className="text-lg text-gray-400">UZS</span></div>
+                    <div className="text-3xl font-black text-primary tracking-tight mb-5">{nf(monthly)} <span className="text-lg text-gray-400">UZS</span></div>
                     <div className="space-y-3 border-t-2 border-gray-100 pt-5 mb-6">
                       <div className="flex justify-between text-sm"><span className="text-gray-500">{T.totalPay}</span><span className="font-black text-primary">{nf(totalPay)}</span></div>
                       <div className="flex justify-between text-sm"><span className="text-gray-500">{T.total}</span><span className="font-black text-primary">{nf(grandTotal)}</span></div>
