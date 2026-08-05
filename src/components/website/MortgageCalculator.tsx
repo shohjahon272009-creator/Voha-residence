@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { getApartmentPayment } from '@/lib/paymentActions';
 import { SelectedApartment } from '@/lib/types';
 
-export default function MortgageCalculator({ lang, selected = null, onClearSelected }: { lang: Locale; selected?: SelectedApartment | null; onClearSelected?: () => void }) {
+export default function MortgageCalculator({ lang, selected = null, onClearSelected, terms }: { lang: Locale; selected?: SelectedApartment | null; onClearSelected?: () => void; terms?: { down: number; months: number; rate: number; mDown: number; mMonths: number } }) {
   const [mode, setMode] = useState<'hybrid' | 'mortgage'>('hybrid');
   const [price, setPrice] = useState(800000000);
 
@@ -15,14 +15,15 @@ export default function MortgageCalculator({ lang, selected = null, onClearSelec
   const [srv, setSrv] = useState<{ monthly: number; remaining: number; downAmount: number; aptId: number } | null>(null);
 
   // Gibrid: boshlang'ich to'lov + qolgan summa 0% foizsiz muddatli to'lov
-  const [hDown, setHDown] = useState(30);
-  const [hInstallMonths, setHInstallMonths] = useState(12);
+  // Boshlang'ich qiymatlar admin sozlagan foizlardan — mijoz ko'rgan to'lov kompaniya bilan TENG chiqadi
+  const [hDown, setHDown] = useState(terms?.down ?? 30);
+  const [hInstallMonths, setHInstallMonths] = useState(terms?.months ?? 12);
 
   // Ipoteka
   const [income, setIncome] = useState<'official' | 'unofficial'>('official');
-  const [mDown, setMDown] = useState(15);
-  const [months, setMonths] = useState(24);
-  const [mRate, setMRate] = useState(18);
+  const [mDown, setMDown] = useState(terms?.mDown ?? 15);
+  const [months, setMonths] = useState(terms?.mMonths ?? 24);
+  const [mRate, setMRate] = useState(terms?.rate ?? 18);
   const [payType, setPayType] = useState<'annuity' | 'diff'>('annuity');
 
   // Tanlangan xonadon yoki parametrlar o'zgarganda — to'lovni serverda qayta hisoblaymiz (debounce)

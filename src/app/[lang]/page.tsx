@@ -48,6 +48,13 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         lang={localeLang}
         showSearch={settings.show_search !== 'false'}
         showMortgage={settings.show_mortgage !== 'false'}
+        terms={{
+          down: Number(settings.calc_down) || 30,
+          months: Number(settings.calc_months) || 12,
+          rate: Number(settings.calc_rate) || 18,
+          mDown: Number(settings.calc_m_down) || 15,
+          mMonths: Number(settings.calc_m_months) || 24,
+        }}
       />
       
       {/* About Section */}

@@ -187,6 +187,37 @@ export default async function AdminSettings() {
             </div>
          </div>
 
+         {/* To'lov shartlari (foizlar) */}
+         <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-3 mb-2">
+               <Globe className="text-accent" />
+               <h3 className="font-bold text-xl text-primary">To‘lov shartlari (foizlar)</h3>
+            </div>
+            <p className="text-sm text-gray-400 mb-8">Kalkulyator aynan shu foizlar bo‘yicha hisoblaydi — mijoz ko‘rgan to‘lov kompaniya shartlari bilan <b>bir xil</b> chiqadi.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Gibrid — Boshlang‘ich to‘lov (%)</label>
+                  <input name="calc_down" type="number" min={0} max={90} defaultValue={settings.calc_down || '30'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Gibrid — Muddatli to‘lov (oy)</label>
+                  <input name="calc_months" type="number" min={1} max={60} defaultValue={settings.calc_months || '12'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Ipoteka — Boshlang‘ich to‘lov (%)</label>
+                  <input name="calc_m_down" type="number" min={0} max={90} defaultValue={settings.calc_m_down || '15'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Ipoteka — Muddati (oy)</label>
+                  <input name="calc_m_months" type="number" min={1} max={360} defaultValue={settings.calc_m_months || '24'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Ipoteka — Foiz stavkasi (%)</label>
+                  <input name="calc_rate" type="number" min={0} max={40} step={0.5} defaultValue={settings.calc_rate || '18'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+            </div>
+         </div>
+
          {/* Integrations */}
          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-3 mb-8">

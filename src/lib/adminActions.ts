@@ -331,6 +331,12 @@ export async function saveSettings(formData: FormData) {
   const office_lng = formData.get('office_lng') as string;
   if (office_lat) await updateSetting('office_lat', office_lat);
   if (office_lng) await updateSetting('office_lng', office_lng);
+
+  // To'lov shartlari (foizlar) — admin belgilaydi, mijoz shu bo'yicha to'lovni ko'radi
+  for (const key of ['calc_down', 'calc_months', 'calc_rate', 'calc_m_down', 'calc_m_months']) {
+    const v = formData.get(key);
+    if (v !== null && String(v).trim() !== '') await updateSetting(key, String(v).trim());
+  }
   if (about_title) await updateSetting('about_title', about_title);
   if (about_desc) await updateSetting('about_desc', about_desc);
   if (about_stat1_value) await updateSetting('about_stat1_value', about_stat1_value);
