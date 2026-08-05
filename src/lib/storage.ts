@@ -1,42 +1,63 @@
 import path from 'path';
 import fs from 'fs/promises';
 
-/*
-  Rasm/fayl yuklashni DOIMIY saqlash.
+function mimeFromName(name: string): string {
+  const ext = name.split('.').pop()?.toLowerCase();
+  if (ext === 'png') return 'image/png';
+  if (ext === 'webp') return 'image/webp';
+  if (ext === 'gif') return 'image/gif';
+  if (ext === 'svg') return 'image/svg+xml';
+  return 'image/jpeg';
+}
 
-  • BLOB_READ_WRITE_TOKEN o'rnatilgan bo'lsa (Vercel Blob) → bulutli, doimiy saqlanadi.
-    Vercel serverlessда public/uploads vaqtinchalik bo'lgani uchun (so'rovdan keyin
-    o'chib ketadi), yuklangan rasmlar aynan shu sababdan yo'qolardi. Blob buni hal qiladi.
-  • Aks holda (mahalliy dev) → public/uploads ga yoziladi.
+/*
+  Rasm yuklashni DOIMIY saqlash — hech qachon yo'qolmasligi kafolatlangan.
+
+  Tartib:
+  1) Vercel Blob (BLOB_READ_WRITE_TOKEN bo'lsa) — bulutli, tez, doimiy.
+  2) Mahalliy dev (Vercel'da emas) — public/uploads.
+  3) Zaxira (serverless, Blob biror sababdan ishlamasa) — base64 data URL bazada.
+     Bu har doim ishlaydi, shuning uchun rasm HECH QACHON yo'qolmaydi.
 */
 export async function saveUpload(
   buffer: Buffer,
   fileName: string,
   contentType?: string,
 ): Promise<string> {
+  const type = contentType || mimeFromName(fileName);
+
+  // 1) Vercel Blob
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
       const { put } = await import('@vercel/blob');
       const blob = await put(`uploads/${fileName}`, buffer, {
         access: 'public',
-        contentType,
+        contentType: type,
         addRandomSuffix: true,
         allowOverwrite: true,
         token: process.env.BLOB_READ_WRITE_TOKEN,
       });
       return blob.url;
     } catch (e) {
-      // Diagnostika: Vercel loglarini ko'ra olmaymiz, shuning uchun xatoni bazaga yozamiz
+      // Xatoni bazaga yozamiz (Vercel loglarini ko'ra olmaymiz) va zaxiraga o'tamiz
       try {
         const db = (await import('./db')).default;
         const msg = `${new Date().toISOString()}: ${(e as Error)?.message || String(e)}`;
         await db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run('_upload_error', msg, msg);
       } catch { /* ignore */ }
-      throw e;
     }
   }
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-  await fs.mkdir(uploadDir, { recursive: true });
-  await fs.writeFile(path.join(uploadDir, fileName), buffer);
-  return `/uploads/${fileName}`;
+
+  // 2) Mahalliy dev — fayl tizimi (Vercel'da ishlamaydi, shuning uchun faqat lokal)
+  if (!process.env.VERCEL) {
+    try {
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      await fs.mkdir(uploadDir, { recursive: true });
+      await fs.writeFile(path.join(uploadDir, fileName), buffer);
+      return `/uploads/${fileName}`;
+    } catch { /* zaxiraga o'tamiz */ }
+  }
+
+  // 3) Zaxira — base64 data URL (bazada doimiy saqlanadi, kafolatli ishlaydi)
+  return `data:${type};base64,${buffer.toString('base64')}`;
 }

@@ -31,11 +31,11 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   // Admin kiritgan real xonadon maydonlaridan avtomatik oraliqlar hosil qilamiz.
   // Faqat xonadon MAVJUD bo'lgan oraliqlar ko'rsatiladi — shuning uchun mijoz
   // qaysi birini tanlasa ham har doim natija chiqadi, bo'sh natija bo'lmaydi.
-  // Admin kiritgan maydonlar — butun songa yaxlitlab guruhlaymiz (74.41, 74.4 -> 74 m²)
-  // shunda o'nlik kasrlar ko'p tugma hosil qilmaydi, filtr toza va tushunarli bo'ladi.
+  // Admin kiritgan aniq maydonlar (o'nlik kasrlar bilan, aynan kiritilganicha),
+  // takrorsiz va o'sish tartibida — har birida nechta xonadon borligi.
   const areaOptions = useMemo(() => {
     const map = new Map<number, number>();
-    for (const a of apts) { const k = Math.round(a.area); map.set(k, (map.get(k) ?? 0) + 1); }
+    for (const a of apts) map.set(a.area, (map.get(a.area) ?? 0) + 1);
     return [...map.entries()].sort((a, b) => a[0] - b[0]).map(([area, count]) => ({ area, count }));
   }, [apts]);
 
@@ -56,7 +56,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
       const p = projById.get(a.project_id);
       if (rooms !== null && (rooms === 4 ? a.rooms < 4 : a.rooms !== rooms)) return false;
       if (projectId !== 'all' && a.project_id !== projectId) return false;
-      if (selArea !== null && Math.round(a.area) !== selArea) return false;
+      if (selArea !== null && a.area !== selArea) return false;
       if (year !== 'all' && p?.delivery_year !== year) return false;
       // Ko'p tanlov: loyiha BARCHA tanlangan joylashuvlarga ega bo'lishi kerak (AND)
       if (cats.length && !cats.every((k) => p?.categories?.includes(k))) return false;
@@ -235,13 +235,13 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
               {areaOptions.length > 0 && (
                 <div>
                   <label className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"><Maximize2 size={14} /> {t.area}</label>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
                     {areaOptions.map((o) => {
                       const active = selArea === o.area;
                       return (
                         <button key={o.area} onClick={() => setSelArea(active ? null : o.area)}
-                          className={`px-3 h-9 rounded-lg text-sm font-bold inline-flex items-center gap-1.5 transition-all ${active ? 'bg-primary text-white shadow-lg' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>
-                          {o.area} m²
+                          className={`px-3 h-9 rounded-lg text-sm font-bold flex items-center justify-between gap-1.5 transition-all ${active ? 'bg-primary text-white shadow-lg' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>
+                          <span>{o.area} m²</span>
                           <span className={`text-[10px] font-black ${active ? 'text-accent' : 'text-gray-400'}`}>{o.count}</span>
                         </button>
                       );
