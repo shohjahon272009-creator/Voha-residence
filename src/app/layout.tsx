@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     // Canonical — Google asosiy domenni (www'siz) tanlaydi, www chalkashligi yo'qoladi
     alternates: { canonical: '/' },
-    // Favicon: asosiy — vektorли SVG (haqiqiy Voha logotipi, har o'lchamda tiniq),
+    // Favicon: asosiy — vektorli SVG (haqiqiy Voha logotipi, har o'lchamda tiniq),
     // zaxira — JPEG. Nisbiy havolalar, cross-domen (www) muammosi yo'q.
     icons: {
       icon: [{ url: '/icon.svg', type: 'image/svg+xml' }, { url: '/icon.jpg' }],

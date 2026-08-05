@@ -1,7 +1,7 @@
 import { Locale } from './dictionaries';
 
-// Joylashuv / infratuzilma kategoriyalari — admin loyihaга belgilaydi,
-// saytда chiroyli rasmli bo'lim va filtr sifatida ko'rinadi.
+// Joylashuv / infratuzilma kategoriyalari — admin loyihaga belgilaydi,
+// saytda chiroyli rasmli bo'lim va filtr sifatida ko'rinadi.
 export interface CategoryDef {
   key: string;
   emoji: string;

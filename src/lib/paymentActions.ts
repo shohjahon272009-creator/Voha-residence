@@ -9,7 +9,7 @@ import db from './db';
 export type PaymentMode = 'hybrid' | 'mortgage';
 
 // Qaytadi: boshlang'ich to'lov, oylik to'lov va qoldiq (qolgan summa).
-// price_cash ning o'zi (yaxlit narx) hech qachon qaytarilmaydi — faqat serverда
+// price_cash ning o'zi (yaxlit narx) hech qachon qaytarilmaydi — faqat serverda
 // ishlatiladi. Shu sababli barcha xonadon narxlari sahifa manbasiga to'kilmaydi;
 // mijoz har xonadonni tanlaganda faqat o'sha to'lov ma'lumoti keladi.
 export async function getApartmentPayment(

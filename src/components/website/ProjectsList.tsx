@@ -87,9 +87,9 @@ export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPA
                  <VohaLogo isScrolled={true} className="w-full h-auto" />
               </div>
               <p className="text-gray-600 mb-8 md:mb-10 max-w-md text-base sm:text-lg font-medium leading-relaxed">
-                {lang === 'uz' ? "2026-yilda topshiriladigan maxsus loyihadan xonadon xarid qiling! Boshlang'ich to'lovni amalga oshirib, 30 oylik muddatli to'lovda orzuingizdagi uyni xarid qilishingiz mumkin." :
-                 lang === 'ru' ? "Приобретайте квартиру в специальном проекте, который будет сдан в 2026 году! Внеся первоначальный взнос, вы можете купить дом своей мечты в рассрочку на 30 месяцев." :
-                 "Buy an apartment in a special project to be delivered in 2026! By making an initial payment, you can buy your dream home in installments for 30 months."}
+                {lang === 'uz' ? "2026-yilda topshiriladigan maxsus loyihadan xonadon xarid qiling! Boshlang'ich to'lovni amalga oshirib, 15 oylik muddatli to'lovda orzuingizdagi uyni xarid qilishingiz mumkin." :
+                 lang === 'ru' ? "Приобретайте квартиру в специальном проекте, который будет сдан в 2026 году! Внеся первоначальный взнос, вы можете купить дом своей мечты в рассрочку на 15 месяцев." :
+                 "Buy an apartment in a special project to be delivered in 2026! By making an initial payment, you can buy your dream home in installments for 15 months."}
               </p>
               <div>
                  <a href={`/${lang}#contact`} className="px-6 sm:px-8 md:px-10 py-3 md:py-4 bg-primary text-white rounded-full font-bold hover:bg-accent hover:text-primary transition-all shadow-xl flex items-center gap-3 w-max text-sm sm:text-base">
@@ -114,7 +114,7 @@ export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPA
                 </div>
                 
                 <div className="flex items-end gap-2 md:gap-4">
-                   <span className="text-7xl sm:text-8xl lg:text-[140px] font-black leading-none text-white drop-shadow-2xl">30</span>
+                   <span className="text-7xl sm:text-8xl lg:text-[140px] font-black leading-none text-white drop-shadow-2xl">15</span>
                    <div className="pb-2 md:pb-4 lg:pb-8">
                       <p className="text-xl sm:text-2xl lg:text-4xl font-light drop-shadow-md">
                         {lang === 'uz' ? "oylik" : lang === 'ru' ? "месяцев" : "months"}

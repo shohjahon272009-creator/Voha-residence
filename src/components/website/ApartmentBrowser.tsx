@@ -44,7 +44,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   const [cats, setCats] = useState<string[]>([]);
   const [selArea, setSelArea] = useState<number | null>(null);
 
-  // Har kategoriyaдa nechta xonadon borligi
+  // Har kategoriyada nechta xonadon borligi
   const catCount = (key: string) => apts.filter((a) => projById.get(a.project_id)?.categories?.includes(key)).length;
 
   // Loyihalar tartibi — xonadonlar shu tartibda "ketma-ket" ko'rinadi

@@ -5,7 +5,7 @@ import { hashPassword } from './password';
   Ma'lumotlar bazasi — ikki rejimli, chidamli:
 
   • TURSO_DATABASE_URL + TURSO_AUTH_TOKEN o'rnatilsa → bulutli Turso
-    (@libsql/client/web, sof JS/HTTP). Vercel serverlessда doimiy saqlaydi.
+    (@libsql/client/web, sof JS/HTTP). Vercel serverlessda doimiy saqlaydi.
   • Aks holda → mahalliy `qurilish.db` (better-sqlite3). Vercel'da ham o'qish
     ishlaydi (fayl /tmp ga nusxalanadi), shuning uchun sayt hech qachon 500
     bermaydi — Turso sozlanmagan bo'lsa ham kamida ko'rsatadi.
@@ -27,7 +27,7 @@ const globalForDb = globalThis as unknown as { __qurilishBackend?: Promise<Backe
 
 async function makeTursoBackend(): Promise<Backend> {
   const { createClient } = await import('@libsql/client/web');
-  // libsql:// (WebSocket) serverlessда ishlamaydi — https:// (HTTP) ishlatamiz.
+  // libsql:// (WebSocket) serverlessda ishlamaydi — https:// (HTTP) ishlatamiz.
   const url = (process.env.TURSO_DATABASE_URL || '').replace(/^libsql:\/\//, 'https://');
   const c = createClient({ url, authToken: process.env.TURSO_AUTH_TOKEN });
   const norm = (a: unknown[]) => a.map((x) => (x === undefined ? null : x)) as InArgs;
