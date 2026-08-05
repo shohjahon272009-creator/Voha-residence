@@ -19,7 +19,8 @@ export async function saveUpload(
     const blob = await put(`uploads/${fileName}`, buffer, {
       access: 'public',
       contentType,
-      addRandomSuffix: false,
+      addRandomSuffix: true,
+      allowOverwrite: true,
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
     return blob.url;
