@@ -8,6 +8,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { updateApartment } from '@/lib/adminActions';
+import PasteImageInput from './PasteImageInput';
 
  
 export default function EditApartmentModal({ apt }: { apt: any }) {
@@ -78,24 +79,8 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-1">Xonadon chizmasi</label>
-                  {apt.plan_image && (
-                    <div className="mb-2">
-                      <img src={apt.plan_image} alt="Plan" className="h-16 object-contain rounded border" />
-                    </div>
-                  )}
-                  <input type="file" name="plan_image" accept="image/*" className="w-full px-2 py-1 border rounded-lg outline-none focus:border-primary file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary/10 file:text-primary" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-1">Xonadon rasmi</label>
-                  {apt.image && (
-                    <div className="mb-2">
-                      <img src={apt.image} alt="Apt" className="h-16 object-cover rounded border" />
-                    </div>
-                  )}
-                  <input type="file" name="image" accept="image/*" className="w-full px-2 py-1 border rounded-lg outline-none focus:border-primary file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary/10 file:text-primary" />
-                </div>
+                <PasteImageInput name="plan_image" label="Xonadon chizmasi" existing={apt.plan_image} />
+                <PasteImageInput name="image" label="Xonadon rasmi" existing={apt.image} />
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">

@@ -10,6 +10,7 @@ import { X, Loader2 } from 'lucide-react';
 import { addProject } from '@/lib/adminActions';
 import { translateText } from '@/lib/translateAction';
 import { CATEGORIES } from '@/lib/categories';
+import PasteImageInput from './PasteImageInput';
 
 export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -147,8 +148,7 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 mb-1">Loyiha Asosiy Rasmi</label>
-                  <input type="file" name="main_image" accept="image/*" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" />
+                  <PasteImageInput name="main_image" label="Loyiha Asosiy Rasmi" />
                 </div>
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 mb-1">Qo&apos;shimcha rasmlar / galereya <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>

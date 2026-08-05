@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X, Plus, MapPin } from 'lucide-react';
 import { addApartment } from '@/lib/adminActions';
+import PasteImageInput from './PasteImageInput';
 
 export default function AddApartmentModal({ projectId, projectName }: { projectId: number; projectName: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,11 +76,7 @@ export default function AddApartmentModal({ projectId, projectName }: { projectI
                 <p className="text-[11px] text-gray-400 mt-1">Mijozga narx ochiq ko&apos;rsatilmaydi — faqat oylik to&apos;lov hisoblanadi.</p>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-gray-500 mb-1">Chizma (plan) rasmi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
-                <input type="file" name="plan_image" accept="image/*" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-accent/10 file:text-accent hover:file:bg-accent/20 cursor-pointer" />
-                <p className="text-[11px] text-gray-400 mt-1">Xonadon chizmasi — qidiruv kartasida ko&apos;rinadi.</p>
-              </div>
+              <PasteImageInput name="plan_image" label="Chizma (plan) rasmi — ixtiyoriy" />
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                 <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">Bekor qilish</button>
