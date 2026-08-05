@@ -31,10 +31,11 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   // Admin kiritgan real xonadon maydonlaridan avtomatik oraliqlar hosil qilamiz.
   // Faqat xonadon MAVJUD bo'lgan oraliqlar ko'rsatiladi — shuning uchun mijoz
   // qaysi birini tanlasa ham har doim natija chiqadi, bo'sh natija bo'lmaydi.
-  // Admin kiritgan aniq xonadon maydonlari (takrorsiz, o'sish tartibida) — har birida soni
+  // Admin kiritgan maydonlar — butun songa yaxlitlab guruhlaymiz (74.41, 74.4 -> 74 m²)
+  // shunda o'nlik kasrlar ko'p tugma hosil qilmaydi, filtr toza va tushunarli bo'ladi.
   const areaOptions = useMemo(() => {
     const map = new Map<number, number>();
-    for (const a of apts) map.set(a.area, (map.get(a.area) ?? 0) + 1);
+    for (const a of apts) { const k = Math.round(a.area); map.set(k, (map.get(k) ?? 0) + 1); }
     return [...map.entries()].sort((a, b) => a[0] - b[0]).map(([area, count]) => ({ area, count }));
   }, [apts]);
 
@@ -55,7 +56,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
       const p = projById.get(a.project_id);
       if (rooms !== null && (rooms === 4 ? a.rooms < 4 : a.rooms !== rooms)) return false;
       if (projectId !== 'all' && a.project_id !== projectId) return false;
-      if (selArea !== null && a.area !== selArea) return false;
+      if (selArea !== null && Math.round(a.area) !== selArea) return false;
       if (year !== 'all' && p?.delivery_year !== year) return false;
       // Ko'p tanlov: loyiha BARCHA tanlangan joylashuvlarga ega bo'lishi kerak (AND)
       if (cats.length && !cats.every((k) => p?.categories?.includes(k))) return false;

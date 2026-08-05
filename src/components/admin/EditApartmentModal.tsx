@@ -69,7 +69,7 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 mb-1">Maydoni (m²)</label>
-                  <input required name="area" type="number" step="0.1" min="1" defaultValue={apt.area} className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                  <input required name="area" type="number" step="any" min="1" defaultValue={apt.area} className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                 </div>
               </div>
 
