@@ -7,22 +7,18 @@
 
 import db from './db';
 import { revalidatePath } from 'next/cache';
-import fs from 'fs/promises';
-import path from 'path';
+import { saveUpload } from './storage';
 
 // Bir nechta galereya rasmini saqlaydi va URL ro'yxatini qaytaradi (ixtiyoriy)
 async function saveGalleryFiles(files: File[]): Promise<string[]> {
   const urls: string[] = [];
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads');
   for (const f of files) {
     if (!f || !f.name || f.size === 0) continue;
     try {
       const buffer = Buffer.from(await f.arrayBuffer());
       const safeName = f.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `${Date.now()}-g${urls.length}-${safeName}`;
-      await fs.mkdir(uploadDir, { recursive: true });
-      await fs.writeFile(path.join(uploadDir, fileName), buffer);
-      urls.push(`/uploads/${fileName}`);
+      urls.push(await saveUpload(buffer, fileName));
     } catch (error) {
       console.error('Error saving gallery image:', error);
     }
@@ -49,10 +45,7 @@ export async function addApartment(formData: FormData) {
       const buffer = Buffer.from(await planFile.arrayBuffer());
       const safeName = planFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `${Date.now()}-plan-${safeName}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
-      await fs.writeFile(path.join(uploadDir, fileName), buffer);
-      planUrl = `/uploads/${fileName}`;
+      planUrl = await saveUpload(buffer, fileName);
     } catch (error) {
       console.error('Error saving plan image:', error);
     }
@@ -106,20 +99,10 @@ export async function addProject(formData: FormData) {
 
   if (imageFile && imageFile.name && imageFile.size > 0) {
     try {
-      const bytes = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      
-      // Clean filename
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
       const safeName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `${Date.now()}-${safeName}`;
-      
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
-      
-      const filePath = path.join(uploadDir, fileName);
-      await fs.writeFile(filePath, buffer);
-      
-      imageUrl = `/uploads/${fileName}`;
+      imageUrl = await saveUpload(buffer, fileName);
     } catch (error) {
       console.error('Error saving image:', error);
     }
@@ -130,14 +113,10 @@ export async function addProject(formData: FormData) {
   const tourImageFile = formData.get('virtual_tour_image') as File | null;
   if (tourImageFile && tourImageFile.name && tourImageFile.size > 0) {
     try {
-      const bytes = await tourImageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const buffer = Buffer.from(await tourImageFile.arrayBuffer());
       const safeName = tourImageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `${Date.now()}-360-${safeName}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
-      await fs.writeFile(path.join(uploadDir, fileName), buffer);
-      finalTourUrl = `/uploads/${fileName}`;
+      finalTourUrl = await saveUpload(buffer, fileName);
     } catch (error) {
       console.error('Error saving 360 image:', error);
     }
@@ -219,19 +198,10 @@ export async function updateProject(id: number, formData: FormData) {
 
   if (imageFile && imageFile.name && imageFile.size > 0) {
     try {
-      const bytes = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
       const safeName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `${Date.now()}-${safeName}`;
-      
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
-      
-      const filePath = path.join(uploadDir, fileName);
-      await fs.writeFile(filePath, buffer);
-      
-      imageUrl = `/uploads/${fileName}`;
+      imageUrl = await saveUpload(buffer, fileName);
     } catch (error) {
       console.error('Error saving image:', error);
     }
@@ -242,14 +212,10 @@ export async function updateProject(id: number, formData: FormData) {
   const tourImageFile = formData.get('virtual_tour_image') as File | null;
   if (tourImageFile && tourImageFile.name && tourImageFile.size > 0) {
     try {
-      const bytes = await tourImageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const buffer = Buffer.from(await tourImageFile.arrayBuffer());
       const safeName = tourImageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `${Date.now()}-360-${safeName}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
-      await fs.writeFile(path.join(uploadDir, fileName), buffer);
-      finalTourUrl = `/uploads/${fileName}`;
+      finalTourUrl = await saveUpload(buffer, fileName);
     } catch (error) {
       console.error('Error saving 360 image:', error);
     }
@@ -391,15 +357,10 @@ export async function saveSettings(formData: FormData) {
   const logoFile = formData.get('company_logo') as File | null;
   if (logoFile && logoFile.name && logoFile.size > 0) {
     try {
-      const bytes = await logoFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const buffer = Buffer.from(await logoFile.arrayBuffer());
       const safeName = logoFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `logo-${Date.now()}-${safeName}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
-      const filePath = path.join(uploadDir, fileName);
-      await fs.writeFile(filePath, buffer);
-      await updateSetting('company_logo', `/uploads/${fileName}`);
+      await updateSetting('company_logo', await saveUpload(buffer, fileName));
     } catch (error) {
       console.error('Error saving logo:', error);
     }
@@ -422,15 +383,10 @@ export async function updateApartment(id: number, formData: FormData) {
 
   if (imageFile && imageFile.name && imageFile.size > 0) {
     try {
-      const bytes = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
       const safeName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `${Date.now()}-plan-${safeName}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
-      const filePath = path.join(uploadDir, fileName);
-      await fs.writeFile(filePath, buffer);
-      planUrl = `/uploads/${fileName}`;
+      planUrl = await saveUpload(buffer, fileName);
     } catch (error) {
       console.error('Error saving plan image:', error);
     }
@@ -441,15 +397,10 @@ export async function updateApartment(id: number, formData: FormData) {
 
   if (regularImageFile && regularImageFile.name && regularImageFile.size > 0) {
     try {
-      const bytes = await regularImageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const buffer = Buffer.from(await regularImageFile.arrayBuffer());
       const safeName = regularImageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `${Date.now()}-apt-${safeName}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
-      const filePath = path.join(uploadDir, fileName);
-      await fs.writeFile(filePath, buffer);
-      regularImageUrl = `/uploads/${fileName}`;
+      regularImageUrl = await saveUpload(buffer, fileName);
     } catch (error) {
       console.error('Error saving regular image:', error);
     }
@@ -511,15 +462,10 @@ export async function addNews(formData: FormData) {
 
   if (imageFile && imageFile.name && imageFile.size > 0) {
     try {
-      const bytes = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
       const safeName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `${Date.now()}-news-${safeName}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
-      const filePath = path.join(uploadDir, fileName);
-      await fs.writeFile(filePath, buffer);
-      imageUrl = `/uploads/${fileName}`;
+      imageUrl = await saveUpload(buffer, fileName);
     } catch (error) {
       console.error('Error saving news image:', error);
     }
@@ -618,17 +564,10 @@ export async function updateNews(id: number, formData: FormData) {
 
   if (imageFile && imageFile.name && imageFile.size > 0) {
     try {
-      const fs = await import('fs/promises');
-      const path = await import('path');
-      const bytes = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
       const safeName = imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
       const fileName = `${Date.now()}-news-${safeName}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
-      const filePath = path.join(uploadDir, fileName);
-      await fs.writeFile(filePath, buffer);
-      imageUrl = `/uploads/${fileName}`;
+      imageUrl = await saveUpload(buffer, fileName);
     } catch (error) {
       console.error('Error saving news image:', error);
     }
