@@ -53,14 +53,14 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
   const s2l = settings.about_stat2_label || t.s2l;
 
   return (
-    <section id="about" className="py-28 md:py-36 px-6 bg-brand-mesh-lux relative overflow-hidden">
+    <section id="about" className="py-20 md:py-28 px-6 bg-brand-mesh-lux relative overflow-hidden">
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-accent/10 to-transparent z-0" />
       <div className="absolute -bottom-40 -left-40 w-[36rem] h-[36rem] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
 
       <div className="max-container grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10">
         {/* Rasm */}
         <AnimatedReveal direction="left" className="relative">
-          <div className="aspect-[4/5] rounded-[44px] overflow-hidden border-[14px] border-white shadow-2xl relative z-10 transform -rotate-2 hover:rotate-0 transition-transform duration-700">
+          <div className="aspect-square rounded-[44px] overflow-hidden border-[14px] border-white shadow-2xl relative z-10 transform -rotate-2 hover:rotate-0 transition-transform duration-700">
             <img src="/voha-actual-bg.png" alt="Voha Residence" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
           </div>
@@ -93,22 +93,25 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
             </div>
           </div>
 
-          {/* Ustunliklar */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {t.a.map((adv, i) => (
-              <div key={i} className="group flex items-start gap-3 bg-white/70 backdrop-blur rounded-2xl p-4 border border-white shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <div className="w-11 h-11 rounded-xl bg-primary/10 group-hover:bg-primary flex items-center justify-center shrink-0 transition-colors duration-300">
-                  <adv.i className="w-5 h-5 text-primary group-hover:text-white transition-colors duration-300" />
-                </div>
-                <div>
-                  <div className="font-bold text-primary text-sm">{settings[`about_adv${i + 1}_title`] || adv.t}</div>
-                  <div className="text-xs text-gray-500 leading-snug">{settings[`about_adv${i + 1}_desc`] || adv.d}</div>
-                </div>
-              </div>
-            ))}
-          </div>
         </AnimatedReveal>
       </div>
+
+      {/* Ustunliklar — to'liq kenglikda, pastda: bo'sh oq joyni to'ldiradi va balans beradi */}
+      <AnimatedReveal direction="up" className="max-container relative z-10 mt-16 md:mt-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {t.a.map((adv, i) => (
+            <div key={i} className="group flex items-start gap-4 bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_10px_35px_rgba(20,20,40,0.06)] hover:shadow-[0_18px_45px_rgba(1,66,66,0.12)] hover:-translate-y-1.5 transition-all duration-300">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 group-hover:bg-primary flex items-center justify-center shrink-0 transition-colors duration-300">
+                <adv.i className="w-6 h-6 text-primary group-hover:text-white transition-colors duration-300" />
+              </div>
+              <div>
+                <div className="font-bold text-primary text-base mb-1">{settings[`about_adv${i + 1}_title`] || adv.t}</div>
+                <div className="text-sm text-gray-500 leading-snug">{settings[`about_adv${i + 1}_desc`] || adv.d}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </AnimatedReveal>
     </section>
   );
 }
