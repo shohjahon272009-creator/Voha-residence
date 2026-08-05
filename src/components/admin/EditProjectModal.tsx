@@ -142,10 +142,6 @@ export default function EditProjectModal({ project }: { project: any }) {
                         <label className="text-xs font-bold text-gray-500 mb-2 block">Qavatdagi xonadonlar</label>
                         <input name="apts_per_floor" defaultValue={project.apts_per_floor || 4} type="number" required min={1} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white text-sm" />
                      </div>
-                     <div>
-                        <label className="text-xs font-bold text-gray-500 mb-2 block">Narx (mln UZS) <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
-                        <input name="min_price" defaultValue={project.min_price ? project.min_price / 1000000 : ''} type="number" step="any" min={0} placeholder="Shartnomaviy" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white text-sm" />
-                     </div>
                   </div>
 
               {/* Sotib tugatilgan — admin belgilaydi. Belgilansa: saytda "Sotib tugatilgan"

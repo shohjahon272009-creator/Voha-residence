@@ -143,10 +143,6 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
                         <label className="text-xs font-bold text-gray-500 mb-2 block">Qavatdagi xonadonlar</label>
                         <input name="apts_per_floor" type="number" required min={1} defaultValue={4} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white text-sm" />
                      </div>
-                     <div>
-                        <label className="text-xs font-bold text-gray-500 mb-2 block">Narx (mln UZS) <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
-                        <input name="min_price" type="number" step="any" min={0} placeholder="Shartnomaviy" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white text-sm" />
-                     </div>
                   </div>
 
               <div className="grid grid-cols-2 gap-4">
