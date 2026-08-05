@@ -375,6 +375,8 @@ export async function updateApartment(id: number, formData: FormData) {
   const rooms = parseInt(formData.get('rooms') as string) || 1;
   const area = parseFloat(formData.get('area') as string) || 0;
   const price_cash = parseFloat(formData.get('price_cash') as string) || 0;
+  const floor = parseInt(formData.get('floor') as string) || 1;
+  const number = (formData.get('number') as string || '').trim();
   // Xonadon holati endi formada yo'q — kelmasa, bazadagi mavjud qiymat saqlanadi.
   const status = formData.get('status') as string | null;
 
@@ -406,9 +408,14 @@ export async function updateApartment(id: number, formData: FormData) {
     }
   }
 
-  const updateFields: string[] = ['rooms = ?', 'area = ?', 'price_cash = ?'];
+  const updateFields: string[] = ['rooms = ?', 'area = ?', 'price_cash = ?', 'floor = ?'];
 
-  const updateValues: any[] = [rooms, area, price_cash];
+  const updateValues: any[] = [rooms, area, price_cash, floor];
+
+  if (number) {
+    updateFields.push('number = ?');
+    updateValues.push(number);
+  }
 
   if (status) {
     updateFields.push('status = ?');

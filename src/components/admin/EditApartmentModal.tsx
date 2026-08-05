@@ -52,6 +52,17 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-1">Qavat</label>
+                  <input required name="floor" type="number" min="1" defaultValue={apt.floor} className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-1">Xonadon raqami</label>
+                  <input name="number" type="text" defaultValue={apt.number} className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
                   <label className="block text-xs font-bold text-gray-500 mb-1">Xonalar soni</label>
                   <input required name="rooms" type="number" min="1" defaultValue={apt.rooms} className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                 </div>
