@@ -98,9 +98,9 @@ export default function IntroScreen() {
         }
         .voha-intro__lines line {
           fill: none;
-          stroke: #014242;
+          stroke: #D18E5B;
           stroke-width: 1;
-          opacity: 0.16;
+          opacity: 0.28;
           vector-effect: non-scaling-stroke;
         }
         .voha-intro__logo {
