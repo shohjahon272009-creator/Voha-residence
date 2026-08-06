@@ -61,6 +61,33 @@ export async function addApartment(formData: FormData) {
   revalidatePath('/en');
 }
 
+// Ko'p xonadonni bir vaqtda qo'shish. Har qator: qavat, raqam, xona, maydon, narx
+// (vergul, nuqta-vergul yoki Excel'dan nusxa — TAB bilan ajratiladi).
+export async function addApartmentsBulk(projectId: number, text: string): Promise<{ added: number }> {
+  if (!projectId || !text) return { added: 0 };
+  const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  let added = 0;
+  for (const line of lines) {
+    const p = line.split(/\t|,|;/).map((x) => x.trim());
+    const floor = parseInt(p[0]) || 1;
+    const number = (p[1] || `${floor}01`).trim();
+    const rooms = parseInt(p[2]) || 1;
+    const area = parseFloat(p[3]) || 0;
+    const price = parseFloat((p[4] || '').replace(/\s/g, '')) || 0;
+    await db.prepare(
+      `INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, price_installment, status, plan_image, image, orientation, note)
+       VALUES (?, ?, ?, ?, ?, ?, NULL, ?, '', '', '', '')`
+    ).run(projectId, floor, number, rooms, area, price, "Bo'sh");
+    added++;
+  }
+  revalidatePath('/admin/apartments');
+  revalidatePath('/admin/dashboard');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+  return { added };
+}
+
 // Bitta sozlamani (masalan xonadonlar bo'limi ko'rinishi) tez yoqish/o'chirish uchun
 export async function setSiteSetting(key: string, value: string) {
   // Faqat ko'rinish (show_*) sozlamalariga ruxsat

@@ -8,6 +8,7 @@ import { Building2 } from 'lucide-react';
 import { getApartments, getProjects } from '@/lib/actions';
 import EditApartmentModal from '@/components/admin/EditApartmentModal';
 import AddApartmentModal from '@/components/admin/AddApartmentModal';
+import BulkApartmentModal from '@/components/admin/BulkApartmentModal';
 import SiteVisibilityToggle from '@/components/admin/SiteVisibilityToggle';
 import db from '@/lib/db';
 
@@ -62,7 +63,10 @@ export default async function AdminApartments() {
                      <span className="text-xs text-gray-400 font-medium">{apts.length} xonadon</span>
                   </div>
                </div>
-               <AddApartmentModal projectId={project.id} projectName={project.name_uz} />
+               <div className="flex items-center gap-2 shrink-0">
+                  <BulkApartmentModal projectId={project.id} projectName={project.name_uz} />
+                  <AddApartmentModal projectId={project.id} projectName={project.name_uz} />
+               </div>
             </div>
 
             {empty ? (
