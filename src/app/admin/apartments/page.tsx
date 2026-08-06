@@ -68,13 +68,17 @@ export default async function AdminApartments() {
             {empty ? (
                <p className="text-xs text-gray-400">Hali xonadon yo&apos;q — <span className="font-bold text-primary">&quot;Xonadon qo&apos;shish&quot;</span> tugmasi bilan qo&apos;shing.</p>
             ) : (
-               <div className="space-y-3 overflow-x-auto pb-1">
+               <div className="space-y-5">
                   {floors.map(floor => {
                     const floorApts = apts.filter(a => a.floor === floor);
                     return (
-                      <div key={floor} className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-gray-400 w-14 text-right shrink-0">{floor}-qavat</span>
-                        <div className="flex gap-2 flex-wrap">
+                      <div key={floor}>
+                        <div className="flex items-center gap-2 mb-2.5">
+                          <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{floor}-qavat</span>
+                          <span className="text-[10px] font-bold text-gray-300">{floorApts.length} ta</span>
+                          <div className="flex-1 h-px bg-gray-100" />
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                           {floorApts.map(apt => (
                             <EditApartmentModal key={apt.id} apt={apt} />
                           ))}

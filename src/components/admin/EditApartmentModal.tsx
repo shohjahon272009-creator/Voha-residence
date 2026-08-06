@@ -25,18 +25,20 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
   };
 
   // Xonadon holati endi ishlatilmaydi — barcha kartalar bir xil neytral ko'rinishda
-  const bgClass = "bg-primary/5 border-primary/20 text-primary hover:bg-primary hover:text-white";
-
   return (
     <>
       <div
         onClick={() => setIsOpen(true)}
-        title={`№${apt.number} | ${apt.rooms} xona | ${apt.area}m² | ${(apt.price_cash / 1000000).toFixed(0)} mln UZS`}
-        className={`w-12 h-12 rounded-xl flex items-center justify-center text-xs font-bold cursor-pointer border-2 transition-all hover:scale-110 group relative ${bgClass}`}
+        className="w-full p-3.5 rounded-2xl border border-gray-100 bg-white hover:border-primary hover:shadow-lg cursor-pointer transition-all group"
       >
-        {apt.number}
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-primary text-white text-[9px] px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-          {apt.rooms}xona • {apt.area}m² • {(apt.price_cash/1000000).toFixed(0)}mln
+        <div className="flex items-baseline justify-between mb-1.5">
+          <span className="text-xl font-black text-primary group-hover:text-accent transition-colors">№{apt.number}</span>
+          <span className="text-sm font-bold text-accent">{apt.area} m²</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+          <span>{apt.rooms} xona</span>
+          <span className="text-gray-300">·</span>
+          <span>{apt.floor}-qavat</span>
         </div>
       </div>
 
