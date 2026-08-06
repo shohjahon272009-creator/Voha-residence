@@ -53,14 +53,16 @@ export default async function AdminApartments() {
 
         return (
           <div key={project.id} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-               <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center shrink-0">
-                     <Building2 size={19} className="text-primary" />
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-gray-100">
+               <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+                     <Building2 size={22} className="text-white" />
                   </div>
                   <div className="min-w-0">
-                     <h3 className="font-bold text-lg text-primary leading-tight truncate">{project.name_uz}</h3>
-                     <span className="text-xs text-gray-400 font-medium">{apts.length} xonadon</span>
+                     <h3 className="font-black text-xl text-primary leading-tight truncate">{project.name_uz}</h3>
+                     <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 rounded-full bg-accent/10 text-accent text-[11px] font-bold">
+                        {apts.length} xonadon
+                     </span>
                   </div>
                </div>
                <div className="flex items-center gap-2 shrink-0">
