@@ -19,12 +19,36 @@ function mimeFromName(name: string): string {
   3) Zaxira (serverless, Blob biror sababdan ishlamasa) — base64 data URL bazada.
      Bu har doim ishlaydi, shuning uchun rasm HECH QACHON yo'qolmaydi.
 */
+// Rasmni siqib kichraytiradi (400 KB+ -> ~60 KB). Shunda tez saqlanadi va baza shishmaydi.
+// sharp bo'lmasa yoki xato bo'lsa — asl rasm ishlatiladi (hech narsa buzilmaydi).
+async function compress(buffer: Buffer, type: string): Promise<{ buffer: Buffer; type: string; ext: string } | null> {
+  if (type === 'image/svg+xml' || type === 'image/gif') return null; // bularni siqmaymiz
+  try {
+    const sharp = (await import('sharp')).default;
+    const out = await sharp(buffer)
+      .rotate() // telefon rasmidagi EXIF burilishini to'g'rilaydi
+      .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 78 })
+      .toBuffer();
+    if (out.length < buffer.length) return { buffer: out, type: 'image/webp', ext: 'webp' };
+  } catch { /* sharp yo'q yoki rasm emas — asl holicha qoladi */ }
+  return null;
+}
+
 export async function saveUpload(
   buffer: Buffer,
   fileName: string,
   contentType?: string,
 ): Promise<string> {
-  const type = contentType || mimeFromName(fileName);
+  let type = contentType || mimeFromName(fileName);
+
+  // 0) Siqish — imkoni bo'lsa kichraytiramiz
+  const small = await compress(buffer, type);
+  if (small) {
+    buffer = small.buffer;
+    type = small.type;
+    fileName = fileName.replace(/\.[^.]+$/, '') + '.' + small.ext;
+  }
 
   // 1) Vercel Blob
   if (process.env.BLOB_READ_WRITE_TOKEN) {
