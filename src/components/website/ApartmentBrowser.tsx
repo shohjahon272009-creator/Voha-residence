@@ -31,19 +31,27 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   // Admin kiritgan real xonadon maydonlaridan avtomatik oraliqlar hosil qilamiz.
   // Faqat xonadon MAVJUD bo'lgan oraliqlar ko'rsatiladi — shuning uchun mijoz
   // qaysi birini tanlasa ham har doim natija chiqadi, bo'sh natija bo'lmaydi.
-  // Admin kiritgan aniq maydonlar (o'nlik kasrlar bilan, aynan kiritilganicha),
-  // takrorsiz va o'sish tartibida — har birida nechta xonadon borligi.
-  const areaOptions = useMemo(() => {
-    const map = new Map<number, number>();
-    for (const a of apts) map.set(a.area, (map.get(a.area) ?? 0) + 1);
-    return [...map.entries()].sort((a, b) => a[0] - b[0]).map(([area, count]) => ({ area, count }));
+  // Maydon oraliqlari (170 gacha) — o'nlik kasrlar ko'p tugma hosil qilmasligi, filtr
+  // toza va tushunarli bo'lishi uchun. Faqat xonadon MAVJUD oraliqlar ko'rsatiladi.
+  const areaRanges = useMemo(() => {
+    const edges = [0, 60, 75, 90, 110, 130, 150, 170, Infinity];
+    const out: { min: number; max: number; label: string; count: number }[] = [];
+    for (let i = 0; i < edges.length - 1; i++) {
+      const lo = edges[i];
+      const hi = edges[i + 1];
+      const count = apts.filter((a) => a.area >= lo && a.area < hi).length;
+      if (count === 0) continue;
+      const label = lo === 0 ? `≤ ${hi}` : hi === Infinity ? `${lo}+` : `${lo}–${hi}`;
+      out.push({ min: lo, max: hi, label, count });
+    }
+    return out;
   }, [apts]);
 
   const [rooms, setRooms] = useState<number | null>(null);
   const [projectId, setProjectId] = useState<number | 'all'>('all');
   const [year, setYear] = useState<number | 'all'>('all');
   const [cats, setCats] = useState<string[]>([]);
-  const [selArea, setSelArea] = useState<number | null>(null);
+  const [areaSel, setAreaSel] = useState<{ min: number; max: number } | null>(null);
 
   // Har kategoriyada nechta xonadon borligi
   const catCount = (key: string) => apts.filter((a) => projById.get(a.project_id)?.categories?.includes(key)).length;
@@ -56,7 +64,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
       const p = projById.get(a.project_id);
       if (rooms !== null && (rooms === 4 ? a.rooms < 4 : a.rooms !== rooms)) return false;
       if (projectId !== 'all' && a.project_id !== projectId) return false;
-      if (selArea !== null && a.area !== selArea) return false;
+      if (areaSel && (a.area < areaSel.min || a.area >= areaSel.max)) return false;
       if (year !== 'all' && p?.delivery_year !== year) return false;
       // Ko'p tanlov: loyiha BARCHA tanlangan joylashuvlarga ega bo'lishi kerak (AND)
       if (cats.length && !cats.every((k) => p?.categories?.includes(k))) return false;
@@ -66,7 +74,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
       a.floor - b.floor ||
       a.number.localeCompare(b.number)
     );
-  }, [apts, rooms, projectId, year, selArea, cats, projById, projOrder]);
+  }, [apts, rooms, projectId, year, areaSel, cats, projById, projOrder]);
 
   // Kategoriya tanlanganda — shu kategoriyaga mos loyihalar (admin belgilagan)
   const matchingProjects = useMemo(
@@ -75,7 +83,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   );
 
   // Filtr o'zgarganda ko'rinadigan sonni 9 ga qaytaramiz (render vaqtida moslash — React tavsiyasi)
-  const filterSig = `${rooms}|${projectId}|${year}|${selArea ?? ''}|${cats.join(',')}`;
+  const filterSig = `${rooms}|${projectId}|${year}|${areaSel?.min ?? ''}-${areaSel?.max ?? ''}|${cats.join(',')}`;
   const [visible, setVisible] = useState(9);
   const [prevSig, setPrevSig] = useState(filterSig);
   if (filterSig !== prevSig) {
@@ -84,7 +92,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   }
   const shown = filtered.slice(0, visible);
 
-  const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setCats([]); setSelArea(null); };
+  const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setCats([]); setAreaSel(null); };
 
   // Bitta xonadon kartasi (loyiha guruhlari ichida ishlatiladi)
   const renderCard = (a: Apartment) => {
@@ -232,17 +240,17 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
                 </div>
               )}
 
-              {areaOptions.length > 0 && (
+              {areaRanges.length > 0 && (
                 <div>
                   <label className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"><Maximize2 size={14} /> {t.area}</label>
-                  <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
-                    {areaOptions.map((o) => {
-                      const active = selArea === o.area;
+                  <div className="grid grid-cols-2 gap-2">
+                    {areaRanges.map((r) => {
+                      const active = areaSel?.min === r.min && areaSel?.max === r.max;
                       return (
-                        <button key={o.area} onClick={() => setSelArea(active ? null : o.area)}
+                        <button key={r.label} onClick={() => setAreaSel(active ? null : { min: r.min, max: r.max })}
                           className={`px-3 h-9 rounded-lg text-sm font-bold flex items-center justify-between gap-1.5 transition-all ${active ? 'bg-primary text-white shadow-lg' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>
-                          <span>{o.area} m²</span>
-                          <span className={`text-[10px] font-black ${active ? 'text-accent' : 'text-gray-400'}`}>{o.count}</span>
+                          <span>{r.label}</span>
+                          <span className={`text-[10px] font-black ${active ? 'text-accent' : 'text-gray-400'}`}>{r.count}</span>
                         </button>
                       );
                     })}
