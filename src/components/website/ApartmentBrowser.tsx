@@ -108,7 +108,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
         className="group bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer">
         <div className="relative aspect-[4/3] bg-gray-50 flex items-center justify-center p-4 border-b border-gray-100 overflow-hidden">
           {a.plan_image ? (
-            <img src={a.plan_image} alt={`${a.number}-${t.plan}`} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
+            <img src={a.plan_image} alt={`${a.number}-${t.plan}`} loading="lazy" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
           ) : (
             <div className="flex flex-col items-center text-gray-300"><Layers size={40} strokeWidth={1.2} /><span className="text-[11px] font-bold uppercase tracking-widest mt-2">№{a.number}</span></div>
           )}
