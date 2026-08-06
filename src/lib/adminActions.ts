@@ -488,6 +488,18 @@ export async function updateApartment(id: number, formData: FormData) {
   revalidatePath('/en');
 }
 
+// Bitta xonadonni butunlay o'chirish (unga bog'liq bronlar ham o'chadi)
+export async function deleteApartment(id: number) {
+  await db.prepare('DELETE FROM bookings WHERE apartment_id = ?').run(id);
+  await db.prepare('DELETE FROM apartments WHERE id = ?').run(id);
+  revalidatePath('/admin/apartments');
+  revalidatePath('/admin/dashboard');
+  revalidatePath('/admin/sold-out');
+  revalidatePath('/uz');
+  revalidatePath('/ru');
+  revalidatePath('/en');
+}
+
 export async function addNews(formData: FormData) {
   const title_uz = formData.get('title_uz') as string;
   const title_ru = formData.get('title_ru') as string;

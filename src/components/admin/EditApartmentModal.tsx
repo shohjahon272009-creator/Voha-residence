@@ -6,14 +6,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Edit2 } from 'lucide-react';
-import { updateApartment } from '@/lib/adminActions';
+import { X, Edit2, Trash2 } from 'lucide-react';
+import { updateApartment, deleteApartment } from '@/lib/adminActions';
 import PasteImageInput from './PasteImageInput';
 
- 
+
 export default function EditApartmentModal({ apt }: { apt: any }) {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDel, setConfirmDel] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,6 +23,14 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
     const formData = new FormData(e.currentTarget);
     await updateApartment(apt.id, formData);
     setLoading(false);
+    setIsOpen(false);
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    await deleteApartment(apt.id);
+    setDeleting(false);
+    setConfirmDel(false);
     setIsOpen(false);
   };
 
@@ -84,13 +94,30 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
                 <PasteImageInput name="image" label="Xonadon rasmi" existing={apt.image} />
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">
-                  Bekor qilish
-                </button>
-                <button type="submit" disabled={loading} className="px-5 py-2 bg-primary text-white font-bold rounded-lg hover:bg-accent disabled:opacity-50">
-                  {loading ? 'Saqlanmoqda...' : 'Saqlash'}
-                </button>
+              <div className="flex items-center justify-between gap-3 pt-4 border-t border-gray-100">
+                {confirmDel ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-red-500">{"O'chirilsinmi?"}</span>
+                    <button type="button" onClick={handleDelete} disabled={deleting} className="px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 disabled:opacity-50">
+                      {deleting ? "O'chirilmoqda..." : "Ha, o'chir"}
+                    </button>
+                    <button type="button" onClick={() => setConfirmDel(false)} className="px-3 py-1.5 text-gray-500 text-xs font-bold hover:bg-gray-50 rounded-lg">
+                      {"Yo'q"}
+                    </button>
+                  </div>
+                ) : (
+                  <button type="button" onClick={() => setConfirmDel(true)} className="flex items-center gap-1.5 px-3 py-2 text-red-500 text-xs font-bold hover:bg-red-50 rounded-lg">
+                    <Trash2 size={14} /> {"O'chirish"}
+                  </button>
+                )}
+                <div className="flex gap-3">
+                  <button type="button" onClick={() => { setIsOpen(false); setConfirmDel(false); }} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">
+                    Bekor qilish
+                  </button>
+                  <button type="submit" disabled={loading} className="px-5 py-2 bg-primary text-white font-bold rounded-lg hover:bg-accent disabled:opacity-50">
+                    {loading ? 'Saqlanmoqda...' : 'Saqlash'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
