@@ -6,7 +6,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Edit2 } from 'lucide-react';
 import { updateApartment } from '@/lib/adminActions';
 import PasteImageInput from './PasteImageInput';
 
@@ -29,16 +29,17 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
     <>
       <div
         onClick={() => setIsOpen(true)}
-        className="w-full p-3.5 rounded-2xl border border-gray-100 bg-white hover:border-primary hover:shadow-lg cursor-pointer transition-all group"
+        className="w-full p-3.5 rounded-2xl border border-gray-100 bg-white hover:border-primary hover:shadow-md cursor-pointer transition-all group"
       >
         <div className="flex items-baseline justify-between mb-1.5">
           <span className="text-xl font-black text-primary group-hover:text-accent transition-colors">№{apt.number}</span>
           <span className="text-sm font-bold text-accent">{apt.area} m²</span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
-          <span>{apt.rooms} xona</span>
-          <span className="text-gray-300">·</span>
-          <span>{apt.floor}-qavat</span>
+        <div className="flex items-center justify-between text-xs font-medium">
+          <span className="text-gray-500">{apt.rooms} xona</span>
+          <span className="flex items-center gap-1 text-primary/60 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Edit2 size={11} /> Tahrirlash
+          </span>
         </div>
       </div>
 
