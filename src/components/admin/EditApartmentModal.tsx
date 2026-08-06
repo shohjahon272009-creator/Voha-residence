@@ -29,17 +29,15 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
     <>
       <div
         onClick={() => setIsOpen(true)}
-        className="w-full p-3.5 rounded-2xl border border-gray-100 bg-white hover:border-primary hover:shadow-md cursor-pointer transition-all group"
+        className="w-full p-3 rounded-xl border border-gray-100 bg-white hover:border-primary hover:bg-primary/[0.03] cursor-pointer transition-all group relative"
       >
-        <div className="flex items-baseline justify-between mb-1.5">
-          <span className="text-xl font-black text-primary group-hover:text-accent transition-colors">№{apt.number}</span>
-          <span className="text-sm font-bold text-accent">{apt.area} m²</span>
+        <Edit2 size={12} className="absolute top-2.5 right-2.5 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="flex items-baseline gap-2 mb-0.5">
+          <span className="text-base font-black text-primary group-hover:text-accent transition-colors leading-none">№{apt.number}</span>
         </div>
-        <div className="flex items-center justify-between text-xs font-medium">
-          <span className="text-gray-500">{apt.rooms} xona</span>
-          <span className="flex items-center gap-1 text-primary/60 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Edit2 size={11} /> Tahrirlash
-          </span>
+        <div className="flex items-center justify-between gap-2 mt-1.5">
+          <span className="text-[11px] text-gray-400 font-medium">{apt.rooms} xona</span>
+          <span className="text-xs font-bold text-accent whitespace-nowrap">{apt.area} m²</span>
         </div>
       </div>
 

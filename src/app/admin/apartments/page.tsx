@@ -82,7 +82,7 @@ export default async function AdminApartments() {
                           <span className="text-[10px] font-bold text-gray-300">{floorApts.length} ta</span>
                           <div className="flex-1 h-px bg-gray-100" />
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2.5">
                           {floorApts.map(apt => (
                             <EditApartmentModal key={apt.id} apt={apt} />
                           ))}

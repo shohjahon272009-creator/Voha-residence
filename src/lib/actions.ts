@@ -43,13 +43,18 @@ export const getProjectBySlug = async (id: number): Promise<Project | null> => {
   };
 };
 
+// Ro'yxat uchun yengil ustunlar (og'ir base64 plan_image/image ni tortmaymiz — tezlik uchun)
+const APT_LIST_COLS = 'id, project_id, floor, number, rooms, area, price_cash, price_installment, status, orientation, note';
+
 export const getApartments = async (projectId?: number): Promise<Apartment[]> => {
   if (projectId) {
-
+    // Bitta loyiha — rasmlar bilan (kam xonadon, chizma sahifada kerak)
     return await db.prepare('SELECT * FROM apartments WHERE project_id = ?').all(projectId) as any[];
   }
-
-  return await db.prepare('SELECT * FROM apartments').all() as any[];
+  // Barcha xonadonlar (ro'yxat) — rasm ustunlari OLIB TASHLANADI, aks holda 59 MB+ base64
+  // har sahifada tortilib, saytni qotirib qo'yadi. plan_image/image bo'sh qaytadi.
+  const rows = await db.prepare(`SELECT ${APT_LIST_COLS} FROM apartments`).all() as any[];
+  return rows.map((r) => ({ ...r, plan_image: '', image: '' }));
 };
 
 export const getApartmentStats = async () => {
