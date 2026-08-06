@@ -12,11 +12,16 @@ export default function AddApartmentModal({ projectId, projectName }: { projectI
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const formData = new FormData(e.currentTarget);
-    formData.set('project_id', String(projectId));
-    await addApartment(formData);
-    setLoading(false);
-    setIsOpen(false);
+    try {
+      const formData = new FormData(e.currentTarget);
+      formData.set('project_id', String(projectId));
+      await addApartment(formData);
+      setIsOpen(false);
+    } catch {
+      alert("Saqlab bo'lmadi. Bir oz kutib, qayta urinib ko'ring.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

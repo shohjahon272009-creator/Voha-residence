@@ -50,8 +50,10 @@ export async function saveUpload(
     fileName = fileName.replace(/\.[^.]+$/, '') + '.' + small.ext;
   }
 
-  // 1) Vercel Blob
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  // 1) Vercel Blob — FAQAT ombor "public" qilinganda yoqiladi.
+  // Hozir ombor "private" bo'lgani uchun Blob osilib qoladi va saqlash qotadi.
+  // Public qilgach, Vercel'da BLOB_PUBLIC_READY=1 env qo'shilsa, o'zi yana ishlaydi.
+  if (process.env.BLOB_READ_WRITE_TOKEN && process.env.BLOB_PUBLIC_READY === '1') {
     try {
       const { put } = await import('@vercel/blob');
       const blob = await put(`uploads/${fileName}`, buffer, {

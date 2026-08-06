@@ -20,10 +20,15 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const formData = new FormData(e.currentTarget);
-    await updateApartment(apt.id, formData);
-    setLoading(false);
-    setIsOpen(false);
+    try {
+      const formData = new FormData(e.currentTarget);
+      await updateApartment(apt.id, formData);
+      setIsOpen(false);
+    } catch {
+      alert("Saqlab bo'lmadi. Bir oz kutib, qayta urinib ko'ring.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async () => {
