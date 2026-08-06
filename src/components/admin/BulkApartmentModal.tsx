@@ -42,23 +42,48 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
             </div>
 
             <div className="p-6 space-y-4">
-              <div className="p-4 bg-primary/5 rounded-xl text-[12px] text-primary/70 leading-relaxed">
-                Har qatorда bitta xonadon: <b>qavat, raqam, xona, maydon, narx</b><br />
-                Excel jadvalidan to&apos;g&apos;ridan-to&apos;g&apos;ri nusxa ko&apos;chirib qo&apos;ysangiz ham bo&apos;ladi (ustunlar avtomatik ajraladi).
+              <div className="p-4 bg-primary/5 rounded-xl">
+                <p className="text-[13px] font-bold text-primary mb-3">Har bir xonadonni shunday yozing:</p>
+
+                {/* Namuna — har bir raqam nimani anglatishi belgilangan */}
+                <div className="bg-white rounded-xl border border-primary/15 p-3 overflow-x-auto">
+                  <div className="flex items-stretch gap-1 text-center min-w-max font-mono">
+                    {[
+                      { v: '5', l: 'qavat' },
+                      { v: '58', l: 'xonadon №' },
+                      { v: '2', l: 'nechta xona' },
+                      { v: '74.54', l: 'maydon (m²)' },
+                      { v: '483000000', l: 'narx (so‘m)' },
+                    ].map((c, i, arr) => (
+                      <React.Fragment key={c.l}>
+                        <div className="px-1.5">
+                          <div className="text-base font-black text-primary leading-tight">{c.v}</div>
+                          <div className="text-[10px] font-sans font-semibold text-accent mt-1 whitespace-nowrap">{c.l}</div>
+                        </div>
+                        {i < arr.length - 1 && <div className="text-xl font-black text-gray-300 self-start leading-none">,</div>}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-primary/60 mt-3 leading-relaxed">
+                  Raqamlarni <b>vergul bilan</b> ajrating. Har bir qatorда — bitta xonadon.<br />
+                  Excel jadvalidan to&apos;g&apos;ridan-to&apos;g&apos;ri nusxa ko&apos;chirib qo&apos;ysangiz ham bo&apos;ladi.
+                </p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 mb-1">Xonadonlar ro&apos;yxati</label>
+                <label className="block text-xs font-bold text-gray-500 mb-1">Xonadonlarni shu yerga yozing</label>
                 <textarea
                   value={text}
                   onChange={(e) => setText(e.target.value)}
-                  rows={10}
+                  rows={9}
                   placeholder={`5, 58, 2, 74.54, 483000000
 5, 60, 2, 91.84, 598000000
 6, 74, 3, 88.01, 570000000`}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white font-mono text-sm"
                 />
-                <p className="text-[11px] text-gray-400 mt-1">Aniqlangan qatorlar: <b className="text-primary">{rows}</b> ta</p>
+                <p className="text-[11px] text-gray-400 mt-1">Tayyor bo&apos;lgan xonadonlar: <b className="text-primary">{rows}</b> ta</p>
               </div>
 
               <div className="flex justify-end gap-3 pt-2 border-t border-gray-100">
