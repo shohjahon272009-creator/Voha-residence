@@ -4,6 +4,7 @@
  
  
 import React from 'react';
+import { Building2 } from 'lucide-react';
 import { getApartments, getProjects } from '@/lib/actions';
 import EditApartmentModal from '@/components/admin/EditApartmentModal';
 import AddApartmentModal from '@/components/admin/AddApartmentModal';
@@ -18,6 +19,10 @@ export default async function AdminApartments() {
 
   const settingsRows = await db.prepare('SELECT key, value FROM settings').all() as { key: string; value: string }[];
   const settings = settingsRows.reduce((acc, r) => ({ ...acc, [r.key]: r.value }), {} as Record<string, string>);
+
+  // Xonadoni bor loyihalar birinchi, bo'shlari oxirida — admin adashmasligi uchun
+  const aptCount = (id: number) => allApartments.filter(a => a.project_id === id).length;
+  const sortedProjects = [...projects].sort((a, b) => aptCount(b.id) - aptCount(a.id));
 
   return (
     <div className="space-y-10">
@@ -40,47 +45,45 @@ export default async function AdminApartments() {
          </div>
       </div>
 
-      {projects.map(project => {
+      {sortedProjects.map(project => {
         const apts = allApartments.filter(a => a.project_id === project.id);
         const floors = Array.from(new Set(apts.map(a => a.floor))).sort((a, b) => a - b);
+        const empty = apts.length === 0;
 
         return (
-          <div key={project.id} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-               <h3 className="font-bold text-xl text-primary">{project.name_uz}</h3>
-               <div className="flex items-center gap-3 text-xs font-bold">
-                  <span className="px-3 py-1 bg-success/10 text-success rounded-full">
-                     {apts.filter(a => a.status === "Bo'sh").length} Bo'sh
-                  </span>
-                  <span className="px-3 py-1 bg-warning/10 text-warning rounded-full">
-                     {apts.filter(a => a.status === 'Bronlangan').length} Bronlangan
-                  </span>
-                  <span className="px-3 py-1 bg-danger/10 text-danger rounded-full">
-                     {apts.filter(a => a.status === 'Band').length} Band
-                  </span>
-                  <AddApartmentModal projectId={project.id} projectName={project.name_uz} />
+          <div key={project.id} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+               <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center shrink-0">
+                     <Building2 size={19} className="text-primary" />
+                  </div>
+                  <div className="min-w-0">
+                     <h3 className="font-bold text-lg text-primary leading-tight truncate">{project.name_uz}</h3>
+                     <span className="text-xs text-gray-400 font-medium">{apts.length} xonadon</span>
+                  </div>
                </div>
+               <AddApartmentModal projectId={project.id} projectName={project.name_uz} />
             </div>
 
-            {apts.length === 0 && (
-               <p className="text-sm text-gray-400 mb-4">Hozircha xonadon yo&apos;q. Yuqoridagi <span className="font-bold text-primary">&quot;Xonadon qo&apos;shish&quot;</span> tugmasi bilan qo&apos;shing.</p>
+            {empty ? (
+               <p className="text-xs text-gray-400">Hali xonadon yo&apos;q — <span className="font-bold text-primary">&quot;Xonadon qo&apos;shish&quot;</span> tugmasi bilan qo&apos;shing.</p>
+            ) : (
+               <div className="space-y-3 overflow-x-auto pb-1">
+                  {floors.map(floor => {
+                    const floorApts = apts.filter(a => a.floor === floor);
+                    return (
+                      <div key={floor} className="flex items-center gap-3">
+                        <span className="text-xs font-bold text-gray-400 w-14 text-right shrink-0">{floor}-qavat</span>
+                        <div className="flex gap-2 flex-wrap">
+                          {floorApts.map(apt => (
+                            <EditApartmentModal key={apt.id} apt={apt} />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+               </div>
             )}
-
-            <div className="space-y-4 overflow-x-auto pb-2">
-               {floors.map(floor => {
-                 const floorApts = apts.filter(a => a.floor === floor);
-                 return (
-                   <div key={floor} className="flex items-center gap-3">
-                     <span className="text-xs font-bold text-gray-400 w-16 text-right shrink-0">{floor} qavat</span>
-                     <div className="flex gap-2 flex-wrap">
-                       {floorApts.map(apt => (
-                         <EditApartmentModal key={apt.id} apt={apt} />
-                       ))}
-                     </div>
-                   </div>
-                 );
-               })}
-            </div>
           </div>
         );
       })}
