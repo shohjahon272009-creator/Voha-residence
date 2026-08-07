@@ -192,12 +192,16 @@ export default function FloorPlan({
         <div className={cn("flex flex-col transition-all duration-500", selectedApt ? "lg:col-span-2" : "lg:col-span-1")}>
            {selectedApt ? (
              <div className="animate-fade-in bg-white border border-gray-100 rounded-3xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.05)]">
-                {/* Apartment Plan */}
+                {/* Apartment Plan — haqiqiy chizma (bo'lsa), aks holda placeholder */}
                 <div className="aspect-[4/3] bg-[#f8fafc] rounded-2xl mb-6 relative overflow-hidden group border border-gray-200">
-                   <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
-                      <img src="/logo.png" alt="Plan" className="w-16 opacity-10 grayscale mb-2" />
-                      <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">{selectedApt.number}-{t.aptMap}</span>
-                   </div>
+                   {selectedApt.plan_image ? (
+                      <img src={selectedApt.plan_image} alt={`${selectedApt.number}-${t.aptMap}`} className="w-full h-full object-contain p-3" />
+                   ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+                         <img src="/logo.png" alt="Plan" className="w-16 opacity-10 grayscale mb-2" />
+                         <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">{selectedApt.number}-{t.aptMap}</span>
+                      </div>
+                   )}
                 </div>
 
                 <h4 className="text-3xl font-black text-primary mb-6 tracking-tight">{selectedApt.number}-{t.aptTitle}</h4>
@@ -222,7 +226,7 @@ export default function FloorPlan({
                    <h5 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">{t.roomViews}</h5>
                    <div className="grid grid-cols-2 gap-2">
                       <div className="aspect-square rounded-xl overflow-hidden relative group">
-                         <img src="/voha-actual-bg.png" alt="Mehmonxona" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                         <img src={selectedApt.image || '/voha-actual-bg.png'} alt="Mehmonxona" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
                             <span className="text-white text-xs font-bold">{t.livingRoom}</span>
                          </div>
