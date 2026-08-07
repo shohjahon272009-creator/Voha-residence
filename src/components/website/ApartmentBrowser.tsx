@@ -7,14 +7,14 @@ import { Apartment, Project, SelectedApartment } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
 import { CATEGORIES } from '@/lib/categories';
 import ProjectCard from './ProjectCard';
-import { Home, Layers, Maximize2, Building2, CalendarDays, Search, ArrowRight, Calculator } from 'lucide-react';
+import { Home, Layers, Maximize2, Building2, CalendarDays, Search, ArrowRight, Calculator, ChevronDown } from 'lucide-react';
 
 type Props = { apartments: Apartment[]; projects: Project[]; lang: Locale; onSelect?: (apt: SelectedApartment) => void };
 
 const L: Record<Locale, Record<string, string>> = {
-  uz: { tag: 'XONADON TANLASH', title: 'O‘zingizga mos xonadonni toping', byLoc: 'Joylashuv bo‘yicha', rooms: 'Xonalar', project: 'Loyiha', area: 'Maydon, m²', year: 'Topshirish', all: 'Barchasi', found: 'Topildi', pcs: 'ta variant', reset: 'Tozalash', roomS: 'xona', floorS: '-qavat', priceLabel: 'Narx', onReq: 'So‘rov bo‘yicha', more: 'Ko‘proq', details: 'Batafsil', empty: 'Bu shartlarga mos xonadon topilmadi', plan: 'chizma', calc: 'To‘lovni hisoblash', matchProj: 'Mos loyihalar' },
-  ru: { tag: 'ПОДБОР КВАРТИРЫ', title: 'Найдите подходящую квартиру', byLoc: 'По расположению', rooms: 'Комнат', project: 'Проект', area: 'Площадь, м²', year: 'Сдача', all: 'Все', found: 'Найдено', pcs: 'вариантов', reset: 'Очистить', roomS: 'комн.', floorS: ' этаж', priceLabel: 'Цена', onReq: 'По запросу', more: 'Ещё', details: 'Подробнее', empty: 'По этим условиям ничего не найдено', plan: 'план', calc: 'Рассчитать платёж', matchProj: 'Подходящие проекты' },
-  en: { tag: 'FIND AN APARTMENT', title: 'Find the apartment that fits you', byLoc: 'By location', rooms: 'Rooms', project: 'Project', area: 'Area, m²', year: 'Handover', all: 'All', found: 'Found', pcs: 'options', reset: 'Reset', roomS: 'rooms', floorS: ' floor', priceLabel: 'Price', onReq: 'On request', more: 'More', details: 'Details', empty: 'No apartments match these filters', plan: 'plan', calc: 'Calculate payment', matchProj: 'Matching projects' },
+  uz: { tag: 'XONADON TANLASH', title: 'O‘zingizga mos xonadonni toping', hint: 'Xona soni, maydon yoki loyihani tanlab, o‘zingizga mos xonadonni oson toping.', byLoc: 'Joylashuv bo‘yicha', rooms: 'Xonalar', project: 'Loyiha', area: 'Maydon, m²', year: 'Topshirish', all: 'Barchasi', found: 'Topildi', pcs: 'ta variant', reset: 'Tozalash', roomS: 'xona', floorS: '-qavat', priceLabel: 'Narx', onReq: 'So‘rov bo‘yicha', more: 'Ko‘proq', details: 'Batafsil', empty: 'Bu shartlarga mos xonadon topilmadi', plan: 'chizma', calc: 'To‘lovni hisoblash', matchProj: 'Mos loyihalar' },
+  ru: { tag: 'ПОДБОР КВАРТИРЫ', title: 'Найдите подходящую квартиру', hint: 'Выберите комнаты, площадь или проект — и легко найдите свою квартиру.', byLoc: 'По расположению', rooms: 'Комнат', project: 'Проект', area: 'Площадь, м²', year: 'Сдача', all: 'Все', found: 'Найдено', pcs: 'вариантов', reset: 'Очистить', roomS: 'комн.', floorS: ' этаж', priceLabel: 'Цена', onReq: 'По запросу', more: 'Ещё', details: 'Подробнее', empty: 'По этим условиям ничего не найдено', plan: 'план', calc: 'Рассчитать платёж', matchProj: 'Подходящие проекты' },
+  en: { tag: 'FIND AN APARTMENT', title: 'Find the apartment that fits you', hint: 'Pick rooms, area or project to easily find your apartment.', byLoc: 'By location', rooms: 'Rooms', project: 'Project', area: 'Area, m²', year: 'Handover', all: 'All', found: 'Found', pcs: 'options', reset: 'Reset', roomS: 'rooms', floorS: ' floor', priceLabel: 'Price', onReq: 'On request', more: 'More', details: 'Details', empty: 'No apartments match these filters', plan: 'plan', calc: 'Calculate payment', matchProj: 'Matching projects' },
 };
 
 export default function ApartmentBrowser({ apartments, projects, lang, onSelect }: Props) {
@@ -52,6 +52,8 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
   const [year, setYear] = useState<number | 'all'>('all');
   const [cats, setCats] = useState<string[]>([]);
   const [areaSel, setAreaSel] = useState<{ min: number; max: number } | null>(null);
+  // Joylashuv turkumlari — sodda ko'rinish uchun yig'ilgan turadi, xohlagan ochadi
+  const [showCats, setShowCats] = useState(false);
 
   // Har kategoriyada nechta xonadon borligi
   const catCount = (key: string) => apts.filter((a) => projById.get(a.project_id)?.categories?.includes(key)).length;
@@ -155,6 +157,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
         <div className="text-center mb-10">
           <span className="eyebrow eyebrow--center mb-4">{t.tag}</span>
           <h2 className="text-4xl md:text-5xl font-bold text-primary">{t.title}</h2>
+          <p className="text-gray-500 text-sm md:text-base mt-3 max-w-lg mx-auto">{t.hint}</p>
           <div className="flex items-center justify-center gap-3 mt-5">
             <span className="h-px w-12 bg-gradient-to-r from-transparent to-accent/50" />
             <span className="w-2 h-2 bg-accent rotate-45 rounded-[1px]" />
@@ -162,11 +165,18 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
           </div>
         </div>
 
-        {/* Joylashuv bo'yicha rasmli kategoriya filtri */}
+        {/* Joylashuv bo'yicha rasmli kategoriya filtri — yig'iladigan (sodda ko'rinish) */}
         <div className="mb-10">
-          <div className="flex items-center gap-2 mb-4 text-sm font-bold text-gray-500 uppercase tracking-wider">
+          <button
+            onClick={() => setShowCats((s) => !s)}
+            className="w-full flex items-center gap-2 mb-4 text-sm font-bold text-gray-500 uppercase tracking-wider hover:text-primary transition-colors"
+          >
             <Building2 size={15} className="text-accent" /> {t.byLoc}
-          </div>
+            {cats.length > 0 && <span className="text-accent normal-case">({cats.length})</span>}
+            <span className="flex-1 h-px bg-gray-100 ml-1" />
+            <ChevronDown size={16} className={`transition-transform duration-300 ${showCats ? 'rotate-180' : ''}`} />
+          </button>
+          {(showCats || cats.length > 0) && (
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
             {CATEGORIES.map((c) => {
               const isActive = cats.includes(c.key);
@@ -193,6 +203,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
               );
             })}
           </div>
+          )}
         </div>
 
         {/* Kategoriya tanlanganda — o'sha joyga mos loyihalar (admin belgilagan) */}
