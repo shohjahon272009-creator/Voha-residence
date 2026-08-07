@@ -223,16 +223,31 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
         </motion.div>
       )}
 
-      {/* Slider indikatorlari (nuqtalar) */}
+      {/* Slider indikatorlari — faol nuqta 5 soniyada asta to'ladi */}
       {slideList.length > 1 && (
-        <div className="relative z-20 flex justify-center gap-2 mb-6">
+        <div className="relative z-20 flex justify-center items-center gap-2 mb-6">
           {slideList.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              aria-label={`Slayd ${i + 1}`}
-              className={`h-2 rounded-full transition-all duration-300 ${i === current ? 'w-8 bg-accent' : 'w-2 bg-white/40 hover:bg-white/70'}`}
-            />
+            i === current ? (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                aria-label={`Slayd ${i + 1}`}
+                className="relative h-2 w-9 rounded-full bg-white/25 overflow-hidden"
+              >
+                <span
+                  key={current}
+                  className="absolute inset-y-0 left-0 bg-accent rounded-full"
+                  style={{ animation: 'slide-progress 5s linear forwards' }}
+                />
+              </button>
+            ) : (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                aria-label={`Slayd ${i + 1}`}
+                className="h-2 w-2 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300"
+              />
+            )
           ))}
         </div>
       )}
@@ -267,6 +282,10 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
         @keyframes kb-out {
           0% { transform: scale(1.14) translate(1.5%, 1%); }
           100% { transform: scale(1.02) translate(0, 0); }
+        }
+        @keyframes slide-progress {
+          from { width: 0%; }
+          to { width: 100%; }
         }
       `}} />
     </section>
