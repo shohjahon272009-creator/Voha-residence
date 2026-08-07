@@ -35,12 +35,18 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     .filter((img): img is string => Boolean(img))
     .slice(0, 8);
 
+  // Hero slider uchun to'liq ma'lumot (rasm + loyiha nomi + shahar + havola)
+  const heroSlides = allProjects
+    .filter((p) => Boolean(p.main_image))
+    .slice(0, 8)
+    .map((p) => ({ image: p.main_image as string, name: p.name_uz, id: p.id, city: p.city || '' }));
+
   // Xonadon brauzeri uchun — narxlar mijozga yuborilmaydi (xavfsizlik)
   const browserApartments = (await getApartments()).map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
 
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
-      <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} settings={settings} />
+      <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} slides={heroSlides} settings={settings} />
       {settings.show_projects !== 'false' && <ProjectsList lang={localeLang} companyName={companyName} limit={6} />}
       <ApartmentAndPayment
         apartments={browserApartments}

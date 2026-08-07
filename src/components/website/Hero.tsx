@@ -7,21 +7,36 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, MapPin } from 'lucide-react';
+import Link from 'next/link';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import VohaLogo from '@/components/common/VohaLogo';
 
-export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTitle, heroDesc, images = [], settings = {} }: { lang: Locale, companyName?: string, heroTitle?: string, heroDesc?: string, images?: string[], settings?: Record<string, string> }) {
+type HeroSlide = { image: string; name: string; id: number; city?: string };
+
+export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTitle, heroDesc, images = [], slides, settings = {} }: { lang: Locale, companyName?: string, heroTitle?: string, heroDesc?: string, images?: string[], slides?: HeroSlide[], settings?: Record<string, string> }) {
   const dict = getDictionary(lang);
 
   // Bosh sahifa slider — loyiha rasmlari avtomatik almashib turadi (5 soniyada bir)
-  const slides = images.length > 0 ? images : ['/voha-actual-bg.png'];
+  const slideList: HeroSlide[] =
+    slides && slides.length > 0
+      ? slides
+      : images.length > 0
+        ? images.map((im) => ({ image: im, name: '', id: 0, city: '' }))
+        : [{ image: '/voha-actual-bg.png', name: '', id: 0, city: '' }];
   const [current, setCurrent] = useState(0);
   useEffect(() => {
-    if (slides.length <= 1) return;
-    const id = setInterval(() => setCurrent((c) => (c + 1) % slides.length), 5000);
+    if (slideList.length <= 1) return;
+    const id = setInterval(() => setCurrent((c) => (c + 1) % slideList.length), 5000);
     return () => clearInterval(id);
-  }, [slides.length]);
+  }, [slideList.length]);
+
+  // Kirish ekrani yopilgach slayd yozuvini ko'rsatamiz
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    const id = setTimeout(() => setRevealed(true), 2400);
+    return () => clearTimeout(id);
+  }, []);
 
   const heroText: Record<Locale, { tag: string; titleHuge: string; title2: string; desc: string; btn2: string }> = {
     uz: {
@@ -83,14 +98,14 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
     <section className="relative h-[100dvh] w-full overflow-hidden flex flex-col justify-between pt-24 pb-6 md:pb-10">
       {/* Background slider — loyiha rasmlari sekin almashib turadi (fade + zoom) */}
       <div className="absolute inset-0 bg-primary/20 z-0">
-        {slides.map((src, i) => (
+        {slideList.map((s, i) => (
           <div
             key={i}
-            className="absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out"
+            className="absolute inset-0 bg-cover bg-center transition-opacity duration-[2000ms] ease-in-out"
             style={{
-              backgroundImage: `url("${src}")`,
+              backgroundImage: `url("${s.image}")`,
               opacity: i === current ? 1 : 0,
-              animation: i === current ? 'subtle-zoom 8s ease-out forwards' : 'none',
+              animation: i === current ? `${i % 2 === 0 ? 'kb-in' : 'kb-out'} 9s ease-out forwards` : 'none',
             }}
           />
         ))}
@@ -180,10 +195,38 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
         </div>
       </div>
 
+      {/* Joriy slayd yozuvi — loyiha nomi + shahar + Batafsil */}
+      {revealed && slideList[current]?.name && (
+        <motion.div
+          key={current}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: 'easeOut' }}
+          className="relative z-20 flex justify-center px-4 mb-3"
+        >
+          <Link
+            href={`/${lang}/projects/${slideList[current].id}`}
+            className="group inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/15 hover:bg-white/15 transition-all"
+          >
+            <span className="text-white font-bold text-xs md:text-sm tracking-wide truncate max-w-[180px] md:max-w-none">
+              {slideList[current].name}
+            </span>
+            {slideList[current].city && (
+              <span className="hidden sm:inline-flex items-center gap-1 text-white/60 text-[11px] md:text-xs">
+                <MapPin size={12} /> {slideList[current].city}
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1 text-accent font-bold text-[11px] md:text-xs whitespace-nowrap">
+              {dict.hero.details} <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Link>
+        </motion.div>
+      )}
+
       {/* Slider indikatorlari (nuqtalar) */}
-      {slides.length > 1 && (
+      {slideList.length > 1 && (
         <div className="relative z-20 flex justify-center gap-2 mb-6">
-          {slides.map((_, i) => (
+          {slideList.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}
@@ -217,9 +260,13 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
       
       {/* Add subtle-zoom keyframes to global CSS or handle it inline */}
       <style dangerouslySetInnerHTML={{__html: `
-        @keyframes subtle-zoom {
-          0% { transform: scale(1.02); }
-          100% { transform: scale(1.1); }
+        @keyframes kb-in {
+          0% { transform: scale(1.02) translate(0, 0); }
+          100% { transform: scale(1.14) translate(-1.5%, -1%); }
+        }
+        @keyframes kb-out {
+          0% { transform: scale(1.14) translate(1.5%, 1%); }
+          100% { transform: scale(1.02) translate(0, 0); }
         }
       `}} />
     </section>
