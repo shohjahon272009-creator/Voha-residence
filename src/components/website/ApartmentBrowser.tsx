@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { Apartment, Project, SelectedApartment } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
 import { CATEGORIES } from '@/lib/categories';
-import ProjectCard from './ProjectCard';
 import { Home, Layers, Maximize2, Building2, CalendarDays, Search, ArrowRight, Calculator, ChevronDown } from 'lucide-react';
 
 type Props = { apartments: Apartment[]; projects: Project[]; lang: Locale; onSelect?: (apt: SelectedApartment) => void };
@@ -78,11 +77,6 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
     );
   }, [apts, rooms, projectId, year, areaSel, cats, projById, projOrder]);
 
-  // Kategoriya tanlanganda — shu kategoriyaga mos loyihalar (admin belgilagan)
-  const matchingProjects = useMemo(
-    () => (cats.length ? activeProjects.filter((p) => cats.every((k) => p.categories?.includes(k))) : []),
-    [cats, activeProjects]
-  );
 
   // Filtr o'zgarganda ko'rinadigan sonni 9 ga qaytaramiz (render vaqtida moslash — React tavsiyasi)
   const filterSig = `${rooms}|${projectId}|${year}|${areaSel?.min ?? ''}-${areaSel?.max ?? ''}|${cats.join(',')}`;
@@ -205,21 +199,6 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
           </div>
           )}
         </div>
-
-        {/* Kategoriya tanlanganda — o'sha joyga mos loyihalar (admin belgilagan) */}
-        {cats.length > 0 && matchingProjects.length > 0 && (
-          <div className="mb-12">
-            <div className="flex items-center gap-2 mb-5 text-sm font-bold text-gray-500 uppercase tracking-wider">
-              <Building2 size={15} className="text-accent" /> {t.matchProj}
-              <span className="text-accent font-black">({matchingProjects.length})</span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {matchingProjects.map((p) => (
-                <ProjectCard key={p.id} project={p} lang={lang} />
-              ))}
-            </div>
-          </div>
-        )}
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Chap: filtr */}
