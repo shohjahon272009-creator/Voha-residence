@@ -8,7 +8,7 @@ import { Locale } from '@/lib/dictionaries';
 import { CATEGORIES } from '@/lib/categories';
 import { Home, Layers, Maximize2, Building2, CalendarDays, Search, ArrowRight, Calculator, ChevronDown } from 'lucide-react';
 
-type Props = { apartments: Apartment[]; projects: Project[]; lang: Locale; onSelect?: (apt: SelectedApartment) => void };
+type Props = { apartments: Apartment[]; projects: Project[]; lang: Locale; onSelect?: (apt: SelectedApartment) => void; showLocations?: boolean };
 
 const L: Record<Locale, Record<string, string>> = {
   uz: { tag: 'XONADON TANLASH', title: 'O‘zingizga mos xonadonni toping', hint: 'Xona soni, maydon yoki loyihani tanlab, o‘zingizga mos xonadonni oson toping.', byLoc: 'Joylashuv bo‘yicha', rooms: 'Xonalar', project: 'Loyiha', area: 'Maydon, m²', year: 'Topshirish', all: 'Barchasi', found: 'Topildi', pcs: 'ta variant', reset: 'Tozalash', roomS: 'xona', floorS: '-qavat', priceLabel: 'Narx', onReq: 'So‘rov bo‘yicha', more: 'Ko‘proq', details: 'Batafsil', empty: 'Bu shartlarga mos xonadon topilmadi', plan: 'chizma', calc: 'To‘lovni hisoblash', matchProj: 'Mos loyihalar' },
@@ -16,7 +16,7 @@ const L: Record<Locale, Record<string, string>> = {
   en: { tag: 'FIND AN APARTMENT', title: 'Find the apartment that fits you', hint: 'Pick rooms, area or project to easily find your apartment.', byLoc: 'By location', rooms: 'Rooms', project: 'Project', area: 'Area, m²', year: 'Handover', all: 'All', found: 'Found', pcs: 'options', reset: 'Reset', roomS: 'rooms', floorS: ' floor', priceLabel: 'Price', onReq: 'On request', more: 'More', details: 'Details', empty: 'No apartments match these filters', plan: 'plan', calc: 'Calculate payment', matchProj: 'Matching projects' },
 };
 
-export default function ApartmentBrowser({ apartments, projects, lang, onSelect }: Props) {
+export default function ApartmentBrowser({ apartments, projects, lang, onSelect, showLocations = true }: Props) {
   const t = L[lang] || L.uz;
   const scrollToCalc = () => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   // Sotib tugatilgan va topshirilgan loyihalar xonadon tanlash bo'limida ko'rinmaydi
@@ -159,7 +159,8 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
           </div>
         </div>
 
-        {/* Joylashuv bo'yicha rasmli kategoriya filtri — yig'iladigan (sodda ko'rinish) */}
+        {/* Joylashuv bo'yicha rasmli kategoriya filtri — admin yoqib/o'chirib qo'yishi mumkin */}
+        {showLocations && (
         <div className="mb-10">
           <button
             onClick={() => setShowCats((s) => !s)}
@@ -199,6 +200,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
           </div>
           )}
         </div>
+        )}
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Chap: filtr */}

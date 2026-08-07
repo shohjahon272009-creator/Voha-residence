@@ -14,6 +14,7 @@ export default function ApartmentAndPayment({
   lang,
   showSearch,
   showMortgage,
+  showLocations = true,
   terms,
 }: {
   apartments: Apartment[];
@@ -21,6 +22,7 @@ export default function ApartmentAndPayment({
   lang: Locale;
   showSearch: boolean;
   showMortgage: boolean;
+  showLocations?: boolean;
   terms?: { down: number; months: number; rate: number; mDown: number; mMonths: number };
 }) {
   const [selected, setSelected] = useState<SelectedApartment | null>(null);
@@ -28,7 +30,7 @@ export default function ApartmentAndPayment({
   return (
     <>
       {showSearch && (
-        <ApartmentBrowser apartments={apartments} projects={projects} lang={lang} onSelect={setSelected} />
+        <ApartmentBrowser apartments={apartments} projects={projects} lang={lang} onSelect={setSelected} showLocations={showLocations} />
       )}
       {showMortgage && (
         <MortgageCalculator lang={lang} selected={selected} onClearSelected={() => setSelected(null)} terms={terms} />

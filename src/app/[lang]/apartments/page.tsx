@@ -29,6 +29,7 @@ export default async function ApartmentsPage({ params }: { params: Promise<{ lan
           lang={localeLang}
           showSearch
           showMortgage={settings.show_mortgage !== 'false'}
+          showLocations={settings.show_locations !== 'false'}
           terms={{
             down: Number(settings.calc_down) || 30,
             months: Number(settings.calc_months) || 12,

@@ -40,6 +40,12 @@ export default async function AdminApartments() {
               label="Xonadon tanlash (qidiruv)"
               hint="filtr + chizma"
             />
+            <SiteVisibilityToggle
+              settingKey="show_locations"
+              initialOn={settings.show_locations !== 'false'}
+              label="Joylashuv bo‘yicha filtr"
+              hint="Maktab, park, suv bo‘yida ..."
+            />
          </div>
       </div>
 
