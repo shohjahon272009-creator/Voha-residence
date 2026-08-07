@@ -49,8 +49,8 @@ export default function IntroScreen() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     document.body.style.overflow = 'hidden';
-    const t1 = setTimeout(() => setOut(true), 2200);
-    const t2 = setTimeout(() => { setMounted(false); document.body.style.overflow = ''; }, 2900);
+    const t1 = setTimeout(() => setOut(true), 3400);
+    const t2 = setTimeout(() => { setMounted(false); document.body.style.overflow = ''; }, 4100);
     return () => { clearTimeout(t1); clearTimeout(t2); document.body.style.overflow = ''; };
   }, []);
 
@@ -107,7 +107,7 @@ export default function IntroScreen() {
           transform: translateY(-4%);
         }
         .vi-logo {
-          width: 210px; height: auto; display: block;
+          width: 320px; height: auto; display: block;
           opacity: 0; animation: vi-logo 1s ease 0.35s forwards;
         }
         .vi-underline {
@@ -123,7 +123,7 @@ export default function IntroScreen() {
           100% { opacity: 1; transform: translateY(0) scale(1); }
         }
         @media (max-width: 640px) {
-          .vi-logo { width: 158px; }
+          .vi-logo { width: 220px; }
           .vi-bld { height: 56%; }
         }
       `}</style>
