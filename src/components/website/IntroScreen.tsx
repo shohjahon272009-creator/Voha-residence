@@ -144,9 +144,9 @@ export default function IntroScreen() {
           opacity: 0; animation: vi-fade 0.5s ease 1.35s forwards;
         }
         .vi-welcome {
-          margin-top: 14px; display: flex; align-items: baseline;
-          color: #FBF6EE; font-weight: 500; font-size: 36px;
-          letter-spacing: 0.5px; line-height: 1.1;
+          margin-top: 16px; display: inline-block; white-space: nowrap;
+          color: #FBF6EE; font-weight: 500; font-size: 34px;
+          letter-spacing: 11px; padding-left: 11px; line-height: 1.1;
         }
         .vi-ch { display: inline-block; opacity: 0; animation: vi-ch 0.3s ease forwards; }
         .vi-caret { color: #D18E5B; font-weight: 400; margin-left: 3px; animation: vi-blink 0.8s step-end 1.6s infinite; }
@@ -163,7 +163,7 @@ export default function IntroScreen() {
         }
         @media (max-width: 640px) {
           .vi-logo { width: 220px; }
-          .vi-welcome { font-size: 24px; }
+          .vi-welcome { font-size: 22px; letter-spacing: 6px; padding-left: 6px; }
           .vi-bld { height: 56%; }
         }
       `}</style>
