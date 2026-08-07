@@ -74,7 +74,11 @@ export default function IntroScreen() {
   );
 
   return (
-    <div className={`vi${out ? ' vi--out' : ''}`} aria-hidden="true">
+    <div
+      className={`vi${out ? ' vi--out' : ''}`}
+      aria-hidden="true"
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#014242', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+    >
       {/* Dekorativ burchak ramkalar */}
       <span className="vi-corner vi-corner--tl" />
       <span className="vi-corner vi-corner--tr" />
