@@ -5,9 +5,9 @@ import { ClipboardPaste, ImageIcon } from 'lucide-react';
 
 /*
   Rasm yuklash + Ctrl+V (copy-paste) qo'llab-quvvatlash.
-  - "Choose File" bilan ham, buferdan Ctrl+V bilan ham rasm qo'yish mumkin.
-  - Qo'yilgan rasm bevosita file input'ga o'rnatiladi (DataTransfer orqali),
-    shuning uchun forma yuborilganda odatdagidek saqlanadi.
+  MUHIM: rasm YUKLASHDAN OLDIN brauzerning o'zida kichraytiriladi (canvas orqali,
+  max 1400px, WebP). Shunda serverga ~50 KB boradi — saqlash tez va ishonchli
+  bo'ladi (sekin internetda ham qotmaydi), baza ham shishmaydi.
 */
 export default function PasteImageInput({
   name,
@@ -21,13 +21,58 @@ export default function PasteImageInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>('');
+  const [working, setWorking] = useState(false);
 
-  const applyFile = (file: File) => {
+  // Faylni file input'ga o'rnatish (forma yuborilganda saqlanadi)
+  const setInputFile = (file: File) => {
     const dt = new DataTransfer();
     dt.items.add(file);
     if (inputRef.current) inputRef.current.files = dt.files;
     setFileName(file.name);
     setPreview(URL.createObjectURL(file));
+  };
+
+  // Rasmni canvas orqali kichraytirib WebP qiladi; xato bo'lsa aslini ishlatadi
+  const applyFile = (file: File) => {
+    if (!file.type.startsWith('image/')) { setInputFile(file); return; }
+    setWorking(true);
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const max = 1400;
+        let w = img.naturalWidth, h = img.naturalHeight;
+        if (w > max || h > max) {
+          const s = Math.min(max / w, max / h);
+          w = Math.round(w * s); h = Math.round(h * s);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) { URL.revokeObjectURL(url); setInputFile(file); setWorking(false); return; }
+        ctx.drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(
+          (blob) => {
+            if (blob && blob.size < file.size) {
+              const base = file.name.replace(/\.[^.]+$/, '');
+              setInputFile(new File([blob], `${base}.webp`, { type: 'image/webp' }));
+            } else {
+              setInputFile(file);
+            }
+            setWorking(false);
+          },
+          'image/webp',
+          0.82,
+        );
+      } catch {
+        URL.revokeObjectURL(url);
+        setInputFile(file);
+        setWorking(false);
+      }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); setInputFile(file); setWorking(false); };
+    img.src = url;
   };
 
   const onPaste = (e: React.ClipboardEvent) => {
@@ -49,10 +94,7 @@ export default function PasteImageInput({
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
-    if (f) {
-      setFileName(f.name);
-      setPreview(URL.createObjectURL(f));
-    }
+    if (f) applyFile(f);
   };
 
   const shown = preview || existing;
@@ -79,7 +121,9 @@ export default function PasteImageInput({
           className="w-full text-xs file:mr-2 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer"
         />
         <div className="flex items-center gap-1.5 text-[11px] text-gray-400 mt-1.5">
-          {fileName ? (
+          {working ? (
+            <span className="text-accent font-bold">Rasm kichraytirilmoqda...</span>
+          ) : fileName ? (
             <>
               <ImageIcon size={12} className="text-accent" /> {fileName}
             </>
