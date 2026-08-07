@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
+import AnimatedReveal from '@/components/website/AnimatedReveal';
 import FloorPlanWrapper from '@/components/website/FloorPlanWrapper';
 import VirtualTour from '@/components/website/VirtualTour';
 import ProjectStatusBadge from '@/components/website/ProjectStatusBadge';
@@ -87,7 +88,9 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       {Array.isArray(project.gallery) && project.gallery.length > 0 && (
         <section className="py-16 md:py-20 px-6 bg-brand-mesh">
           <div className="max-container">
-            <ProjectGallery images={project.gallery} projectName={projectName} lang={lang as Locale} />
+            <AnimatedReveal direction="up">
+              <ProjectGallery images={project.gallery} projectName={projectName} lang={lang as Locale} />
+            </AnimatedReveal>
           </div>
         </section>
       )}
@@ -130,7 +133,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   )}
                </div>
                
-               <div className="space-y-8">
+               <AnimatedReveal direction="right" className="space-y-8">
                   <div className="bg-white p-8 rounded-3xl shadow-xl shadow-black/5">
                      <h4 className="font-bold text-xl text-primary mb-6">Loyha afzalliklari</h4>
                      <ul className="space-y-4">
@@ -157,7 +160,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                         Qo'ng'iroq qilish
                      </a>
                   </div>
-               </div>
+               </AnimatedReveal>
             </div>
          </div>
       </section>

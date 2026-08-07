@@ -47,28 +47,50 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
       <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} slides={heroSlides} settings={settings} />
-      {settings.show_projects !== 'false' && <ProjectsList lang={localeLang} companyName={companyName} limit={6} />}
-      <ApartmentAndPayment
-        apartments={browserApartments}
-        projects={allProjects}
-        lang={localeLang}
-        showSearch={settings.show_search !== 'false'}
-        showMortgage={settings.show_mortgage !== 'false'}
-        terms={{
-          down: Number(settings.calc_down) || 30,
-          months: Number(settings.calc_months) || 12,
-          rate: Number(settings.calc_rate) || 18,
-          mDown: Number(settings.calc_m_down) || 15,
-          mMonths: Number(settings.calc_m_months) || 24,
-        }}
-      />
-      
-      {/* About Section */}
-      {settings.show_about !== 'false' && <AboutSection lang={localeLang} settings={settings} />}
+      {settings.show_projects !== 'false' && (
+        <AnimatedReveal>
+          <ProjectsList lang={localeLang} companyName={companyName} limit={6} />
+        </AnimatedReveal>
+      )}
+      <AnimatedReveal>
+        <ApartmentAndPayment
+          apartments={browserApartments}
+          projects={allProjects}
+          lang={localeLang}
+          showSearch={settings.show_search !== 'false'}
+          showMortgage={settings.show_mortgage !== 'false'}
+          terms={{
+            down: Number(settings.calc_down) || 30,
+            months: Number(settings.calc_months) || 12,
+            rate: Number(settings.calc_rate) || 18,
+            mDown: Number(settings.calc_m_down) || 15,
+            mMonths: Number(settings.calc_m_months) || 24,
+          }}
+        />
+      </AnimatedReveal>
 
-      {settings.show_news !== 'false' && <NewsSection lang={localeLang} />}
-      {settings.show_offices !== 'false' && <SalesOfficesSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} officeLat={settings.office_lat} officeLng={settings.office_lng} />}
-      {settings.show_contact !== 'false' && <ContactSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />}
+      {/* About Section */}
+      {settings.show_about !== 'false' && (
+        <AnimatedReveal>
+          <AboutSection lang={localeLang} settings={settings} />
+        </AnimatedReveal>
+      )}
+
+      {settings.show_news !== 'false' && (
+        <AnimatedReveal>
+          <NewsSection lang={localeLang} />
+        </AnimatedReveal>
+      )}
+      {settings.show_offices !== 'false' && (
+        <AnimatedReveal>
+          <SalesOfficesSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} officeLat={settings.office_lat} officeLng={settings.office_lng} />
+        </AnimatedReveal>
+      )}
+      {settings.show_contact !== 'false' && (
+        <AnimatedReveal>
+          <ContactSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />
+        </AnimatedReveal>
+      )}
     </WebsiteLayout>
   );
 }
