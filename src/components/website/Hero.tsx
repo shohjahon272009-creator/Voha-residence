@@ -48,6 +48,10 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
   };
   const t = heroText[lang] || heroText.uz;
 
+  // Kirish ekrani (~2.2s) yopilgandan keyin hero elementlari ketma-ket chiqadi
+  const REVEAL = 2.2;
+  const titleText = (lang === 'uz' && heroTitle) ? heroTitle : t.title2;
+
   const stats: Record<Locale, Array<{label: string; value: string}>> = {
     uz: [
       { label: 'Tajriba', value: '15 Yil' },
@@ -104,16 +108,11 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
       </div>
 
       <div className="max-container relative z-10 px-4 sm:px-6 w-full text-center flex-1 flex flex-col items-center justify-center">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: 'easeOut' }}
-          className="flex flex-col items-center w-full my-auto"
-        >
+        <div className="flex flex-col items-center w-full my-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
+            transition={{ delay: REVEAL, duration: 0.8, ease: "easeOut" }}
             className="inline-flex items-center gap-2.5 px-4 py-2 mb-4 md:mb-5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.25)]"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse shrink-0" />
@@ -122,31 +121,53 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
             </span>
           </motion.div>
           
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
+            transition={{ delay: REVEAL + 0.3, duration: 1, ease: "easeOut" }}
             className="w-full max-w-[220px] sm:max-w-[280px] md:max-w-[400px] lg:max-w-[480px] mb-4 md:mb-6 opacity-90 mix-blend-plus-lighter"
           >
              <VohaLogo isScrolled={false} className="w-full h-auto" style={{ filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.5))' }} />
           </motion.div>
           
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 1.2, ease: "easeOut" }}
+            aria-label={titleText}
+            initial="hidden"
+            animate="show"
+            variants={{ show: { transition: { staggerChildren: 0.03, delayChildren: REVEAL + 0.6 } } }}
             className="text-2xl md:text-4xl lg:text-[3.25rem] text-white font-bold mb-3 md:mb-5 max-w-3xl tracking-tight leading-[1.08]"
             style={{ textShadow: '0 1px 2px rgba(0,0,0,0.45), 0 3px 14px rgba(0,0,0,0.35)' }}
           >
-            {lang === 'uz' && heroTitle ? heroTitle : t.title2}
+            {titleText.split(' ').map((word, wi) => (
+              <span key={wi} className="inline-block whitespace-nowrap" aria-hidden="true">
+                {Array.from(word).map((ch, ci) => (
+                  <motion.span
+                    key={ci}
+                    className="inline-block"
+                    variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } } }}
+                  >
+                    {ch}
+                  </motion.span>
+                ))}
+                <span className="inline-block">&nbsp;</span>
+              </span>
+            ))}
           </motion.h2>
 
-          <p className="text-sm md:text-base lg:text-lg text-white/90 mb-5 md:mb-7 max-w-2xl leading-relaxed md:leading-loose font-normal px-4"
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: REVEAL + 1.7, duration: 0.9, ease: 'easeOut' }}
+            className="text-sm md:text-base lg:text-lg text-white/90 mb-5 md:mb-7 max-w-2xl leading-relaxed md:leading-loose font-normal px-4"
             style={{ textShadow: '0 1px 2px rgba(0,0,0,0.4), 0 2px 10px rgba(0,0,0,0.3)' }}>
             {lang === 'uz' && heroDesc ? heroDesc : t.desc}
-          </p>
-          
-          <div className="flex flex-wrap justify-center gap-3 md:gap-4 mt-2">
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: REVEAL + 2.0, duration: 0.8, ease: 'easeOut' }}
+            className="flex flex-wrap justify-center gap-3 md:gap-4 mt-2">
              <a href={`/${lang}#about`} className="group px-6 md:px-10 py-3 md:py-4 bg-accent text-primary font-bold rounded-full hover:bg-white transition-all transform hover:-translate-y-1 shadow-[0_0_30px_rgba(250,218,165,0.4)] tracking-wide inline-flex items-center gap-2 text-sm md:text-base">
                 {dict.hero.details}
                 <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
@@ -155,8 +176,8 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
                 {t.btn2}
                 <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
              </a>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
 
       {/* Slider indikatorlari (nuqtalar) */}
@@ -182,7 +203,7 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
                 key={i}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 + i * 0.1, duration: 0.8 }}
+                transition={{ delay: REVEAL + 2.3 + i * 0.1, duration: 0.8 }}
                 className="group bg-white/5 backdrop-blur-md border border-white/10 p-4 md:p-5 rounded-3xl text-center shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:bg-white/10 hover:border-white/20 hover:-translate-y-2 transition-all duration-500 cursor-default"
               >
                 <div className="w-8 h-1 mx-auto mb-3 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent opacity-60 group-hover:opacity-100 group-hover:w-12 transition-all duration-500" />
