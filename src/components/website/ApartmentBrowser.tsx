@@ -105,27 +105,29 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
       <div key={a.id} role="button" tabIndex={0}
         onClick={pick}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } }}
-        className="group bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-        <div className="relative aspect-[4/3] bg-gray-50 flex items-center justify-center p-4 border-b border-gray-100 overflow-hidden">
+        className="group relative bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 hover:border-accent/30 transition-all duration-300 cursor-pointer">
+        {/* Yuqorida hover'da paydo bo'ladigan bronza accent chizig'i */}
+        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+        <div className="relative aspect-[4/3] bg-gradient-to-br from-gray-50 to-gray-100/60 flex items-center justify-center p-4 border-b border-gray-100 overflow-hidden">
           {a.plan_image ? (
             <img src={a.plan_image} alt={`${a.number}-${t.plan}`} loading="lazy" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
           ) : (
             <div className="flex flex-col items-center text-gray-300"><Layers size={40} strokeWidth={1.2} /><span className="text-[11px] font-bold uppercase tracking-widest mt-2">№{a.number}</span></div>
           )}
           {p?.delivery_year && (
-            <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 text-primary shadow">{p.delivery_year}</span>
+            <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 text-primary shadow-md backdrop-blur-sm">{p.delivery_year}</span>
           )}
         </div>
         <div className="p-5">
-          <div className="flex items-baseline justify-between mb-3">
-            <span className="text-2xl font-black text-primary">№{a.number}</span>
-            <span className="text-sm font-bold text-accent">{a.area} m²</span>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-2xl font-black text-primary group-hover:text-accent transition-colors duration-300">№{a.number}</span>
+            <span className="px-2.5 py-1 rounded-full bg-accent/10 text-accent text-xs font-bold">{a.area} m²</span>
           </div>
-          <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
-            <div className="flex items-center gap-1.5"><Home size={13} /> {a.rooms} {t.roomS}</div>
-            <div className="flex items-center gap-1.5"><Layers size={13} /> {a.floor}{t.floorS}</div>
+          <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 font-medium">
+            <div className="flex items-center gap-1.5"><Home size={13} className="text-accent" /> {a.rooms} {t.roomS}</div>
+            <div className="flex items-center gap-1.5"><Layers size={13} className="text-accent" /> {a.floor}{t.floorS}</div>
           </div>
-          <div className="mt-4 w-full py-2.5 rounded-xl bg-primary/5 text-primary text-xs font-bold text-center group-hover:bg-primary group-hover:text-white transition-all flex items-center justify-center gap-1.5">
+          <div className="mt-4 w-full py-2.5 rounded-xl bg-primary/5 text-primary text-xs font-bold text-center group-hover:bg-primary group-hover:text-white transition-all duration-300 flex items-center justify-center gap-1.5 group-hover:shadow-lg group-hover:shadow-primary/20">
             <Calculator size={13} /> {t.calc}
           </div>
           <Link href={`/${lang}/projects/${a.project_id}`} onClick={(e) => e.stopPropagation()}
@@ -153,6 +155,11 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect 
         <div className="text-center mb-10">
           <span className="eyebrow eyebrow--center mb-4">{t.tag}</span>
           <h2 className="text-4xl md:text-5xl font-bold text-primary">{t.title}</h2>
+          <div className="flex items-center justify-center gap-3 mt-5">
+            <span className="h-px w-12 bg-gradient-to-r from-transparent to-accent/50" />
+            <span className="w-2 h-2 bg-accent rotate-45 rounded-[1px]" />
+            <span className="h-px w-12 bg-gradient-to-l from-transparent to-accent/50" />
+          </div>
         </div>
 
         {/* Joylashuv bo'yicha rasmli kategoriya filtri */}
