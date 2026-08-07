@@ -71,6 +71,10 @@ export default function IntroScreen() {
 
   return (
     <div className={`vi${out ? ' vi--out' : ''}`} aria-hidden="true">
+      <span className="vi-corner vi-tl" />
+      <span className="vi-corner vi-tr" />
+      <span className="vi-corner vi-bl" />
+      <span className="vi-corner vi-br" />
       <svg className="vi-bld" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMax meet">
         <line className="vi-ground" x1="90" y1="512" x2="1110" y2="512" pathLength={1} />
         <g><Building /></g>
@@ -79,6 +83,11 @@ export default function IntroScreen() {
 
       <div className="vi-center">
         <VohaLogo isScrolled={false} className="vi-logo" />
+        <div className="vi-divider">
+          <span className="vi-dln" />
+          <span className="vi-dia" />
+          <span className="vi-dln" />
+        </div>
         <div className="vi-welcome">
           {Array.from('Xush kelibsiz!').map((ch, i) => (
             <span key={i} className="vi-ch" style={{ animationDelay: `${1.6 + i * 0.06}s` }}>
@@ -117,8 +126,25 @@ export default function IntroScreen() {
           width: 320px; height: auto; display: block;
           opacity: 0; animation: vi-logo 1s ease 0.35s forwards;
         }
+        .vi-corner {
+          position: absolute; width: 40px; height: 40px; border: 0 solid #D18E5B;
+          opacity: 0; animation: vi-corner 1s ease 0.2s forwards; pointer-events: none;
+        }
+        .vi-tl { top: 26px; left: 26px; border-top-width: 1.5px; border-left-width: 1.5px; }
+        .vi-tr { top: 26px; right: 26px; border-top-width: 1.5px; border-right-width: 1.5px; }
+        .vi-bl { bottom: 26px; left: 26px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+        .vi-br { bottom: 26px; right: 26px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+        .vi-divider { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+        .vi-dln {
+          height: 1px; width: 0; background: #D18E5B; opacity: 0.7;
+          animation: vi-grow 0.8s ease 1.2s forwards;
+        }
+        .vi-dia {
+          width: 7px; height: 7px; background: #D18E5B; transform: rotate(45deg);
+          opacity: 0; animation: vi-fade 0.5s ease 1.35s forwards;
+        }
         .vi-welcome {
-          margin-top: 20px; display: flex; align-items: baseline;
+          margin-top: 14px; display: flex; align-items: baseline;
           color: #FBF6EE; font-weight: 500; font-size: 36px;
           letter-spacing: 0.5px; line-height: 1.1;
         }
@@ -128,6 +154,9 @@ export default function IntroScreen() {
         @keyframes vi-win { to { opacity: 1; } }
         @keyframes vi-ch { to { opacity: 1; } }
         @keyframes vi-blink { 50% { opacity: 0; } }
+        @keyframes vi-corner { to { opacity: 0.55; } }
+        @keyframes vi-grow { to { width: 55px; } }
+        @keyframes vi-fade { to { opacity: 1; } }
         @keyframes vi-logo {
           0% { opacity: 0; transform: translateY(8px) scale(0.97); }
           100% { opacity: 1; transform: translateY(0) scale(1); }
