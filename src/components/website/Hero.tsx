@@ -195,14 +195,14 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
         </div>
       </div>
 
-      {/* Joriy slayd yozuvi — loyiha nomi + shahar + Batafsil */}
+      {/* Joriy slayd yozuvi — rasm ustida (yuqori-chapda), oqimga ta'sir qilmaydi */}
       {revealed && slideList[current]?.name && (
         <motion.div
           key={current}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -12 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, ease: 'easeOut' }}
-          className="relative z-20 flex justify-center px-4 mb-3"
+          className="absolute top-24 md:top-28 left-4 md:left-8 z-20"
         >
           <Link
             href={`/${lang}/projects/${slideList[current].id}`}
