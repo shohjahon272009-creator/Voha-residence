@@ -6,14 +6,20 @@ import Link from 'next/link';
 import { Apartment, Project, SelectedApartment } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
 import { CATEGORIES } from '@/lib/categories';
-import { Home, Layers, Maximize2, Building2, CalendarDays, Search, ArrowRight, Calculator, ChevronDown } from 'lucide-react';
+import { Home, Layers, Maximize2, Building2, CalendarDays, Search, ArrowRight, Calculator, GraduationCap, Baby, Droplets, Trees, Cross, ShoppingBag, Bus, Landmark, MapPin } from 'lucide-react';
+
+// Har bir joylashuv turkumiga mos ikonka
+const CAT_ICON: Record<string, React.ComponentType<{ size?: number }>> = {
+  school: GraduationCap, kindergarten: Baby, water: Droplets, park: Trees,
+  hospital: Cross, shopping: ShoppingBag, transport: Bus, mosque: Landmark,
+};
 
 type Props = { apartments: Apartment[]; projects: Project[]; lang: Locale; onSelect?: (apt: SelectedApartment) => void; showLocations?: boolean };
 
 const L: Record<Locale, Record<string, string>> = {
-  uz: { tag: 'XONADON TANLASH', title: 'O‘zingizga mos xonadonni toping', hint: 'Xona soni, maydon yoki loyihani tanlab, o‘zingizga mos xonadonni oson toping.', byLoc: 'Joylashuv bo‘yicha', rooms: 'Xonalar', project: 'Loyiha', area: 'Maydon, m²', year: 'Topshirish', all: 'Barchasi', found: 'Topildi', pcs: 'ta variant', reset: 'Tozalash', roomS: 'xona', floorS: '-qavat', priceLabel: 'Narx', onReq: 'So‘rov bo‘yicha', more: 'Ko‘proq', details: 'Batafsil', empty: 'Bu shartlarga mos xonadon topilmadi', plan: 'chizma', calc: 'To‘lovni hisoblash', matchProj: 'Mos loyihalar' },
-  ru: { tag: 'ПОДБОР КВАРТИРЫ', title: 'Найдите подходящую квартиру', hint: 'Выберите комнаты, площадь или проект — и легко найдите свою квартиру.', byLoc: 'По расположению', rooms: 'Комнат', project: 'Проект', area: 'Площадь, м²', year: 'Сдача', all: 'Все', found: 'Найдено', pcs: 'вариантов', reset: 'Очистить', roomS: 'комн.', floorS: ' этаж', priceLabel: 'Цена', onReq: 'По запросу', more: 'Ещё', details: 'Подробнее', empty: 'По этим условиям ничего не найдено', plan: 'план', calc: 'Рассчитать платёж', matchProj: 'Подходящие проекты' },
-  en: { tag: 'FIND AN APARTMENT', title: 'Find the apartment that fits you', hint: 'Pick rooms, area or project to easily find your apartment.', byLoc: 'By location', rooms: 'Rooms', project: 'Project', area: 'Area, m²', year: 'Handover', all: 'All', found: 'Found', pcs: 'options', reset: 'Reset', roomS: 'rooms', floorS: ' floor', priceLabel: 'Price', onReq: 'On request', more: 'More', details: 'Details', empty: 'No apartments match these filters', plan: 'plan', calc: 'Calculate payment', matchProj: 'Matching projects' },
+  uz: { tag: 'XONADON TANLASH', title: 'O‘zingizga mos xonadonni toping', hint: 'Xona soni, maydon yoki loyihani tanlab, o‘zingizga mos xonadonni oson toping.', byLoc: 'Joylashuv bo‘yicha', rooms: 'Xonalar', project: 'Loyiha', floor: 'Qavat', area: 'Maydon, m²', year: 'Topshirish', all: 'Barchasi', found: 'Topildi', pcs: 'ta variant', reset: 'Tozalash', roomS: 'xona', floorS: '-qavat', priceLabel: 'Narx', onReq: 'So‘rov bo‘yicha', more: 'Ko‘proq', details: 'Batafsil', empty: 'Bu shartlarga mos xonadon topilmadi', plan: 'chizma', calc: 'To‘lovni hisoblash', matchProj: 'Mos loyihalar' },
+  ru: { tag: 'ПОДБОР КВАРТИРЫ', title: 'Найдите подходящую квартиру', hint: 'Выберите комнаты, площадь или проект — и легко найдите свою квартиру.', byLoc: 'По расположению', rooms: 'Комнат', project: 'Проект', floor: 'Этаж', area: 'Площадь, м²', year: 'Сдача', all: 'Все', found: 'Найдено', pcs: 'вариантов', reset: 'Очистить', roomS: 'комн.', floorS: ' этаж', priceLabel: 'Цена', onReq: 'По запросу', more: 'Ещё', details: 'Подробнее', empty: 'По этим условиям ничего не найдено', plan: 'план', calc: 'Рассчитать платёж', matchProj: 'Подходящие проекты' },
+  en: { tag: 'FIND AN APARTMENT', title: 'Find the apartment that fits you', hint: 'Pick rooms, area or project to easily find your apartment.', byLoc: 'By location', rooms: 'Rooms', project: 'Project', floor: 'Floor', area: 'Area, m²', year: 'Handover', all: 'All', found: 'Found', pcs: 'options', reset: 'Reset', roomS: 'rooms', floorS: ' floor', priceLabel: 'Price', onReq: 'On request', more: 'More', details: 'Details', empty: 'No apartments match these filters', plan: 'plan', calc: 'Calculate payment', matchProj: 'Matching projects' },
 };
 
 export default function ApartmentBrowser({ apartments, projects, lang, onSelect, showLocations = true }: Props) {
@@ -51,8 +57,13 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect,
   const [year, setYear] = useState<number | 'all'>('all');
   const [cats, setCats] = useState<string[]>([]);
   const [areaSel, setAreaSel] = useState<{ min: number; max: number } | null>(null);
-  // Joylashuv turkumlari — sodda ko'rinish uchun yig'ilgan turadi, xohlagan ochadi
-  const [showCats, setShowCats] = useState(false);
+  const [floorSel, setFloorSel] = useState<number | null>(null);
+
+  // Tanlangan loyihaga (yoki barchasiga) mos qavatlar ro'yxati
+  const floorOpts = useMemo(() => {
+    const src = projectId === 'all' ? apts : apts.filter((a) => a.project_id === projectId);
+    return Array.from(new Set(src.map((a) => a.floor))).sort((a, b) => a - b);
+  }, [apts, projectId]);
 
   // Har kategoriyada nechta xonadon borligi
   const catCount = (key: string) => apts.filter((a) => projById.get(a.project_id)?.categories?.includes(key)).length;
@@ -65,6 +76,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect,
       const p = projById.get(a.project_id);
       if (rooms !== null && (rooms === 4 ? a.rooms < 4 : a.rooms !== rooms)) return false;
       if (projectId !== 'all' && a.project_id !== projectId) return false;
+      if (floorSel !== null && a.floor !== floorSel) return false;
       if (areaSel && (a.area < areaSel.min || a.area >= areaSel.max)) return false;
       if (year !== 'all' && p?.delivery_year !== year) return false;
       // Ko'p tanlov: loyiha BARCHA tanlangan joylashuvlarga ega bo'lishi kerak (AND)
@@ -75,11 +87,11 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect,
       a.floor - b.floor ||
       a.number.localeCompare(b.number)
     );
-  }, [apts, rooms, projectId, year, areaSel, cats, projById, projOrder]);
+  }, [apts, rooms, projectId, floorSel, year, areaSel, cats, projById, projOrder]);
 
 
   // Filtr o'zgarganda ko'rinadigan sonni 9 ga qaytaramiz (render vaqtida moslash — React tavsiyasi)
-  const filterSig = `${rooms}|${projectId}|${year}|${areaSel?.min ?? ''}-${areaSel?.max ?? ''}|${cats.join(',')}`;
+  const filterSig = `${rooms}|${projectId}|${floorSel}|${year}|${areaSel?.min ?? ''}-${areaSel?.max ?? ''}|${cats.join(',')}`;
   const [visible, setVisible] = useState(9);
   const [prevSig, setPrevSig] = useState(filterSig);
   if (filterSig !== prevSig) {
@@ -88,7 +100,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect,
   }
   const shown = filtered.slice(0, visible);
 
-  const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setCats([]); setAreaSel(null); };
+  const reset = () => { setRooms(null); setProjectId('all'); setYear('all'); setCats([]); setAreaSel(null); setFloorSel(null); };
 
   // Bitta xonadon kartasi (loyiha guruhlari ichida ishlatiladi)
   const renderCard = (a: Apartment) => {
@@ -159,46 +171,35 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect,
           </div>
         </div>
 
-        {/* Joylashuv bo'yicha rasmli kategoriya filtri — admin yoqib/o'chirib qo'yishi mumkin */}
+        {/* Joylashuv bo'yicha ikonkali turkum filtri — doim ochiq (admin yoqib/o'chiradi) */}
         {showLocations && (
         <div className="mb-10">
-          <button
-            onClick={() => setShowCats((s) => !s)}
-            className="w-full flex items-center gap-2 mb-4 text-sm font-bold text-gray-500 uppercase tracking-wider hover:text-primary transition-colors"
-          >
+          <div className="flex items-center gap-2 mb-4 text-sm font-bold text-gray-500 uppercase tracking-wider">
             <Building2 size={15} className="text-accent" /> {t.byLoc}
             {cats.length > 0 && <span className="text-accent normal-case">({cats.length})</span>}
-            <span className="flex-1 h-px bg-gray-100 ml-1" />
-            <ChevronDown size={16} className={`transition-transform duration-300 ${showCats ? 'rotate-180' : ''}`} />
-          </button>
-          {(showCats || cats.length > 0) && (
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
             {CATEGORIES.map((c) => {
               const isActive = cats.includes(c.key);
               const n = catCount(c.key);
+              const Icon = CAT_ICON[c.key] || MapPin;
               return (
                 <button
                   key={c.key}
                   onClick={() => setCats((prev) => prev.includes(c.key) ? prev.filter((k) => k !== c.key) : [...prev, c.key])}
-                  className={`group relative h-24 sm:h-28 rounded-2xl overflow-hidden text-left transition-all duration-300 ${
-                    isActive ? 'ring-4 ring-accent shadow-xl -translate-y-1' : 'ring-1 ring-black/5 hover:-translate-y-1 hover:shadow-lg'
+                  className={`group flex flex-col items-center justify-center text-center gap-2 p-3.5 rounded-2xl border transition-all duration-300 ${
+                    isActive ? 'border-accent bg-accent/10 shadow-md -translate-y-0.5' : 'border-gray-100 bg-gray-50 hover:border-accent/40 hover:bg-white hover:shadow-sm'
                   }`}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${c.gradient}`} />
-                  <img src={c.image} alt={c.label[lang]} loading="lazy"
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 p-2.5 text-white">
-                    <div className="text-lg leading-none mb-0.5">{c.emoji}</div>
-                    <div className="font-bold text-xs leading-tight drop-shadow">{c.label[lang]}</div>
-                    {n > 0 && <div className="text-[10px] text-white/80 font-semibold">{n}</div>}
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-colors ${isActive ? 'bg-accent text-white' : 'bg-white text-primary group-hover:text-accent'}`}>
+                    <Icon size={20} />
                   </div>
+                  <span className={`font-bold text-[11px] leading-tight ${isActive ? 'text-accent' : 'text-primary'}`}>{c.label[lang]}</span>
+                  {n > 0 && <span className="text-[10px] font-bold text-gray-400">{n} xonadon</span>}
                 </button>
               );
             })}
           </div>
-          )}
         </div>
         )}
 
@@ -226,6 +227,18 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect,
                   {activeProjects.map((p) => <option key={p.id} value={p.id}>{projName(p)}</option>)}
                 </select>
               </div>
+
+              {floorOpts.length > 1 && (
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"><Layers size={14} /> {t.floor}</label>
+                  <div className="flex flex-wrap gap-1.5">
+                    <button onClick={() => setFloorSel(null)} className={`px-3 h-9 rounded-lg text-sm font-bold ${floorSel === null ? 'bg-primary text-white' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>{t.all}</button>
+                    {floorOpts.map((f) => (
+                      <button key={f} onClick={() => setFloorSel(floorSel === f ? null : f)} className={`w-9 h-9 rounded-lg text-sm font-bold ${floorSel === f ? 'bg-primary text-white' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>{f}</button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {years.length > 0 && (
                 <div>

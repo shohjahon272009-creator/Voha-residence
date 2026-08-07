@@ -52,23 +52,25 @@ export default function IntroScreen() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (!isHome) return; // Kirish ekrani faqat bosh sahifada
     document.body.style.overflow = 'hidden';
-    const t1 = setTimeout(() => setOut(true), isHome ? 3400 : 1700);
-    const t2 = setTimeout(() => { setMounted(false); document.body.style.overflow = ''; }, isHome ? 4100 : 2300);
+    const t1 = setTimeout(() => setOut(true), 1800);
+    const t2 = setTimeout(() => { setMounted(false); document.body.style.overflow = ''; }, 2400);
     return () => { clearTimeout(t1); clearTimeout(t2); document.body.style.overflow = ''; };
   }, [isHome]);
 
-  if (!mounted) return null;
+  // Faqat bosh sahifada ko'rinadi; boshqa sahifalarda umuman chiqmaydi
+  if (!isHome || !mounted) return null;
 
   const Building = () => (
     <>
       {lines.map((l, i) => (
         <line key={`l${i}`} className="vi-ln" x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
-          pathLength={1} style={{ animationDelay: `${0.35 + i * 0.03}s` }} />
+          pathLength={1} style={{ animationDelay: `${0.1 + i * 0.022}s` }} />
       ))}
       {wins.map((w, i) => (
         <rect key={`w${i}`} className="vi-wn" x={w.x} y={w.y} width={w.w} height={w.h} rx={1.5}
-          style={{ animationDelay: `${1.3 + i * 0.09}s` }} />
+          style={{ animationDelay: `${0.9 + i * 0.05}s` }} />
       ))}
     </>
   );
@@ -96,7 +98,7 @@ export default function IntroScreen() {
         {isHome && (
         <div className="vi-welcome">
           {Array.from('Xush kelibsiz!').map((ch, i) => (
-            <span key={i} className="vi-ch" style={{ animationDelay: `${1.7 + i * 0.07}s` }}>
+            <span key={i} className="vi-ch" style={{ animationDelay: `${0.8 + i * 0.045}s` }}>
               {ch === ' ' ? ' ' : ch}
             </span>
           ))}
@@ -142,7 +144,7 @@ export default function IntroScreen() {
         }
         .vi-logo {
           width: 360px; height: auto; display: block;
-          opacity: 0; animation: vi-logo 1.1s cubic-bezier(0.22,1,0.36,1) 0.4s forwards;
+          opacity: 0; animation: vi-logo 0.85s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
         }
         .vi-welcome {
           margin-top: 22px; display: inline-block; white-space: nowrap;
@@ -150,7 +152,7 @@ export default function IntroScreen() {
           letter-spacing: 13px; padding-left: 13px; line-height: 1.1;
         }
         .vi-ch { display: inline-block; opacity: 0; animation: vi-ch 0.35s ease forwards; }
-        .vi-caret { color: #D18E5B; font-weight: 400; margin-left: 4px; animation: vi-blink 0.8s step-end 1.7s infinite; }
+        .vi-caret { color: #D18E5B; font-weight: 400; margin-left: 4px; animation: vi-blink 0.8s step-end 0.8s infinite; }
 
         @keyframes vi-corner { from { opacity: 0; transform: scale(1.35); } to { opacity: 0.55; transform: scale(1); } }
         @keyframes vi-draw { to { stroke-dashoffset: 0; } }
