@@ -146,21 +146,6 @@ export default function FloorPlan({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 transition-all duration-500">
         {/* Left Column: Floor Plan & Apartment List */}
         <div className={cn("space-y-8 transition-all duration-500", selectedApt ? "lg:col-span-1" : "lg:col-span-2")}>
-           {/* Interactive Floor Map (SVG Simulation) */}
-           <div className={cn(
-              "relative bg-gray-50 rounded-2xl flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-200 overflow-hidden group transition-all duration-500",
-              selectedApt ? "aspect-[4/5]" : "aspect-video"
-           )}>
-              <div className="absolute inset-0 z-0 opacity-10">
-                 <img src="/voha-actual-bg.png" alt="Floor background" className="w-full h-full object-cover" />
-              </div>
-              <div className="relative z-10 text-center">
-                 <h4 className={cn("font-black text-primary mb-2 opacity-30 group-hover:opacity-100 transition-opacity", selectedApt ? "text-xl" : "text-3xl")}>
-                    {activeFloor}-{t.floorMap}
-                 </h4>
-              </div>
-           </div>
-
            {/* Tagida xonalarni korsatish (Apartment list) */}
            <div>
               <h4 className="font-bold text-primary mb-4 text-lg">{t.apartmentsTitle}</h4>
