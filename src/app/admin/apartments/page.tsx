@@ -4,11 +4,8 @@
  
  
 import React from 'react';
-import { Building2 } from 'lucide-react';
 import { getApartments, getProjects } from '@/lib/actions';
-import AdminFloorSection from '@/components/admin/AdminFloorSection';
-import AddApartmentModal from '@/components/admin/AddApartmentModal';
-import BulkApartmentModal from '@/components/admin/BulkApartmentModal';
+import AdminBlockSection from '@/components/admin/AdminBlockSection';
 import SiteVisibilityToggle from '@/components/admin/SiteVisibilityToggle';
 import db from '@/lib/db';
 
@@ -46,43 +43,15 @@ export default async function AdminApartments() {
          </div>
       </div>
 
-      {sortedProjects.map(project => {
-        const apts = allApartments.filter(a => a.project_id === project.id);
-        const floors = Array.from(new Set(apts.map(a => a.floor))).sort((a, b) => a - b);
-        const empty = apts.length === 0;
-
-        return (
-          <div key={project.id} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-gray-100">
-               <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
-                     <Building2 size={22} className="text-white" />
-                  </div>
-                  <div className="min-w-0">
-                     <h3 className="font-black text-xl text-primary leading-tight truncate">{project.name_uz}</h3>
-                     <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 rounded-full bg-accent/10 text-accent text-[11px] font-bold">
-                        {apts.length} xonadon
-                     </span>
-                  </div>
-               </div>
-               <div className="flex items-center gap-2 shrink-0">
-                  <BulkApartmentModal projectId={project.id} projectName={project.name_uz} />
-                  <AddApartmentModal projectId={project.id} projectName={project.name_uz} />
-               </div>
-            </div>
-
-            {empty ? (
-               <p className="text-xs text-gray-400">Hali xonadon yo&apos;q — <span className="font-bold text-primary">&quot;Xonadon qo&apos;shish&quot;</span> tugmasi bilan qo&apos;shing.</p>
-            ) : (
-               <div className="space-y-3">
-                  {floors.map(floor => (
-                    <AdminFloorSection key={floor} floor={floor} apts={apts.filter(a => a.floor === floor)} />
-                  ))}
-               </div>
-            )}
-          </div>
-        );
-      })}
+      <div className="space-y-3">
+        {sortedProjects.map(project => (
+          <AdminBlockSection
+            key={project.id}
+            project={project}
+            apts={allApartments.filter(a => a.project_id === project.id)}
+          />
+        ))}
+      </div>
     </div>
   );
 }
