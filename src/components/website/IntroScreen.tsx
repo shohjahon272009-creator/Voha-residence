@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import VohaLogo from '@/components/common/VohaLogo';
 
 /*
@@ -40,6 +41,10 @@ function buildWindows() {
 }
 
 export default function IntroScreen() {
+  const pathname = usePathname();
+  // "Xush kelibsiz" faqat bosh sahifada; boshqa sahifalarda faqat logo (qisqaroq)
+  const isHome = pathname === '/' || /^\/(uz|ru|en)\/?$/.test(pathname);
+
   const [mounted, setMounted] = useState(true);
   const [out, setOut] = useState(false);
   const lines = useMemo(buildLines, []);
@@ -48,10 +53,10 @@ export default function IntroScreen() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     document.body.style.overflow = 'hidden';
-    const t1 = setTimeout(() => setOut(true), 3400);
-    const t2 = setTimeout(() => { setMounted(false); document.body.style.overflow = ''; }, 4100);
+    const t1 = setTimeout(() => setOut(true), isHome ? 3400 : 1700);
+    const t2 = setTimeout(() => { setMounted(false); document.body.style.overflow = ''; }, isHome ? 4100 : 2300);
     return () => { clearTimeout(t1); clearTimeout(t2); document.body.style.overflow = ''; };
-  }, []);
+  }, [isHome]);
 
   if (!mounted) return null;
 
@@ -84,6 +89,7 @@ export default function IntroScreen() {
 
       <div className="vi-center">
         <VohaLogo isScrolled={false} className="vi-logo" />
+        {isHome && (
         <div className="vi-welcome">
           {Array.from('Xush kelibsiz!').map((ch, i) => (
             <span key={i} className="vi-ch" style={{ animationDelay: `${1.7 + i * 0.07}s` }}>
@@ -92,6 +98,7 @@ export default function IntroScreen() {
           ))}
           <span className="vi-caret">|</span>
         </div>
+        )}
       </div>
 
       <style jsx global>{`
