@@ -79,7 +79,14 @@ export default function IntroScreen() {
 
       <div className="vi-center">
         <VohaLogo isScrolled={false} className="vi-logo" />
-        <div className="vi-underline" />
+        <div className="vi-welcome">
+          {Array.from('Xush kelibsiz!').map((ch, i) => (
+            <span key={i} className="vi-ch" style={{ animationDelay: `${1.6 + i * 0.06}s` }}>
+              {ch === ' ' ? ' ' : ch}
+            </span>
+          ))}
+          <span className="vi-caret">|</span>
+        </div>
       </div>
 
       <style jsx global>{`
@@ -110,20 +117,24 @@ export default function IntroScreen() {
           width: 320px; height: auto; display: block;
           opacity: 0; animation: vi-logo 1s ease 0.35s forwards;
         }
-        .vi-underline {
-          height: 2px; width: 120px; margin-top: 16px; background: #D18E5B;
-          transform: scaleX(0); transform-origin: center;
-          animation: vi-under 0.7s ease 1s forwards;
+        .vi-welcome {
+          margin-top: 20px; display: flex; align-items: baseline;
+          color: #FBF6EE; font-weight: 500; font-size: 36px;
+          letter-spacing: 0.5px; line-height: 1.1;
         }
+        .vi-ch { display: inline-block; opacity: 0; animation: vi-ch 0.3s ease forwards; }
+        .vi-caret { color: #D18E5B; font-weight: 400; margin-left: 3px; animation: vi-blink 0.8s step-end 1.6s infinite; }
         @keyframes vi-draw { to { stroke-dashoffset: 0; } }
         @keyframes vi-win { to { opacity: 1; } }
-        @keyframes vi-under { to { transform: scaleX(1); } }
+        @keyframes vi-ch { to { opacity: 1; } }
+        @keyframes vi-blink { 50% { opacity: 0; } }
         @keyframes vi-logo {
           0% { opacity: 0; transform: translateY(8px) scale(0.97); }
           100% { opacity: 1; transform: translateY(0) scale(1); }
         }
         @media (max-width: 640px) {
           .vi-logo { width: 220px; }
+          .vi-welcome { font-size: 24px; }
           .vi-bld { height: 56%; }
         }
       `}</style>
