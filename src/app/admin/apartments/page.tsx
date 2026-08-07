@@ -76,15 +76,20 @@ export default async function AdminApartments() {
             ) : (
                <div className="space-y-5">
                   {floors.map(floor => {
-                    const floorApts = apts.filter(a => a.floor === floor);
+                    const floorApts = apts
+                      .filter(a => a.floor === floor)
+                      .sort((a, b) => (parseInt(a.number) || 0) - (parseInt(b.number) || 0));
                     return (
                       <div key={floor}>
-                        <div className="flex items-center gap-2 mb-2.5">
-                          <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{floor}-qavat</span>
-                          <span className="text-[10px] font-bold text-gray-300">{floorApts.length} ta</span>
-                          <div className="flex-1 h-px bg-gray-100" />
+                        <div className="flex items-center gap-3 mb-3.5">
+                          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary text-white text-sm font-black shrink-0">{floor}</div>
+                          <div className="leading-none">
+                            <div className="text-sm font-bold text-primary">{floor}-qavat</div>
+                            <div className="text-[10px] text-gray-400 font-medium mt-1">{floorApts.length} ta xonadon</div>
+                          </div>
+                          <div className="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent ml-1" />
                         </div>
-                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2.5">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                           {floorApts.map(apt => (
                             <EditApartmentModal key={apt.id} apt={apt} />
                           ))}

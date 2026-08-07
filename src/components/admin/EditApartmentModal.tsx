@@ -44,15 +44,15 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
     <>
       <div
         onClick={() => setIsOpen(true)}
-        className="w-full p-3 rounded-xl border border-gray-100 bg-white hover:border-primary hover:bg-primary/[0.03] cursor-pointer transition-all group relative"
+        className="w-full p-4 rounded-2xl border border-gray-100 bg-white hover:border-accent hover:shadow-lg hover:shadow-accent/5 hover:-translate-y-0.5 cursor-pointer transition-all group relative"
       >
-        <Edit2 size={12} className="absolute top-2.5 right-2.5 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-        <div className="flex items-baseline gap-2 mb-0.5">
-          <span className="text-base font-black text-primary group-hover:text-accent transition-colors leading-none">№{apt.number}</span>
+        <div className="flex items-center justify-between mb-2.5">
+          <span className="text-lg font-black text-primary group-hover:text-accent transition-colors leading-none">№{apt.number}</span>
+          <Edit2 size={13} className="text-gray-300 group-hover:text-accent opacity-0 group-hover:opacity-100 transition-all" />
         </div>
-        <div className="flex items-center justify-between gap-2 mt-1.5">
-          <span className="text-[11px] text-gray-400 font-medium">{apt.rooms} xona</span>
-          <span className="text-xs font-bold text-accent whitespace-nowrap">{apt.area} m²</span>
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[11px] text-gray-500 font-medium">{apt.rooms} xona</span>
+          <span className="px-2 py-0.5 rounded-md bg-accent/10 text-accent text-[11px] font-bold whitespace-nowrap">{apt.area} m²</span>
         </div>
       </div>
 
