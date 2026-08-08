@@ -359,8 +359,13 @@ export async function saveSettings(formData: FormData) {
   if (office_lat) await updateSetting('office_lat', office_lat);
   if (office_lng) await updateSetting('office_lng', office_lng);
 
-  // To'lov shartlari (foizlar) — admin belgilaydi, mijoz shu bo'yicha to'lovni ko'radi
-  for (const key of ['calc_down', 'calc_months', 'calc_rate', 'calc_m_down', 'calc_m_months']) {
+  // To'lov shartlari — admin belgilaydi (blokka qarab hisoblanadi)
+  for (const key of [
+    'calc_down', 'calc_months', 'calc_rate', 'calc_m_down', 'calc_m_months',
+    'pay_down_pct', 'pay_fixed_amount', 'pay_fixed_blocks', 'pay_fixed_from_floor',
+    'pay_mortgage_blocks', 'pay_min_monthly', 'pay_hybrid_max_months',
+    'mort_rate_low', 'mort_rate_high',
+  ]) {
     const v = formData.get(key);
     if (v !== null && String(v).trim() !== '') await updateSetting(key, String(v).trim());
   }

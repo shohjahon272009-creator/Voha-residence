@@ -193,27 +193,56 @@ export default async function AdminSettings() {
                <Globe className="text-accent" />
                <h3 className="font-bold text-xl text-primary">To‘lov shartlari (foizlar)</h3>
             </div>
-            <p className="text-sm text-gray-400 mb-8">Kalkulyator aynan shu foizlar bo‘yicha hisoblaydi — mijoz ko‘rgan to‘lov kompaniya shartlari bilan <b>bir xil</b> chiqadi.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <p className="text-sm text-gray-400 mb-8">To‘lov blokka qarab avtomatik hisoblanadi. Bu yerdan barcha shartlarni o‘zgartirishingiz mumkin — sayt darhol shunga moslashadi.</p>
+
+            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Gibrid bloklar (30%)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Gibrid — Boshlang‘ich to‘lov (%)</label>
-                  <input name="calc_down" type="number" min={0} max={90} defaultValue={settings.calc_down || '30'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <label className="text-sm font-bold text-gray-700">Boshlang‘ich to‘lov (%)</label>
+                  <input name="pay_down_pct" type="number" min={0} max={90} defaultValue={settings.pay_down_pct || '30'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Gibrid — Muddatli to‘lov (oy)</label>
-                  <input name="calc_months" type="number" min={1} max={60} defaultValue={settings.calc_months || '12'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <label className="text-sm font-bold text-gray-700">Oylik to‘lov eng kam (so‘m)</label>
+                  <input name="pay_min_monthly" type="number" min={0} defaultValue={settings.pay_min_monthly || '4000000'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <p className="text-[11px] text-gray-400">Oylik shu summadan boshlanadi (3+ xonalilardan tashqari).</p>
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Ipoteka — Boshlang‘ich to‘lov (%)</label>
-                  <input name="calc_m_down" type="number" min={0} max={90} defaultValue={settings.calc_m_down || '15'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <label className="text-sm font-bold text-gray-700">Gibrid — eng uzoq muddat (oy)</label>
+                  <input name="pay_hybrid_max_months" type="number" min={1} max={120} defaultValue={settings.pay_hybrid_max_months || '60'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+            </div>
+
+            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Qat‘iy boshlang‘ich (40 mln)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Qat‘iy summa (so‘m)</label>
+                  <input name="pay_fixed_amount" type="number" min={0} defaultValue={settings.pay_fixed_amount || '40000000'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Ipoteka — Muddati (oy)</label>
-                  <input name="calc_m_months" type="number" min={1} max={360} defaultValue={settings.calc_m_months || '24'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <label className="text-sm font-bold text-gray-700">Qaysi bloklarda</label>
+                  <input name="pay_fixed_blocks" type="text" defaultValue={settings.pay_fixed_blocks || '7,8'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <p className="text-[11px] text-gray-400">Masalan: 7,8</p>
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Ipoteka — Foiz stavkasi (%)</label>
-                  <input name="calc_rate" type="number" min={0} max={40} step={0.5} defaultValue={settings.calc_rate || '18'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <label className="text-sm font-bold text-gray-700">Nechanchi qavatdan</label>
+                  <input name="pay_fixed_from_floor" type="number" min={1} defaultValue={settings.pay_fixed_from_floor || '7'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+            </div>
+
+            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Ipoteka bloklari (10, 11)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Ipoteka bloklari</label>
+                  <input name="pay_mortgage_blocks" type="text" defaultValue={settings.pay_mortgage_blocks || '10,11'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <p className="text-[11px] text-gray-400">Masalan: 10,11</p>
+               </div>
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Foiz — 15% uchun</label>
+                  <input name="mort_rate_low" type="number" min={0} max={40} step={0.5} defaultValue={settings.mort_rate_low || '17.5'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+               </div>
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Foiz — 25/30% uchun</label>
+                  <input name="mort_rate_high" type="number" min={0} max={40} step={0.5} defaultValue={settings.mort_rate_high || '17'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
             </div>
          </div>
