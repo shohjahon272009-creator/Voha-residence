@@ -139,16 +139,17 @@ export default function IntroScreen() {
         .vi-wn { fill: #F0C48A; opacity: 0; animation: vi-win 0.6s ease forwards; }
 
         .vi-center {
-          position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
-          transform: translateY(-3%);
+          position: relative; z-index: 2; width: 100%;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          text-align: center; transform: translateY(-3%); padding: 0 16px;
         }
         .vi-logo {
-          width: 360px; height: auto; display: block;
+          width: min(360px, 78vw); height: auto; display: block; margin: 0 auto;
           opacity: 0; animation: vi-logo 0.65s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
         }
         .vi-welcome {
-          margin-top: 22px; display: inline-block; white-space: nowrap;
-          color: #FBF6EE; font-weight: 500; font-size: 46px;
+          margin-top: 22px; display: inline-block; white-space: nowrap; text-align: center;
+          color: #FBF6EE; font-weight: 500; font-size: 46px; max-width: 100%;
           letter-spacing: 13px; padding-left: 13px; line-height: 1.1;
         }
         .vi-ch { display: inline-block; opacity: 0; animation: vi-ch 0.35s ease forwards; }
