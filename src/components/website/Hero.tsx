@@ -34,7 +34,7 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
   // Kirish ekrani yopilgach slayd yozuvini ko'rsatamiz
   const [revealed, setRevealed] = useState(false);
   useEffect(() => {
-    const id = setTimeout(() => setRevealed(true), 1900);
+    const id = setTimeout(() => setRevealed(true), 1500);
     return () => clearTimeout(id);
   }, []);
 
@@ -63,8 +63,8 @@ export default function Hero({ lang, companyName = 'QURILISH KOMPANIYA', heroTit
   };
   const t = heroText[lang] || heroText.uz;
 
-  // Kirish ekrani (~1.8s) yopilgandan keyin hero elementlari ketma-ket chiqadi
-  const REVEAL = 1.8;
+  // Kirish ekrani (~1.4s) yopilgandan keyin hero elementlari ketma-ket chiqadi
+  const REVEAL = 1.4;
   const titleText = (lang === 'uz' && heroTitle) ? heroTitle : t.title2;
 
   const stats: Record<Locale, Array<{label: string; value: string}>> = {
