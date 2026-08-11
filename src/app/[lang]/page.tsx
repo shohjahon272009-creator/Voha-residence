@@ -19,6 +19,9 @@ import VohaLogo from '@/components/common/VohaLogo';
 
 import db from '@/lib/db';
 
+// Doim yangi ma'lumot — admin o'zgartirsa darhol ko'rinadi (statik keshlanmaydi)
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   const localeLang = lang as Locale;

@@ -36,8 +36,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     headers: {
       'Content-Type': mime,
       'Content-Length': String(buf.length),
-      // Brauzer 5 daqiqa, CDN 1 soat keshda saqlaydi — tez ochiladi
-      'Cache-Control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400',
+      // Qisqa kesh — o'zgartirilgan rasm ~1 daqiqada ko'rinadi
+      'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=300',
     },
   });
 }

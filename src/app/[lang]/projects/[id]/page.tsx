@@ -12,6 +12,9 @@ import { Locale, getDictionary } from '@/lib/dictionaries';
 import { notFound } from 'next/navigation';
 import { MapPin, CheckCircle } from 'lucide-react';
 
+// Doim yangi ma'lumot — admin o'zgartirsa darhol ko'rinadi
+export const dynamic = 'force-dynamic';
+
 export default async function ProjectDetailPage({ params }: { params: Promise<{ lang: string, id: string }> }) {
   const { lang, id } = await params;
   const project = await getProjectBySlug(parseInt(id));
