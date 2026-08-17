@@ -129,7 +129,7 @@ export default function Navbar({ lang }: { lang: Locale }) {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="lg:hidden fixed inset-0 bg-primary/95 z-50 flex flex-col items-center justify-center gap-8 p-10 animate-fade-in">
+        <div className="lg:hidden fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 p-10 overflow-y-auto animate-fade-in" style={{ backgroundColor: '#014242' }}>
           {navLinks.map((link) => (
             <Link 
               key={link.href} 
