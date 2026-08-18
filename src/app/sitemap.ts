@@ -8,6 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Asosiy sahifalar
   const staticPages = [
     '',
+    '/apartments',
     '/about',
     '/projects',
     '/news',

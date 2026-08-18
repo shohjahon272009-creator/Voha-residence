@@ -221,7 +221,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect,
 
               <div>
                 <label className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"><Building2 size={14} /> {t.project}</label>
-                <select value={projectId} onChange={(e) => setProjectId(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+                <select value={projectId} onChange={(e) => { setProjectId(e.target.value === 'all' ? 'all' : Number(e.target.value)); setFloorSel(null); }}
                   className="w-full h-11 px-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white text-sm font-medium text-gray-700">
                   <option value="all">{t.all}</option>
                   {activeProjects.map((p) => <option key={p.id} value={p.id}>{projName(p)}</option>)}

@@ -36,6 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL('https://voharesidence.uz'),
     title,
     description,
+    keywords: ['Voha Residence', 'Xorazm xonadonlar', 'Urganch turar-joy', 'yangi uylar Xorazm', 'kvartira Xorazm', 'muddatli to‘lov', 'ipoteka Xorazm', 'turar-joy majmuasi', 'novostroyka Xorazm'],
     // Canonical — Google asosiy domenni (www'siz) tanlaydi, www chalkashligi yo'qoladi
     alternates: { canonical: '/' },
     // Favicon: asosiy — vektorli SVG (haqiqiy Voha logotipi, har o'lchamda tiniq),

@@ -27,6 +27,13 @@
       "runtimeArgs": ["run", "dev"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "joymee",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:\\Users\\user\\Documents\\joymee", "run", "dev"],
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }

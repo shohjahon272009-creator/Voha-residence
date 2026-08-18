@@ -11,9 +11,29 @@ import { getProjectBySlug, getApartments } from '@/lib/actions';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import { notFound } from 'next/navigation';
 import { MapPin, CheckCircle } from 'lucide-react';
+import type { Metadata } from 'next';
 
 // Doim yangi ma'lumot — admin o'zgartirsa darhol ko'rinadi
 export const dynamic = 'force-dynamic';
+
+// Har bir loyiha uchun alohida SEO (sarlavha + tavsif + OG rasm)
+export async function generateMetadata({ params }: { params: Promise<{ lang: string; id: string }> }): Promise<Metadata> {
+  const { lang, id } = await params;
+  const project = await getProjectBySlug(parseInt(id));
+  if (!project) return { title: 'Loyiha topilmadi — Voha Residence' };
+  const name = (project as unknown as Record<string, string>)[`name_${lang}`] || project.name_uz;
+  const city = project.city || 'Xorazm';
+  const desc = (project as unknown as Record<string, string>)[`description_${lang}`] ||
+    `${name} — ${city}dagi zamonaviy turar-joy majmuasi. Xonadonlar, chizmalar, narx va qulay to‘lov shartlari.`;
+  const title = `${name} — Voha Residence`;
+  const description = desc.slice(0, 160);
+  return {
+    title,
+    description,
+    alternates: { canonical: `/${lang}/projects/${id}` },
+    openGraph: { title, description, url: `https://voharesidence.uz/${lang}/projects/${id}`, images: [project.main_image || '/icon.jpg'], type: 'website', siteName: 'Voha Residence' },
+  };
+}
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ lang: string, id: string }> }) {
   const { lang, id } = await params;
