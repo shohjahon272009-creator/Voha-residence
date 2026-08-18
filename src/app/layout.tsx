@@ -20,8 +20,8 @@ export const dynamic = 'force-dynamic';
 
 // SEO sarlavha/tavsif admin sozlamalaridan (Meta Title / Meta Description) olinadi
 export async function generateMetadata(): Promise<Metadata> {
-  let title = "Qurilish kompaniya - Xorazmdagi yangi xonadonlar";
-  let description = "Xorazm va Urganch shahridagi eng zamonaviy turar-joy majmualari.";
+  let title = "Voha Residence — Xorazmda yangi xonadonlar va turar-joy majmualari";
+  let description = "Xorazm va Urganch shahridagi zamonaviy turar-joy majmualari. Yangi xonadonlar, qulay muddatli to‘lov va ipoteka. Sifatli qurilish, o‘z vaqtida topshirish.";
   try {
     const rows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('meta_title_uz', 'meta_description')").all() as { key: string, value: string }[];
     const s = rows.reduce((acc, r) => ({ ...acc, [r.key]: r.value }), {} as Record<string, string>);
@@ -58,15 +58,38 @@ export default async function RootLayout({
 }>) {
   let primaryColor = '#014242';
   let accentColor = '#D18E5B';
+  let s: Record<string, string> = {};
 
   try {
-    const settingsRows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('primary_color', 'accent_color')").all() as { key: string, value: string }[];
-    const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
-    if (settings.primary_color) primaryColor = settings.primary_color;
-    if (settings.accent_color) accentColor = settings.accent_color;
+    const settingsRows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('primary_color', 'accent_color', 'contact_phone', 'contact_address', 'office_lat', 'office_lng')").all() as { key: string, value: string }[];
+    s = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
+    if (s.primary_color) primaryColor = s.primary_color;
+    if (s.accent_color) accentColor = s.accent_color;
   } catch {
     // sozlamalar o'qilmasa, standart ranglar ishlatiladi
   }
+
+  // Struktura ma'lumot (JSON-LD) — Google biznesni to'liq tushunadi (mahalliy qidiruv uchun muhim)
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'RealEstateAgent',
+    name: 'Voha Residence',
+    url: 'https://voharesidence.uz',
+    logo: 'https://voharesidence.uz/icon.jpg',
+    image: 'https://voharesidence.uz/icon.jpg',
+    telephone: (s.contact_phone || '+998 91 011 66 66').replace(/\s/g, ''),
+    description: 'Xorazm va Urganch shahridagi zamonaviy turar-joy majmualari — yangi xonadonlar, qulay to‘lov va ipoteka.',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: s.contact_address || 'Ulug‘bek ko‘chasi',
+      addressLocality: 'Urganch',
+      addressRegion: 'Xorazm',
+      addressCountry: 'UZ',
+    },
+    ...(s.office_lat && s.office_lng ? { geo: { '@type': 'GeoCoordinates', latitude: s.office_lat, longitude: s.office_lng } } : {}),
+    areaServed: 'Xorazm',
+    sameAs: ['https://www.instagram.com/voha_residence', 'https://t.me/voharesidence'],
+  };
 
   return (
     <html lang="uz" className={`${inter.variable} ${montserrat.variable} ${bebas.variable}`}>
@@ -78,6 +101,7 @@ export default async function RootLayout({
           <link rel="preconnect" href="https://khms1.googleapis.com" />
           <link rel="dns-prefetch" href="https://maps.googleapis.com" />
           <style dangerouslySetInnerHTML={{ __html: `:root { --color-primary: ${primaryColor}; --color-accent: ${accentColor}; }` }} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
        </head>
        <body className="antialiased font-inter">
         {children}
