@@ -37,8 +37,16 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     keywords: ['Voha Residence', 'Xorazm xonadonlar', 'Urganch turar-joy', 'yangi uylar Xorazm', 'kvartira Xorazm', 'muddatli to‘lov', 'ipoteka Xorazm', 'turar-joy majmuasi', 'novostroyka Xorazm'],
-    // Canonical — Google asosiy domenni (www'siz) tanlaydi, www chalkashligi yo'qoladi
-    alternates: { canonical: '/' },
+    // Canonical + hreflang — Google 3 tilni (uz/ru/en) to'g'ri tushunadi
+    alternates: {
+      canonical: '/',
+      languages: {
+        uz: '/uz',
+        ru: '/ru',
+        en: '/en',
+        'x-default': '/uz',
+      },
+    },
     // Favicon: asosiy — vektorli SVG (haqiqiy Voha logotipi, har o'lchamda tiniq),
     // zaxira — JPEG. Nisbiy havolalar, cross-domen (www) muammosi yo'q.
     icons: {
