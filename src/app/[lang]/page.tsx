@@ -15,6 +15,8 @@ import SalesOfficesSection from '@/components/website/SalesOfficesSection';
 import ContactSection from '@/components/website/ContactSection';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import AnimatedReveal from '@/components/website/AnimatedReveal';
+import CinemaScroll from '@/components/website/CinemaScroll';
+import VelocityMarquee from '@/components/website/VelocityMarquee';
 import VohaLogo from '@/components/common/VohaLogo';
 
 import db from '@/lib/db';
@@ -50,6 +52,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
       <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} slides={heroSlides} settings={settings} />
+      {settings.show_cinema !== 'false' && <CinemaScroll lang={localeLang} />}
       {settings.show_projects !== 'false' && (
         <AnimatedReveal>
           <ProjectsList lang={localeLang} companyName={companyName} limit={6} />
@@ -72,6 +75,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           }}
         />
       </AnimatedReveal>
+      <VelocityMarquee words={['Voha Residence', 'Urganch', 'Premium', 'Xorazm']} />
 
       {/* About Section */}
       {settings.show_about !== 'false' && (

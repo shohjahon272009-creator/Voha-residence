@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Navbar from '../common/Navbar';
 import VohaLogo from '@/components/common/VohaLogo';
 import IntroScreen from './IntroScreen';
+import SmoothScroll from './SmoothScroll';
 import { Locale } from '@/lib/dictionaries';
 
 export default function WebsiteLayout({
@@ -71,6 +72,7 @@ export default function WebsiteLayout({
 
   return (
     <div className="min-h-screen">
+      <SmoothScroll />
       <IntroScreen />
       <Navbar lang={lang} />
       <main>{children}</main>

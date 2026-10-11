@@ -39,7 +39,8 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  /* clip (hidden emas): hidden body'ni scroll konteynerga aylantirib, position:sticky'ni buzadi */
+  overflow-x: clip;
   font-family: 'Inter', 'Montserrat', sans-serif;
   background-color: var(--background);
   color: var(--foreground);
@@ -281,4 +282,15 @@ h1, h2, h3 {
   0%   { transform: translateY(0); opacity: 0; }
   40%  { opacity: 1; }
   100% { transform: translateY(14px); opacity: 0; }
+}
+
+/* ---- Lenis silliq scroll (SmoothScroll.tsx) ---- */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Harakatni kamaytirishni so'raganlar uchun kino effektlari o'chadi */
+@media (prefers-reduced-motion: reduce) {
+  .page-curtain { display: none !important; }
 }
