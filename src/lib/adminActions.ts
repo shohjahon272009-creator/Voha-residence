@@ -481,13 +481,13 @@ export async function updateApartment(id: number, formData: FormData) {
 
   updateValues.push(id);
 
-  db.prepare(`UPDATE apartments SET ${updateFields.join(', ')} WHERE id = ?`).run(...updateValues);
+  await db.prepare(`UPDATE apartments SET ${updateFields.join(', ')} WHERE id = ?`).run(...updateValues);
 
   const client_name = formData.get('client_name') as string;
   const client_phone = formData.get('client_phone') as string;
 
   if (client_name && client_phone && (status === 'Band' || status === 'Bronlangan')) {
-    db.prepare(`
+    await db.prepare(`
       INSERT INTO bookings (apartment_id, client_name, client_phone, status, note)
       VALUES (?, ?, ?, 'Tasdiqlangan', ?)
     `).run(id, client_name, client_phone, "Admin tomonidan tahrirlash darchasi orqali qo'shildi");
@@ -539,7 +539,7 @@ export async function addNews(formData: FormData) {
     }
   }
 
-  db.prepare(`
+  await db.prepare(`
     INSERT INTO news (
       title_uz, title_ru, title_en,
       content_uz, content_ru, content_en,
@@ -565,19 +565,19 @@ export async function updateBookingStatus(formData: FormData) {
   if (!id || !status) return;
 
    
-  const booking = db.prepare("SELECT * FROM bookings WHERE id = ?").get(id) as any;
+  const booking = await db.prepare("SELECT * FROM bookings WHERE id = ?").get(id) as any;
   if (!booking) return;
 
-  db.prepare("UPDATE bookings SET status = ? WHERE id = ?").run(status, id);
+  await db.prepare("UPDATE bookings SET status = ? WHERE id = ?").run(status, id);
 
   if (status === 'Tasdiqlangan' && booking.apartment_id) {
     if (actionType === 'sell') {
-      db.prepare("UPDATE apartments SET status = 'Band' WHERE id = ?").run(booking.apartment_id);
+      await db.prepare("UPDATE apartments SET status = 'Band' WHERE id = ?").run(booking.apartment_id);
     } else {
-      db.prepare("UPDATE apartments SET status = 'Bronlangan' WHERE id = ?").run(booking.apartment_id);
+      await db.prepare("UPDATE apartments SET status = 'Bronlangan' WHERE id = ?").run(booking.apartment_id);
     }
   } else if (status === 'Bekor qilingan' && booking.apartment_id) {
-    db.prepare("UPDATE apartments SET status = ? WHERE id = ?").run("Bo'sh", booking.apartment_id);
+    await db.prepare("UPDATE apartments SET status = ? WHERE id = ?").run("Bo'sh", booking.apartment_id);
   }
 
   revalidatePath('/admin');
@@ -593,9 +593,9 @@ export async function addSale(formData: FormData) {
 
   if (!apartment_id || !client_name || !client_phone) return;
 
-  db.prepare("UPDATE apartments SET status = 'Band' WHERE id = ?").run(apartment_id);
+  await db.prepare("UPDATE apartments SET status = 'Band' WHERE id = ?").run(apartment_id);
 
-  db.prepare(`
+  await db.prepare(`
     INSERT INTO bookings (apartment_id, client_name, client_phone, status, note)
     VALUES (?, ?, ?, 'Tasdiqlangan', ?)
   `).run(apartment_id, client_name, client_phone, "Sotuvlar bo'limidan admin kiritdi");
@@ -612,7 +612,7 @@ export async function addSale(formData: FormData) {
 
 export async function deleteNews(id: number) {
   await requireAdmin();
-  db.prepare('DELETE FROM news WHERE id = ?').run(id);
+  await db.prepare('DELETE FROM news WHERE id = ?').run(id);
   revalidatePath('/admin/news');
   revalidatePath('/uz');
   revalidatePath('/ru');
@@ -646,7 +646,7 @@ export async function updateNews(id: number, formData: FormData) {
   }
 
   if (imageUrl) {
-    db.prepare(`
+    await db.prepare(`
       UPDATE news SET
         title_uz = ?, title_ru = ?, title_en = ?,
         content_uz = ?, content_ru = ?, content_en = ?,
@@ -658,7 +658,7 @@ export async function updateNews(id: number, formData: FormData) {
       category, imageUrl, id
     );
   } else {
-    db.prepare(`
+    await db.prepare(`
       UPDATE news SET
         title_uz = ?, title_ru = ?, title_en = ?,
         content_uz = ?, content_ru = ?, content_en = ?,

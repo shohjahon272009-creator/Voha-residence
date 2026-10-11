@@ -158,6 +158,8 @@ async function initSchema(b: Backend): Promise<void> {
   // Loyiha "sotib tugatilgan" bayrog'i — endi xonadon holatidan emas, admin belgilaydi
   await ensureColumn(b, 'projects', 'is_sold_out', 'INTEGER DEFAULT 0');
   await ensureColumn(b, 'apartments', 'image', 'TEXT');
+  // Spamga qarshi limit uchun — so'rov qaysi IP'dan kelgani
+  await ensureColumn(b, 'bookings', 'ip', 'TEXT');
 
   const users = await b.get('SELECT count(*) as count FROM users', []);
   if (Number((users as Row)?.count) > 0) return;

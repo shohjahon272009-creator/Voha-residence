@@ -4,6 +4,7 @@
  
  
 import React from 'react';
+import { notFound } from 'next/navigation';
 
 export function generateStaticParams() {
   return [{ lang: 'uz' }, { lang: 'ru' }, { lang: 'en' }];
@@ -16,6 +17,10 @@ export function generateStaticParams() {
 // every /[lang]/* page) keeps rendering in the main server process where it works.
 export const dynamic = 'force-dynamic';
 
+// Faqat uz/ru/en — boshqa manzil (masalan /foo) 500 emas, 404 qaytarsin
+export const dynamicParams = false;
+const LOCALES = ['uz', 'ru', 'en'];
+
 // This layout is now a simple wrapper to avoid hydration mismatch with the root layout
 export default async function LanguageLayout({
   children,
@@ -25,6 +30,7 @@ export default async function LanguageLayout({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
+  if (!LOCALES.includes(lang)) notFound();
 
   // Note: We don't render <html> or <body> here anymore
   // But we could render a div with a dir attribute if needed
