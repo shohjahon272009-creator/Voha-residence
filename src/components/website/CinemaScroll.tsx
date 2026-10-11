@@ -118,6 +118,9 @@ export default function CinemaScroll({ lang }: { lang: Locale }) {
     if (!img) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    // Kattalashtirishda eng yuqori sifatli interpolyatsiya — kadrlar tiniq ko'rinadi
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     const cw = canvas.width, ch = canvas.height;
     const s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
     const w = img.naturalWidth * s, h = img.naturalHeight * s;
