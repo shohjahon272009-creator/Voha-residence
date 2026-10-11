@@ -179,15 +179,15 @@ export default function CinemaScroll({ lang }: { lang: Locale }) {
 
   const railScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
   const fadeIn = useTransform(scrollYProgress, [0, 0.06], [1, 0]);
-  const darken = useTransform(scrollYProgress, [0.75, 1], [0.25, 0.6]);
+  const darken = useTransform(scrollYProgress, [0.75, 1], [0.05, 0.45]);
 
   return (
     <section ref={sectionRef} className="relative h-[380vh] md:h-[440vh] bg-[#011f1f]" aria-label={chapters[0].title}>
       <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
         <motion.div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: darken }} />
-        <div className="absolute inset-0 pointer-events-none [background:radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.6)_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none [background:radial-gradient(ellipse_at_center,transparent_60%,rgba(0,0,0,0.35)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
         {/* Hero'dan silliq o'tish */}
         <motion.div className="absolute inset-0 bg-primary pointer-events-none" style={{ opacity: fadeIn }} />
 

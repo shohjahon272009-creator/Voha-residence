@@ -11,7 +11,7 @@ type HeroSlide = { image: string; name: string; id: number; city?: string };
 /*
   Kino uslubidagi hero:
   • fonda /cinema/hero.mp4 (render rasmlardan kamera harakati) — kirish pardasi ochilganda
-    video 1.25x dan 1x ga "tushadi"; scroll qilganda video kattalashib, matn chuqurlikka ketadi.
+    video 1.08x dan 1x ga "tushadi" (kattaroq kattalashtirish 1920px videoni xiralashtirardi); scroll qilganda video kattalashib, matn chuqurlikka ketadi.
   • Admin sozlamada hero_video = 'false' bo'lsa yoki video yuklanmasa — loyiha rasmlari slayderi.
 */
 
@@ -73,11 +73,11 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
   // Scroll parallaks — sahifa scrollY (px) bo'yicha: SSR va klientda bir xil boshlang'ich qiymat (0)
   const { scrollY } = useScroll();
   const scrollYProgress = useTransform(scrollY, [0, 800], [0, 1]);
-  const mediaScale = useTransform(scrollYProgress, [0, 1], [1, 1.22]);
+  const mediaScale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -160]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const contentBlur = useTransform(scrollYProgress, [0, 0.6], ['blur(0px)', 'blur(8px)']);
-  const shade = useTransform(scrollYProgress, [0, 1], [0.45, 0.85]);
+  const shade = useTransform(scrollYProgress, [0, 1], [0.12, 0.7]);
 
   const heroText: Record<Locale, { tag: string; title2: string; desc: string; btn2: string; scroll: string }> = {
     uz: {
@@ -143,8 +143,8 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
       >
         <motion.div
           className="absolute inset-0"
-          initial={{ scale: 1.25 }}
-          animate={{ scale: started ? 1 : 1.25 }}
+          initial={{ scale: 1.08 }}
+          animate={{ scale: started ? 1 : 1.08 }}
           transition={{ duration: 2.4, ease: EASE }}
         >
           {useVideo ? (
@@ -178,9 +178,10 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
 
       {/* Qorong'ilashtirish + kino "vinyetka" */}
       <motion.div className="absolute inset-0 z-0 bg-black pointer-events-none" style={{ opacity: shade }} />
-      <div className="absolute inset-0 z-0 pointer-events-none [background:radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.55)_100%)]" />
-      <div className="absolute inset-x-0 top-0 h-40 z-0 bg-gradient-to-b from-black/70 to-transparent pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 h-[45%] z-0 bg-gradient-to-t from-primary via-primary/60 to-transparent pointer-events-none" />
+      {/* Yengil qatlamlar: video yorqin va tiniq ko'rinsin — matn ortida faqat yumshoq soya */}
+      <div className="absolute inset-0 z-0 pointer-events-none [background:radial-gradient(ellipse_55%_45%_at_50%_50%,rgba(0,0,0,0.42),transparent_100%)]" />
+      <div className="absolute inset-x-0 top-0 h-32 z-0 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-[40%] z-0 bg-gradient-to-t from-primary via-primary/75 to-transparent pointer-events-none" />
 
       <motion.div
         style={{ y: contentY, opacity: contentOpacity, filter: contentBlur }}
@@ -190,7 +191,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
           initial={{ opacity: 0, y: 20, letterSpacing: '0.6em' }}
           animate={started ? { opacity: 1, y: 0, letterSpacing: '0.28em' } : {}}
           transition={{ duration: 1.4, ease: EASE }}
-          className="inline-flex items-center gap-3 mb-5 md:mb-7 text-accent font-bold uppercase text-[9px] md:text-xs"
+          className="inline-flex items-center gap-3 mb-5 md:mb-7 text-[#F2B98A] font-bold uppercase text-[9px] md:text-xs [text-shadow:0_1px_2px_rgba(0,0,0,0.8),0_2px_14px_rgba(0,0,0,0.6)]"
         >
           <span className="h-px w-8 md:w-14 bg-accent/70" />
           {t.tag}
@@ -203,7 +204,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
           animate={go}
           variants={{ show: { transition: { staggerChildren: 0.08, delayChildren: 0.25 } } }}
           className="font-montserrat text-[clamp(2.1rem,6.2vw,5rem)] leading-[1.02] text-white font-extrabold max-w-5xl tracking-[-0.02em] mb-5 md:mb-7"
-          style={{ textShadow: '0 4px 30px rgba(0,0,0,0.35)' }}
+          style={{ textShadow: '0 2px 4px rgba(0,0,0,0.45), 0 6px 34px rgba(0,0,0,0.5)' }}
         >
           {titleText.split(' ').map((word, wi) => (
             <span key={wi} className="inline-block overflow-hidden align-bottom pb-[0.08em] mr-[0.25em]" aria-hidden="true">
@@ -224,7 +225,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
           initial={{ opacity: 0, y: 16, filter: 'blur(10px)' }}
           animate={started ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
           transition={{ delay: 0.9, duration: 1.1, ease: EASE }}
-          className="text-sm md:text-base lg:text-lg text-white/85 mb-7 md:mb-9 max-w-2xl leading-relaxed px-4"
+          className="text-sm md:text-base lg:text-lg text-white mb-7 md:mb-9 max-w-2xl leading-relaxed px-4 [text-shadow:0_1px_3px_rgba(0,0,0,0.7),0_2px_16px_rgba(0,0,0,0.5)]"
         >
           {lang === 'uz' && heroDesc ? heroDesc : t.desc}
         </motion.p>
@@ -274,7 +275,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
                 transition={{ delay: 1.3 + i * 0.12, duration: 1, ease: EASE }}
                 className="pt-4 md:pt-5 pb-1 text-center md:border-l first:border-l-0 border-white/10"
               >
-                <div className="text-accent font-bebas text-3xl md:text-5xl leading-none tracking-wide">
+                <div className="text-accent font-bebas text-3xl md:text-5xl leading-none tracking-wide [text-shadow:0_2px_10px_rgba(0,0,0,0.45)]">
                   <CountUp value={stat.value} start={started} />
                 </div>
                 <div className="mt-1 text-white/70 text-[10px] md:text-[11px] uppercase tracking-[0.25em] font-semibold">{stat.label}</div>

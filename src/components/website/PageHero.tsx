@@ -51,7 +51,7 @@ export default function PageHero({ lang, kicker, title, subtitle, images = [], s
       <motion.div className="absolute inset-0" style={{ y: imgY }}>
         <motion.div
           className="absolute inset-0"
-          initial={{ scale: 1.3, filter: 'blur(14px)' }}
+          initial={{ scale: 1.1, filter: 'blur(10px)' }}
           animate={{ scale: 1, filter: 'blur(0px)' }}
           transition={{ duration: 2.2, ease: EASE }}
         >
@@ -69,9 +69,9 @@ export default function PageHero({ lang, kicker, title, subtitle, images = [], s
         </motion.div>
       </motion.div>
 
-      <div className="absolute inset-0 bg-black/45 pointer-events-none" />
-      <div className="absolute inset-0 pointer-events-none [background:radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.55)_100%)]" />
-      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/70 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+      <div className="absolute inset-0 pointer-events-none [background:radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,0.35)_100%)]" />
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#011f1f] via-[#011f1f]/50 to-transparent pointer-events-none" />
 
       <motion.div style={{ y: textY, opacity: textOpacity }} className="relative z-10 w-full max-container px-6 pb-14 md:pb-20">
@@ -142,7 +142,7 @@ export default function PageHero({ lang, kicker, title, subtitle, images = [], s
       {overlay}
 
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes ph-kb { from { transform: scale(1.12); } to { transform: scale(1); } }
+        @keyframes ph-kb { from { transform: scale(1.06); } to { transform: scale(1); } }
       ` }} />
     </section>
   );
