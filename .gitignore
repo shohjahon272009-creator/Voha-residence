@@ -43,3 +43,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ma'lumot zaxirasi (maxfiy kalitlar bor) - repoga qo'shilmaydi
+db-dump.json

@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
+import { getAdminId } from '@/lib/requireAdmin';
 
 export async function GET(request: Request) {
+  if (!(await getAdminId())) return new NextResponse("Unauthorized", { status: 401 });
   const { searchParams } = new URL(request.url);
   const q = searchParams.get('q');
   

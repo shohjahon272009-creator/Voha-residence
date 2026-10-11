@@ -4,8 +4,10 @@
  
  
 'use server';
+import { requireAdmin } from './requireAdmin';
 
 export async function translateText(text: string, from: string, to: string) {
+  await requireAdmin();
   if (!text || text.trim() === '') return '';
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;

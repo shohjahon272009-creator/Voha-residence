@@ -8,6 +8,7 @@
 import db from './db';
 import { revalidatePath } from 'next/cache';
 import { saveUpload } from './storage';
+import { requireAdmin } from './requireAdmin';
 
 // Bir nechta galereya rasmini saqlaydi va URL ro'yxatini qaytaradi (ixtiyoriy)
 async function saveGalleryFiles(files: File[]): Promise<string[]> {
@@ -28,6 +29,7 @@ async function saveGalleryFiles(files: File[]): Promise<string[]> {
 
 // Loyihaga yangi xonadon qo'shish (admin qo'lda kiritadi)
 export async function addApartment(formData: FormData) {
+  await requireAdmin();
   const project_id = parseInt(formData.get('project_id') as string);
   if (!project_id) return;
   const floor = parseInt(formData.get('floor') as string) || 1;
@@ -64,6 +66,7 @@ export async function addApartment(formData: FormData) {
 // Ko'p xonadonni bir vaqtda qo'shish. Har qator: qavat, raqam, xona, maydon, narx
 // (vergul, nuqta-vergul yoki Excel'dan nusxa — TAB bilan ajratiladi).
 export async function addApartmentsBulk(projectId: number, text: string): Promise<{ added: number }> {
+  await requireAdmin();
   if (!projectId || !text) return { added: 0 };
   const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   let added = 0;
@@ -90,6 +93,7 @@ export async function addApartmentsBulk(projectId: number, text: string): Promis
 
 // Bitta sozlamani (masalan xonadonlar bo'limi ko'rinishi) tez yoqish/o'chirish uchun
 export async function setSiteSetting(key: string, value: string) {
+  await requireAdmin();
   // Faqat ko'rinish (show_*) sozlamalariga ruxsat
   if (!key.startsWith('show_')) return;
   await db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run(key, value, value);
@@ -101,6 +105,7 @@ export async function setSiteSetting(key: string, value: string) {
 }
 
 export async function addProject(formData: FormData) {
+  await requireAdmin();
   const name_uz = formData.get('name_uz') as string;
   const name_ru = formData.get('name_ru') as string;
   const name_en = formData.get('name_en') as string;
@@ -181,6 +186,7 @@ export async function addProject(formData: FormData) {
   revalidatePath('/en');
 }
 export async function deleteProject(id: number) {
+  await requireAdmin();
   // First delete all bookings related to apartments in this project
   const apartments = await db.prepare('SELECT id FROM apartments WHERE project_id = ?').all(id) as { id: number }[];
   for (const apt of apartments) {
@@ -200,6 +206,7 @@ export async function deleteProject(id: number) {
 }
 
 export async function updateProject(id: number, formData: FormData) {
+  await requireAdmin();
   const name_uz = formData.get('name_uz') as string;
   const name_ru = formData.get('name_ru') as string;
   const name_en = formData.get('name_en') as string;
@@ -296,6 +303,7 @@ export async function updateProject(id: number, formData: FormData) {
   revalidatePath('/en');
 }
 export async function saveSettings(formData: FormData) {
+  await requireAdmin();
   const company_name = formData.get('company_name') as string;
   const meta_title_uz = formData.get('meta_title_uz') as string;
   const meta_description = formData.get('meta_description') as string;
@@ -410,6 +418,7 @@ export async function saveSettings(formData: FormData) {
   revalidatePath('/en');
 }
 export async function updateApartment(id: number, formData: FormData) {
+  await requireAdmin();
   const rooms = parseInt(formData.get('rooms') as string) || 1;
   const area = parseFloat(formData.get('area') as string) || 0;
   const price_cash = parseFloat(formData.get('price_cash') as string) || 0;
@@ -495,6 +504,7 @@ export async function updateApartment(id: number, formData: FormData) {
 
 // Bitta xonadonni butunlay o'chirish (unga bog'liq bronlar ham o'chadi)
 export async function deleteApartment(id: number) {
+  await requireAdmin();
   await db.prepare('DELETE FROM bookings WHERE apartment_id = ?').run(id);
   await db.prepare('DELETE FROM apartments WHERE id = ?').run(id);
   revalidatePath('/admin/apartments');
@@ -506,6 +516,7 @@ export async function deleteApartment(id: number) {
 }
 
 export async function addNews(formData: FormData) {
+  await requireAdmin();
   const title_uz = formData.get('title_uz') as string;
   const title_ru = formData.get('title_ru') as string;
   const title_en = formData.get('title_en') as string;
@@ -547,6 +558,7 @@ export async function addNews(formData: FormData) {
 }
 
 export async function updateBookingStatus(formData: FormData) {
+  await requireAdmin();
   const id = parseInt(formData.get('id') as string);
   const status = formData.get('status') as string;
   const actionType = formData.get('action_type') as string;
@@ -574,6 +586,7 @@ export async function updateBookingStatus(formData: FormData) {
 }
 
 export async function addSale(formData: FormData) {
+  await requireAdmin();
   const apartment_id = parseInt(formData.get('apartment_id') as string);
   const client_name = formData.get('client_name') as string;
   const client_phone = formData.get('client_phone') as string;
@@ -598,6 +611,7 @@ export async function addSale(formData: FormData) {
 }
 
 export async function deleteNews(id: number) {
+  await requireAdmin();
   db.prepare('DELETE FROM news WHERE id = ?').run(id);
   revalidatePath('/admin/news');
   revalidatePath('/uz');
@@ -606,6 +620,7 @@ export async function deleteNews(id: number) {
 }
 
 export async function updateNews(id: number, formData: FormData) {
+  await requireAdmin();
   const title_uz = formData.get('title_uz') as string;
   const title_ru = formData.get('title_ru') as string;
   const title_en = formData.get('title_en') as string;

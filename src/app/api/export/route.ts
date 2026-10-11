@@ -5,8 +5,10 @@
  
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
+import { getAdminId } from '@/lib/requireAdmin';
 
 export async function GET() {
+  if (!(await getAdminId())) return new NextResponse("Unauthorized", { status: 401 });
    
   const projects = await db.prepare('SELECT id, name_uz, city, district FROM projects').all() as any[];
    
