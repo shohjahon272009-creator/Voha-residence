@@ -1,7 +1,6 @@
  
  
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @next/next/no-img-element */
  
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
@@ -21,6 +20,19 @@ import { PaymentTerms, Timeline, Testimonials, SocialStrip } from '@/components/
 import VohaLogo from '@/components/common/VohaLogo';
 
 import db from '@/lib/db';
+import type { Metadata } from 'next';
+import { pageMetadata, PAGE_SEO } from '@/lib/seo';
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  const texts = { ...PAGE_SEO.home };
+  try {
+    const rows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('meta_title_uz', 'meta_description')").all() as { key: string; value: string }[];
+    const s = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+    texts.uz = { title: s.meta_title_uz || texts.uz.title, description: s.meta_description || texts.uz.description };
+  } catch { /* standart matn */ }
+  return pageMetadata(lang, '', texts);
+}
 
 // Doim yangi ma'lumot — admin o'zgartirsa darhol ko'rinadi (statik keshlanmaydi)
 export const dynamic = 'force-dynamic';

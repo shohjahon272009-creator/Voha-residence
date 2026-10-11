@@ -13,7 +13,7 @@ import { Locale } from '@/lib/dictionaries';
   Yangi video: public/cinema/hero.mp4 ni almashtirib, kadrlarni ffmpeg bilan qayta chiqaring.
 */
 
-const FRAME_COUNT = 65;
+const FRAME_COUNT = 82;
 // Kompyuter (keng ekran) — 1600px HD kadrlar; telefon yoki "trafik tejash" rejimi — 900px
 const wantsHD = () => window.innerWidth >= 900 &&
   !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
@@ -23,21 +23,21 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 type Chapter = { kicker: string; title: string; text: string };
 const CHAPTERS: Record<Locale, Chapter[]> = {
   uz: [
-    { kicker: 'Joylashuv', title: "Shovot kanali bo'yida", text: "Yo'l yuzida, Urganch markazida — maktab, bog'cha, masjid va sayr yo'laklari bir qadam narida." },
-    { kicker: 'Arxitektura', title: 'Sharqona ruh, zamonaviy shakl', text: "Xorazm arkalari va zamonaviy fasad uyg'unligi — har bir chiziq o'ylangan." },
-    { kicker: 'Ishonch', title: 'Kadastri tayyor uylar', text: "10 qavat, liftlar, korobka holatida topshirish — hujjatlar tez va shaffof rasmiylashtiriladi." },
+    { kicker: '"Sokin Makon"', title: 'Al-Xorazmiy haykali yonida', text: "Urganch City markazi — universitet, maktab, bog'cha va sport majmualari yoningizda." },
+    { kicker: 'Tabiat', title: '10 gektar yashil hudud', text: "Favvorali sayr yo'laklari, gulzorlar va dam olish maskanlari — har kuni bog'da yashagandek." },
+    { kicker: 'Oila', title: 'Bolalar uchun xavfsiz hovli', text: "Zamonaviy o'yin maydonchalari va keng hovli — farzandingiz ko'z o'ngingizda." },
     { kicker: 'Sizning uyingiz', title: 'Kelajak shu yerdan boshlanadi', text: 'Qavat, xona va narxni tanlang — qolganini biz hal qilamiz.' },
   ],
   ru: [
-    { kicker: 'Локация', title: 'На берегу канала Шават', text: 'У дороги, в центре Ургенча — школа, детсад, мечеть и прогулочные аллеи рядом.' },
-    { kicker: 'Архитектура', title: 'Восточный дух, современная форма', text: 'Гармония хорезмских арок и современного фасада — продумана каждая линия.' },
-    { kicker: 'Доверие', title: 'Дома с готовым кадастром', text: '10 этажей, лифты, сдача в коробке — документы оформляются быстро и прозрачно.' },
+    { kicker: '«Sokin Makon»', title: 'Рядом с памятником аль-Хорезми', text: 'Центр Urganch City — университет, школа, детсад и спорткомплексы рядом с вами.' },
+    { kicker: 'Природа', title: '10 гектаров зелени', text: 'Аллеи с фонтанами, цветники и зоны отдыха — каждый день как в парке.' },
+    { kicker: 'Семья', title: 'Безопасный двор для детей', text: 'Современные игровые площадки и просторный двор — ребёнок всегда на виду.' },
     { kicker: 'Ваш дом', title: 'Будущее начинается здесь', text: 'Выберите этаж, комнаты и цену — остальное мы возьмём на себя.' },
   ],
   en: [
-    { kicker: 'Location', title: 'On the Shovot canal', text: 'On the main road in central Urgench — school, kindergarten, mosque and walkways next door.' },
-    { kicker: 'Architecture', title: 'Eastern soul, modern form', text: 'Khorezm arches meet a contemporary facade — every line considered.' },
-    { kicker: 'Trust', title: 'Cadastre-ready homes', text: '10 floors, elevators, shell-finish handover — paperwork done fast and transparently.' },
+    { kicker: '"Sokin Makon"', title: 'Next to the Al-Khwarizmi monument', text: 'The heart of Urgench City — university, school, kindergarten and sports facilities nearby.' },
+    { kicker: 'Nature', title: '10 hectares of green', text: 'Fountain promenades, flower beds and places to relax — like living in a park.' },
+    { kicker: 'Family', title: 'A safe courtyard for kids', text: 'Modern playgrounds and a spacious yard — your child always in sight.' },
     { kicker: 'Your home', title: 'The future starts here', text: "Choose the floor, rooms and price — we'll take care of the rest." },
   ],
 };

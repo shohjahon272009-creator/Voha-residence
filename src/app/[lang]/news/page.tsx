@@ -9,6 +9,13 @@ import { Locale, getDictionary } from '@/lib/dictionaries';
 import { Newspaper } from 'lucide-react';
 import PageHero from '@/components/website/PageHero';
 import db from '@/lib/db';
+import type { Metadata } from 'next';
+import { pageMetadata, PAGE_SEO } from '@/lib/seo';
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  return pageMetadata(lang, '/news', PAGE_SEO.news);
+}
 
 export default async function NewsPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;

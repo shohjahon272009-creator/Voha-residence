@@ -6,6 +6,18 @@
 import db from './db';
 import { Project, Apartment } from './types';
 
+// Bazadagi JSON ro'yxat (gallery/amenities/categories). Buzilgan qiymat butun sahifani
+// 500 bilan yiqitmasin — bo'sh ro'yxat qaytaramiz.
+const parseList = (v: unknown): any[] => {
+  if (!v || typeof v !== 'string') return [];
+  try {
+    const r = JSON.parse(v);
+    return Array.isArray(r) ? r : [];
+  } catch {
+    return [];
+  }
+};
+
 export const getProjects = async (): Promise<Project[]> => {
   // Active/selling projects first, completed ("Topshirilgan") last; newest first within each group.
   // This way a newly added "Jarayonda" project shows at the top, and the earliest projects sit at the end.
@@ -23,9 +35,9 @@ export const getProjects = async (): Promise<Project[]> => {
   `).all() as any[];
   return projects.map(p => ({
     ...p,
-    gallery: p.gallery ? JSON.parse(p.gallery) : [],
-    amenities: p.amenities ? JSON.parse(p.amenities) : [],
-    categories: p.categories ? JSON.parse(p.categories) : [],
+    gallery: parseList(p.gallery),
+    amenities: parseList(p.amenities),
+    categories: parseList(p.categories),
     is_sold_out: Boolean(p.is_sold_out)
   }));
 };
@@ -36,9 +48,9 @@ export const getProjectBySlug = async (id: number): Promise<Project | null> => {
   if (!p) return null;
   return {
     ...p,
-    gallery: p.gallery ? JSON.parse(p.gallery) : [],
-    amenities: p.amenities ? JSON.parse(p.amenities) : [],
-    categories: p.categories ? JSON.parse(p.categories) : [],
+    gallery: parseList(p.gallery),
+    amenities: parseList(p.amenities),
+    categories: parseList(p.categories),
     is_sold_out: Boolean(p.is_sold_out)
   };
 };

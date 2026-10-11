@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next';
 import { getProjects } from '@/lib/actions';
+import db from '@/lib/db';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://voharesidence.uz';
+  const baseUrl = 'https://www.voharesidence.uz';
   const langs = ['uz', 'ru', 'en'];
 
   // Asosiy sahifalar
@@ -46,6 +47,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // DB unavailable
   }
 
+  // Yangilik sahifalari (faqat ko'rinadiganlar)
+  const newsRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const news = await db.prepare('SELECT id, date FROM news WHERE visible = 1').all() as { id: number; date: string }[];
+    for (const n of news) {
+      for (const lang of langs) {
+        newsRoutes.push({
+          url: `${baseUrl}/${lang}/news/${n.id}`,
+          lastModified: n.date ? new Date(n.date) : new Date(),
+          changeFrequency: 'monthly',
+          priority: 0.6,
+        });
+      }
+    }
+  } catch {
+    // DB unavailable
+  }
+
   return [
     {
       url: baseUrl,
@@ -55,5 +74,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...staticRoutes,
     ...projectRoutes,
+    ...newsRoutes,
   ];
 }

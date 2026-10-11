@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin/', '/api/'],
       },
     ],
-    sitemap: 'https://voharesidence.uz/sitemap.xml',
+    sitemap: 'https://www.voharesidence.uz/sitemap.xml',
   };
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import type { Apartment } from '@/lib/types';
 import { ChevronDown } from 'lucide-react';
 import EditApartmentModal from './EditApartmentModal';
 
@@ -9,7 +10,7 @@ import EditApartmentModal from './EditApartmentModal';
   Qavat sarlavhasini bosganda o'sha qavat xonadonlari ochiladi. Shunda uzun ro'yxat
   qisqaradi — kerakli qavatni bosib ko'rasiz.
 */
-export default function AdminFloorSection({ floor, apts }: { floor: number; apts: any[] }) {
+export default function AdminFloorSection({ floor, apts }: { floor: number; apts: Apartment[] }) {
   const [open, setOpen] = useState(false);
   const sorted = [...apts].sort((a, b) => (parseInt(a.number) || 0) - (parseInt(b.number) || 0));
 

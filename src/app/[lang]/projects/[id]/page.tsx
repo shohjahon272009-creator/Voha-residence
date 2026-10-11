@@ -13,6 +13,7 @@ import { Locale, getDictionary } from '@/lib/dictionaries';
 import { notFound } from 'next/navigation';
 import { MapPin, CheckCircle } from 'lucide-react';
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 
 // Doim yangi ma'lumot — admin o'zgartirsa darhol ko'rinadi
 export const dynamic = 'force-dynamic';
@@ -26,14 +27,9 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const city = project.city || 'Xorazm';
   const desc = (project as unknown as Record<string, string>)[`description_${lang}`] ||
     `${name} — ${city}dagi zamonaviy turar-joy majmuasi. Xonadonlar, chizmalar, narx va qulay to‘lov shartlari.`;
-  const title = `${name} — Voha Residence`;
-  const description = desc.slice(0, 160);
-  return {
-    title,
-    description,
-    alternates: { canonical: `/${lang}/projects/${id}` },
-    openGraph: { title, description, url: `https://voharesidence.uz/${lang}/projects/${id}`, images: [project.main_image || '/icon.jpg'], type: 'website', siteName: 'Voha Residence' },
-  };
+  const t = { title: `${name} — Voha Residence`, description: desc.slice(0, 160) };
+  const img = project.main_image && !project.main_image.startsWith('data:') ? project.main_image : undefined;
+  return pageMetadata(lang, `/projects/${id}`, { uz: t, ru: t, en: t }, img);
 }
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ lang: string, id: string }> }) {
@@ -122,7 +118,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                <div className="col-span-1 lg:col-span-3">
                   {isSoldOut ? (
                      <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100 relative group aspect-video">
-                        <img src={project.main_image || '/voha-actual-bg.png'} alt={projectName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        {/* eslint-disable-next-line @next/next/no-img-element -- rasm bazadan (data URL / Blob), next/image optimallashtira olmaydi */}
+                        <img src={project.main_image || '/cinema/poster.jpg'} alt={projectName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
                            <div className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl">
                               <span className="text-3xl md:text-5xl font-black text-white uppercase tracking-widest drop-shadow-lg">
@@ -133,7 +130,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                      </div>
                   ) : publicApartments.length === 0 ? (
                      <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100 relative group aspect-video">
-                        <img src={project.main_image || '/voha-actual-bg.png'} alt={projectName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        {/* eslint-disable-next-line @next/next/no-img-element -- rasm bazadan (data URL / Blob), next/image optimallashtira olmaydi */}
+                        <img src={project.main_image || '/cinema/poster.jpg'} alt={projectName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
                            <div className="px-8 py-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-center">
                               <span className="block text-2xl md:text-4xl font-black text-white tracking-wide drop-shadow-lg">

@@ -10,6 +10,20 @@ import { Newspaper, ArrowLeft, Calendar } from 'lucide-react';
 import db from '@/lib/db';
 import { redirect } from 'next/navigation';
 import PageHero from '@/components/website/PageHero';
+import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string; id: string }> }): Promise<Metadata> {
+  const { lang, id } = await params;
+  const n = await db.prepare('SELECT * FROM news WHERE id = ? AND visible = 1').get(id) as Record<string, string> | undefined;
+  if (!n) return { title: 'Yangilik topilmadi — Voha Residence' };
+  const title = `${n[`title_${lang}`] || n.title_uz} — Voha Residence`;
+  const description = String(n[`content_${lang}`] || n.content_uz || '').replace(/\s+/g, ' ').slice(0, 160);
+  const t = { title, description };
+  // data URL rasm OG uchun yaramaydi — faqat oddiy manzil bo'lsa ishlatamiz
+  const img = n.image && !String(n.image).startsWith('data:') ? n.image : undefined;
+  return pageMetadata(lang, `/news/${id}`, { uz: t, ru: t, en: t }, img);
+}
 
 export default async function NewsDetailPage({ params }: { params: Promise<{ lang: string; id: string }> }) {
   const { lang, id } = await params;

@@ -11,6 +11,13 @@ import {
   Award, ShieldCheck, Clock, Wallet, Building2, MapPin,
   CheckCircle2, Phone, ArrowRight,
 } from 'lucide-react';
+import type { Metadata } from 'next';
+import { pageMetadata, PAGE_SEO } from '@/lib/seo';
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  return pageMetadata(lang, '/about', PAGE_SEO.about);
+}
 
 export default async function AboutPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
@@ -113,7 +120,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
         lang={localeLang}
         kicker={c.tag}
         title={`${c.title}${c.accent}${c.tail}`.replace(/\s+/g, ' ').trim()}
-        images={['/uploads/nfull-aerial.jpg', '/uploads/nfull-corner.jpg']}
+        images={['/cinema/stills/sokin-1.jpg', '/cinema/stills/sokin-4.jpg']}
       />
 
       {/* ============ Intro ============ */}
@@ -124,7 +131,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
         <div className="max-container grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10">
           <AnimatedReveal direction="left" className="relative">
             <div className="aspect-[4/5] rounded-[44px] overflow-hidden border-[14px] border-white shadow-2xl relative z-10 transform -rotate-2 hover:rotate-0 transition-transform duration-700">
-              <img src="/uploads/nfull-front.jpg" alt="Voha Residence" className="w-full h-full object-cover" />
+              <img src="/cinema/stills/sokin-2.jpg" alt="Voha Residence" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
             </div>
             <div className="absolute -bottom-10 -right-8 w-72 h-72 bg-accent rounded-[44px] -z-0 opacity-30 transform rotate-6" />
@@ -189,7 +196,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
         <div className="max-container grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center relative z-10">
           <AnimatedReveal direction="left" className="relative">
             <div className="aspect-[5/4] rounded-[40px] overflow-hidden border-[12px] border-white/10 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-700">
-              <img src="/uploads/nfull-front.jpg" alt="Voha Residence" className="w-full h-full object-cover" />
+              <img src="/cinema/stills/sokin-3.jpg" alt="Voha Residence" className="w-full h-full object-cover" />
             </div>
             <div className="absolute -bottom-7 -left-6 bg-white rounded-3xl shadow-2xl px-8 py-6 flex items-center gap-3">
               <Building2 className="w-9 h-9 text-accent" />

@@ -5,6 +5,13 @@ import PageHero from '@/components/website/PageHero';
 import { Locale } from '@/lib/dictionaries';
 import { getProjects } from '@/lib/actions';
 import db from '@/lib/db';
+import type { Metadata } from 'next';
+import { pageMetadata, PAGE_SEO } from '@/lib/seo';
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  return pageMetadata(lang, '/projects', PAGE_SEO.projects);
+}
 
 export const dynamic = 'force-dynamic';
 

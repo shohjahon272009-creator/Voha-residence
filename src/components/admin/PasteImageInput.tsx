@@ -104,6 +104,7 @@ export default function PasteImageInput({
       <label className="block text-xs font-bold text-gray-500 mb-1">{label}</label>
       {shown && (
         <div className="mb-2">
+          {/* eslint-disable-next-line @next/next/no-img-element -- yuklangan rasm oldindan ko'rinishi (data URL) */}
           <img src={shown} alt="" className="h-16 object-contain rounded border border-gray-100" />
         </div>
       )}

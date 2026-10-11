@@ -5,6 +5,13 @@ import PageHero from '@/components/website/PageHero';
 import { getProjects, getApartments } from '@/lib/actions';
 import { Locale } from '@/lib/dictionaries';
 import db from '@/lib/db';
+import type { Metadata } from 'next';
+import { pageMetadata, PAGE_SEO } from '@/lib/seo';
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  return pageMetadata(lang, '/apartments', PAGE_SEO.apartments);
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -29,7 +36,7 @@ export default async function ApartmentsPage({ params }: { params: Promise<{ lan
 
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
-      <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/uploads/nfull-front.jpg', '/uploads/nfull-corner.jpg']} />
+      <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/cinema/stills/sokin-3.jpg', '/cinema/stills/sokin-4.jpg']} />
       <div className="bg-brand-mesh min-h-screen">
         <ApartmentAndPayment
           apartments={browserApartments}

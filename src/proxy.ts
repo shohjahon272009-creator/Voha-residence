@@ -24,9 +24,17 @@ export async function proxy(req: NextRequest) {
     }
   }
 
+  // Til sahifalari: root layout <html lang> ni to'g'ri qo'yishi uchun tilni header'da uzatamiz
+  const langMatch = pathname.match(/^\/(uz|ru|en)(\/|$)/);
+  if (langMatch) {
+    const headers = new Headers(req.headers);
+    headers.set('x-lang', langMatch[1]);
+    return NextResponse.next({ request: { headers } });
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/', '/admin/:path*'],
+  matcher: ['/', '/admin/:path*', '/(uz|ru|en)', '/(uz|ru|en)/:path*'],
 };

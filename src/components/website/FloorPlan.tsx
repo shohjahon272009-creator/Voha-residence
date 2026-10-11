@@ -206,24 +206,16 @@ export default function FloorPlan({
                    </div>
                 </div>
 
-                {/* Xonalar ko'rinishi (Room Views) */}
+                {/* Xonadon surati — faqat admin HAQIQIY surat yuklagan bo'lsa (avval bino tashqi
+                    rasmi "Mehmonxona"/"Yotoqxona" deb ko'rsatilardi — xaridorni chalg'itardi) */}
+                {selectedApt.image && (
                 <div className="mb-8">
                    <h5 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">{t.roomViews}</h5>
-                   <div className="grid grid-cols-2 gap-2">
-                      <div className="aspect-square rounded-xl overflow-hidden relative group">
-                         <img src={selectedApt.image || '/voha-actual-bg.png'} alt="Mehmonxona" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                            <span className="text-white text-xs font-bold">{t.livingRoom}</span>
-                         </div>
-                      </div>
-                      <div className="aspect-square rounded-xl overflow-hidden relative group">
-                         <img src="/voha-actual-bg.png" alt="Yotoqxona" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                            <span className="text-white text-xs font-bold">{t.bedroom}</span>
-                         </div>
-                      </div>
+                   <div className="aspect-[4/3] rounded-xl overflow-hidden relative group">
+                      <img src={selectedApt.image} alt={t.livingRoom} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                    </div>
                 </div>
+                )}
                 
                 <div className="mb-8 p-4 bg-accent/5 rounded-xl border border-accent/20 text-center">
                    <div className="text-accent mb-2 font-bold uppercase tracking-widest">{t.priceLabel}</div>

@@ -4,13 +4,17 @@
  
  
 import type { Metadata } from "next";
-import { Inter, Montserrat, Bebas_Neue } from 'next/font/google';
+import { Inter, Montserrat, Bebas_Neue, Oswald } from 'next/font/google';
 import "./globals.css";
 import db from '@/lib/db';
+import { headers } from 'next/headers';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' });
+// Kirill (ru) harflari ham yuklansin — aks holda rus sahifasi tizim shriftida chiqardi
+const inter = Inter({ subsets: ['latin', 'cyrillic'], variable: '--font-inter' });
+const montserrat = Montserrat({ subsets: ['latin', 'cyrillic'], variable: '--font-montserrat' });
 const bebas = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--font-bebas' });
+// Bebas'da kirill yo'q — rus harflari uchun unga o'xshash Oswald (font-bebas zaxirasi)
+const oswald = Oswald({ weight: ['500'], subsets: ['cyrillic'], variable: '--font-oswald' });
 
 // The whole app is backed by SQLite (a native module). Static prerendering runs it
 // inside Turbopack worker processes that crash ("Jest worker ... child process
@@ -33,20 +37,12 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     // Barcha metadata URL'lari (favicon, Open Graph) asosiy domenga bog'lanadi —
     // avval www/www'siz nomuvofiqligi favicon ko'rinmasligiga sabab bo'lardi.
-    metadataBase: new URL('https://voharesidence.uz'),
+    metadataBase: new URL('https://www.voharesidence.uz'),
     title,
     description,
     keywords: ['Voha Residence', 'Xorazm xonadonlar', 'Urganch turar-joy', 'yangi uylar Xorazm', 'kvartira Xorazm', 'muddatli to‘lov', 'ipoteka Xorazm', 'turar-joy majmuasi', 'novostroyka Xorazm'],
-    // Canonical + hreflang — Google 3 tilni (uz/ru/en) to'g'ri tushunadi
-    alternates: {
-      canonical: '/',
-      languages: {
-        uz: '/uz',
-        ru: '/ru',
-        en: '/en',
-        'x-default': '/uz',
-      },
-    },
+    // Canonical + hreflang endi har sahifaning o'zida (src/lib/seo.ts) — bu yerda
+    // canonical '/' hamma ichki sahifani bosh sahifaning nusxasi qilib ko'rsatardi.
     // Favicon: asosiy — vektorli SVG (haqiqiy Voha logotipi, har o'lchamda tiniq),
     // zaxira — JPEG. Nisbiy havolalar, cross-domen (www) muammosi yo'q.
     icons: {
@@ -54,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
       shortcut: '/icon.svg',
       apple: '/icon.jpg',
     },
-    openGraph: { title, description, type: 'website', url: 'https://voharesidence.uz', images: ['/icon.jpg'], siteName: 'Voha Residence' },
+    openGraph: { title, description, type: 'website', url: 'https://www.voharesidence.uz', images: [{ url: '/cinema/poster.jpg', width: 1920, height: 1080 }], siteName: 'Voha Residence' },
     twitter: { card: 'summary_large_image', title, description },
   };
 }
@@ -64,6 +60,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // proxy.ts URL'dan aniqlagan til (/ru/... -> ru); admin va boshqa yo'llarda — uz
+  const lang = (await headers()).get('x-lang') || 'uz';
   let primaryColor = '#014242';
   let accentColor = '#D18E5B';
   let s: Record<string, string> = {};
@@ -82,9 +80,9 @@ export default async function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'RealEstateAgent',
     name: 'Voha Residence',
-    url: 'https://voharesidence.uz',
-    logo: 'https://voharesidence.uz/icon.jpg',
-    image: 'https://voharesidence.uz/icon.jpg',
+    url: 'https://www.voharesidence.uz',
+    logo: 'https://www.voharesidence.uz/icon.jpg',
+    image: 'https://www.voharesidence.uz/icon.jpg',
     telephone: (s.contact_phone || '+998 91 011 66 66').replace(/\s/g, ''),
     description: 'Xorazm va Urganch shahridagi zamonaviy turar-joy majmualari — yangi xonadonlar, qulay to‘lov va ipoteka.',
     address: {
@@ -100,7 +98,7 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang="uz" className={`${inter.variable} ${montserrat.variable} ${bebas.variable}`}>
+    <html lang={lang} className={`${inter.variable} ${montserrat.variable} ${bebas.variable} ${oswald.variable}`}>
        <head>
           {/* Speed up the Google Maps embed by warming up its connections early */}
           <link rel="preconnect" href="https://maps.google.com" />

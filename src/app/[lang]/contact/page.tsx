@@ -4,6 +4,13 @@ import ContactSection from '@/components/website/ContactSection';
 import PageHero from '@/components/website/PageHero';
 import { Locale } from '@/lib/dictionaries';
 import db from '@/lib/db';
+import type { Metadata } from 'next';
+import { pageMetadata, PAGE_SEO } from '@/lib/seo';
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  return pageMetadata(lang, '/contact', PAGE_SEO.contact);
+}
 
 export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
@@ -21,7 +28,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
 
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
-      <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/uploads/nfull-side.jpg']} />
+      <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/cinema/stills/sokin-2.jpg']} />
       <div className="min-h-screen bg-[#FDFBF7]">
         <ContactSection lang={localeLang}  />
       </div>

@@ -173,6 +173,7 @@ export default function EditProjectModal({ project }: { project: any }) {
                   <label className="block text-xs font-bold text-gray-600">🌐 360° Virtual Tur (ixtiyoriy)</label>
                   {project.virtual_tour_url && /\.(jpe?g|png|webp|avif)$/i.test(project.virtual_tour_url) && (
                     <div className="flex items-center gap-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element -- admin oldindan ko'rinishi: data URL / tashqi panorama */}
                       <img src={project.virtual_tour_url} alt="360" className="w-24 h-14 object-cover rounded-lg border border-gray-200" />
                       <span className="text-[11px] text-gray-400">Joriy panorama rasm. Yangisini yuklasangiz, almashtiriladi.</span>
                     </div>

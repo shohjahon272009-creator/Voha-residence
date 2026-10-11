@@ -10,7 +10,7 @@ module.exports = {
       fontFamily: {
         inter: ['var(--font-inter)', 'sans-serif'],
         montserrat: ['var(--font-montserrat)', 'sans-serif'],
-        bebas: ['var(--font-bebas)', 'sans-serif'],
+        bebas: ['var(--font-bebas)', 'var(--font-oswald)', 'sans-serif'],
       },
       colors: {
         primary: 'var(--color-primary, #014242)',

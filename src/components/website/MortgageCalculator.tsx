@@ -24,7 +24,8 @@ export default function MortgageCalculator({
   const [srv, setSrv] = useState<(PayResult & { aptId: number }) | null>(null);
 
   useEffect(() => {
-    if (!selected) { setSrv(null); return; }
+    // Tanlov yo'q bo'lsa hisob ko'rsatilmaydi — 'ready' srv.aptId === selected.id ni tekshiradi
+    if (!selected) return;
     const aptId = selected.id;
     let cancelled = false;
     getApartmentPayment(aptId, { downPct: downTier, years }).then((res) => {

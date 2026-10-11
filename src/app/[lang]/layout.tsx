@@ -1,10 +1,10 @@
  
  
-/* eslint-disable @typescript-eslint/no-unused-vars */
  
  
 import React from 'react';
 import { notFound } from 'next/navigation';
+import LangSync from '@/components/website/LangSync';
 
 export function generateStaticParams() {
   return [{ lang: 'uz' }, { lang: 'ru' }, { lang: 'en' }];
@@ -36,6 +36,7 @@ export default async function LanguageLayout({
   // But we could render a div with a dir attribute if needed
   return (
     <div className="min-h-screen">
+      <LangSync lang={lang} />
       {children}
     </div>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import type { Project, Apartment } from '@/lib/types';
 import { Building2, ChevronDown } from 'lucide-react';
 import BulkApartmentModal from './BulkApartmentModal';
 import AddApartmentModal from './AddApartmentModal';
@@ -12,7 +13,7 @@ import AdminFloorSection from './AdminFloorSection';
   bloklar ro'yxati -> blokni bosasiz -> qavatlar -> qavatni bosasiz -> xonadonlar.
   "Ko'p qo'shish" va "Xonadon qo'shish" tugmalari doim ko'rinib turadi.
 */
-export default function AdminBlockSection({ project, apts }: { project: any; apts: any[] }) {
+export default function AdminBlockSection({ project, apts }: { project: Project; apts: Apartment[] }) {
   const [open, setOpen] = useState(false);
   const floors = Array.from(new Set(apts.map((a) => a.floor))).sort((a, b) => a - b);
   const empty = apts.length === 0;
