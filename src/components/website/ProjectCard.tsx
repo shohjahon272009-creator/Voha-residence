@@ -36,10 +36,22 @@ export default function ProjectCard({ project, lang, soldOut = false }: ProjectC
         {/* Inset "floating" photo with rounded corners */}
         <div className="relative aspect-[16/11] rounded-[22px] overflow-hidden">
           <img
-            src={project.main_image || '/voha-actual-bg.png'}
+            src={project.main_image || '/cinema/poster.jpg'}
             alt={projectName}
-            className="w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.08]"
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.1]"
           />
+          {/* Kino "yorug'lik tig'i" — hover'da rasm ustidan diagonal o'tadi */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute -inset-y-10 -left-1/2 w-1/3 rotate-12 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-[450%] transition-transform duration-[1300ms] ease-out" />
+          </div>
+          {/* Markazda "Ko'rish" doirasi */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+            <span className="w-20 h-20 rounded-full bg-accent/95 text-primary flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] shadow-[0_10px_40px_rgba(209,142,91,0.6)]">
+              <ArrowRight size={26} className="-rotate-45" />
+            </span>
+          </div>
           {/* Depth scrim — deepens on hover for a premium, dimensional look */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-500 pointer-events-none" />
           <div className="absolute top-4 left-4 z-10">

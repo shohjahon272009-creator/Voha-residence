@@ -61,7 +61,7 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
         {/* Rasm */}
         <AnimatedReveal direction="left" className="relative">
           <div className="aspect-square rounded-[44px] overflow-hidden border-[14px] border-white shadow-2xl relative z-10 transform -rotate-2 hover:rotate-0 transition-transform duration-700">
-            <img src="/voha-actual-bg.png" alt="Voha Residence" className="w-full h-full object-cover" />
+            <img src="/uploads/nfull-front.jpg" alt="Voha Residence" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
           </div>
           <div className="absolute -bottom-10 -right-8 w-72 h-72 bg-accent rounded-[44px] -z-0 opacity-30 transform rotate-6" />

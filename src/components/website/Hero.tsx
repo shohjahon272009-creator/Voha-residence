@@ -151,16 +151,19 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
             <video
               ref={videoRef}
               className="absolute inset-0 w-full h-full object-cover"
-              src="/cinema/hero.mp4"
               poster="/cinema/poster.jpg"
               autoPlay
               muted
               loop
               playsInline
               preload="auto"
-              onError={() => setVideoFailed(true)}
               onCanPlay={(e) => { e.currentTarget.muted = true; e.currentTarget.play().catch(() => {}); }}
-            />
+            >
+              {/* Keng ekranga 1080p HD, telefonga yengil 960px versiya */}
+              <source src="/cinema/hero.mp4" type="video/mp4" media="(min-width: 900px)" />
+              {/* Oxirgi manba ham yuklanmasa — zaxira slayderga o'tamiz */}
+              <source src="/cinema/hero-mobile.mp4" type="video/mp4" onError={() => setVideoFailed(true)} />
+            </video>
           ) : (
             slideList.map((s, i) => (
               <div

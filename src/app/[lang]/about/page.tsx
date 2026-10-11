@@ -2,6 +2,8 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import AnimatedReveal from '@/components/website/AnimatedReveal';
+import PageHero from '@/components/website/PageHero';
+import { Timeline, Testimonials } from '@/components/website/VohaStory';
 import VohaLogo from '@/components/common/VohaLogo';
 import { Locale } from '@/lib/dictionaries';
 import db from '@/lib/db';
@@ -107,15 +109,22 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
 
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
+      <PageHero
+        lang={localeLang}
+        kicker={c.tag}
+        title={`${c.title}${c.accent}${c.tail}`.replace(/\s+/g, ' ').trim()}
+        images={['/uploads/nfull-aerial.jpg', '/uploads/nfull-corner.jpg']}
+      />
+
       {/* ============ Intro ============ */}
-      <section id="about" className="pt-36 md:pt-40 pb-24 px-6 bg-brand-mesh-lux relative overflow-hidden">
+      <section id="about" className="pt-24 md:pt-28 pb-24 px-6 bg-brand-mesh-lux relative overflow-hidden">
         <div className="absolute -top-32 -right-32 w-[34rem] h-[34rem] rounded-full bg-accent/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-40 -left-40 w-[36rem] h-[36rem] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
 
         <div className="max-container grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10">
           <AnimatedReveal direction="left" className="relative">
             <div className="aspect-[4/5] rounded-[44px] overflow-hidden border-[14px] border-white shadow-2xl relative z-10 transform -rotate-2 hover:rotate-0 transition-transform duration-700">
-              <img src="/voha-actual-bg.png" alt="Voha Residence" className="w-full h-full object-cover" />
+              <img src="/uploads/nfull-front.jpg" alt="Voha Residence" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
             </div>
             <div className="absolute -bottom-10 -right-8 w-72 h-72 bg-accent rounded-[44px] -z-0 opacity-30 transform rotate-6" />
@@ -128,11 +137,11 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
           <AnimatedReveal direction="right">
             <span className="eyebrow mb-5">{c.tag}</span>
             <div className="mb-6"><VohaLogo isScrolled={true} className="w-52 sm:w-60 lg:w-64 h-auto" /></div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-primary mb-8 leading-[1.05]">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-primary mb-8 leading-[1.05]">
               {useSet && settings.about_title
                 ? settings.about_title
                 : <>{c.title}<span className="text-gradient-accent">{c.accent}</span>{c.tail}</>}
-            </h1>
+            </h2>
             <p className="text-gray-600 text-lg md:text-xl mb-10 leading-relaxed font-medium max-w-xl">{desc}</p>
 
             <div className="grid grid-cols-2 gap-6 max-w-md">
@@ -180,7 +189,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
         <div className="max-container grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center relative z-10">
           <AnimatedReveal direction="left" className="relative">
             <div className="aspect-[5/4] rounded-[40px] overflow-hidden border-[12px] border-white/10 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-700">
-              <img src="/voha-actual-bg.png" alt="Voha Residence" className="w-full h-full object-cover" />
+              <img src="/uploads/nfull-front.jpg" alt="Voha Residence" className="w-full h-full object-cover" />
             </div>
             <div className="absolute -bottom-7 -left-6 bg-white rounded-3xl shadow-2xl px-8 py-6 flex items-center gap-3">
               <Building2 className="w-9 h-9 text-accent" />
@@ -205,6 +214,9 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
           </AnimatedReveal>
         </div>
       </section>
+
+      <Timeline lang={localeLang} />
+      <Testimonials lang={localeLang} />
 
       {/* ============ CTA ============ */}
       <section className="py-20 md:py-24 px-6 bg-brand-mesh-lux">

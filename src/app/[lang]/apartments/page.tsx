@@ -1,6 +1,7 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import ApartmentAndPayment from '@/components/website/ApartmentAndPayment';
+import PageHero from '@/components/website/PageHero';
 import { getProjects, getApartments } from '@/lib/actions';
 import { Locale } from '@/lib/dictionaries';
 import db from '@/lib/db';
@@ -20,9 +21,16 @@ export default async function ApartmentsPage({ params }: { params: Promise<{ lan
   // Narxlar mijozga yuborilmaydi (xavfsizlik) — faqat serverda hisoblanadi
   const browserApartments = (await getApartments()).map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
 
+  const t = {
+    uz: { kicker: 'Xonadonlar', title: 'Xonadoningizni tanlang', sub: "Blok, qavat va xonalar soni bo'yicha qidiring — to'lovni darhol hisoblang." },
+    ru: { kicker: 'Квартиры', title: 'Выберите свою квартиру', sub: 'Ищите по блоку, этажу и числу комнат — платёж рассчитывается сразу.' },
+    en: { kicker: 'Apartments', title: 'Choose your apartment', sub: 'Search by block, floor and rooms — see your payment instantly.' },
+  }[localeLang] || { kicker: 'Xonadonlar', title: 'Xonadoningizni tanlang', sub: '' };
+
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
-      <div className="pt-24 md:pt-28 bg-brand-mesh min-h-screen">
+      <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/uploads/nfull-front.jpg', '/uploads/nfull-corner.jpg']} />
+      <div className="bg-brand-mesh min-h-screen">
         <ApartmentAndPayment
           apartments={browserApartments}
           projects={allProjects}

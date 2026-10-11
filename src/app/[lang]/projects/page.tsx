@@ -1,7 +1,7 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import ProjectsList from '@/components/website/ProjectsList';
-import SliderBanner from '@/components/website/SliderBanner';
+import PageHero from '@/components/website/PageHero';
 import { Locale } from '@/lib/dictionaries';
 import { getProjects } from '@/lib/actions';
 import db from '@/lib/db';
@@ -23,14 +23,14 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     .slice(0, 8);
 
   const t = {
-    uz: { title: 'Bizning loyihalarimiz', tag: 'LOYIHALAR' },
-    ru: { title: 'Наши проекты', tag: 'ПРОЕКТЫ' },
-    en: { title: 'Our Projects', tag: 'PROJECTS' },
-  }[localeLang] || { title: 'Bizning loyihalarimiz', tag: 'LOYIHALAR' };
+    uz: { title: 'Bizning loyihalarimiz', tag: 'Loyihalar', sub: "Urganch va Xorazm bo'ylab zamonaviy turar-joy majmualari — har biri o'z hikoyasi bilan." },
+    ru: { title: 'Наши проекты', tag: 'Проекты', sub: 'Современные жилые комплексы по Ургенчу и Хорезму — у каждого своя история.' },
+    en: { title: 'Our Projects', tag: 'Projects', sub: 'Modern residential complexes across Urgench and Khorezm — each with its own story.' },
+  }[localeLang] || { title: 'Bizning loyihalarimiz', tag: 'Loyihalar', sub: '' };
 
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
-      <SliderBanner images={bannerImages} title={t.title} subtitle={t.tag} />
+      <PageHero lang={localeLang} kicker={t.tag} title={t.title} subtitle={t.sub} images={bannerImages} />
       <div className="bg-brand-mesh">
         <ProjectsList lang={localeLang} companyName={companyName} />
       </div>

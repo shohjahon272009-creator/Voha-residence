@@ -7,6 +7,7 @@ import FloorPlanWrapper from '@/components/website/FloorPlanWrapper';
 import VirtualTour from '@/components/website/VirtualTour';
 import ProjectStatusBadge from '@/components/website/ProjectStatusBadge';
 import ProjectGallery from '@/components/website/ProjectGallery';
+import PageHero from '@/components/website/PageHero';
 import { getProjectBySlug, getApartments } from '@/lib/actions';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import { notFound } from 'next/navigation';
@@ -67,45 +68,41 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   return (
     <WebsiteLayout lang={lang as Locale}>
-      {/* Mini Hero */}
-      <section className="relative h-[60vh] flex items-end pb-20 px-6">
-        <div 
-           className="absolute inset-0 bg-cover bg-center"
-           style={{ backgroundImage: `url(${project.main_image || '/voha-actual-bg.png'})` }}
-        >
-           <div className="absolute inset-0 bg-gradient-to-t from-primary to-transparent" />
+      {/* Kino-sarlavha: loyiha rasmi + galereyadan bir nechtasi sekin almashadi */}
+      <PageHero
+        lang={lang}
+        size="full"
+        kicker={[project.district, project.city].filter(Boolean).join(', ') || project.status}
+        title={projectName}
+        subtitle={(projectDesc || 'Premium klassdagi zamonaviy xonadonlar').slice(0, 220)}
+        images={[project.main_image || '/cinema/poster.jpg', ...(Array.isArray(project.gallery) ? project.gallery.slice(0, 3) : [])]}
+        overlay={
+          <>
+            <div className="absolute top-24 right-6 md:right-10 z-20">
+              <ProjectStatusBadge
+                status={project.status}
+                daysLeft={project.days_left}
+                soldOut={isSoldOut}
+                lang={lang as Locale}
+                className="text-sm px-5 py-2.5"
+              />
+            </div>
+            {hasVirtualTour && (
+              <VirtualTour
+                url={project.virtual_tour_url}
+                tourScenes={tourScenes}
+                lang={lang as Locale}
+                projectName={projectName}
+              />
+            )}
+          </>
+        }
+      >
+        <div className="flex flex-wrap items-center gap-5 text-white/80 text-sm font-medium">
+          <span className="flex items-center gap-2"><MapPin size={16} className="text-accent" /> {project.district}, {project.city}</span>
+          <span className="flex items-center gap-2"><CheckCircle size={16} className="text-accent" /> {project.status}</span>
         </div>
-
-        {/* Status badge in the corner of the hero image */}
-        <div className="absolute top-24 right-6 md:right-10 z-20">
-           <ProjectStatusBadge
-             status={project.status}
-             daysLeft={project.days_left}
-             soldOut={isSoldOut}
-             lang={lang as Locale}
-             className="text-sm px-5 py-2.5"
-           />
-        </div>
-
-        {/* 360° Virtual tour pin — shown when a tour (image, scenes, or URL) is configured */}
-        {hasVirtualTour && (
-          <VirtualTour
-            url={project.virtual_tour_url}
-            tourScenes={tourScenes}
-            lang={lang as Locale}
-            projectName={projectName}
-          />
-        )}
-
-        <div className="max-w-4xl text-white relative z-10">
-           <div className="flex items-center gap-4 text-accent/80 mb-6 font-medium tracking-wide">
-              <span className="flex items-center gap-2"><MapPin size={18} /> {project.district}, {project.city}</span>
-              <span className="flex items-center gap-2"><CheckCircle size={18} /> {project.status}</span>
-           </div>
-           <h1 className="text-5xl md:text-7xl font-bold mb-4">{projectName}</h1>
-           <p className="text-xl text-white/60 max-w-2xl">{projectDesc || 'Premium klassdagi zamonaviy xonadonlar'}</p>
-        </div>
-      </section>
+      </PageHero>
 
       {/* Photo gallery — showcases the building's real photos */}
       {Array.isArray(project.gallery) && project.gallery.length > 0 && (

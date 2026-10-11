@@ -7,6 +7,7 @@ import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import { Newspaper } from 'lucide-react';
+import PageHero from '@/components/website/PageHero';
 import db from '@/lib/db';
 
 export default async function NewsPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -15,10 +16,10 @@ export default async function NewsPage({ params }: { params: Promise<{ lang: str
   const dict = getDictionary(localeLang);
 
   const t = {
-    uz: { title: "Barcha Yangiliklar", empty: "Hozircha yangiliklar yo'q." },
-    ru: { title: "Все новости", empty: "Пока нет новостей." },
-    en: { title: "All News", empty: "No news yet." }
-  }[localeLang] || { title: "Barcha Yangiliklar", empty: "Hozircha yangiliklar yo'q." };
+    uz: { title: "Barcha Yangiliklar", empty: "Hozircha yangiliklar yo'q.", kicker: 'Yangiliklar', sub: "Qurilish jarayoni, yangi loyihalar va aksiyalar haqida birinchi bo'lib biling." },
+    ru: { title: "Все новости", empty: "Пока нет новостей.", kicker: 'Новости', sub: 'Узнавайте первыми о ходе строительства, новых проектах и акциях.' },
+    en: { title: "All News", empty: "No news yet.", kicker: 'News', sub: 'Be the first to hear about construction progress, new projects and offers.' }
+  }[localeLang] || { title: "Barcha Yangiliklar", empty: "Hozircha yangiliklar yo'q.", kicker: 'Yangiliklar', sub: '' };
 
   const dbNews = await db.prepare('SELECT * FROM news WHERE visible = 1 ORDER BY date DESC').all() as any[];
 
@@ -35,17 +36,7 @@ export default async function NewsPage({ params }: { params: Promise<{ lang: str
 
   return (
     <WebsiteLayout lang={localeLang}>
-      {/* Hero Banner for Inner Page */}
-      <div className="relative pt-40 pb-20 bg-primary overflow-hidden">
-         <div className="absolute inset-0 z-0">
-            <img src="/voha-actual-bg.png" alt="Background" className="w-full h-full object-cover opacity-20" />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/80 to-transparent"></div>
-         </div>
-         <div className="max-container relative z-10 px-6 text-center">
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6 tracking-tight drop-shadow-lg">{t.title}</h1>
-            <div className="w-24 h-1.5 bg-accent mx-auto rounded-full"></div>
-         </div>
-      </div>
+      <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={newsList.map((n) => n.image).filter(Boolean).slice(0, 4).concat(['/uploads/majmua-1.jpg'])} />
 
       <div className="py-20 px-6 max-container min-h-[50vh]">
         {newsList.length === 0 ? (

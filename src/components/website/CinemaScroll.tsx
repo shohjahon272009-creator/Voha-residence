@@ -14,27 +14,30 @@ import { Locale } from '@/lib/dictionaries';
 */
 
 const FRAME_COUNT = 65;
-const frameSrc = (i: number) => `/cinema/frames/${String(i + 1).padStart(3, '0')}.webp`;
+// Kompyuter (keng ekran) — 1600px HD kadrlar; telefon yoki "trafik tejash" rejimi — 900px
+const wantsHD = () => window.innerWidth >= 900 &&
+  !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+const frameSrc = (i: number, hd: boolean) => `/cinema/${hd ? 'frames-hd' : 'frames'}/${String(i + 1).padStart(3, '0')}.webp`;
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 type Chapter = { kicker: string; title: string; text: string };
 const CHAPTERS: Record<Locale, Chapter[]> = {
   uz: [
-    { kicker: 'Joylashuv', title: 'Urganch qalbida', text: "Shahar hayoti, maktab, bog' va savdo markazlari — barchasi bir necha daqiqada." },
+    { kicker: 'Joylashuv', title: "Shovot kanali bo'yida", text: "Yo'l yuzida, Urganch markazida — maktab, bog'cha, masjid va sayr yo'laklari bir qadam narida." },
     { kicker: 'Arxitektura', title: 'Sharqona ruh, zamonaviy shakl', text: "Xorazm arkalari va zamonaviy fasad uyg'unligi — har bir chiziq o'ylangan." },
-    { kicker: 'Yorug\'lik', title: 'Har kuni quyosh bilan', text: "Keng derazalar va ochiq manzara — uyingiz doimo yorug' va havodor." },
+    { kicker: 'Ishonch', title: 'Kadastri tayyor uylar', text: "10 qavat, liftlar, korobka holatida topshirish — hujjatlar tez va shaffof rasmiylashtiriladi." },
     { kicker: 'Sizning uyingiz', title: 'Kelajak shu yerdan boshlanadi', text: 'Qavat, xona va narxni tanlang — qolganini biz hal qilamiz.' },
   ],
   ru: [
-    { kicker: 'Локация', title: 'В сердце Ургенча', text: 'Городская жизнь, школы, парки и торговые центры — всё в нескольких минутах.' },
+    { kicker: 'Локация', title: 'На берегу канала Шават', text: 'У дороги, в центре Ургенча — школа, детсад, мечеть и прогулочные аллеи рядом.' },
     { kicker: 'Архитектура', title: 'Восточный дух, современная форма', text: 'Гармония хорезмских арок и современного фасада — продумана каждая линия.' },
-    { kicker: 'Свет', title: 'Каждый день с солнцем', text: 'Большие окна и открытые виды — ваш дом всегда светлый и просторный.' },
+    { kicker: 'Доверие', title: 'Дома с готовым кадастром', text: '10 этажей, лифты, сдача в коробке — документы оформляются быстро и прозрачно.' },
     { kicker: 'Ваш дом', title: 'Будущее начинается здесь', text: 'Выберите этаж, комнаты и цену — остальное мы возьмём на себя.' },
   ],
   en: [
-    { kicker: 'Location', title: 'In the heart of Urgench', text: 'City life, schools, parks and shopping — all just minutes away.' },
+    { kicker: 'Location', title: 'On the Shovot canal', text: 'On the main road in central Urgench — school, kindergarten, mosque and walkways next door.' },
     { kicker: 'Architecture', title: 'Eastern soul, modern form', text: 'Khorezm arches meet a contemporary facade — every line considered.' },
-    { kicker: 'Light', title: 'Sunlight, every day', text: 'Wide windows and open views keep your home bright and airy.' },
+    { kicker: 'Trust', title: 'Cadastre-ready homes', text: '10 floors, elevators, shell-finish handover — paperwork done fast and transparently.' },
     { kicker: 'Your home', title: 'The future starts here', text: "Choose the floor, rooms and price — we'll take care of the rest." },
   ],
 };
@@ -138,11 +141,12 @@ export default function CinemaScroll({ lang }: { lang: Locale }) {
 
   // Kadrlarni yuklash: birinchisi darhol, qolganlari bo'lim yaqinlashganda
   useEffect(() => {
+    const hd = wantsHD();
     const load = (i: number) => {
       if (imgs.current[i]) return;
       const im = new Image();
       im.decoding = 'async';
-      im.src = frameSrc(i);
+      im.src = frameSrc(i, hd);
       im.onload = () => {
         setLoaded((n) => n + 1);
         if (Math.abs(i - current.current) <= 2) draw(current.current);

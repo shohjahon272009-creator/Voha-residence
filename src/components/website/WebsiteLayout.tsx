@@ -8,6 +8,8 @@ import Navbar from '../common/Navbar';
 import VohaLogo from '@/components/common/VohaLogo';
 import IntroScreen from './IntroScreen';
 import SmoothScroll from './SmoothScroll';
+import CinemaEnhancer from './CinemaEnhancer';
+import { FooterCTA, FooterBigType } from './FooterCinema';
 import { Locale } from '@/lib/dictionaries';
 
 export default function WebsiteLayout({
@@ -73,9 +75,11 @@ export default function WebsiteLayout({
   return (
     <div className="min-h-screen">
       <SmoothScroll />
+      <CinemaEnhancer />
       <IntroScreen />
       <Navbar lang={lang} />
       <main>{children}</main>
+      <FooterCTA lang={lang} />
       <footer id="contact" className="bg-primary text-white py-20 px-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-px rule-accent" />
         <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
@@ -117,7 +121,8 @@ export default function WebsiteLayout({
             </ul>
           </div>
         </div>
-        <div className="max-container mt-20 pt-10 border-t border-white/10 text-center text-white/40 text-sm">
+        <FooterBigType />
+        <div className="max-container mt-10 pt-10 border-t border-white/10 text-center text-white/40 text-sm relative z-10">
            {t.rights}
         </div>
       </footer>

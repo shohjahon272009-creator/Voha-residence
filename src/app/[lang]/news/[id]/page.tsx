@@ -9,6 +9,7 @@ import { Locale, getDictionary } from '@/lib/dictionaries';
 import { Newspaper, ArrowLeft, Calendar } from 'lucide-react';
 import db from '@/lib/db';
 import { redirect } from 'next/navigation';
+import PageHero from '@/components/website/PageHero';
 
 export default async function NewsDetailPage({ params }: { params: Promise<{ lang: string; id: string }> }) {
   const { lang, id } = await params;
@@ -38,24 +39,12 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ lan
 
   return (
     <WebsiteLayout lang={localeLang}>
-      {/* Hero Banner for Inner Page */}
-      <div className="relative pt-40 pb-20 bg-primary overflow-hidden">
-         <div className="absolute inset-0 z-0">
-            <img src="/voha-actual-bg.png" alt="Background" className="w-full h-full object-cover opacity-20" />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/80 to-transparent"></div>
-         </div>
-         <div className="max-container relative z-10 px-6">
-            <a href={`/${localeLang}/news`} className="inline-flex items-center gap-2 text-accent font-bold hover:text-white transition-colors mb-8 bg-white/10 backdrop-blur-sm px-5 py-2 rounded-full border border-white/20 shadow-lg">
-              <ArrowLeft size={18} />
-              {t.back}
-            </a>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight drop-shadow-lg max-w-4xl">{title}</h1>
-            <div className="flex items-center gap-3 text-white/80 font-medium bg-black/20 w-max px-4 py-2 rounded-full backdrop-blur-sm">
-              <Calendar size={18} className="text-accent" />
-              {date}
-            </div>
-         </div>
-      </div>
+      <PageHero lang={localeLang} kicker={date} title={title} images={image ? [image] : ['/uploads/majmua-1.jpg']}>
+        <a href={`/${localeLang}/news`} className="inline-flex items-center gap-2 text-white/80 font-bold hover:text-accent transition-colors bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/20">
+          <ArrowLeft size={18} />
+          {t.back}
+        </a>
+      </PageHero>
 
       <div className="py-20 px-6 max-container min-h-[50vh]">
         <div className="max-w-4xl mx-auto">
