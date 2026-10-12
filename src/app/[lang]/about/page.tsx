@@ -4,6 +4,7 @@ import WebsiteLayout from '@/components/website/WebsiteLayout';
 import AnimatedReveal from '@/components/website/AnimatedReveal';
 import PageHero from '@/components/website/PageHero';
 import { Timeline, Testimonials } from '@/components/website/VohaStory';
+import BuildStory from '@/components/website/BuildStory';
 import VohaLogo from '@/components/common/VohaLogo';
 import { Locale } from '@/lib/dictionaries';
 import db from '@/lib/db';
@@ -222,6 +223,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
         </div>
       </section>
 
+      <BuildStory lang={localeLang} />
       <Timeline lang={localeLang} />
       <Testimonials lang={localeLang} />
 
