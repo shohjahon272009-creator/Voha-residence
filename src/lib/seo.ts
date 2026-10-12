@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 
 const SITE = 'https://www.voharesidence.uz';
 const LANGS = ['uz', 'ru', 'en'] as const;
-const OG_IMAGE = '/cinema/poster.webp'; // 1920px HD render — ijtimoiy tarmoqlarda chiroyli preview
+const OG_IMAGE = '/cinema/poster.jpg'; // 1920px HD render — ijtimoiy tarmoqlarda chiroyli preview
 
 type Texts = Record<string, { title: string; description: string }>;
 
