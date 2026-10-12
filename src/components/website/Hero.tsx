@@ -158,8 +158,8 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
               preload="auto"
               onCanPlay={(e) => { e.currentTarget.muted = true; e.currentTarget.play().catch(() => {}); }}
             >
-              {/* Keng ekranga 1080p HD, telefonga yengil 960px versiya */}
-              <source src="/cinema/hero.mp4" type="video/mp4" media="(min-width: 900px)" />
+              {/* Gorizontal ekranga (kompyuter, planshet, burilgan telefon) — HD gorizontal; faqat vertikal ekranga qirqilgan versiya. Avval kenglik (900px) bo'yicha tanlanardi va kichik gorizontal oynada vertikal video ~2x cho'zilib xira chiqardi */}
+              <source src="/cinema/hero.mp4" type="video/mp4" media="(orientation: landscape)" />
               {/* Oxirgi manba ham yuklanmasa — zaxira slayderga o'tamiz */}
               <source src="/cinema/hero-mobile.mp4" type="video/mp4" onError={() => setVideoFailed(true)} />
             </video>

@@ -14,9 +14,9 @@ import { Locale } from '@/lib/dictionaries';
 */
 
 const FRAME_COUNT = 82;
-// Kompyuter (keng ekran) — 1600px HD kadrlar; telefon yoki "trafik tejash" rejimi — 900px
-const wantsHD = () => window.innerWidth >= 900 &&
-  !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+// Gorizontal ekran — 1920px gorizontal kadrlar; vertikal (telefon) — 640x1072 vertikal qirqim.
+// Kenglik bo'yicha emas, yo'nalish bo'yicha: aks holda kichik gorizontal oynada vertikal kadr cho'zilib xira chiqadi
+const wantsHD = () => window.innerWidth >= window.innerHeight;
 const frameSrc = (i: number, hd: boolean) => `/cinema/${hd ? 'frames-hd' : 'frames'}/${String(i + 1).padStart(3, '0')}.webp`;
 const EASE = [0.22, 1, 0.36, 1] as const;
 
