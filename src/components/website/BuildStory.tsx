@@ -194,9 +194,9 @@ export default function BuildStory({ lang }: { lang: string }) {
             <AnimatePresence mode="wait">
               <motion.div
                 key={stage}
-                initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, y: -16, filter: 'blur(6px)' }}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
                 transition={{ duration: 0.6, ease: EASE }}
                 className="max-w-xl [text-shadow:0_2px_18px_rgba(0,0,0,0.7)]"
               >

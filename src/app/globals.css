@@ -297,7 +297,7 @@ html.lenis, html.lenis body { height: auto; }
 
 /* ---- Kino-paydo bo'lish (CinemaEnhancer.tsx) ---- */
 [data-cine="pending"], [data-cine="in"] {
-  transition-property: opacity, transform, clip-path, filter;
+  transition-property: opacity, transform, clip-path;
   transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   transition-duration: 1.1s;
 }
@@ -308,22 +308,19 @@ h2[data-cine="pending"] {
 }
 img[data-cine="pending"] {
   clip-path: inset(14% 10% 14% 10% round 28px);
-  transform: scale(1.18);
-  filter: saturate(0.4) brightness(0.8);
+  transform: scale(1.08);
 }
 img[data-cine="in"] { transition-duration: 1.6s; }
 .grid > [data-cine="pending"] {
   opacity: 0;
-  transform: translateY(60px) scale(0.97);
-  filter: blur(6px);
+  transform: translateY(50px);
 }
 h2[data-cine="in"], .grid > [data-cine="in"] {
   opacity: 1;
   transform: none;
   clip-path: inset(-20% -5% -20% -5%);
-  filter: none;
 }
-img[data-cine="in"] { clip-path: inset(0 0 0 0 round 0); transform: none; filter: none; }
+img[data-cine="in"] { clip-path: inset(0 0 0 0 round 0); transform: none; }
 /* "done": atribut qoladi, lekin hech qanday qoida yo'q — elementning o'z hover/transition klasslari ishlaydi */
 
 /* Qo'ng'iroq tugmasi: sakrash (bounce) o'rniga yumshoq to'lqin halqasi */

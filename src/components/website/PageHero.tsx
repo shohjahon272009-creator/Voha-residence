@@ -51,8 +51,8 @@ export default function PageHero({ lang, kicker, title, subtitle, images = [], s
       <motion.div className="absolute inset-0" style={{ y: imgY }}>
         <motion.div
           className="absolute inset-0"
-          initial={{ scale: 1.1, filter: 'blur(10px)' }}
-          animate={{ scale: 1, filter: 'blur(0px)' }}
+          initial={{ scale: 1.06, opacity: 0.4 }}
+          animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 2.2, ease: EASE }}
         >
           {list.map((src, i) => (
@@ -118,8 +118,8 @@ export default function PageHero({ lang, kicker, title, subtitle, images = [], s
 
         {subtitle && (
           <motion.p
-            initial={{ opacity: 0, y: 14, filter: 'blur(8px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 1, ease: EASE }}
             className="mt-5 md:mt-7 text-white/75 text-base md:text-lg max-w-2xl leading-relaxed"
           >

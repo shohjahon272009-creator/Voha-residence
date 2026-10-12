@@ -76,7 +76,6 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
   const mediaScale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -160]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const contentBlur = useTransform(scrollYProgress, [0, 0.6], ['blur(0px)', 'blur(8px)']);
   const shade = useTransform(scrollYProgress, [0, 1], [0.12, 0.7]);
 
   const heroText: Record<Locale, { tag: string; title2: string; desc: string; btn2: string; scroll: string }> = {
@@ -184,7 +183,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
       <div className="absolute inset-x-0 bottom-0 h-[40%] z-0 bg-gradient-to-t from-primary via-primary/75 to-transparent pointer-events-none" />
 
       <motion.div
-        style={{ y: contentY, opacity: contentOpacity, filter: contentBlur }}
+        style={{ y: contentY, opacity: contentOpacity }}
         className="max-container relative z-10 px-4 sm:px-6 w-full text-center flex-1 flex flex-col items-center justify-center"
       >
         <motion.div
@@ -222,8 +221,8 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 16, filter: 'blur(10px)' }}
-          animate={started ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+          initial={{ opacity: 0, y: 16 }}
+          animate={started ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.9, duration: 1.1, ease: EASE }}
           className="text-sm md:text-base lg:text-lg text-white mb-7 md:mb-9 max-w-2xl leading-relaxed px-4 [text-shadow:0_1px_3px_rgba(0,0,0,0.7),0_2px_16px_rgba(0,0,0,0.5)]"
         >

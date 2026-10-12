@@ -52,12 +52,11 @@ function ChapterBlock({ ch, i, total, progress, lang }: { ch: Chapter; i: number
   const outR = [b - span * 0.25, b];
   const opacity = useTransform(progress, last ? [inR[0], inR[1]] : [inR[0], inR[1], outR[0], outR[1]], last ? [0, 1] : [0, 1, 1, 0]);
   const y = useTransform(progress, last ? [inR[0], inR[1]] : [inR[0], inR[1], outR[0], outR[1]], last ? [60, 0] : [60, 0, 0, -60]);
-  const blur = useTransform(progress, [inR[0], inR[1]], ['blur(12px)', 'blur(0px)']);
   const align = last ? 'items-center text-center mx-auto' : i % 2 === 0 ? 'items-start text-left' : 'items-end text-right ml-auto';
 
   return (
     <motion.div
-      style={{ opacity, y, filter: blur }}
+      style={{ opacity, y }}
       className={`absolute inset-x-0 ${last ? 'inset-y-0 flex items-center' : 'bottom-[14%] md:bottom-[16%]'} px-6 md:px-16 pointer-events-none`}
     >
       <div className={`flex flex-col max-w-2xl w-full ${align}`}>
@@ -132,14 +131,18 @@ export default function CinemaScroll({ lang }: { lang: Locale }) {
     const resize = () => {
       const c = canvasRef.current;
       if (!c) return;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 3);
       c.width = Math.round(c.clientWidth * dpr);
       c.height = Math.round(c.clientHeight * dpr);
       draw(current.current);
     };
     resize();
+    // Canvas o'lchami har doim haqiqiy ko'rinadigan o'lchamga teng bo'lsin (telefonda manzil satri
+    // yashirilganda, burilganda) — aks holda eski kichik canvas cho'zilib, rasm xira chiqadi
+    const ro = new ResizeObserver(resize);
+    if (canvasRef.current) ro.observe(canvasRef.current);
     window.addEventListener('resize', resize);
-    return () => window.removeEventListener('resize', resize);
+    return () => { ro.disconnect(); window.removeEventListener('resize', resize); };
   }, []);
 
   // Kadrlarni yuklash: birinchisi darhol, qolganlari bo'lim yaqinlashganda
