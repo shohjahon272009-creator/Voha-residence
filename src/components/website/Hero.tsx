@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useSyncExternalStore } from 'react';
 import { motion, useScroll, useTransform, animate, useInView } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Locale, getDictionary } from '@/lib/dictionaries';
@@ -16,6 +16,16 @@ type HeroSlide = { image: string; name: string; id: number; city?: string };
 */
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+// Ekran yo'nalishi (JS'da): <source media> sahifa yuklanganda bir marta tekshiriladi va ba'zi
+// brauzerlarda ishonchsiz — gorizontal ekranda vertikal video tanlanib, 2x cho'zilib xira chiqardi.
+const portraitMq = () => window.matchMedia('(orientation: portrait)');
+const subscribeOrientation = (cb: () => void) => {
+  const mq = portraitMq();
+  mq.addEventListener('change', cb);
+  return () => mq.removeEventListener('change', cb);
+};
+const usePortrait = () => useSyncExternalStore(subscribeOrientation, () => portraitMq().matches, () => null as boolean | null);
 
 // "15 Yil" -> 15 dan sanaydi, "5000+" -> 5000 dan; raqam bo'lmasa matn o'zi qoladi
 function CountUp({ value, start }: { value: string; start: boolean }) {
@@ -36,6 +46,7 @@ function CountUp({ value, start }: { value: string; start: boolean }) {
 export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, settings = {} }: { lang: Locale, companyName?: string, heroTitle?: string, heroDesc?: string, images?: string[], slides?: HeroSlide[], settings?: Record<string, string> }) {
   const dict = getDictionary(lang);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const portrait = usePortrait();
 
   // Kirish pardasi ochilgach animatsiyalar boshlanadi
   const started = useIntroDone();
@@ -149,6 +160,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
           {useVideo ? (
             <video
               ref={videoRef}
+              key={portrait === null ? 'ssr' : portrait ? 'm' : 'd'}
               className="absolute inset-0 w-full h-full object-cover"
               poster="/cinema/poster.jpg"
               autoPlay
@@ -158,10 +170,16 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
               preload="auto"
               onCanPlay={(e) => { e.currentTarget.muted = true; e.currentTarget.play().catch(() => {}); }}
             >
-              {/* Gorizontal ekranga (kompyuter, planshet, burilgan telefon) — HD gorizontal; faqat vertikal ekranga qirqilgan versiya. Avval kenglik (900px) bo'yicha tanlanardi va kichik gorizontal oynada vertikal video ~2x cho'zilib xira chiqardi */}
-              <source src="/cinema/hero.mp4" type="video/mp4" media="(orientation: landscape)" />
-              {/* Oxirgi manba ham yuklanmasa — zaxira slayderga o'tamiz */}
-              <source src="/cinema/hero-mobile.mp4" type="video/mp4" onError={() => setVideoFailed(true)} />
+              {/* Gorizontal ekran — HD gorizontal video, vertikal (telefon) — qirqilgan versiya.
+                  key: yo'nalish o'zgarsa video yangi manba bilan qayta yuklanadi. SSR'da manba yo'q — poster ko'rinadi */}
+              {portrait !== null && (
+                <source
+                  key={portrait ? 'm' : 'd'}
+                  src={portrait ? '/cinema/hero-mobile.mp4' : '/cinema/hero.mp4'}
+                  type="video/mp4"
+                  onError={() => setVideoFailed(true)}
+                />
+              )}
             </video>
           ) : (
             slideList.map((s, i) => (
