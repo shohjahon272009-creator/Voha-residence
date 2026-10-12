@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion, useMotionValue, useTransform, useMotionValueEvent, MotionValue } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { usePortrait } from '@/lib/useOrientation';
 import { Locale } from '@/lib/dictionaries';
 
 /*
@@ -15,8 +16,7 @@ import { Locale } from '@/lib/dictionaries';
 
 const FRAME_COUNT = 60;
 // Gorizontal ekran — 1920px gorizontal kadrlar; vertikal (telefon) — 640x1072 vertikal qirqim.
-// Kenglik bo'yicha emas, yo'nalish bo'yicha: aks holda kichik gorizontal oynada vertikal kadr cho'zilib xira chiqadi
-const wantsHD = () => window.innerWidth >= window.innerHeight;
+// Kenglik bo'yicha emas, yo'nalish bo'yicha (usePortrait); telefon burilganda to'plam ham almashadi
 const frameSrc = (i: number, hd: boolean) => `/cinema/${hd ? 'frames-hd' : 'frames'}/${String(i + 1).padStart(3, '0')}.webp`;
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -86,6 +86,7 @@ export default function CinemaScroll({ lang }: { lang: Locale }) {
   const imgs = useRef<(HTMLImageElement | null)[]>(Array(FRAME_COUNT).fill(null));
   const current = useRef(0);
   const [loaded, setLoaded] = useState(0);
+  const portrait = usePortrait();
 
   // Progress (0..1) to'g'ridan-to'g'ri bo'lim pozitsiyasidan — framer useScroll(target) Lenis bilan
   // ba'zan eskirgan o'lchovni ishlatardi, bu esa har doim aniq.
@@ -146,39 +147,46 @@ export default function CinemaScroll({ lang }: { lang: Locale }) {
     return () => { ro.disconnect(); window.removeEventListener('resize', resize); };
   }, []);
 
-  // Kadrlarni yuklash: birinchisi darhol, qolganlari bo'lim yaqinlashganda
+  // Kadrlarni yuklash — bo'lim yaqinlashganda; yo'nalish o'zgarsa yangi to'plam (eski yuklanishlar e'tiborsiz)
   useEffect(() => {
-    const hd = wantsHD();
+    if (portrait === null) return;
+    const hd = !portrait;
+    const set: (HTMLImageElement | null)[] = Array(FRAME_COUNT).fill(null);
+    imgs.current = set;
+    let done = 0;
+    let cancelled = false;
     const load = (i: number) => {
-      if (imgs.current[i]) return;
+      if (set[i]) return;
       const im = new Image();
       im.decoding = 'async';
       im.src = frameSrc(i, hd);
       im.onload = () => {
-        setLoaded((n) => n + 1);
+        if (cancelled) return;
+        setLoaded(++done);
         if (Math.abs(i - current.current) <= 2) draw(current.current);
       };
-      imgs.current[i] = im;
+      set[i] = im;
     };
     // Hech narsa darhol yuklanmaydi — bo'lim ekranga yaqinlashganda (sahifa ochilishini sekinlashtirmasin)
     const el = sectionRef.current;
     if (!el) return;
+    // Avval har 4-kadr (tez "eskiz"), keyin qolganlari — scroll darhol jonli ko'rinadi.
+    // Sahifa to'liq yuklanib bo'lgach boshlaymiz — hero va matnlar bilan tarmoq uchun raqobatlashmasin
+    const start = () => {
+      if (cancelled) return;
+      load(0);
+      for (let i = 0; i < FRAME_COUNT; i += 4) load(i);
+      for (let i = 0; i < FRAME_COUNT; i++) load(i);
+    };
     const io = new IntersectionObserver((entries) => {
       if (!entries[0].isIntersecting) return;
       io.disconnect();
-      // Avval har 4-kadr (tez "eskiz"), keyin qolganlari — scroll darhol jonli ko'rinadi.
-      // Sahifa to'liq yuklanib bo'lgach boshlaymiz — hero va matnlar bilan tarmoq uchun raqobatlashmasin
-      const start = () => {
-        load(0);
-        for (let i = 0; i < FRAME_COUNT; i += 4) load(i);
-        for (let i = 0; i < FRAME_COUNT; i++) load(i);
-      };
       if (document.readyState === 'complete') start();
       else window.addEventListener('load', start, { once: true });
     }, { rootMargin: '100% 0px' });
     io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    return () => { cancelled = true; io.disconnect(); window.removeEventListener('load', start); };
+  }, [portrait]);
 
   useMotionValueEvent(scrollYProgress, 'change', (p) => {
     const idx = Math.min(FRAME_COUNT - 1, Math.max(0, Math.round(p * (FRAME_COUNT - 1))));

@@ -9,11 +9,14 @@ import React, { useState } from 'react';
 import { Locale } from '@/lib/dictionaries';
 import { MapPin, Phone, Clock, Send, CheckCircle2 } from 'lucide-react';
 import { submitContact } from '@/lib/contactActions';
+import { useHydrated } from '@/lib/useHydrated';
 
 export default function ContactSection({ lang, phone, address, hours }: { lang: Locale; phone?: string; address?: string; hours?: string }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  // JS yuklanmaguncha yuborib bo'lmaydi — aks holda brauzer formani GET qilib, ism/telefonni URL'ga yozardi
+  const hydrated = useHydrated();
 
   const t = {
     uz: { 
@@ -155,7 +158,7 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
            </div>
 
            <div className="lg:col-span-3">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} method="post" className="space-y-6">
                  {success && (
                    <div className="bg-success/20 text-green-300 border border-success/30 p-4 rounded-xl flex items-center gap-3">
                      <CheckCircle2 size={20} />
@@ -181,7 +184,7 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
                     <label className="text-xs font-bold text-white/70 uppercase tracking-wider">{t.msgPlaceholder}</label>
                     <textarea name="message" rows={4} className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors resize-none" placeholder={t.msgValue}></textarea>
                  </div>
-                 <button disabled={loading} type="submit" className="w-full py-4 bg-accent text-primary font-bold rounded-xl hover:bg-white transition-all shadow-[0_0_20px_rgba(250,218,165,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] flex justify-center items-center gap-3 disabled:opacity-50">
+                 <button disabled={loading || !hydrated} type="submit" className="w-full py-4 bg-accent text-primary font-bold rounded-xl hover:bg-white transition-all shadow-[0_0_20px_rgba(250,218,165,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] flex justify-center items-center gap-3 disabled:opacity-50">
                     {loading ? 'Yuborilmoqda...' : t.send} {!loading && <Send size={18} />}
                  </button>
               </form>

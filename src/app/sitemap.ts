@@ -55,7 +55,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       for (const lang of langs) {
         newsRoutes.push({
           url: `${baseUrl}/${lang}/news/${n.id}`,
-          lastModified: n.date ? new Date(n.date) : new Date(),
+          // Noto'g'ri sana 'Invalid Date' bo'lsa sitemap 500 bilan yiqilardi
+          lastModified: n.date && !isNaN(new Date(n.date).getTime()) ? new Date(n.date) : new Date(),
           changeFrequency: 'monthly',
           priority: 0.6,
         });

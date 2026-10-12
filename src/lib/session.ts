@@ -7,13 +7,16 @@ export const SESSION_MAX_AGE = 60 * 60 * 8; // 8 hours, in seconds
 
 const encoder = new TextEncoder();
 
-function getSecret(): string {
+// Production'da AUTH_SECRET bo'lmasa — null: sessiya yaratilmaydi va hech qaysi token qabul qilinmaydi.
+// (Avval ochiq repodagi zaxira kalit ishlatilardi — istalgan odam admin cookie'sini soxtalashtira olardi.)
+function getSecret(): string | null {
   const secret = process.env.AUTH_SECRET;
-  if (!secret) {
-    // Fallback keeps dev working, but production MUST set AUTH_SECRET.
-    return 'dev-insecure-secret-please-set-AUTH_SECRET';
+  if (secret) return secret;
+  if (process.env.NODE_ENV === 'production') {
+    console.error('AUTH_SECRET o\'rnatilmagan — admin kirishi o\'chirildi. Vercel env\'ga AUTH_SECRET qo\'shing.');
+    return null;
   }
-  return secret;
+  return 'dev-insecure-secret-please-set-AUTH_SECRET'; // faqat lokal ishlab chiqish
 }
 
 async function importKey(secret: string): Promise<CryptoKey> {
@@ -43,7 +46,9 @@ function timingSafeEqual(a: string, b: string): boolean {
 export async function createSessionToken(userId: number): Promise<string> {
   const expires = Date.now() + SESSION_MAX_AGE * 1000;
   const payload = `${userId}.${expires}`;
-  const key = await importKey(getSecret());
+  const secret = getSecret();
+  if (!secret) throw new Error("AUTH_SECRET o'rnatilmagan");
+  const key = await importKey(secret);
   const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(payload));
   return `${payload}.${toBase64Url(signature)}`;
 }
@@ -56,7 +61,9 @@ export async function verifySessionToken(token: string | undefined): Promise<num
 
   const [userId, expires, signature] = parts;
   const payload = `${userId}.${expires}`;
-  const key = await importKey(getSecret());
+  const secret = getSecret();
+  if (!secret) return null;
+  const key = await importKey(secret);
   const expected = toBase64Url(await crypto.subtle.sign('HMAC', key, encoder.encode(payload)));
 
   if (!timingSafeEqual(signature, expected)) return null;

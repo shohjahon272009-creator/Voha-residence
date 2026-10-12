@@ -12,7 +12,8 @@ import db from '@/lib/db';
 
 const LIMIT_PER_IP = 5;      // bir IP'dan soatiga
 const LIMIT_PER_PHONE = 3;   // bir raqamdan soatiga
-const LIMIT_GLOBAL = 60;     // jami soatiga (hujum bo'lsa ham bazani to'ldirmaslik uchun)
+// Faqat bazani to'ldirishdan himoya — yuqori: past bo'lsa hujumchi bir soatga HAMMA mijozlarni to'sib qo'yardi
+const LIMIT_GLOBAL = 500;    // jami soatiga
 
 const clip = (v: FormDataEntryValue | null, max: number) => String(v ?? '').trim().slice(0, max);
 

@@ -14,6 +14,9 @@ interface UserRow {
 
 export type LoginState = { error: string } | null;
 
+const LOGIN_MAX_FAILS = 5;
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+
 export async function login(_prevState: LoginState, formData: FormData): Promise<LoginState> {
   const email = String(formData.get('email') || '').trim().toLowerCase();
   const password = String(formData.get('password') || '');
@@ -22,13 +25,25 @@ export async function login(_prevState: LoginState, formData: FormData): Promise
     return { error: 'Email va parolni kiriting' };
   }
 
+  // Parolni taxmin qilishdan himoya: email bo'yicha 15 daqiqada 5 ta xato urinish (bazada — serverless xotirasi saqlanmaydi)
+  const failKey = `_login_fail:${email}`;
+  const failRow = await db.prepare('SELECT value FROM settings WHERE key = ?').get(failKey) as { value: string } | undefined;
+  const [failCount, failSince] = (failRow?.value || '0|0').split('|').map(Number);
+  const windowOpen = Date.now() - failSince < LOGIN_WINDOW_MS;
+  if (windowOpen && failCount >= LOGIN_MAX_FAILS) {
+    return { error: "Juda ko'p noto'g'ri urinish. 15 daqiqadan keyin qayta urinib ko'ring." };
+  }
+
   const user = await db.prepare('SELECT id, email, password FROM users WHERE email = ?').get(email) as
     | UserRow
     | undefined;
 
   if (!user || !verifyPassword(password, user.password)) {
+    const next = windowOpen ? `${failCount + 1}|${failSince}` : `1|${Date.now()}`;
+    await db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run(failKey, next, next);
     return { error: "Email yoki parol noto'g'ri!" };
   }
+  if (failRow) await db.prepare('DELETE FROM settings WHERE key = ?').run(failKey);
 
   // Transparently upgrade a legacy plaintext password to a salted hash.
   if (!isHashed(user.password)) {

@@ -3,6 +3,7 @@
  
  
  
+import { cache } from 'react';
 import db from './db';
 import { Project, Apartment } from './types';
 
@@ -18,7 +19,8 @@ const parseList = (v: unknown): any[] => {
   }
 };
 
-export const getProjects = async (): Promise<Project[]> => {
+// cache: bitta so'rov ichida (bosh sahifa + ProjectsList) baza faqat bir marta so'raladi
+export const getProjects = cache(async (): Promise<Project[]> => {
   // Active/selling projects first, completed ("Topshirilgan") last; newest first within each group.
   // This way a newly added "Jarayonda" project shows at the top, and the earliest projects sit at the end.
   const projects = await db.prepare(`
@@ -40,7 +42,7 @@ export const getProjects = async (): Promise<Project[]> => {
     categories: parseList(p.categories),
     is_sold_out: Boolean(p.is_sold_out)
   }));
-};
+});
 
 export const getProjectBySlug = async (id: number): Promise<Project | null> => {
 

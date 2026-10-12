@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useSyncExternalStore } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, animate, useInView } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Locale, getDictionary } from '@/lib/dictionaries';
+import { usePortrait } from '@/lib/useOrientation';
 import { useIntroDone, finishIntro } from './IntroScreen';
 
 type HeroSlide = { image: string; name: string; id: number; city?: string };
@@ -17,15 +18,7 @@ type HeroSlide = { image: string; name: string; id: number; city?: string };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-// Ekran yo'nalishi (JS'da): <source media> sahifa yuklanganda bir marta tekshiriladi va ba'zi
-// brauzerlarda ishonchsiz — gorizontal ekranda vertikal video tanlanib, 2x cho'zilib xira chiqardi.
-const portraitMq = () => window.matchMedia('(orientation: portrait)');
-const subscribeOrientation = (cb: () => void) => {
-  const mq = portraitMq();
-  mq.addEventListener('change', cb);
-  return () => mq.removeEventListener('change', cb);
-};
-const usePortrait = () => useSyncExternalStore(subscribeOrientation, () => portraitMq().matches, () => null as boolean | null);
+// Ekran yo'nalishi JS'da (usePortrait): <source media> sahifa yuklanganda bir marta tekshiriladi va ishonchsiz edi
 
 // "15 Yil" -> 15 dan sanaydi, "5000+" -> 5000 dan; raqam bo'lmasa matn o'zi qoladi
 function CountUp({ value, start }: { value: string; start: boolean }) {

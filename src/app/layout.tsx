@@ -69,8 +69,10 @@ export default async function RootLayout({
   try {
     const settingsRows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('primary_color', 'accent_color', 'contact_phone', 'contact_address', 'office_lat', 'office_lng')").all() as { key: string, value: string }[];
     s = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
-    if (s.primary_color) primaryColor = s.primary_color;
-    if (s.accent_color) accentColor = s.accent_color;
+    // Faqat haqiqiy HEX rang — <style> ichiga xom matn tushib, skript kiritilishining oldini oladi
+    const HEX = /^#[0-9a-fA-F]{3,8}$/;
+    if (s.primary_color && HEX.test(s.primary_color)) primaryColor = s.primary_color;
+    if (s.accent_color && HEX.test(s.accent_color)) accentColor = s.accent_color;
   } catch {
     // sozlamalar o'qilmasa, standart ranglar ishlatiladi
   }

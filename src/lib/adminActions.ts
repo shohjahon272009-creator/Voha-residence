@@ -562,7 +562,9 @@ export async function updateBookingStatus(formData: FormData) {
   const id = parseInt(formData.get('id') as string);
   const status = formData.get('status') as string;
   const actionType = formData.get('action_type') as string;
-  if (!id || !status) return;
+  // Faqat bazadagi CHECK ruxsat bergan holatlar (aks holda DB xatosi admin'ga 500 bo'lib chiqardi)
+  const ALLOWED = ['Yangi', "Ko'rib chiqilmoqda", 'Tasdiqlangan', 'Bekor qilingan'];
+  if (!id || !ALLOWED.includes(status)) return;
 
    
   const booking = await db.prepare("SELECT * FROM bookings WHERE id = ?").get(id) as any;
