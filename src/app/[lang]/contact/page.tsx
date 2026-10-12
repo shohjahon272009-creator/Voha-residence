@@ -28,7 +28,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
 
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
-      <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/cinema/stills/life-2.jpg']} />
+      <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/cinema/stills/life-2.webp']} />
       <div className="min-h-screen bg-[#FDFBF7]">
         <ContactSection lang={localeLang}  />
       </div>

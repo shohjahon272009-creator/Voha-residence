@@ -28,7 +28,7 @@ export function FooterCTA({ lang }: { lang: string }) {
     <section ref={ref} className="relative overflow-hidden bg-[#011f1f] py-28 md:py-40 px-6">
       <motion.div
         className="absolute inset-[-15%_0] bg-cover bg-center opacity-35"
-        style={{ backgroundImage: 'url("/cinema/poster.jpg")', y: bgY }}
+        style={{ backgroundImage: 'url("/cinema/poster.webp")', y: bgY }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#011f1f] via-transparent to-primary pointer-events-none" />
       <div className="relative max-container text-center">

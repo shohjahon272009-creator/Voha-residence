@@ -160,16 +160,22 @@ export default function CinemaScroll({ lang }: { lang: Locale }) {
       };
       imgs.current[i] = im;
     };
-    load(0);
+    // Hech narsa darhol yuklanmaydi — bo'lim ekranga yaqinlashganda (sahifa ochilishini sekinlashtirmasin)
     const el = sectionRef.current;
     if (!el) return;
     const io = new IntersectionObserver((entries) => {
       if (!entries[0].isIntersecting) return;
-      // Avval har 4-kadr (tez "eskiz"), keyin qolganlari — scroll darhol jonli ko'rinadi
-      for (let i = 0; i < FRAME_COUNT; i += 4) load(i);
-      for (let i = 0; i < FRAME_COUNT; i++) load(i);
       io.disconnect();
-    }, { rootMargin: '150% 0px' });
+      // Avval har 4-kadr (tez "eskiz"), keyin qolganlari — scroll darhol jonli ko'rinadi.
+      // Sahifa to'liq yuklanib bo'lgach boshlaymiz — hero va matnlar bilan tarmoq uchun raqobatlashmasin
+      const start = () => {
+        load(0);
+        for (let i = 0; i < FRAME_COUNT; i += 4) load(i);
+        for (let i = 0; i < FRAME_COUNT; i++) load(i);
+      };
+      if (document.readyState === 'complete') start();
+      else window.addEventListener('load', start, { once: true });
+    }, { rootMargin: '100% 0px' });
     io.observe(el);
     return () => io.disconnect();
   }, []);

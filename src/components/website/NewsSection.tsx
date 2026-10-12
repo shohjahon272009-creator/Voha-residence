@@ -27,7 +27,7 @@ export default async function NewsSection({ lang }: { lang: Locale }) {
     ),
     title: item[`title_${lang}`] || item.title_uz,
     desc: item[`content_${lang}`] || item.content_uz,
-    image: item.image || '/voha-actual-bg.png'
+    image: item.image || '/cinema/stills/life-1.webp'
   }));
 
   if (news.length === 0) return null;

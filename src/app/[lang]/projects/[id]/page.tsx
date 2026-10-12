@@ -71,7 +71,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         kicker={[project.district, project.city].filter(Boolean).join(', ') || project.status}
         title={projectName}
         subtitle={(projectDesc || 'Premium klassdagi zamonaviy xonadonlar').slice(0, 220)}
-        images={[project.main_image || '/cinema/poster.jpg', ...(Array.isArray(project.gallery) ? project.gallery.slice(0, 3) : [])]}
+        images={[project.main_image || '/cinema/poster.webp', ...(Array.isArray(project.gallery) ? project.gallery.slice(0, 3) : [])]}
         overlay={
           <>
             <div className="absolute top-24 right-6 md:right-10 z-20">
@@ -119,7 +119,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   {isSoldOut ? (
                      <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100 relative group aspect-video">
                         {/* eslint-disable-next-line @next/next/no-img-element -- rasm bazadan (data URL / Blob), next/image optimallashtira olmaydi */}
-                        <img src={project.main_image || '/cinema/poster.jpg'} alt={projectName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <img src={project.main_image || '/cinema/poster.webp'} alt={projectName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                            <div className="px-8 py-4 bg-white/10 border border-white/20 rounded-2xl">
                               <span className="text-3xl md:text-5xl font-black text-white uppercase tracking-widest drop-shadow-lg">
@@ -131,7 +131,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   ) : publicApartments.length === 0 ? (
                      <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100 relative group aspect-video">
                         {/* eslint-disable-next-line @next/next/no-img-element -- rasm bazadan (data URL / Blob), next/image optimallashtira olmaydi */}
-                        <img src={project.main_image || '/cinema/poster.jpg'} alt={projectName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <img src={project.main_image || '/cinema/poster.webp'} alt={projectName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                            <div className="px-8 py-5 bg-white/10 border border-white/20 rounded-2xl text-center">
                               <span className="block text-2xl md:text-4xl font-black text-white tracking-wide drop-shadow-lg">

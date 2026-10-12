@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function SliderBanner({ images, title, subtitle, heightClass = 'h-[55vh]' }: Props) {
-  const slides = images.length > 0 ? images : ['/voha-actual-bg.png'];
+  const slides = images.length > 0 ? images : ['/cinema/stills/life-1.webp'];
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {

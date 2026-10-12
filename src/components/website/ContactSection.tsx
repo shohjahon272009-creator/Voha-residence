@@ -110,7 +110,7 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
     <section id="contact" className="py-32 px-6 bg-primary relative overflow-hidden">
       {/* Abstract Map Background */}
       <div className="absolute inset-0 z-0 opacity-10">
-         <img src="/voha-actual-bg.png" className="w-full h-full object-cover blur-sm" alt="map bg" />
+         <img loading="lazy" decoding="async" src="/cinema/stills/life-1.webp" className="w-full h-full object-cover" alt="map bg" />
       </div>
       <div className="absolute inset-0 bg-grid opacity-40 z-0 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
 

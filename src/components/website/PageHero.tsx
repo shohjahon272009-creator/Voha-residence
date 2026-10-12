@@ -28,7 +28,7 @@ type Props = {
 
 export default function PageHero({ lang, kicker, title, subtitle, images = [], size = 'tall', children, overlay }: Props) {
   const ref = useRef<HTMLElement>(null);
-  const list = images.filter(Boolean).length ? images.filter(Boolean) : ['/cinema/poster.jpg'];
+  const list = images.filter(Boolean).length ? images.filter(Boolean) : ['/cinema/poster.webp'];
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {

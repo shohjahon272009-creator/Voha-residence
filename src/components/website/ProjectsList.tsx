@@ -101,7 +101,7 @@ export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPA
           </div>
           
           <div className="md:w-1/2 relative min-h-[300px] sm:min-h-[400px] md:min-h-[500px]">
-             <img src="/cinema/stills/plan-1.jpg" className="absolute inset-0 w-full h-full object-cover" alt="Voha Promo" />
+             <img loading="lazy" decoding="async" src="/cinema/stills/plan-1.webp" className="absolute inset-0 w-full h-full object-cover" alt="Voha Promo" />
              <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-transparent mix-blend-multiply z-0"></div>
              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-0"></div>
              

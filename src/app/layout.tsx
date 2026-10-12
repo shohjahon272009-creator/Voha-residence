@@ -50,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
       shortcut: '/icon.svg',
       apple: '/icon.jpg',
     },
-    openGraph: { title, description, type: 'website', url: 'https://www.voharesidence.uz', images: [{ url: '/cinema/poster.jpg', width: 1920, height: 1080 }], siteName: 'Voha Residence' },
+    openGraph: { title, description, type: 'website', url: 'https://www.voharesidence.uz', images: [{ url: '/cinema/poster.webp', width: 1920, height: 1080 }], siteName: 'Voha Residence' },
     twitter: { card: 'summary_large_image', title, description },
   };
 }

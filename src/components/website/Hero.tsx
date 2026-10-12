@@ -48,6 +48,19 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
   const videoRef = useRef<HTMLVideoElement>(null);
   const portrait = usePortrait();
 
+  // Video sahifa TO'LIQ yuklangandan keyin boshlanadi — avval yengil poster (80–160 KB).
+  // Juda sekin internet yoki "trafik tejash" rejimida video umuman yuklanmaydi.
+  const [loadVideo, setLoadVideo] = useState(false);
+  useEffect(() => {
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    if (conn?.saveData || /(^|-)2g$/.test(conn?.effectiveType || '')) return;
+    let t = 0;
+    const go = () => { t = window.setTimeout(() => setLoadVideo(true), 300); };
+    if (document.readyState === 'complete') go();
+    else window.addEventListener('load', go, { once: true });
+    return () => { clearTimeout(t); window.removeEventListener('load', go); };
+  }, []);
+
   // Kirish pardasi ochilgach animatsiyalar boshlanadi
   const started = useIntroDone();
   useEffect(() => {
@@ -73,7 +86,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
       ? slides
       : images.length > 0
         ? images.map((im) => ({ image: im, name: '', id: 0, city: '' }))
-        : [{ image: '/cinema/poster.jpg', name: '', id: 0, city: '' }];
+        : [{ image: '/cinema/poster.webp', name: '', id: 0, city: '' }];
   const [current, setCurrent] = useState(0);
   useEffect(() => {
     if (useVideo || slideList.length <= 1) return;
@@ -160,9 +173,9 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
           {useVideo ? (
             <video
               ref={videoRef}
-              key={portrait === null ? 'ssr' : portrait ? 'm' : 'd'}
+              key={portrait === null ? 'ssr' : `${portrait ? 'm' : 'd'}-${loadVideo ? 'v' : 'p'}`}
               className="absolute inset-0 w-full h-full object-cover"
-              poster="/cinema/poster.jpg"
+              poster={portrait ? '/cinema/poster-mobile.webp' : '/cinema/poster.webp'}
               autoPlay
               muted
               loop
@@ -172,7 +185,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
             >
               {/* Gorizontal ekran — HD gorizontal video, vertikal (telefon) — qirqilgan versiya.
                   key: yo'nalish o'zgarsa video yangi manba bilan qayta yuklanadi. SSR'da manba yo'q — poster ko'rinadi */}
-              {portrait !== null && (
+              {portrait !== null && loadVideo && (
                 <source
                   key={portrait ? 'm' : 'd'}
                   src={portrait ? '/cinema/hero-mobile.mp4' : '/cinema/hero.mp4'}

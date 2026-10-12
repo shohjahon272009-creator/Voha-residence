@@ -127,7 +127,7 @@ export async function addProject(formData: FormData) {
   const delivery_year = parseInt(formData.get('delivery_year') as string) || null;
 
   const imageFile = formData.get('main_image') as File | null;
-  let imageUrl = '/voha-actual-bg.png';
+  let imageUrl = '/cinema/stills/life-1.webp';
 
   if (imageFile && imageFile.name && imageFile.size > 0) {
     try {

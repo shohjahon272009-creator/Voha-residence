@@ -36,7 +36,7 @@ export default function ProjectCard({ project, lang, soldOut = false }: ProjectC
         {/* Inset "floating" photo with rounded corners */}
         <div className="relative aspect-[16/11] rounded-[22px] overflow-hidden">
           <img
-            src={project.main_image || '/cinema/poster.jpg'}
+            src={project.main_image || '/cinema/poster.webp'}
             alt={projectName}
             loading="lazy"
             decoding="async"
