@@ -226,7 +226,7 @@ export default function SalesOfficesSection({ lang, phone, address, hours, offic
 
               {/* Floating glass pin card over the map */}
               <div className={`absolute left-4 bottom-4 z-30 transition-all duration-700 ${mapLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'}`}>
-                <div className="flex items-center gap-3 pl-3 pr-4 py-2.5 rounded-2xl bg-white/85 backdrop-blur-md shadow-xl border border-white/60">
+                <div className="flex items-center gap-3 pl-3 pr-4 py-2.5 rounded-2xl bg-white/85 shadow-xl border border-white/60">
                   <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
                     <MapPin className="w-5 h-5 text-accent" />
                   </div>

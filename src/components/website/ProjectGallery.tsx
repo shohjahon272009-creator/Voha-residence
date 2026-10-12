@@ -60,7 +60,7 @@ export default function ProjectGallery({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={src} alt={`${projectName} ${i + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <span className="absolute bottom-4 left-4 flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur text-primary text-xs font-bold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
+            <span className="absolute bottom-4 left-4 flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 text-primary text-xs font-bold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
               <Expand size={14} /> {t.view}
             </span>
           </button>
@@ -69,7 +69,7 @@ export default function ProjectGallery({
 
       {/* Lightbox */}
       {open && index !== null && (
-        <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-sm flex flex-col animate-fade-in">
+        <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col animate-fade-in">
           <div className="flex items-center justify-between px-5 py-4 text-white shrink-0">
             <div className="font-bold truncate">{projectName}</div>
             <div className="flex items-center gap-3">

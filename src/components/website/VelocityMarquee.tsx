@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { motion, useScroll, useVelocity, useSpring, useTransform, useMotionValue, useAnimationFrame } from 'framer-motion';
+import { motion, useScroll, useVelocity, useSpring, useTransform, useMotionValue, useAnimationFrame, useInView } from 'framer-motion';
 
 /*
   Bo'limlar orasidagi katta "kino" yozuv-tasma: doimiy suzadi,
@@ -15,6 +15,9 @@ const wrap = (min: number, max: number, v: number) => {
 
 function Row({ words, baseVelocity, outline }: { words: string[]; baseVelocity: number; outline?: boolean }) {
   const baseX = useMotionValue(0);
+  // Ekrandan tashqarida — hisoblamaymiz (doimiy rAF sahifani sekinlashtirardi)
+  const rowRef = useRef<HTMLDivElement>(null);
+  const visible = useInView(rowRef, { margin: '200px 0px' });
   const { scrollY } = useScroll();
   const velocity = useVelocity(scrollY);
   const smooth = useSpring(velocity, { damping: 50, stiffness: 400 });
@@ -23,6 +26,7 @@ function Row({ words, baseVelocity, outline }: { words: string[]; baseVelocity: 
   const dir = useRef(1);
 
   useAnimationFrame((_, delta) => {
+    if (!visible) return;
     let move = dir.current * baseVelocity * (delta / 1000);
     const f = factor.get();
     if (f < 0) dir.current = -1;
@@ -43,7 +47,7 @@ function Row({ words, baseVelocity, outline }: { words: string[]; baseVelocity: 
   );
 
   return (
-    <div className="overflow-hidden whitespace-nowrap flex">
+    <div ref={rowRef} className="overflow-hidden whitespace-nowrap flex">
       <motion.div className="flex font-bebas text-[18vw] md:text-[9vw] leading-[0.95] tracking-wide" style={{ x }}>
         {line}{line}
       </motion.div>

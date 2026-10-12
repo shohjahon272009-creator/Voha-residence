@@ -294,7 +294,7 @@ export function Testimonials({ lang }: { lang: string }) {
               whileInView={{ opacity: 1, y: 0, rotate: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 1.1, delay: (i % 2) * 0.12, ease: EASE }}
-              className="group relative rounded-[28px] p-7 md:p-10 bg-white/[0.04] border border-white/10 backdrop-blur-sm hover:bg-white/[0.07] hover:border-accent/40 transition-colors duration-500"
+              className="group relative rounded-[28px] p-7 md:p-10 bg-white/[0.04] border border-white/10 hover:bg-white/[0.07] hover:border-accent/40 transition-colors duration-500"
             >
               <Quote className="text-accent/70 mb-5" size={34} />
               <blockquote className="text-white text-lg md:text-xl leading-relaxed font-medium">“{q.text}”</blockquote>

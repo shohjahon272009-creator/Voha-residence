@@ -16,7 +16,7 @@ declare global {
 }
 
 const WELCOME: Record<string, string> = { uz: 'Xush kelibsiz', ru: 'Добро пожаловать', en: 'Welcome' };
-const HOLD = 1700;   // logo + hisoblagich
+const HOLD = 1100;   // logo + hisoblagich
 const OPEN = 900;    // parda ochilishi
 
 export function finishIntro() {

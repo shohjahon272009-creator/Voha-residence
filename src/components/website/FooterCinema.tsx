@@ -70,7 +70,7 @@ export function FooterCTA({ lang }: { lang: string }) {
             <span className="relative">{t.cta}</span>
             <ArrowUpRight size={20} className="relative transition-transform duration-500 group-hover:rotate-45" />
           </Link>
-          <a href="tel:+998910116666" className="inline-flex items-center gap-3 px-9 py-4 md:py-5 rounded-full border border-white/25 text-white font-bold text-base md:text-lg backdrop-blur-md hover:bg-white hover:text-primary transition-colors duration-500">
+          <a href="tel:+998910116666" className="inline-flex items-center gap-3 px-9 py-4 md:py-5 rounded-full border border-white/25 text-white font-bold text-base md:text-lg hover:bg-white hover:text-primary transition-colors duration-500">
             {t.call}
           </a>
         </motion.div>

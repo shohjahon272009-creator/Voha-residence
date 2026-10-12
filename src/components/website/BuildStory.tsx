@@ -85,6 +85,24 @@ function Layer({ src, style, className = '' }: { src: string; style?: React.Comp
   );
 }
 
+/*
+  Qavatma-qavat ochilish — FAQAT transform bilan (GPU): tashqi qatlam pastga, ichki rasm teng
+  yuqoriga suriladi — rasm joyida turadi, ko'rinadigan oyna esa pastdan ko'tariladi.
+  Avval clip-path har scroll qadamida katta rasmlarni qayta chizib, sahifani qotirardi.
+  cut — kesish chizig'i (sahna balandligining %), undan yuqorisi yashirin.
+*/
+function Reveal({ src, cut, opacity }: { src: string; cut: MotionValue<number>; opacity?: MotionValue<number> }) {
+  const outerY = useTransform(cut, (c) => `${c}%`);
+  const innerY = useTransform(cut, (c) => `${-c}%`);
+  return (
+    <motion.div className="absolute inset-0 overflow-hidden will-change-transform" style={{ y: outerY, opacity }}>
+      <motion.div className="absolute inset-0 will-change-transform" style={{ y: innerY }}>
+        <Layer src={src} style={{ clipPath: `inset(0% ${RIGHT}% 0% ${LEFT}%)` }} />
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function BuildStory({ lang }: { lang: string }) {
   const t = T[lang] || T.uz;
   const sectionRef = useRef<HTMLElement>(null);
@@ -111,16 +129,16 @@ export default function BuildStory({ lang }: { lang: string }) {
   const kConc = useTransform(p, (v) => stepped((v - 0.26) / 0.36));
   const kFac = useTransform(p, (v) => stepped((v - 0.5) / 0.36));
 
-  const blueClip = useTransform(kBlue, (k) => `inset(${cutAt(k)}% ${RIGHT}% 0% ${LEFT}%)`);
+  const blueCut = useTransform(kBlue, cutAt);
   const blueOpacity = useTransform(p, [0.08, 0.12, 0.6, 0.86, 0.94], [0, 1, 0.85, 0.45, 0]);
-  const concClip = useTransform(kConc, (k) => `inset(${cutAt(k)}% ${RIGHT}% 0% ${LEFT}%)`);
-  const facClip = useTransform(kFac, (k) => `inset(${cutAt(k)}% ${RIGHT}% 0% ${LEFT}%)`);
+  const concCut = useTransform(kConc, cutAt);
+  const facCut = useTransform(kFac, cutAt);
   const fullOpacity = useTransform(p, [0.86, 0.96], [0, 1]);
   const dim = useTransform(p, [0, 0.08, 0.26, 0.55, 0.9], [0.2, 0.62, 0.5, 0.25, 0]);
   // Beton quyilayotgan chiziq (karkas cho'qqisi) + kran
-  const pourTop = useTransform(kConc, (k) => `${cutAt(k)}%`);
+  const pourY = useTransform(kConc, (k) => `${cutAt(k)}%`);
   const pourOpacity = useTransform(p, [0.26, 0.3, 0.6, 0.64], [0, 1, 1, 0]);
-  const craneTop = useTransform(kConc, (k) => `${cutAt(k) - 9}%`);
+  const craneY = useTransform(kConc, (k) => `${cutAt(k) - 9}%`);
   const craneOpacity = useTransform(p, [0.22, 0.28, 0.84, 0.9], [0, 1, 1, 0]);
   const pct = useTransform(p, (v) => `${Math.round(clamp01((v - 0.04) / 0.9) * 100)}%`);
 
@@ -140,24 +158,28 @@ export default function BuildStory({ lang }: { lang: string }) {
           style={{ width: 'max(100vw, calc(100dvh * 16 / 9))', aspectRatio: '16 / 9' }}
         >
           <Layer src="/cinema/build/empty.webp" />
-          <Layer src="/cinema/build/concrete.webp" style={{ clipPath: concClip }} />
-          <Layer src="/cinema/build/final.webp" style={{ clipPath: facClip }} />
-          <Layer src="/cinema/build/blueprint.webp" className="mix-blend-screen" style={{ clipPath: blueClip, opacity: blueOpacity }} />
+          <Reveal src="/cinema/build/concrete.webp" cut={concCut} />
+          <Reveal src="/cinema/build/final.webp" cut={facCut} />
+          <Reveal src="/cinema/build/blueprint.webp" cut={blueCut} opacity={blueOpacity} />
           <Layer src="/cinema/build/final.webp" style={{ opacity: fullOpacity }} />
 
           {/* Beton quyilayotgan chiziq */}
-          <motion.div
-            className="absolute h-[3px] -translate-y-1/2 bg-gradient-to-r from-transparent via-[#F2B98A] to-transparent shadow-[0_0_24px_6px_rgba(242,185,138,0.55)]"
-            style={{ top: pourTop, left: `${LEFT}%`, right: `${RIGHT}%`, opacity: pourOpacity }}
-          />
+          <motion.div className="absolute inset-0 pointer-events-none will-change-transform" style={{ y: pourY, opacity: pourOpacity }}>
+            <div
+              className="absolute top-0 h-[3px] -translate-y-1/2 bg-gradient-to-r from-transparent via-[#F2B98A] to-transparent shadow-[0_0_24px_6px_rgba(242,185,138,0.55)]"
+              style={{ left: `${LEFT}%`, right: `${RIGHT}%` }}
+            />
+          </motion.div>
 
           {/* Minorali kran (bino oldida, sahnaning 61% nuqtasida — telefonda ham ko'rinadi): ustuni yerdan karkas cho'qqisidan yuqorigacha, strelasi chapga */}
-          <motion.div className="absolute pointer-events-none" style={{ top: craneTop, bottom: '0.4%', left: '61%', width: '0.9%', opacity: craneOpacity }}>
+          <motion.div className="absolute inset-0 pointer-events-none will-change-transform" style={{ y: craneY, opacity: craneOpacity }}>
+          <div className="absolute top-0 h-full" style={{ left: '61%', width: '0.9%' }}>
             <div className="absolute inset-0 [background:repeating-linear-gradient(45deg,#E8A33D_0_2px,transparent_2px_9px),repeating-linear-gradient(-45deg,#E8A33D_0_2px,transparent_2px_9px)] border-x-2 border-[#E8A33D]" />
             <div className="absolute top-0 right-0 h-[0.9vw] min-h-[6px] bg-[#E8A33D] origin-right" style={{ width: '2600%' }} />
             <div className="absolute top-0 left-full h-[0.9vw] min-h-[6px] w-[500%] bg-[#E8A33D]" />
             <div className="absolute top-[0.9vw] right-[1700%] w-px h-[7vh] bg-white/70" />
             <div className="absolute right-[1700%] translate-x-1/2 top-[calc(0.9vw+7vh)] w-[1.1vw] min-w-[8px] h-[0.7vw] min-h-[5px] bg-[#E8A33D] rounded-sm" />
+          </div>
           </motion.div>
         </div>
 

@@ -258,7 +258,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
             <span className="relative">{dict.hero.details}</span>
             <ArrowRight size={17} className="relative transition-transform group-hover:translate-x-1" />
           </a>
-          <a href={`/${lang}#projects`} className="group px-7 md:px-10 py-3.5 md:py-4 backdrop-blur-md bg-white/5 text-white font-bold rounded-full border border-white/30 hover:bg-white hover:text-primary transition-all duration-500 inline-flex items-center gap-2 text-sm md:text-base">
+          <a href={`/${lang}#projects`} className="group px-7 md:px-10 py-3.5 md:py-4 bg-white/5 text-white font-bold rounded-full border border-white/30 hover:bg-white hover:text-primary transition-all duration-500 inline-flex items-center gap-2 text-sm md:text-base">
             {t.btn2}
             <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
           </a>

@@ -123,7 +123,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect,
             <div className="flex flex-col items-center text-gray-300"><Layers size={40} strokeWidth={1.2} /><span className="text-[11px] font-bold uppercase tracking-widest mt-2">№{a.number}</span></div>
           )}
           {p?.delivery_year && (
-            <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 text-primary shadow-md backdrop-blur-sm">{p.delivery_year}</span>
+            <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 text-primary shadow-md">{p.delivery_year}</span>
           )}
         </div>
         <div className="p-5">

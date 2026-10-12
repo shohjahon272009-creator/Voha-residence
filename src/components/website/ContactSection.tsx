@@ -120,7 +120,7 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
           <h2 className="text-4xl md:text-5xl font-bold text-white">{t.title}</h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 bg-white/5 backdrop-blur-2xl rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 bg-white/5 rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl">
            
            <div className="lg:col-span-2 space-y-10">
              <div className="flex gap-6 items-start">

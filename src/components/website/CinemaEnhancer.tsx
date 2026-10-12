@@ -63,9 +63,11 @@ export default function CinemaEnhancer() {
     // Kontent kech yuklanishi mumkin (rasm, klient komponentlar) — bir necha marta skanerlaymiz
     const timers = [60, 600, 1600].map((ms) => setTimeout(scan, ms));
     let pending = 0;
+    // Debounce: animatsiyalar DOM'ni tez-tez o'zgartiradi — har kadrda butun sahifani qayta o'lchash qotirardi
+    let debounce = 0;
     const mo = new MutationObserver(() => {
-      cancelAnimationFrame(pending);
-      pending = requestAnimationFrame(scan);
+      clearTimeout(debounce);
+      debounce = window.setTimeout(() => { cancelAnimationFrame(pending); pending = requestAnimationFrame(scan); }, 500);
     });
     const main = document.querySelector('main');
     if (main) mo.observe(main, { childList: true, subtree: true });
@@ -73,6 +75,7 @@ export default function CinemaEnhancer() {
     return () => {
       timers.forEach(clearTimeout);
       cancelAnimationFrame(pending);
+      clearTimeout(debounce);
       mo.disconnect();
       io.disconnect();
     };

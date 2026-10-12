@@ -54,7 +54,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ lan
   return (
     <WebsiteLayout lang={localeLang}>
       <PageHero lang={localeLang} kicker={date} title={title} images={image ? [image] : ['/uploads/majmua-1.jpg']}>
-        <a href={`/${localeLang}/news`} className="inline-flex items-center gap-2 text-white/80 font-bold hover:text-accent transition-colors bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/20">
+        <a href={`/${localeLang}/news`} className="inline-flex items-center gap-2 text-white/80 font-bold hover:text-accent transition-colors bg-white/10 px-5 py-2.5 rounded-full border border-white/20">
           <ArrowLeft size={18} />
           {t.back}
         </a>

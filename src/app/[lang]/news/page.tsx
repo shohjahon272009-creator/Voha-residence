@@ -65,7 +65,7 @@ export default async function NewsPage({ params }: { params: Promise<{ lang: str
                          </div>
                        )}
                      </div>
-                     <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-sm text-primary text-xs font-bold px-4 py-2 rounded-full z-20 shadow-lg">
+                     <div className="absolute top-6 left-6 bg-white/95 text-primary text-xs font-bold px-4 py-2 rounded-full z-20 shadow-lg">
                        {item.date}
                      </div>
                   </div>

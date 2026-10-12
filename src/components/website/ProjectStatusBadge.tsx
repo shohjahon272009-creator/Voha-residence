@@ -52,7 +52,7 @@ export default function ProjectStatusBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-2 pl-3 pr-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide border backdrop-blur-md shadow-[0_6px_20px_rgba(0,0,0,0.25)] ${color} ${className}`}
+      className={`inline-flex items-center gap-2 pl-3 pr-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide border shadow-[0_6px_20px_rgba(0,0,0,0.25)] ${color} ${className}`}
     >
       {pulse && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
       <Icon size={15} className={`shrink-0 ${iconColor}`} strokeWidth={2.4} />

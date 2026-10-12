@@ -13,7 +13,7 @@ import { Locale } from '@/lib/dictionaries';
   Yangi video: public/cinema/hero.mp4 ni almashtirib, kadrlarni ffmpeg bilan qayta chiqaring.
 */
 
-const FRAME_COUNT = 82;
+const FRAME_COUNT = 60;
 // Gorizontal ekran — 1920px gorizontal kadrlar; vertikal (telefon) — 640x1072 vertikal qirqim.
 // Kenglik bo'yicha emas, yo'nalish bo'yicha: aks holda kichik gorizontal oynada vertikal kadr cho'zilib xira chiqadi
 const wantsHD = () => window.innerWidth >= window.innerHeight;
@@ -25,19 +25,19 @@ const CHAPTERS: Record<Locale, Chapter[]> = {
   uz: [
     { kicker: '"Sokin Makon"', title: 'Al-Xorazmiy haykali yonida', text: "Urganch City markazi — universitet, maktab, bog'cha va sport majmualari yoningizda." },
     { kicker: 'Tabiat', title: '10 gektar yashil hudud', text: "Favvorali sayr yo'laklari, gulzorlar va dam olish maskanlari — har kuni bog'da yashagandek." },
-    { kicker: 'Oila', title: 'Bolalar uchun xavfsiz hovli', text: "Zamonaviy o'yin maydonchalari va keng hovli — farzandingiz ko'z o'ngingizda." },
+    { kicker: "Suv bo'yi", title: "Kanal bo'yidagi sayr yo'laklari", text: "Favvoralar, ko'priklar va salqin suv bo'yi — oilaviy sayr uchun eng yaxshi joy." },
     { kicker: 'Sizning uyingiz', title: 'Kelajak shu yerdan boshlanadi', text: 'Qavat, xona va narxni tanlang — qolganini biz hal qilamiz.' },
   ],
   ru: [
     { kicker: '«Sokin Makon»', title: 'Рядом с памятником аль-Хорезми', text: 'Центр Urganch City — университет, школа, детсад и спорткомплексы рядом с вами.' },
     { kicker: 'Природа', title: '10 гектаров зелени', text: 'Аллеи с фонтанами, цветники и зоны отдыха — каждый день как в парке.' },
-    { kicker: 'Семья', title: 'Безопасный двор для детей', text: 'Современные игровые площадки и просторный двор — ребёнок всегда на виду.' },
+    { kicker: 'У воды', title: 'Набережная вдоль канала', text: 'Фонтаны, мостики и прохлада воды — лучшее место для семейных прогулок.' },
     { kicker: 'Ваш дом', title: 'Будущее начинается здесь', text: 'Выберите этаж, комнаты и цену — остальное мы возьмём на себя.' },
   ],
   en: [
     { kicker: '"Sokin Makon"', title: 'Next to the Al-Khwarizmi monument', text: 'The heart of Urgench City — university, school, kindergarten and sports facilities nearby.' },
     { kicker: 'Nature', title: '10 hectares of green', text: 'Fountain promenades, flower beds and places to relax — like living in a park.' },
-    { kicker: 'Family', title: 'A safe courtyard for kids', text: 'Modern playgrounds and a spacious yard — your child always in sight.' },
+    { kicker: 'Waterfront', title: 'Canal-side promenades', text: 'Fountains, bridges and cool water — the best place for family walks.' },
     { kicker: 'Your home', title: 'The future starts here', text: "Choose the floor, rooms and price — we'll take care of the rest." },
   ],
 };
@@ -131,7 +131,8 @@ export default function CinemaScroll({ lang }: { lang: Locale }) {
     const resize = () => {
       const c = canvasRef.current;
       if (!c) return;
-      const dpr = Math.min(window.devicePixelRatio || 1, 3);
+      // 2x yetarli tiniq; 3x telefonda har scroll qadamida 2.25 baravar ko'p piksel chizib, sahifani qotirardi
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       c.width = Math.round(c.clientWidth * dpr);
       c.height = Math.round(c.clientHeight * dpr);
       draw(current.current);

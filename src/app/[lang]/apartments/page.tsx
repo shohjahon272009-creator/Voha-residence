@@ -36,7 +36,7 @@ export default async function ApartmentsPage({ params }: { params: Promise<{ lan
 
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
-      <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/cinema/stills/sokin-3.jpg', '/cinema/stills/sokin-4.jpg']} />
+      <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/cinema/stills/life-3.jpg', '/cinema/stills/plan-1.jpg']} />
       <div className="bg-brand-mesh min-h-screen">
         <ApartmentAndPayment
           apartments={browserApartments}

@@ -61,7 +61,7 @@ export default function ProjectCard({ project, lang, soldOut = false }: ProjectC
           {/* Sovg'a belgisi (admin'dan) — o'ng yuqori */}
           {project.gift_label && (
             <div className="absolute top-4 right-4 z-10">
-              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-primary bg-white/95 backdrop-blur-md shadow-lg">
+              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-primary bg-white/95 shadow-lg">
                 <Gift className="w-3.5 h-3.5 text-accent" /> {project.gift_label}
               </span>
             </div>
@@ -70,7 +70,7 @@ export default function ProjectCard({ project, lang, soldOut = false }: ProjectC
           {/* 360° — chap past */}
           {project.virtual_tour_url && (
             <div className="absolute bottom-4 left-4 z-10">
-              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-black/45 backdrop-blur-md border border-white/20 shadow-lg">
+              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-black/45 border border-white/20 shadow-lg">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12a9 3 0 1018 0 9 3 0 10-18 0M12 9v6m-3-3h6" /></svg>
                 360°
               </span>

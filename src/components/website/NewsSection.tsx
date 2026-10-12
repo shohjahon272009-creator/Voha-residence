@@ -58,7 +58,7 @@ export default async function NewsSection({ lang }: { lang: Locale }) {
                    ) : (
                      <Newspaper size={48} className="text-gray-300 transform group-hover:scale-110 transition-transform duration-700" />
                    )}
-                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-primary text-xs font-bold px-3 py-1.5 rounded-full z-20">
+                   <div className="absolute top-4 left-4 bg-white/90 text-primary text-xs font-bold px-3 py-1.5 rounded-full z-20">
                      {item.date}
                    </div>
                 </div>

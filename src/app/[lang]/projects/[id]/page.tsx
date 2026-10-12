@@ -120,8 +120,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                      <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100 relative group aspect-video">
                         {/* eslint-disable-next-line @next/next/no-img-element -- rasm bazadan (data URL / Blob), next/image optimallashtira olmaydi */}
                         <img src={project.main_image || '/cinema/poster.jpg'} alt={projectName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
-                           <div className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl">
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                           <div className="px-8 py-4 bg-white/10 border border-white/20 rounded-2xl">
                               <span className="text-3xl md:text-5xl font-black text-white uppercase tracking-widest drop-shadow-lg">
                                  {dict.projects.status.soldOut || 'Sotib tugatilgan'}
                               </span>
@@ -132,8 +132,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                      <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100 relative group aspect-video">
                         {/* eslint-disable-next-line @next/next/no-img-element -- rasm bazadan (data URL / Blob), next/image optimallashtira olmaydi */}
                         <img src={project.main_image || '/cinema/poster.jpg'} alt={projectName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
-                           <div className="px-8 py-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-center">
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                           <div className="px-8 py-5 bg-white/10 border border-white/20 rounded-2xl text-center">
                               <span className="block text-2xl md:text-4xl font-black text-white tracking-wide drop-shadow-lg">
                                  {lang === 'ru' ? 'Квартиры скоро' : lang === 'en' ? 'Apartments coming soon' : "Xonadonlar tez orada"}
                               </span>
