@@ -74,7 +74,7 @@ export default function Navbar({ lang }: { lang: Locale }) {
       {/* Main Navbar */}
       <div className={cn(
         "transition-all duration-300 px-6",
-        isNavbarWhite ? "bg-white/85 backdrop-blur-xl shadow-[0_10px_40px_rgba(1,66,66,0.08)] border-b border-white/60 py-3.5" : "bg-transparent py-6"
+        isNavbarWhite ? "bg-white/[0.97] shadow-[0_10px_40px_rgba(1,66,66,0.08)] border-b border-gray-100 py-3.5" : "bg-transparent py-6"
       )}>
       <div className="max-container flex items-center justify-between">
         <Link href={`/${lang}`} className="flex items-center transition-colors text-primary">

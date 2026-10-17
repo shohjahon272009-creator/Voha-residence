@@ -56,7 +56,7 @@ export default function MortgageCalculator({
       <div className="max-container">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-100px' }} transition={{ duration: 0.6 }}
           className="bg-primary rounded-[40px] overflow-hidden shadow-2xl relative">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-accent/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-72 h-72 bg-accent/10 rounded-full soft-blob -translate-y-1/3 translate-x-1/3 pointer-events-none" />
           <div className="relative z-10 p-6 md:p-10">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-12 bg-accent rounded-2xl flex items-center justify-center shadow-lg"><Calculator className="text-white" size={24} /></div>

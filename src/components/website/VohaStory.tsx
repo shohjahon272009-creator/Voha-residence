@@ -108,7 +108,7 @@ export function PaymentTerms({ lang }: { lang: string }) {
   return (
     <section className="relative overflow-hidden bg-primary py-24 md:py-36 px-6">
       <div className="absolute inset-0 bg-grid opacity-25 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
-      <div className="absolute -top-40 -right-40 w-[40rem] h-[40rem] rounded-full bg-accent/15 blur-[120px] pointer-events-none" />
+      <div className="absolute -top-40 -right-40 w-[40rem] h-[40rem] rounded-full bg-accent/15 soft-blob pointer-events-none" />
       <div className="relative max-container">
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-20 items-end mb-14 md:mb-20" data-cine-skip>
           <div>

@@ -126,8 +126,8 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
 
       {/* ============ Intro ============ */}
       <section id="about" className="pt-24 md:pt-28 pb-24 px-6 bg-brand-mesh-lux relative overflow-hidden">
-        <div className="absolute -top-32 -right-32 w-[34rem] h-[34rem] rounded-full bg-accent/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-40 -left-40 w-[36rem] h-[36rem] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+        <div className="absolute -top-32 -right-32 w-[34rem] h-[34rem] rounded-full bg-accent/10 soft-blob pointer-events-none" />
+        <div className="absolute -bottom-40 -left-40 w-[36rem] h-[36rem] rounded-full bg-primary/5 soft-blob pointer-events-none" />
 
         <div className="max-container grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10">
           <AnimatedReveal direction="left" className="relative">
@@ -193,7 +193,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
 
       {/* ============ Maqsad / Mission (dark band) ============ */}
       <section className="py-24 md:py-28 px-6 bg-primary bg-grid relative overflow-hidden">
-        <div className="absolute -top-24 right-0 w-[30rem] h-[30rem] rounded-full bg-accent/20 blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 right-0 w-[30rem] h-[30rem] rounded-full bg-accent/20 soft-blob pointer-events-none" />
         <div className="max-container grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center relative z-10">
           <AnimatedReveal direction="left" className="relative">
             <div className="aspect-[5/4] rounded-[40px] overflow-hidden border-[12px] border-white/10 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-700">
@@ -232,7 +232,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
         <div className="max-container">
           <AnimatedReveal direction="up">
             <div className="relative overflow-hidden rounded-[40px] bg-white shadow-2xl shadow-accent/10 border border-black/5 px-8 py-14 md:px-16 md:py-16 text-center">
-              <div className="absolute -top-20 -right-16 w-64 h-64 rounded-full bg-accent/10 blur-2xl pointer-events-none" />
+              <div className="absolute -top-20 -right-16 w-64 h-64 rounded-full bg-accent/10 soft-blob pointer-events-none" />
               <div className="relative z-10 max-w-2xl mx-auto">
                 <h2 className="text-3xl md:text-4xl font-black text-primary mb-4 leading-tight">{c.ctaTitle}</h2>
                 <p className="text-gray-600 text-lg mb-9 font-medium">{c.ctaDesc}</p>

@@ -102,7 +102,7 @@ export default function SalesOfficesSection({ lang, phone, address, hours, offic
     <section className="py-24 px-6 bg-[#FDFBF7] relative overflow-hidden">
       {/* Soft decorative accents */}
       <div className="absolute -top-24 -right-24 w-96 h-96 bg-radial-glow pointer-events-none" />
-      <div className="absolute -bottom-32 -left-20 w-80 h-80 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-20 w-80 h-80 rounded-full bg-primary/5 soft-blob pointer-events-none" />
 
       <div className="max-container relative z-10">
         <div className="mb-12 flex flex-col items-center md:items-start">
@@ -126,7 +126,7 @@ export default function SalesOfficesSection({ lang, phone, address, hours, offic
           >
             {/* Featured office card */}
             <div className="group relative overflow-hidden bg-primary text-white p-8 rounded-3xl shadow-[0_18px_50px_rgba(1,66,66,0.35)] border border-white/5 flex-1">
-              <div className="absolute -top-16 -right-16 w-48 h-48 bg-accent/15 rounded-full blur-3xl group-hover:bg-accent/25 transition-colors duration-500" />
+              <div className="absolute -top-16 -right-16 w-48 h-48 bg-accent/15 rounded-full soft-blob group-hover:bg-accent/25 transition-colors duration-500" />
               <div className="absolute inset-0 bg-grid opacity-20 [mask-image:radial-gradient(ellipse_at_top_right,black,transparent_70%)]" />
 
               <div className="relative z-10 flex flex-col h-full">

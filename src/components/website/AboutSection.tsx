@@ -55,7 +55,7 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
   return (
     <section id="about" className="py-20 md:py-28 px-6 bg-brand-mesh-lux relative overflow-hidden">
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-accent/10 to-transparent z-0" />
-      <div className="absolute -bottom-40 -left-40 w-[36rem] h-[36rem] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-40 -left-40 w-[36rem] h-[36rem] rounded-full bg-primary/5 soft-blob pointer-events-none" />
 
       <div className="max-container grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10">
         {/* Rasm */}

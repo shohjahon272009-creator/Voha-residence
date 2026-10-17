@@ -32,9 +32,9 @@ export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPA
   return (
     <section id="projects" className="py-28 px-6 relative overflow-hidden bg-brand-mesh">
       {/* Aurora — official Voha palette: teal + bronze + olive */}
-      <div className="absolute -top-44 -right-24 w-[48rem] h-[48rem] rounded-full bg-primary/[0.14] blur-[130px] pointer-events-none" />
-      <div className="absolute top-1/4 -left-32 w-[44rem] h-[44rem] rounded-full bg-accent/[0.22] blur-[130px] pointer-events-none" />
-      <div className="absolute -bottom-44 right-1/3 w-[40rem] h-[40rem] rounded-full bg-[#828C4C]/[0.16] blur-[130px] pointer-events-none" />
+      <div className="absolute -top-44 -right-24 w-[48rem] h-[48rem] rounded-full bg-primary/[0.14] soft-blob pointer-events-none" />
+      <div className="absolute top-1/4 -left-32 w-[44rem] h-[44rem] rounded-full bg-accent/[0.22] soft-blob pointer-events-none" />
+      <div className="absolute -bottom-44 right-1/3 w-[40rem] h-[40rem] rounded-full bg-[#828C4C]/[0.16] soft-blob pointer-events-none" />
       {/* Warm sand top fade */}
       <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#f8f3e8] to-transparent pointer-events-none" />
 
