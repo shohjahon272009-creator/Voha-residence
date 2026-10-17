@@ -4,10 +4,11 @@ import React, { useRef } from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
+import { VOHA_PATH, RESIDENCE_PATH } from '@/components/common/VohaLogo';
 
 /*
   Footer ustidagi kino-yakun: katta chaqiruv (CTA) va pastda ekran kengligidagi
-  "VOHA RESIDENCE" yozuvi — harflar navbatma-navbat pastdan ko'tariladi.
+  logotip (aynan brendbukdagi VOHA RESIDENCE vektori) — pastdan ko'tariladi.
 */
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -80,27 +81,22 @@ export function FooterCTA({ lang }: { lang: string }) {
 }
 
 export function FooterBigType() {
-  const letters = Array.from('VOHA RESIDENCE');
+  // Logodagidek: aynan brendbukdagi "VOHA" harflari (kontur) va ostida "RESIDENCE" (bronza)
   return (
-    <div aria-hidden="true" className="relative overflow-hidden select-none pointer-events-none mt-16 -mb-4">
-      <motion.div
-        initial="hidden"
-        whileInView="show"
+    <div aria-hidden="true" className="relative overflow-hidden select-none pointer-events-none mt-16 pb-6">
+      <motion.svg
+        viewBox="355 275 135 48"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="block mx-auto w-[88%] max-w-[1500px] h-auto"
+        initial={{ y: '35%', opacity: 0 }}
+        whileInView={{ y: '0%', opacity: 1 }}
         viewport={{ once: true }}
-        variants={{ show: { transition: { staggerChildren: 0.045 } } }}
-        className="flex justify-center font-bebas leading-[0.8] text-[15.5vw] whitespace-nowrap text-transparent [-webkit-text-stroke:1px_rgba(209,142,91,0.45)]"
+        transition={{ duration: 1.4, ease: EASE }}
       >
-        {letters.map((ch, i) => (
-          <span key={i} className="inline-block overflow-hidden">
-            <motion.span
-              className="inline-block"
-              variants={{ hidden: { y: '100%' }, show: { y: '0%', transition: { duration: 1.2, ease: EASE } } }}
-            >
-              {ch === ' ' ? ' ' : ch}
-            </motion.span>
-          </span>
-        ))}
-      </motion.div>
+        <path transform="matrix(1,0,0,-1,0,595.2756)" d={VOHA_PATH} fill="rgba(255,255,255,0.03)" stroke="rgba(209,142,91,0.55)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        <path transform="matrix(1,0,0,-1,0,595.2756)" d={RESIDENCE_PATH} fill="rgba(209,142,91,0.55)" />
+      </motion.svg>
     </div>
   );
 }

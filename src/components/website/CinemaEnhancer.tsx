@@ -33,16 +33,32 @@ export default function CinemaEnhancer() {
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    const reveal = (el: HTMLElement) => {
+      if (el.dataset.cine !== 'pending') return;
+      io.unobserve(el);
+      el.dataset.cine = 'in';
+      // O'tish tugagach atributni "done" ga o'tkazamiz — hover effektlari yana ishlasin
+      setTimeout(() => { el.dataset.cine = 'done'; el.style.removeProperty('transition-delay'); }, 1900);
+    };
     const io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        const el = e.target as HTMLElement;
-        io.unobserve(el);
-        el.dataset.cine = 'in';
-        // O'tish tugagach atributni "done" ga o'tkazamiz — hover effektlari yana ishlasin
-        setTimeout(() => { el.dataset.cine = 'done'; el.style.removeProperty('transition-delay'); }, 1900);
-      }
+      for (const e of entries) if (e.isIntersecting) reveal(e.target as HTMLElement);
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+    // Zaxira: IntersectionObserver ba'zan o'tkazib yuboradi (sahifa almashinuvi, juda tez scroll) —
+    // shunda element abadiy yashirin qolardi. Scroll paytida ekranga kirgan "pending"larni majburan ochamiz.
+    let checkQueued = 0;
+    const safety = () => {
+      if (checkQueued) return;
+      checkQueued = window.setTimeout(() => {
+        checkQueued = 0;
+        const vh = window.innerHeight;
+        document.querySelectorAll<HTMLElement>('[data-cine="pending"]').forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.top < vh && r.bottom > 0) reveal(el);
+        });
+      }, 250);
+    };
+    window.addEventListener('scroll', safety, { passive: true });
 
     const scan = () => {
       const els = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR));
@@ -78,6 +94,10 @@ export default function CinemaEnhancer() {
       clearTimeout(debounce);
       mo.disconnect();
       io.disconnect();
+      window.removeEventListener('scroll', safety);
+      clearTimeout(checkQueued);
+      // Kuzatuvchi o'chdi — yashirin qolganlarni ko'rsatib qo'yamiz
+      document.querySelectorAll<HTMLElement>('[data-cine="pending"]').forEach((el) => { el.dataset.cine = 'done'; });
     };
   }, [pathname]);
 
