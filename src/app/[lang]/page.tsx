@@ -10,7 +10,7 @@ import ProjectsList from '@/components/website/ProjectsList';
 import ApartmentAndPayment from '@/components/website/ApartmentAndPayment';
 import AboutSection from '@/components/website/AboutSection';
 import NewsSection from '@/components/website/NewsSection';
-import SalesOfficesSection from '@/components/website/SalesOfficesSection';
+import LocationShowcase from '@/components/website/LocationShowcase';
 import ContactSection from '@/components/website/ContactSection';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import AnimatedReveal from '@/components/website/AnimatedReveal';
@@ -109,7 +109,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       )}
       {settings.show_offices !== 'false' && (
         <AnimatedReveal>
-          <SalesOfficesSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} officeLat={settings.office_lat} officeLng={settings.office_lng} />
+          <LocationShowcase lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />
         </AnimatedReveal>
       )}
       <SocialStrip lang={localeLang} />

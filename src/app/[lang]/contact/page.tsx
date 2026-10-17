@@ -1,6 +1,7 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import ContactSection from '@/components/website/ContactSection';
+import LocationShowcase from '@/components/website/LocationShowcase';
 import PageHero from '@/components/website/PageHero';
 import { Locale } from '@/lib/dictionaries';
 import db from '@/lib/db';
@@ -31,6 +32,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/cinema/stills/life-2.webp']} />
       <div className="min-h-screen bg-[#FDFBF7]">
         <ContactSection lang={localeLang}  />
+        <LocationShowcase lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />
       </div>
     </WebsiteLayout>
   );
