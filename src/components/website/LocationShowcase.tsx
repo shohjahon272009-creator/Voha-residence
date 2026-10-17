@@ -2,21 +2,22 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Navigation, Phone, Clock, GraduationCap, School, HeartPulse, Baby, Trees, Landmark, Map as MapIcon } from 'lucide-react';
+import { MapPin, Navigation, Phone, Clock, Map as MapIcon, School, HeartPulse, Baby, Trees, GraduationCap, Landmark, Footprints, Pointer } from 'lucide-react';
 
 /*
   Lokatsiya — "Hamma narsa bir qadam narida".
   Markaz: sotuv ofisi (Ekstrenniy shifoxonasi chorrahasi). Atrofdagi obyektlar va masofalar —
   OpenStreetMap ma'lumotlari (2026-10), to'g'ri chiziq bo'yicha hisoblangan; noto'g'ri belgilangan
   obyektlar (masalan, "bog'cha" deb yozilgan to'yxona) chiqarib tashlangan.
-  Radar-xarita SVG — tez, tiniq; og'ir Google xarita faqat tugma bosilganda ochiladi.
+  Har yoshdagi odam tushunsin: haqiqiy ko'cha xaritasi (OpenStreetMap plitkalari),
+  har bir joy — rangli belgi + raqam, ro'yxatda o'sha raqam va "🚶 N daqiqa piyoda".
+  Xarita statik plitkalardan — kutubxonasiz, tez; og'ir Google xarita faqat tugma bosilganda.
 */
 
 type Kind = 'school' | 'hospital' | 'kindergarten' | 'park' | 'university' | 'mosque';
 type Place = { kind: Kind; lat: number; lng: number; name: Record<string, string> };
 
 const CENTER = { lat: 41.544716, lng: 60.599816 };
-const RADIUS_M = 1500;
 
 const PLACES: Place[] = [
   { kind: 'school', lat: 41.54749, lng: 60.6014, name: { uz: '4-son maktab', ru: 'Школа №4', en: 'School No. 4' } },
@@ -30,11 +31,15 @@ const PLACES: Place[] = [
   { kind: 'park', lat: 41.55279, lng: 60.6131, name: { uz: "\"Yoshlar ko'li\" bog'i", ru: 'Парк «Ёшлар кўли»', en: '"Yoshlar ko\'li" park' } },
 ];
 
-const ICON: Record<Kind, React.ElementType> = {
-  school: School, hospital: HeartPulse, kindergarten: Baby, park: Trees, university: GraduationCap, mosque: Landmark,
-};
-const COLOR: Record<Kind, string> = {
-  school: '#F2B98A', hospital: '#FF8A8A', kindergarten: '#FFD27A', park: '#7FD99A', university: '#8FC8FF', mosque: '#C9A7FF',
+const ICON: Record<Kind, React.ElementType> = { school: School, hospital: HeartPulse, kindergarten: Baby, park: Trees, university: GraduationCap, mosque: Landmark };
+const COLOR: Record<Kind, string> = { school: '#E07B39', hospital: '#E04848', kindergarten: '#D9A21B', park: '#2E9E5B', university: '#2F6FD6', mosque: '#7A4FD0' };
+const KIND: Record<Kind, Record<string, string>> = {
+  school: { uz: 'Maktab', ru: 'Школа', en: 'School' },
+  hospital: { uz: 'Shifoxona', ru: 'Больница', en: 'Hospital' },
+  kindergarten: { uz: "Bog'cha", ru: 'Детсад', en: 'Kindergarten' },
+  park: { uz: 'Park', ru: 'Парк', en: 'Park' },
+  university: { uz: 'Universitet', ru: 'Университет', en: 'University' },
+  mosque: { uz: 'Masjid', ru: 'Мечеть', en: 'Mosque' },
 };
 
 const toR = (x: number) => (x * Math.PI) / 180;
@@ -44,39 +49,45 @@ function distanceM(a: { lat: number; lng: number }, b: { lat: number; lng: numbe
   const h = Math.sin(dLat / 2) ** 2 + Math.cos(toR(a.lat)) * Math.cos(toR(b.lat)) * Math.sin(dLng / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(h));
 }
-// Ekvirektangulyar proyeksiya (1.5 km radiusda xato sezilmaydi): sharq = +x, shimol = −y.
-// Radius kvadrat ildiz shkalasida — yaqin obyektlar markazga yopishib qolmaydi, yo'nalish aniq saqlanadi.
-const scale = (d: number) => Math.sqrt(Math.min(d, RADIUS_M) / RADIUS_M) * 0.92;
-function offset(p: { lat: number; lng: number }) {
-  const dx = toR(p.lng - CENTER.lng) * 6371000 * Math.cos(toR(CENTER.lat));
-  const dy = toR(p.lat - CENTER.lat) * 6371000;
-  const d = Math.hypot(dx, dy) || 1;
-  const r = scale(d);
-  return { x: (dx / d) * r, y: (-dy / d) * r };
-}
+
+// Web Mercator: z=15 da ofis atrofidagi VIEW×VIEW piksellik oyna (~±1,45 km). Hammasi foizda — har ekranga moslashadi.
+const Z = 15;
+const VIEW = 820;
+const TILE = 256;
+const worldX = (lng: number) => ((lng + 180) / 360) * TILE * 2 ** Z;
+const worldY = (lat: number) => ((1 - Math.log(Math.tan(toR(lat)) + 1 / Math.cos(toR(lat))) / Math.PI) / 2) * TILE * 2 ** Z;
+const X0 = worldX(CENTER.lng) - VIEW / 2;
+const Y0 = worldY(CENTER.lat) - VIEW / 2;
+const pct = (v: number) => `${(v / VIEW) * 100}%`;
+const pos = (p: { lat: number; lng: number }) => ({ left: pct(worldX(p.lng) - X0), top: pct(worldY(p.lat) - Y0) });
+const TILES: { x: number; y: number }[] = [];
+for (let tx = Math.floor(X0 / TILE); tx <= Math.floor((X0 + VIEW) / TILE); tx++)
+  for (let ty = Math.floor(Y0 / TILE); ty <= Math.floor((Y0 + VIEW) / TILE); ty++) TILES.push({ x: tx, y: ty });
+// 1 km doira radiusi (piksel): z=15 da metr/piksel = 156543·cos(lat)/2^z
+const M_PER_PX = (156543.03 * Math.cos(toR(CENTER.lat))) / 2 ** Z;
+const KM_RING = 1000 / M_PER_PX;
 
 const T: Record<string, {
-  kicker: string; title: string; sub: string; walk: string; min: string; km: string; m: string;
-  office: string; address: string; hours: string; directions: string; yandex: string; openMap: string; call: string;
-  rings: string[]; note: string;
+  kicker: string; title: string; sub: string; walk: string; min: string; km: string; m: string; hint: string; ring: string;
+  office: string; address: string; hours: string; directions: string; yandex: string; openMap: string;
 }> = {
   uz: {
-    kicker: 'Joylashuv', title: 'Hamma narsa bir qadam narida', sub: "Maktab, shifoxona, bog'cha va universitet — piyoda yetib boriladigan masofada.",
-    walk: 'piyoda', min: 'daq', km: 'km', m: 'm', office: 'Sotuv ofisi', address: "Urganch sh., Ulug'bek ko'chasi — Ekstrenniy shifoxonasi chorrahasi",
-    hours: 'Har kuni, 09:00 – 18:00', directions: "Yo'l ko'rsatish", yandex: "Yandex'da ochish", openMap: 'Interaktiv xarita', call: "Qo'ng'iroq qilish",
-    rings: ['500 m', '1 km', '1,5 km'], note: "Masofalar sotuv ofisidan to'g'ri chiziq bo'yicha · OpenStreetMap",
+    kicker: 'Joylashuv', title: 'Hamma narsa bir qadam narida', sub: "Maktab, shifoxona, bog'cha, park va masjid — barchasi piyoda yetib boriladigan masofada.",
+    walk: 'piyoda', min: 'daqiqa', km: 'km', m: 'm', hint: "Ro'yxatdagi joyni bosing — xaritada ko'rsatiladi", ring: '1 km ≈ 12 daqiqa piyoda',
+    office: 'Sotuv ofisi', address: "Urganch sh., Ulug'bek ko'chasi — Ekstrenniy shifoxonasi chorrahasi",
+    hours: 'Har kuni, 09:00 – 18:00', directions: "Yo'l ko'rsatish", yandex: "Yandex'da ochish", openMap: 'Google xarita',
   },
   ru: {
-    kicker: 'Расположение', title: 'Всё в шаге от вас', sub: 'Школа, больница, детсад и университет — в пешей доступности.',
-    walk: 'пешком', min: 'мин', km: 'км', m: 'м', office: 'Офис продаж', address: 'г. Ургенч, ул. Улугбека — перекрёсток у больницы экстренной помощи',
-    hours: 'Ежедневно, 09:00 – 18:00', directions: 'Проложить маршрут', yandex: 'Открыть в Яндексе', openMap: 'Интерактивная карта', call: 'Позвонить',
-    rings: ['500 м', '1 км', '1,5 км'], note: 'Расстояния от офиса продаж по прямой · OpenStreetMap',
+    kicker: 'Расположение', title: 'Всё в шаге от вас', sub: 'Школа, больница, детсад, парк и мечеть — всё в пешей доступности.',
+    walk: 'пешком', min: 'мин', km: 'км', m: 'м', hint: 'Нажмите на место в списке — оно покажется на карте', ring: '1 км ≈ 12 минут пешком',
+    office: 'Офис продаж', address: 'г. Ургенч, ул. Улугбека — перекрёсток у больницы экстренной помощи',
+    hours: 'Ежедневно, 09:00 – 18:00', directions: 'Проложить маршрут', yandex: 'Открыть в Яндексе', openMap: 'Google карта',
   },
   en: {
-    kicker: 'Location', title: 'Everything within reach', sub: 'School, hospital, kindergarten and university — all within walking distance.',
-    walk: 'walk', min: 'min', km: 'km', m: 'm', office: 'Sales office', address: 'Urgench, Ulugbek street — Emergency Hospital crossroads',
-    hours: 'Daily, 09:00 – 18:00', directions: 'Get directions', yandex: 'Open in Yandex', openMap: 'Interactive map', call: 'Call us',
-    rings: ['500 m', '1 km', '1.5 km'], note: 'Straight-line distances from the sales office · OpenStreetMap',
+    kicker: 'Location', title: 'Everything within reach', sub: 'School, hospital, kindergarten, park and mosque — all within walking distance.',
+    walk: 'walk', min: 'min', km: 'km', m: 'm', hint: 'Tap a place in the list to see it on the map', ring: '1 km ≈ 12 min walk',
+    office: 'Sales office', address: 'Urgench, Ulugbek street — Emergency Hospital crossroads',
+    hours: 'Daily, 09:00 – 18:00', directions: 'Get directions', yandex: 'Open in Yandex', openMap: 'Google map',
   },
 };
 
@@ -84,141 +95,151 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function LocationShowcase({ lang, phone, address, hours }: { lang: string; phone?: string; address?: string; hours?: string }) {
   const t = T[lang] || T.uz;
-  const [active, setActive] = useState<number | null>(0);
+  const [active, setActive] = useState(0);
   const [showMap, setShowMap] = useState(false);
 
-  const places = PLACES.map((p) => ({ ...p, d: distanceM(CENTER, p), pos: offset(p) })).sort((a, b) => a.d - b.d);
+  const places = PLACES.map((p) => ({ ...p, d: distanceM(CENTER, p) })).sort((a, b) => a.d - b.d);
   const fmt = (d: number) => (d < 1000 ? `${Math.round(d / 10) * 10} ${t.m}` : `${(d / 1000).toFixed(1).replace('.', lang === 'en' ? '.' : ',')} ${t.km}`);
   const walkMin = (d: number) => Math.max(1, Math.round(d / 80)); // ~4.8 km/soat
+  const name = (p: Place) => p.name[lang] || p.name.uz;
 
   const phoneVal = phone || '+998 91 011 66 66';
   const telHref = 'tel:' + phoneVal.replace(/[^\d+]/g, '');
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${CENTER.lat},${CENTER.lng}`;
   const yandexUrl = `https://yandex.uz/maps/?pt=${CENTER.lng},${CENTER.lat}&z=16&l=map`;
-  const sel = active != null ? places[active] : null;
+  const sel = places[active];
+  const center = pos(CENTER);
 
   return (
     <section id="location" className="relative overflow-hidden bg-[#011f1f] text-white py-24 md:py-32 px-6" data-cine-skip>
       <div className="absolute inset-0 bg-grid opacity-[0.12] pointer-events-none" />
       <div className="relative max-container">
-        <div className="grid lg:grid-cols-[1fr_1.15fr] gap-12 lg:gap-16 items-center">
-          {/* Chap: matn + ro'yxat */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, letterSpacing: '0.7em' }} whileInView={{ opacity: 1, letterSpacing: '0.32em' }} viewport={{ once: true }}
-              transition={{ duration: 1.2, ease: EASE }}
-              className="flex items-center gap-3 text-accent text-[10px] md:text-xs uppercase font-bold mb-5"
-            >
-              <span className="h-px w-10 bg-accent/70" />{t.kicker}
-            </motion.div>
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1, ease: EASE }}
-              className="font-montserrat font-extrabold text-[clamp(2.1rem,5vw,4.2rem)] leading-[1.02] tracking-[-0.03em]"
-            >
-              {t.title}
-            </motion.h2>
-            <p className="mt-5 text-white/70 text-base md:text-lg max-w-lg leading-relaxed">{t.sub}</p>
+        <motion.div
+          initial={{ opacity: 0, letterSpacing: '0.7em' }} whileInView={{ opacity: 1, letterSpacing: '0.32em' }} viewport={{ once: true }}
+          transition={{ duration: 1.2, ease: EASE }}
+          className="flex items-center gap-3 text-accent text-[10px] md:text-xs uppercase font-bold mb-5"
+        >
+          <span className="h-px w-10 bg-accent/70" />{t.kicker}
+        </motion.div>
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1, ease: EASE }}
+          className="font-montserrat font-extrabold text-[clamp(2.1rem,5vw,4.2rem)] leading-[1.02] tracking-[-0.03em]"
+        >
+          {t.title}
+        </motion.h2>
+        <p className="mt-5 text-white/75 text-base md:text-lg max-w-2xl leading-relaxed">{t.sub}</p>
 
-            <ul className="mt-9 grid sm:grid-cols-2 gap-2.5">
-              {places.slice(0, 8).map((p, i) => {
-                const Icon = ICON[p.kind];
-                return (
-                  <li key={i}>
-                    <button
-                      type="button"
-                      onMouseEnter={() => setActive(i)}
-                      onFocus={() => setActive(i)}
-                      onClick={() => setActive(i)}
-                      className={`w-full flex items-center gap-3 text-left p-3 rounded-2xl border transition-colors duration-300 ${active === i ? 'bg-white/10 border-accent/50' : 'bg-white/[0.03] border-white/10 hover:bg-white/[0.07]'}`}
-                    >
-                      <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${COLOR[p.kind]}22`, color: COLOR[p.kind] }}>
-                        <Icon size={19} />
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block font-bold text-sm truncate">{p.name[lang] || p.name.uz}</span>
-                        <span className="block text-xs text-white/55">
-                          <span className="text-accent font-bold">{fmt(p.d)}</span> · {walkMin(p.d)} {t.min} {t.walk}
-                        </span>
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          {/* O'ng: radar-xarita */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 1.1, ease: EASE }}
-            className="relative"
-          >
-            <div className="relative aspect-square w-full max-w-[560px] mx-auto rounded-full">
-              {/* Halqalar */}
-              {[500, 1000, 1500].map((m, idx) => (
-                <div key={m} className="absolute rounded-full border border-white/25 bg-white/[0.015]" style={{ inset: `${50 - scale(m) * 50}%` }}>
-                  <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 px-2 text-[10px] font-bold text-white/60 bg-[#011f1f] tracking-wider">{t.rings[idx]}</span>
-                </div>
-              ))}
-              {/* Aylanuvchi radar nuri */}
-              <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
-                <div className="absolute inset-0 animate-[spin_9s_linear_infinite] [background:conic-gradient(from_0deg,rgba(209,142,91,0.28),transparent_22%)]" />
-              </div>
-              <div className="absolute inset-[8%] rounded-full bg-[radial-gradient(circle,rgba(1,66,66,0.6),transparent_70%)] pointer-events-none" />
-              {/* Shimol */}
-              <div className="absolute left-1/2 -translate-x-1/2 -top-7 text-[10px] font-bold tracking-[0.3em] text-accent">N</div>
-
-              {/* Obyektlar */}
-              {places.map((p, i) => {
-                const Icon = ICON[p.kind];
-                const isActive = active === i;
-                return (
-                  <motion.button
-                    key={i}
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] gap-6 lg:gap-8 items-start">
+          {/* Ro'yxat: raqam + emoji + nomi + necha daqiqa */}
+          <div className="order-2 lg:order-1 min-w-0">
+            <p className="mb-3 flex items-center gap-2 text-sm text-white/55"><Pointer size={15} />{t.hint}</p>
+            <ul className="grid grid-cols-1 gap-2.5">
+              {places.map((p, i) => { const Icon = ICON[p.kind]; return (
+                <li key={i}>
+                  <button
                     type="button"
                     onMouseEnter={() => setActive(i)}
                     onFocus={() => setActive(i)}
                     onClick={() => setActive(i)}
-                    aria-label={`${p.name[lang] || p.name.uz} — ${fmt(p.d)}`}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + (p.d / RADIUS_M) * 0.9, duration: 0.6, ease: EASE }}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 z-10"
-                    style={{ left: `${50 + p.pos.x * 50}%`, top: `${50 + p.pos.y * 50}%` }}
+                    className={`w-full flex items-center gap-4 text-left px-4 py-3 rounded-2xl border transition-colors duration-300 ${active === i ? 'bg-white text-primary border-white' : 'bg-white/[0.04] border-white/10 hover:bg-white/[0.08]'}`}
                   >
-                    <span
-                      className={`flex items-center justify-center rounded-full border-2 transition-transform duration-300 ${isActive ? 'scale-125' : 'hover:scale-110'}`}
-                      style={{ width: 34, height: 34, background: '#012f2f', borderColor: COLOR[p.kind], color: COLOR[p.kind], boxShadow: isActive ? `0 0 0 6px ${COLOR[p.kind]}33, 0 0 24px ${COLOR[p.kind]}88` : 'none' }}
-                    >
-                      <Icon size={16} />
+                    <span className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-black ${active === i ? 'bg-accent text-primary' : 'bg-white/10 text-white'}`}>{i + 1}</span>
+                    <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white" style={{ background: COLOR[p.kind] }} aria-hidden><Icon size={20} /></span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-bold text-[15px] leading-tight truncate">{name(p)}</span>
+                      <span className={`block text-xs mt-0.5 ${active === i ? 'text-primary/60' : 'text-white/50'}`}>{KIND[p.kind][lang] || KIND[p.kind].uz} · {fmt(p.d)}</span>
                     </span>
-                  </motion.button>
+                    <span className={`shrink-0 text-right font-extrabold leading-tight ${active === i ? 'text-accent' : 'text-white'}`}>
+                      <span className="flex items-center justify-end gap-1 text-sm"><Footprints size={14} />{walkMin(p.d)} {t.min}</span>
+                      <span className={`block text-[11px] font-semibold ${active === i ? 'text-primary/50' : 'text-white/45'}`}>{t.walk}</span>
+                    </span>
+                  </button>
+                </li>
+              ); })}
+            </ul>
+          </div>
+
+          {/* Haqiqiy ko'cha xaritasi */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 1, ease: EASE }}
+            className="order-1 lg:order-2 lg:sticky lg:top-28 min-w-0"
+          >
+            <div className="relative aspect-square w-full overflow-hidden rounded-[28px] border border-white/15 bg-[#e9e5dc] shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+              {TILES.map(({ x, y }) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={`${x}-${y}`}
+                  src={`https://tile.openstreetmap.org/${Z}/${x}/${y}.png`}
+                  alt="" loading="lazy" decoding="async" draggable={false}
+                  className="absolute max-w-none select-none"
+                  style={{ left: pct(x * TILE - X0), top: pct(y * TILE - Y0), width: pct(TILE), height: pct(TILE) }}
+                />
+              ))}
+
+              {/* 1 km doira */}
+              <div
+                className="absolute rounded-full border-2 border-dashed border-primary/45 bg-primary/[0.05] pointer-events-none -translate-x-1/2 -translate-y-1/2"
+                style={{ left: center.left, top: center.top, width: pct(KM_RING * 2), height: pct(KM_RING * 2) }}
+              >
+                <span className="absolute left-1/2 -translate-x-1/2 -top-3.5 whitespace-nowrap rounded-full bg-primary text-white text-[10px] md:text-xs font-bold px-2.5 py-1 shadow">{t.ring}</span>
+              </div>
+
+              {/* Tanlangan joygacha chiziq */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${VIEW} ${VIEW}`} preserveAspectRatio="none">
+                <line
+                  x1={worldX(CENTER.lng) - X0} y1={worldY(CENTER.lat) - Y0}
+                  x2={worldX(sel.lng) - X0} y2={worldY(sel.lat) - Y0}
+                  stroke="#D18E5B" strokeWidth="4" strokeDasharray="10 8" strokeLinecap="round"
+                />
+              </svg>
+
+              {/* Joylar */}
+              {places.map((p, i) => {
+                const on = active === i;
+                const Icon = ICON[p.kind];
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setActive(i)}
+                    onMouseEnter={() => setActive(i)}
+                    aria-label={`${name(p)} — ${walkMin(p.d)} ${t.min} ${t.walk}`}
+                    className={`absolute -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 ${on ? 'z-30 scale-110' : 'z-10 hover:z-20 hover:scale-110'}`}
+                    style={pos(p)}
+                  >
+                    <span className="relative flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border-[3px] border-white shadow-lg text-white" style={{ background: COLOR[p.kind], boxShadow: on ? `0 0 0 5px ${COLOR[p.kind]}55, 0 6px 16px rgba(0,0,0,.35)` : undefined }}>
+                      <Icon size={17} />
+                      <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-black flex items-center justify-center border-2 border-white">{i + 1}</span>
+                    </span>
+                  </button>
                 );
               })}
 
-              {/* Markaz — ofis */}
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                <span className="absolute inset-0 rounded-full bg-accent/40 animate-ping" />
-                <span className="relative flex items-center justify-center w-12 h-12 rounded-full bg-accent text-primary shadow-[0_0_40px_rgba(209,142,91,0.7)]">
-                  <MapPin size={22} />
-                </span>
+              {/* Tanlangan joy yorlig'i */}
+              <div
+                className="absolute z-40 pointer-events-none -translate-x-1/2 transition-all duration-300"
+                style={{ left: `clamp(22%, ${pos(sel).left}, 78%)`, top: `clamp(4%, calc(${pos(sel).top} - 92px), 84%)` }}
+              >
+                <div className="whitespace-nowrap px-4 py-2.5 rounded-2xl bg-primary text-white shadow-2xl text-center border border-white/20">
+                  <div className="text-sm font-extrabold">{name(sel)}</div>
+                  <div className="flex items-center justify-center gap-1 text-xs font-bold text-accent mt-0.5"><Footprints size={12} />{walkMin(sel.d)} {t.min} {t.walk} · {fmt(sel.d)}</div>
+                </div>
               </div>
 
-              {/* Tanlangan obyekt yorlig'i */}
-              {sel && (
-                <div
-                  className="absolute z-30 pointer-events-none -translate-x-1/2 transition-all duration-300"
-                  style={{ left: `${50 + sel.pos.x * 50}%`, top: `calc(${50 + sel.pos.y * 50}% + 24px)` }}
-                >
-                  <div className="whitespace-nowrap px-3.5 py-2 rounded-xl bg-white text-primary shadow-2xl text-center">
-                    <div className="text-xs font-extrabold">{sel.name[lang] || sel.name.uz}</div>
-                    <div className="text-[11px] font-bold text-accent">{fmt(sel.d)} · {walkMin(sel.d)} {t.min} {t.walk}</div>
-                  </div>
+              {/* Ofis */}
+              <div className="absolute z-[5] -translate-x-1/2 -translate-y-2 pointer-events-none" style={center}>
+                <div className="flex flex-col items-center">
+                  <span className="relative w-4 h-4 rounded-full bg-accent border-[3px] border-white shadow">
+                    <span className="absolute inset-0 rounded-full bg-accent/60 animate-ping" />
+                  </span>
+                  <span className="mt-0.5 w-0 h-0 border-x-[7px] border-x-transparent border-b-[8px] border-b-accent" />
+                  <div className="whitespace-nowrap rounded-xl bg-accent text-primary px-3 py-1.5 text-xs md:text-sm font-extrabold shadow-xl flex items-center gap-1"><MapPin size={14} />{t.office}</div>
                 </div>
-              )}
+              </div>
+
+              <div className="absolute bottom-2 right-3 z-10 text-[9px] text-black/55 bg-white/70 rounded px-1.5">© OpenStreetMap</div>
             </div>
-            <p className="mt-6 text-center text-[11px] text-white/40">{t.note}</p>
           </motion.div>
         </div>
 

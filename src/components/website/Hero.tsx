@@ -93,7 +93,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
   const mediaScale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -160]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const shade = useTransform(scrollYProgress, [0, 1], [0.12, 0.7]);
+  const shade = useTransform(scrollYProgress, [0, 1], [0.04, 0.7]);
 
   const heroText: Record<Locale, { tag: string; title2: string; desc: string; btn2: string; scroll: string }> = {
     uz: {
@@ -159,8 +159,8 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
       >
         <motion.div
           className="absolute inset-0"
-          initial={{ scale: 1.08 }}
-          animate={{ scale: started ? 1 : 1.08 }}
+          initial={{ scale: 1.04 }}
+          animate={{ scale: started ? 1 : 1.04 }}
           transition={{ duration: 2.4, ease: EASE }}
         >
           {useVideo ? (
@@ -202,9 +202,9 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
       {/* Qorong'ilashtirish + kino "vinyetka" */}
       <motion.div className="absolute inset-0 z-0 bg-black pointer-events-none" style={{ opacity: shade }} />
       {/* Yengil qatlamlar: video yorqin va tiniq ko'rinsin — matn ortida faqat yumshoq soya */}
-      <div className="absolute inset-0 z-0 pointer-events-none [background:radial-gradient(ellipse_55%_45%_at_50%_50%,rgba(0,0,0,0.42),transparent_100%)]" />
+      <div className="absolute inset-0 z-0 pointer-events-none [background:radial-gradient(ellipse_50%_40%_at_50%_50%,rgba(0,0,0,0.3),transparent_100%)]" />
       <div className="absolute inset-x-0 top-0 h-32 z-0 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 h-[40%] z-0 bg-gradient-to-t from-primary via-primary/75 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-[26%] z-0 bg-gradient-to-t from-[#011f1f] via-[#011f1f]/45 to-transparent pointer-events-none" />
 
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}

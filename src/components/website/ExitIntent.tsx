@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X, Zap } from 'lucide-react';
+import { X, Zap, Home } from 'lucide-react';
 
 /*
   Chiqib ketishdan oldin — "30 soniyada uyingizni toping" taklifi (sessiyada 1 marta).
@@ -71,7 +71,7 @@ export default function ExitIntent({ lang }: { lang: string }) {
             className="relative w-full max-w-md rounded-[28px] bg-primary text-white p-8 text-center shadow-2xl border border-white/10"
           >
             <button onClick={() => setOpen(false)} aria-label="Yopish" className="absolute top-4 right-4 text-white/50 hover:text-white"><X size={22} /></button>
-            <div className="mx-auto w-16 h-16 rounded-2xl bg-accent text-primary flex items-center justify-center text-3xl">🏠</div>
+            <div className="mx-auto w-16 h-16 rounded-2xl bg-accent text-primary flex items-center justify-center"><Home size={30} /></div>
             <h3 className="mt-5 text-3xl font-extrabold tracking-tight">{t.title}</h3>
             <p className="mt-3 text-white/75 leading-relaxed">{t.sub}</p>
             <button onClick={go} className="mt-7 w-full inline-flex items-center justify-center gap-2 py-4 rounded-2xl bg-accent text-primary font-extrabold hover:bg-white transition-colors">
