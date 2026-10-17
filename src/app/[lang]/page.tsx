@@ -16,6 +16,8 @@ import { Locale, getDictionary } from '@/lib/dictionaries';
 import AnimatedReveal from '@/components/website/AnimatedReveal';
 import CinemaScroll from '@/components/website/CinemaScroll';
 import BuildStory from '@/components/website/BuildStory';
+import HomeQuest from '@/components/website/HomeQuest';
+import BuySteps from '@/components/website/BuySteps';
 import VelocityMarquee from '@/components/website/VelocityMarquee';
 import { PaymentTerms, Timeline, Testimonials, SocialStrip } from '@/components/website/VohaStory';
 import VohaLogo from '@/components/common/VohaLogo';
@@ -113,6 +115,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </AnimatedReveal>
       )}
       <SocialStrip lang={localeLang} />
+      <BuySteps lang={localeLang} />
+      <HomeQuest lang={localeLang} />
       {settings.show_contact !== 'false' && (
         <AnimatedReveal>
           <ContactSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />

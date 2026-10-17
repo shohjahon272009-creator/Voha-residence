@@ -27,8 +27,8 @@ async function compress(buffer: Buffer, type: string): Promise<{ buffer: Buffer;
     const sharp = (await import('sharp')).default;
     const out = await sharp(buffer)
       .rotate() // telefon rasmidagi EXIF burilishini to'g'rilaydi
-      .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
-      .webp({ quality: 78 })
+      .resize({ width: 2048, height: 2048, fit: 'inside', withoutEnlargement: true }) // 2048: katta ekranlarda tiniqroq (avval 1600); base64 zaxirada sahifa og'irlashmasligi uchun 2560 emas
+      .webp({ quality: 82 })
       .toBuffer();
     if (out.length < buffer.length) return { buffer: out, type: 'image/webp', ext: 'webp' };
   } catch { /* sharp yo'q yoki rasm emas — asl holicha qoladi */ }

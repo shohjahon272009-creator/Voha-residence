@@ -8,6 +8,7 @@ import VirtualTour from '@/components/website/VirtualTour';
 import ProjectStatusBadge from '@/components/website/ProjectStatusBadge';
 import ProjectGallery from '@/components/website/ProjectGallery';
 import PageHero from '@/components/website/PageHero';
+import BuySteps from '@/components/website/BuySteps';
 import { getProjectBySlug, getApartments } from '@/lib/actions';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import { notFound } from 'next/navigation';
@@ -182,6 +183,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             </div>
          </div>
       </section>
+      <BuySteps lang={lang} />
     </WebsiteLayout>
   );
 }

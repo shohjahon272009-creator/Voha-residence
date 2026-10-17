@@ -100,21 +100,21 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
       tag: 'Premium Toifadagi Turar-Joy Majmuasi',
       title2: 'Kelajagingiz uchun betakror maskan',
       desc: 'Mukammal arxitektura va zamonaviy yechimlar uyg\'unligi. O\'zingiz va oilangiz uchun Xorazmning eng prestijli nuqtasida chinakam qulaylikni kashf eting.',
-      btn2: 'Loyiha bilan tanishish',
+      btn2: 'Uyingizni toping',
       scroll: 'Pastga suring',
     },
     ru: {
       tag: 'Жилой Комплекс Премиум Класса',
       title2: 'Неповторимое пространство для вашего будущего',
       desc: 'Гармония совершенной архитектуры и современных решений. Откройте для себя истинный комфорт в самой престижной точке Хорезма.',
-      btn2: 'Ознакомиться с проектом',
+      btn2: 'Найти свою квартиру',
       scroll: 'Листайте вниз',
     },
     en: {
       tag: 'Premium Class Residential Complex',
       title2: 'A unique space for your future',
       desc: 'The harmony of perfect architecture and modern solutions. Discover true comfort in the most prestigious location of Khorezm.',
-      btn2: 'Explore Projects',
+      btn2: 'Find your home',
       scroll: 'Scroll down',
     },
   };
@@ -264,7 +264,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
             <span className="relative">{dict.hero.details}</span>
             <ArrowRight size={17} className="relative transition-transform group-hover:translate-x-1" />
           </a>
-          <a href={`/${lang}#projects`} className="group px-7 md:px-10 py-3.5 md:py-4 bg-white/5 text-white font-bold rounded-full border border-white/30 hover:bg-white hover:text-primary transition-all duration-500 inline-flex items-center gap-2 text-sm md:text-base">
+          <a href={`/${lang}#uy-tanlash`} className="group px-7 md:px-10 py-3.5 md:py-4 bg-white/5 text-white font-bold rounded-full border border-white/30 hover:bg-white hover:text-primary transition-all duration-500 inline-flex items-center gap-2 text-sm md:text-base">
             {t.btn2}
             <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
           </a>

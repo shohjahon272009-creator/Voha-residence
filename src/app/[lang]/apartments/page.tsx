@@ -2,6 +2,8 @@ import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import ApartmentAndPayment from '@/components/website/ApartmentAndPayment';
 import PageHero from '@/components/website/PageHero';
+import HomeQuest from '@/components/website/HomeQuest';
+import BuySteps from '@/components/website/BuySteps';
 import { getProjects, getApartments } from '@/lib/actions';
 import { Locale } from '@/lib/dictionaries';
 import db from '@/lib/db';
@@ -54,6 +56,8 @@ export default async function ApartmentsPage({ params }: { params: Promise<{ lan
           }}
         />
       </div>
+      <HomeQuest lang={localeLang} />
+      <BuySteps lang={localeLang} />
     </WebsiteLayout>
   );
 }

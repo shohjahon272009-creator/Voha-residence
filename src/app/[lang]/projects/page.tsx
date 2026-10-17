@@ -2,6 +2,7 @@ import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import ProjectsList from '@/components/website/ProjectsList';
 import PageHero from '@/components/website/PageHero';
+import BuySteps from '@/components/website/BuySteps';
 import { Locale } from '@/lib/dictionaries';
 import { getProjects } from '@/lib/actions';
 import db from '@/lib/db';
@@ -41,6 +42,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       <div className="bg-brand-mesh">
         <ProjectsList lang={localeLang} companyName={companyName} />
       </div>
+      <BuySteps lang={localeLang} />
     </WebsiteLayout>
   );
 }

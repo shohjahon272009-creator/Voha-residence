@@ -8,6 +8,7 @@ import Navbar from '../common/Navbar';
 import VohaLogo from '@/components/common/VohaLogo';
 import IntroScreen from './IntroScreen';
 import SmoothScroll from './SmoothScroll';
+import ExitIntent from './ExitIntent';
 import CinemaEnhancer from './CinemaEnhancer';
 import { FooterCTA, FooterBigType } from './FooterCinema';
 import { Locale } from '@/lib/dictionaries';
@@ -77,6 +78,7 @@ export default function WebsiteLayout({
       <SmoothScroll />
       <CinemaEnhancer />
       <IntroScreen />
+      <ExitIntent lang={lang} />
       <Navbar lang={lang} />
       <main>{children}</main>
       <FooterCTA lang={lang} />
