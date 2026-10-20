@@ -4,7 +4,7 @@ import ProjectsList from '@/components/website/ProjectsList';
 import PageHero from '@/components/website/PageHero';
 import BuySteps from '@/components/website/BuySteps';
 import { Locale } from '@/lib/dictionaries';
-import { getProjects } from '@/lib/actions';
+import { getPublicProjects } from '@/lib/actions';
 import db from '@/lib/db';
 import type { Metadata } from 'next';
 import { pageMetadata, PAGE_SEO } from '@/lib/seo';
@@ -25,7 +25,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
   const companyName = settings.company_name || 'Voha Residence';
 
   // Banner slideri uchun loyiha rasmlari
-  const bannerImages = (await getProjects())
+  const bannerImages = (await getPublicProjects())
     .map((p) => p.main_image)
     .filter((img): img is string => Boolean(img))
     .slice(0, 8);

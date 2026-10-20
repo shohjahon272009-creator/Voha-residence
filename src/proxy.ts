@@ -11,17 +11,19 @@ export async function proxy(req: NextRequest) {
   }
 
   if (pathname.startsWith('/admin')) {
+    // Admin layout yo'lni bilishi uchun (bekor qilingan sessiyada login'ga qaytarish)
+    const headers = new Headers(req.headers);
+    headers.set('x-pathname', pathname);
+
+    // Login sahifasi doim ochiq. Imzosi to'g'ri, lekin bekor qilingan (eski versiya) token bilan
+    // dashboard'ga yo'naltirsak, layout yana login'ga qaytarib — cheksiz aylanish bo'lardi.
+    if (pathname === '/admin/login') return NextResponse.next({ request: { headers } });
+
+    // Bu yerda faqat imzo va muddat (bazasiz). Sessiya bekor qilinganmi — admin layout va
+    // requireAdmin bazadagi session_version bilan tekshiradi.
     const userId = await verifySessionToken(req.cookies.get(SESSION_COOKIE)?.value);
-
-    if (pathname === '/admin/login') {
-      if (userId) return NextResponse.redirect(new URL('/admin/dashboard', req.url));
-      return NextResponse.next();
-    }
-
-    if (!userId) {
-      const loginUrl = new URL('/admin/login', req.url);
-      return NextResponse.redirect(loginUrl);
-    }
+    if (!userId) return NextResponse.redirect(new URL('/admin/login', req.url));
+    return NextResponse.next({ request: { headers } });
   }
 
   // Til sahifalari: root layout <html lang> ni to'g'ri qo'yishi uchun tilni header'da uzatamiz

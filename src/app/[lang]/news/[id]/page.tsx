@@ -8,6 +8,7 @@ import WebsiteLayout from '@/components/website/WebsiteLayout';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import { Newspaper, ArrowLeft, Calendar } from 'lucide-react';
 import db from '@/lib/db';
+import { publicNewsMedia } from '@/lib/media';
 import { redirect } from 'next/navigation';
 import PageHero from '@/components/website/PageHero';
 import type { Metadata } from 'next';
@@ -49,7 +50,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ lan
   
   const title = newsItem[`title_${localeLang}`] || newsItem.title_uz;
   const content = newsItem[`content_${localeLang}`] || newsItem.content_uz;
-  const image = newsItem.image || null;
+  const image = publicNewsMedia(newsItem).image || null;
 
   return (
     <WebsiteLayout lang={localeLang}>

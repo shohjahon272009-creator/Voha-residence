@@ -2,9 +2,10 @@ Multi-language (UZ/RU/EN) real-estate website + admin panel for a construction c
 
 ## Admin panel & authentication
 
-- The admin area lives under `/admin/*` and is protected by `src/middleware.ts`. Unauthenticated visitors are redirected to `/admin/login`.
+- The admin area lives under `/admin/*`. Unauthenticated visitors are redirected to `/admin/login`.
 - Sessions are HMAC-signed, `httpOnly` cookies (see `src/lib/session.ts`). Passwords are stored salted+hashed with scrypt (`src/lib/password.ts`).
-- **Default credentials** (seeded on first run): `admin@qurilish.uz` / `admin123`. Change the password after the first login.
+- **First admin** is seeded on first run when the users table is empty: email `INITIAL_ADMIN_EMAIL` (default `admin@qurilish.uz`), password from `INITIAL_ADMIN_PASSWORD`. In production no admin is created unless that env var is set; locally it falls back to `admin123`.
+- The admin area is guarded by `src/proxy.ts` (Next 16 replacement for middleware).
 - Set `AUTH_SECRET` in `.env.local` to a long random string — it signs the session cookies. A throwaway value is generated for local dev; production **must** set its own:
 
   ```bash

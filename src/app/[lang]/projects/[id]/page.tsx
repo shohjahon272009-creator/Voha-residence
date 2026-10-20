@@ -9,7 +9,7 @@ import ProjectStatusBadge from '@/components/website/ProjectStatusBadge';
 import ProjectGallery from '@/components/website/ProjectGallery';
 import PageHero from '@/components/website/PageHero';
 import BuySteps from '@/components/website/BuySteps';
-import { getProjectBySlug, getApartments } from '@/lib/actions';
+import { getPublicProjectBySlug, getApartments } from '@/lib/actions';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import { notFound } from 'next/navigation';
 import { MapPin, CheckCircle } from 'lucide-react';
@@ -22,7 +22,7 @@ export const dynamic = 'force-dynamic';
 // Har bir loyiha uchun alohida SEO (sarlavha + tavsif + OG rasm)
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; id: string }> }): Promise<Metadata> {
   const { lang, id } = await params;
-  const project = await getProjectBySlug(parseInt(id));
+  const project = await getPublicProjectBySlug(parseInt(id));
   if (!project) return { title: 'Loyiha topilmadi — Voha Residence' };
   const name = (project as unknown as Record<string, string>)[`name_${lang}`] || project.name_uz;
   const city = project.city || 'Xorazm';
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ lang: string, id: string }> }) {
   const { lang, id } = await params;
-  const project = await getProjectBySlug(parseInt(id));
+  const project = await getPublicProjectBySlug(parseInt(id));
   const apartments = await getApartments(parseInt(id));
 
   if (!project) return notFound();

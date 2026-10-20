@@ -9,6 +9,7 @@ import { Locale, getDictionary } from '@/lib/dictionaries';
 import { Newspaper } from 'lucide-react';
 import PageHero from '@/components/website/PageHero';
 import db from '@/lib/db';
+import { publicNewsMedia } from '@/lib/media';
 import type { Metadata } from 'next';
 import { pageMetadata, PAGE_SEO } from '@/lib/seo';
 
@@ -38,7 +39,7 @@ export default async function NewsPage({ params }: { params: Promise<{ lang: str
     ),
     title: item[`title_${localeLang}`] || item.title_uz,
     desc: item[`content_${localeLang}`] || item.content_uz,
-    image: item.image || null
+    image: publicNewsMedia(item).image || null
   }));
 
   return (

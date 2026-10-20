@@ -11,10 +11,23 @@ import AdminLayoutClient from '@/components/admin/AdminLayoutClient';
 import VohaLogo from '@/components/common/VohaLogo';
 import GlobalSearch from '@/components/admin/GlobalSearch';
 import db from '@/lib/db';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { getAdminId } from '@/lib/requireAdmin';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  // Kirish sahifasi ham shu layout ichida. Sessiyasiz (yoki bekor qilingan sessiya bilan) hech qanday
+  // admin ma'lumoti (mijoz ismlari, bildirishnomalar) hisoblanmasin va brauzerga yuborilmasin.
+  if (!(await getAdminId())) {
+    const path = (await headers()).get('x-pathname') || '';
+    if (path && path !== '/admin/login') redirect('/admin/login');
+    return <>{children}</>;
+  }
+  // Haqiqiy sessiya bilan login sahifasiga kelsa — to'g'ri panelga
+  if ((await headers()).get('x-pathname') === '/admin/login') redirect('/admin/dashboard');
+
   // Fetch unread counts (both New and Under Review)
   const bookingsCountRow = await db.prepare("SELECT COUNT(*) as c FROM bookings WHERE status IN ('Yangi', 'Ko''rib chiqilmoqda') AND apartment_id IS NOT NULL").get() as { c: number };
   const inquiriesCountRow = await db.prepare("SELECT COUNT(*) as c FROM bookings WHERE status = 'Yangi' AND apartment_id IS NULL").get() as { c: number };

@@ -89,6 +89,9 @@ function getBackend(): Promise<Backend> {
     return backend;
   })();
   globalForDb.__qurilishBackend = p;
+  // Vaqtinchalik xato (tarmoq, Turso) bo'lsa keshdan o'chiramiz — aks holda bu server nusxasi
+  // keyingi barcha so'rovlarda ham o'sha rad etilgan promise'ni qaytarib, 500 berardi.
+  p.catch(() => { if (globalForDb.__qurilishBackend === p) globalForDb.__qurilishBackend = undefined; });
   return p;
 }
 
@@ -138,11 +141,20 @@ const TABLE_DDLS = [
   `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT);`,
 ];
 
-async function ensureColumn(b: Backend, table: string, column: string, definition: string) {
+// Ustun yo'q bo'lsa qo'shadi; yangi qo'shilgan bo'lsa true qaytaradi (bir martalik to'ldirish uchun)
+async function ensureColumn(b: Backend, table: string, column: string, definition: string): Promise<boolean> {
   const cols = await b.all(`PRAGMA table_info(${table})`, []);
   if (!cols.some((c) => c.name === column)) {
-    await b.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    try {
+      await b.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    } catch (e) {
+      // Bir vaqtda ishga tushgan boshqa server nusxasi ustunni allaqachon qo'shgan — bu xato emas
+      if (/duplicate column/i.test(String((e as Error)?.message))) return false;
+      throw e;
+    }
+    return true;
   }
+  return false;
 }
 
 async function initSchema(b: Backend): Promise<void> {
@@ -158,14 +170,34 @@ async function initSchema(b: Backend): Promise<void> {
   // Loyiha "sotib tugatilgan" bayrog'i — endi xonadon holatidan emas, admin belgilaydi
   await ensureColumn(b, 'projects', 'is_sold_out', 'INTEGER DEFAULT 0');
   await ensureColumn(b, 'apartments', 'image', 'TEXT');
+  // Sessiyani bekor qilish uchun: parol almashtirilsa yoki chiqilsa oshiriladi
+  await ensureColumn(b, 'users', 'session_version', 'INTEGER DEFAULT 0');
+  // Rasm bor-yo'qligi bayroqlari: ro'yxatlarda katta base64 ustunlarni (75 MB+) o'qimaslik uchun.
+  // Bir marta to'ldiriladi, keyin adminActions yozganda yangilaydi.
+  const addedPlan = await ensureColumn(b, 'apartments', 'has_plan', 'INTEGER DEFAULT 0');
+  const addedPhoto = await ensureColumn(b, 'apartments', 'has_photo', 'INTEGER DEFAULT 0');
+  if (addedPlan || addedPhoto) {
+    await b.run(
+      'UPDATE apartments SET has_plan = (COALESCE(LENGTH(plan_image), 0) > 0), has_photo = (COALESCE(LENGTH(image), 0) > 0)',
+      [],
+    );
+  }
   // Spamga qarshi limit uchun — so'rov qaysi IP'dan kelgani
   await ensureColumn(b, 'bookings', 'ip', 'TEXT');
 
   const users = await b.get('SELECT count(*) as count FROM users', []);
   if (Number((users as Row)?.count) > 0) return;
 
+  // Birinchi admin: parol env'dan (INITIAL_ADMIN_PASSWORD). Production'da env bo'lmasa — hech kim yaratilmaydi:
+  // ochiq repoda yozilgan "admin123" bilan istalgan odam kira olardi. Lokal ishlab chiqishda — admin123.
+  const initialPassword =
+    process.env.INITIAL_ADMIN_PASSWORD || (process.env.NODE_ENV === 'production' ? '' : 'admin123');
+  if (!initialPassword) {
+    console.error("Foydalanuvchilar jadvali bo'sh: INITIAL_ADMIN_PASSWORD env'ini o'rnating va qayta ishga tushiring.");
+    return;
+  }
   await b.run('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [
-    'Admin', 'admin@qurilish.uz', hashPassword('admin123'), 'superadmin',
+    'Admin', process.env.INITIAL_ADMIN_EMAIL || 'admin@qurilish.uz', hashPassword(initialPassword), 'superadmin',
   ]);
   const projects = [
     { name_uz: 'Oltin Vodiy', name_ru: 'Золотая Долина', name_en: 'Golden Valley', address: 'Amir Temur ko\'chasi', city: 'Xorazm', district: 'Urganch', status: 'Jarayonda', min_price: 800000000, total_floors: 12 },

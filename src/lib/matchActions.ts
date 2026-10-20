@@ -40,7 +40,7 @@ const FLOOR: Record<QuestAnswers['floor'], [number, number]> = { low: [1, 3], mi
 const READY = ['Topshirilgan', 'Sanoqli kunlar qoldi'];
 
 // Bo'sh xonadonlar ro'yxati — 60 soniya keshda (har o'yinda bazani qayta o'qimaslik uchun).
-// plan_image — base64 (katta) ustun: uni o'qimaymiz, faqat turini tekshiramiz (typeof() qiymatni yuklamaydi).
+// plan_image — base64 (katta) ustun: uni o'qimaymiz, has_plan bayrog'idan foydalanamiz.
 type Snapshot = { at: number; rows: Record<string, unknown>[]; settings: Record<string, string> };
 let snapshot: Snapshot | null = null;
 const TTL_MS = 60_000;
@@ -49,7 +49,7 @@ async function loadSnapshot(): Promise<Snapshot> {
   if (snapshot && Date.now() - snapshot.at < TTL_MS) return snapshot;
   const rows = (await db.prepare(`
     SELECT a.id, a.project_id, a.floor, a.number, a.rooms, a.area, a.price_cash,
-           (typeof(a.plan_image) = 'text') AS has_plan,
+           a.has_plan,
            p.name_uz, p.status AS pstatus, p.categories
     FROM apartments a JOIN projects p ON p.id = a.project_id
     WHERE a.status = ? AND COALESCE(p.is_sold_out, 0) = 0

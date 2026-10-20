@@ -53,8 +53,8 @@ export async function addApartment(formData: FormData) {
     }
   }
 
-  await db.prepare(`INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, price_installment, status, plan_image, image, orientation, note)
-    VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?, '', '', '')`).run(project_id, floor, number, rooms, area, price_cash, status, planUrl);
+  await db.prepare(`INSERT INTO apartments (project_id, floor, number, rooms, area, price_cash, price_installment, status, plan_image, image, orientation, note, has_plan, has_photo)
+    VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?, '', '', '', ?, 0)`).run(project_id, floor, number, rooms, area, price_cash, status, planUrl, planUrl ? 1 : 0);
 
   revalidatePath('/admin/apartments');
   revalidatePath('/admin/dashboard');
@@ -470,12 +470,12 @@ export async function updateApartment(id: number, formData: FormData) {
   }
 
   if (planUrl) {
-    updateFields.push('plan_image = ?');
+    updateFields.push('plan_image = ?', 'has_plan = 1');
     updateValues.push(planUrl);
   }
   
   if (regularImageUrl) {
-    updateFields.push('image = ?');
+    updateFields.push('image = ?', 'has_photo = 1');
     updateValues.push(regularImageUrl);
   }
 
@@ -578,8 +578,16 @@ export async function updateBookingStatus(formData: FormData) {
     } else {
       await db.prepare("UPDATE apartments SET status = 'Bronlangan' WHERE id = ?").run(booking.apartment_id);
     }
-  } else if (status === 'Bekor qilingan' && booking.apartment_id) {
-    await db.prepare("UPDATE apartments SET status = ? WHERE id = ?").run("Bo'sh", booking.apartment_id);
+  } else if (status === 'Bekor qilingan' && booking.apartment_id && booking.status === 'Tasdiqlangan') {
+    // Faqat SHU ariza xonadonni band qilgan bo'lsa bo'shatamiz. Oddiy so'rov (narx, ko'rish) bekor
+    // qilinsa yoki xonadon boshqa tasdiqlangan ariza/sotuv bilan band bo'lsa — holat o'zgarmaydi
+    // (aks holda sotilgan uy saytda yana "Bo'sh" bo'lib, ikki marta sotilishi mumkin edi).
+    const other = await db.prepare(
+      "SELECT count(*) AS c FROM bookings WHERE apartment_id = ? AND id <> ? AND status = 'Tasdiqlangan'"
+    ).get(booking.apartment_id, id) as { c: number } | undefined;
+    if (!Number(other?.c)) {
+      await db.prepare("UPDATE apartments SET status = ? WHERE id = ?").run("Bo'sh", booking.apartment_id);
+    }
   }
 
   revalidatePath('/admin');

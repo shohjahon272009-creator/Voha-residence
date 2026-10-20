@@ -43,9 +43,11 @@ function timingSafeEqual(a: string, b: string): boolean {
   return result === 0;
 }
 
-export async function createSessionToken(userId: number): Promise<string> {
+// Token: userId.version.expires.signature. version — users.session_version: parol almashtirilganda
+// yoki chiqilganda oshiriladi va eski tokenlar requireAdmin'da (bazaga solishtirib) bekor bo'ladi.
+export async function createSessionToken(userId: number, version = 0): Promise<string> {
   const expires = Date.now() + SESSION_MAX_AGE * 1000;
-  const payload = `${userId}.${expires}`;
+  const payload = `${userId}.${version}.${expires}`;
   const secret = getSecret();
   if (!secret) throw new Error("AUTH_SECRET o'rnatilmagan");
   const key = await importKey(secret);
@@ -53,14 +55,14 @@ export async function createSessionToken(userId: number): Promise<string> {
   return `${payload}.${toBase64Url(signature)}`;
 }
 
-/** Returns the userId if the token is valid and unexpired, otherwise null. */
-export async function verifySessionToken(token: string | undefined): Promise<number | null> {
+/** Imzo va muddatni tekshiradi (bazasiz — proxy uchun). Versiyani requireAdmin bazaga solishtiradi. */
+export async function verifySessionPayload(token: string | undefined): Promise<{ userId: number; version: number } | null> {
   if (!token) return null;
   const parts = token.split('.');
-  if (parts.length !== 3) return null;
+  if (parts.length !== 4) return null;
 
-  const [userId, expires, signature] = parts;
-  const payload = `${userId}.${expires}`;
+  const [userId, version, expires, signature] = parts;
+  const payload = `${userId}.${version}.${expires}`;
   const secret = getSecret();
   if (!secret) return null;
   const key = await importKey(secret);
@@ -70,5 +72,11 @@ export async function verifySessionToken(token: string | undefined): Promise<num
   if (Date.now() > Number(expires)) return null;
 
   const id = Number(userId);
-  return Number.isFinite(id) ? id : null;
+  const ver = Number(version);
+  return Number.isFinite(id) && Number.isFinite(ver) ? { userId: id, version: ver } : null;
+}
+
+/** Returns the userId if the token signature is valid and unexpired, otherwise null. */
+export async function verifySessionToken(token: string | undefined): Promise<number | null> {
+  return (await verifySessionPayload(token))?.userId ?? null;
 }

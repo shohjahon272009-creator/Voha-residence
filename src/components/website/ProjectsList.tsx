@@ -5,13 +5,13 @@
  
 import React from 'react';
 import ProjectCard from './ProjectCard';
-import { getProjects } from '@/lib/actions';
+import { getPublicProjects } from '@/lib/actions';
 import { Locale } from '@/lib/dictionaries';
 import AnimatedReveal from './AnimatedReveal';
 import VohaLogo from '@/components/common/VohaLogo';
 
 export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPANIYA', limit }: { lang: Locale, companyName?: string, limit?: number }) {
-  const projects = await getProjects();
+  const projects = await getPublicProjects();
   // "Sotib tugatilgan" endi xonadon holatidan emas, admin belgilagan loyiha bayrog'idan
   // ('is_sold_out'). Xonadon holati/inventar mijozga umuman yuborilmaydi.
   const allCards = projects.map(p => {

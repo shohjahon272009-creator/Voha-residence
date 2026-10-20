@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
-import { SESSION_COOKIE, verifySessionToken } from './session';
+import db from './db';
+import { SESSION_COOKIE, verifySessionPayload } from './session';
 
 /*
   Admin sessiyasini tekshiradi. proxy.ts faqat /admin SAHIFALARINI to'sadi —
@@ -8,7 +9,14 @@ import { SESSION_COOKIE, verifySessionToken } from './session';
 */
 export async function getAdminId(): Promise<number | null> {
   const cookieStore = await cookies();
-  return verifySessionToken(cookieStore.get(SESSION_COOKIE)?.value);
+  const s = await verifySessionPayload(cookieStore.get(SESSION_COOKIE)?.value);
+  if (!s) return null;
+  // Foydalanuvchi hali mavjudmi va token eskirmaganmi (parol almashtirilgan / chiqilgan bo'lsa versiya oshgan)
+  const u = await db.prepare('SELECT session_version FROM users WHERE id = ?').get(s.userId) as
+    | { session_version: number | null }
+    | undefined;
+  if (!u || Number(u.session_version || 0) !== s.version) return null;
+  return s.userId;
 }
 
 export async function requireAdmin(): Promise<number> {

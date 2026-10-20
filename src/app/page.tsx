@@ -3,7 +3,7 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Hero from '@/components/website/Hero';
-import { getProjects, getApartments } from '@/lib/actions';
+import { getPublicProjects, getApartments } from '@/lib/actions';
 import ProjectsList from '@/components/website/ProjectsList';
 import ApartmentAndPayment from '@/components/website/ApartmentAndPayment';
 import AboutSection from '@/components/website/AboutSection';
@@ -23,7 +23,7 @@ export default async function RootPage() {
   const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
   const companyName = settings.company_name || 'Qurilish';
 
-  const allProjects = await getProjects();
+  const allProjects = await getPublicProjects();
   const heroImages = allProjects
     .map((p) => p.main_image)
     .filter((img): img is string => Boolean(img))

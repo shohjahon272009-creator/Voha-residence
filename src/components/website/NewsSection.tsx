@@ -7,6 +7,7 @@ import React from 'react';
 import { Locale } from '@/lib/dictionaries';
 import { ArrowRight, Newspaper } from 'lucide-react';
 import db from '@/lib/db';
+import { publicNewsMedia } from '@/lib/media';
 import AnimatedReveal from './AnimatedReveal';
 
 export default async function NewsSection({ lang }: { lang: Locale }) {
@@ -27,7 +28,7 @@ export default async function NewsSection({ lang }: { lang: Locale }) {
     ),
     title: item[`title_${lang}`] || item.title_uz,
     desc: item[`content_${lang}`] || item.content_uz,
-    image: item.image || '/cinema/stills/life-1.webp'
+    image: publicNewsMedia(item).image || '/cinema/stills/life-1.webp'
   }));
 
   if (news.length === 0) return null;

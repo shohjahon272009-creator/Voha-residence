@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Locale } from '@/lib/dictionaries';
 import { Calculator, Info, Phone, X, MousePointerClick } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { getApartmentPayment, PayResult } from '@/lib/paymentActions';
+import { getApartmentPayment, type PublicPay } from '@/lib/paymentActions';
 import { SelectedApartment } from '@/lib/types';
 
 // Kalkulyator BLOKKA qarab avtomatik hisoblaydi (gibrid yoki ipoteka) — server hal qiladi.
@@ -21,7 +21,7 @@ export default function MortgageCalculator({
 }) {
   const [downTier, setDownTier] = useState(15); // ipoteka boshlang'ich %
   const [years, setYears] = useState(5); // ipoteka muddati (yil)
-  const [srv, setSrv] = useState<(PayResult & { aptId: number }) | null>(null);
+  const [srv, setSrv] = useState<(PublicPay & { aptId: number }) | null>(null);
   // Narxi kiritilmagan xonadon (server null qaytaradi) — avval "…" abadiy aylanib turardi
   const [noPriceId, setNoPriceId] = useState<number | null>(null);
 
@@ -107,12 +107,11 @@ export default function MortgageCalculator({
                   {noPrice ? (
                     <div className="text-lg font-bold text-primary leading-snug mb-5">{T.noPrice}</div>
                   ) : (
-                    <div className="text-3xl font-black text-primary tracking-tight mb-5">{ready ? nf(srv!.monthly) : '…'} <span className="text-lg text-gray-400">UZS</span></div>
+                    <div className="text-3xl font-black text-primary tracking-tight mb-5">{ready ? `≈ ${nf(srv!.monthly)}` : '…'} <span className="text-lg text-gray-400">UZS</span></div>
                   )}
                   <div className="space-y-3 border-t-2 border-gray-100 pt-5 mb-6">
-                    <div className="flex justify-between text-sm"><span className="text-gray-500">{T.downRow}</span><span className="font-black text-primary">{ready ? nf(srv!.downAmount) : noPrice ? '—' : '…'}</span></div>
+                    <div className="flex justify-between text-sm"><span className="text-gray-500">{T.downRow}</span><span className="font-black text-primary">{ready ? (srv!.downFixed != null ? nf(srv!.downFixed) : `${srv!.downPct ?? 0}%`) : noPrice ? '—' : '…'}</span></div>
                     <div className="flex justify-between text-sm"><span className="text-gray-500">{T.termRow}</span><span className="font-black text-primary">{ready ? (srv!.mode === 'mortgage' ? `${srv!.months / 12} ${T.yr}` : `${srv!.months} ${T.mo}`) : noPrice ? '—' : '…'}</span></div>
-                    <div className="flex justify-between text-sm"><span className="text-gray-500">{T.remRow}</span><span className="font-black text-primary">{ready ? nf(srv!.remaining) : noPrice ? '—' : '…'}</span></div>
                     {ready && srv!.mode === 'mortgage' && srv!.rate != null && (
                       <div className="flex justify-between text-sm"><span className="text-gray-500">{T.rate}</span><span className="font-black text-primary">{srv!.rate}%</span></div>
                     )}

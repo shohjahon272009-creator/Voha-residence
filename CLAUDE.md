@@ -53,7 +53,12 @@ npm run build        # production build
   - redirects `/admin/*` to `/admin/login` if there is no session;
   - sets the `x-lang` header for the language, so the root layout can set `<html lang>`.
 - Public pages live in `src/app/[lang]/...` (`force-dynamic`, `dynamicParams = false`). Because of the rewrite, `src/app/page.tsx` is effectively never served.
-- Sessions use HMAC-signed cookies (`lib/session.ts`, `AUTH_SECRET`).
+- Sessions use HMAC-signed cookies (`lib/session.ts`, `AUTH_SECRET`). The token is `userId.version.expires.sig`.
+  - `proxy.ts` checks only the signature.
+  - `requireAdmin()`/`getAdminId()` and `app/admin/layout.tsx` compare `users.session_version` with the database. On logout or password change the version is incremented, which revokes every old session.
+  - Without a session, the admin layout renders only the login page and sends no admin data.
+- The first admin is seeded from `INITIAL_ADMIN_PASSWORD` (in production it is not created without that env var).
+- The login limit is 5 per IP+email and 50 per email (15 minutes).
 
 **Server actions: `src/lib/*Actions.ts`, `'use server'`.**
 - Every admin action must call `requireAdmin()` (`lib/requireAdmin.ts`).
@@ -70,6 +75,11 @@ npm run build        # production build
   - Order: Vercel Blob → local `public/uploads` → fallback: a base64 data URL in the DB.
   - Blob is currently private/not working, so new uploads land as **base64 in the DB**.
 - Apartment plans and photos are therefore never embedded in the page. They are served via `/api/apt-image/{id}?t=plan|photo`.
+  - Whether a picture exists comes from the `apartments.has_plan`/`has_photo` flag columns. Don't use `LENGTH(plan_image)`: it reads the whole blob.
+  - `adminActions` keeps these flags up to date; any new code that writes images must update them too.
+- Project and news images go the same way: public pages use `getPublicProjects()`/`getPublicProjectBySlug()` and `publicNewsMedia()`, which turn data URLs into `/api/media?...` addresses.
+  - Admin pages must use the raw `getProjects()`, because the value goes back into the form and gets saved again.
+  - `lib/media.ts` `serveStoredImage` serves only raster MIME types (SVG is rejected).
 - The `public/uploads/*.jpg` files are referenced by name from the DB. When improving a file, keep its name and the references keep working. These files were AI-upscaled to 2560px (Real-ESRGAN).
 
 **i18n.**

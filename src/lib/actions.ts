@@ -6,6 +6,7 @@
 import { cache } from 'react';
 import db from './db';
 import { Project, Apartment } from './types';
+import { publicProjectMedia } from './media';
 
 // Bazadagi JSON ro'yxat (gallery/amenities/categories). Buzilgan qiymat butun sahifani
 // 500 bilan yiqitmasin — bo'sh ro'yxat qaytaramiz.
@@ -44,6 +45,15 @@ export const getProjects = cache(async (): Promise<Project[]> => {
   }));
 });
 
+// Ommaviy sahifalar uchun: base64 rasmlar o'rniga /api/media manzillari (sahifa yengil bo'lsin).
+// Admin sahifalari getProjects()/getProjectBySlug() ning asl qiymatlaridan foydalanadi.
+export const getPublicProjects = cache(async (): Promise<Project[]> => (await getProjects()).map(publicProjectMedia));
+
+export const getPublicProjectBySlug = async (id: number): Promise<Project | null> => {
+  const p = await getProjectBySlug(id);
+  return p ? publicProjectMedia(p) : null;
+};
+
 export const getProjectBySlug = async (id: number): Promise<Project | null> => {
 
   const p = await db.prepare('SELECT * FROM projects WHERE id = ?').get(id) as any;
@@ -58,10 +68,10 @@ export const getProjectBySlug = async (id: number): Promise<Project | null> => {
 };
 
 // Yengil ustunlar: og'ir base64 rasmlarni (75 MB+) HECH QACHON to'plamda tortmaymiz.
-// Rasm bor-yo'qligini bilish uchun LENGTH() yetarli — rasmning o'zi /api/apt-image orqali beriladi.
+// Rasm bor-yo'qligi — has_plan/has_photo bayroqlaridan (LENGTH() har so'rovda butun rasmni o'qirdi).
+// Rasmning o'zi /api/apt-image orqali beriladi.
 const APT_LIST_COLS =
-  'id, project_id, floor, number, rooms, area, price_cash, price_installment, status, orientation, note, ' +
-  '(LENGTH(plan_image) > 0) AS has_plan, (LENGTH(image) > 0) AS has_photo';
+  'id, project_id, floor, number, rooms, area, price_cash, price_installment, status, orientation, note, has_plan, has_photo';
 
 // Har bir qatorni yengil ko'rinishga aylantiramiz: rasm o'rniga uni beruvchi manzil (URL).
 // Shunday qilib sahifa ichiga 75 MB base64 joylashmaydi — sayt qotmaydi.

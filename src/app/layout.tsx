@@ -109,7 +109,7 @@ export default async function RootLayout({
           <link rel="preconnect" href="https://khms1.googleapis.com" />
           <link rel="dns-prefetch" href="https://maps.googleapis.com" />
           <style dangerouslySetInnerHTML={{ __html: `:root { --color-primary: ${primaryColor}; --color-accent: ${accentColor}; }` }} />
-          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
        </head>
        <body className="antialiased font-inter">
         {children}
