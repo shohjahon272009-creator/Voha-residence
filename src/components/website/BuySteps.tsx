@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Search, Eye, FileSignature, KeyRound, ArrowRight } from 'lucide-react';
+import { onQuestLinkClick } from '@/lib/goToQuest';
 
 /*
   "Qanday sotib olinadi — 4 qadam". Faktlar rasmiy Telegram kanalidan:
@@ -58,7 +59,7 @@ export default function BuySteps({ lang }: { lang: string }) {
             </div>
             <h2 className="font-montserrat font-extrabold text-primary text-[clamp(2rem,5vw,4rem)] leading-[1.02] tracking-[-0.03em]">{t.title}</h2>
           </div>
-          <Link href={`/${lang}#uy-tanlash`} className="group inline-flex items-center gap-2 self-start md:self-auto px-7 py-4 rounded-full bg-primary text-white font-bold hover:bg-accent hover:text-primary transition-colors">
+          <Link href={`/${lang}#uy-tanlash`} onClick={onQuestLinkClick} className="group inline-flex items-center gap-2 self-start md:self-auto px-7 py-4 rounded-full bg-primary text-white font-bold hover:bg-accent hover:text-primary transition-colors">
             {t.cta}<ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>

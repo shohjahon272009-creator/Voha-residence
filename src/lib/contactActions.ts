@@ -90,6 +90,9 @@ export async function submitPriceRequest(formData: FormData) {
   const name = clip(formData.get('name'), 100) || 'Mijoz';
   const message = clip(formData.get('message'), 1000);
   const phone = normalizePhone(clip(formData.get('phone'), 40));
+  // "Uyingizni toping" o'yinidan — mijoz uyni ko'rishga yozilmoqda (narx so'rovi emas)
+  const viewing = formData.get('kind') === 'viewing';
+  const paymentType = viewing ? "Ko'rishga yozilish (o'yin)" : 'Narxini bilish';
 
   if (!apartmentId || !phone) return { success: false, error: "To'g'ri telefon raqamini kiritish shart" };
 
@@ -108,11 +111,12 @@ export async function submitPriceRequest(formData: FormData) {
 
     await db.prepare(`
       INSERT INTO bookings (apartment_id, client_name, client_phone, payment_type, note, status, ip)
-      VALUES (?, ?, ?, 'Narxini bilish', ?, 'Yangi', ?)
-    `).run(apartmentId, name, phone, message || null, ip);
+      VALUES (?, ?, ?, ?, ?, 'Yangi', ?)
+    `).run(apartmentId, name, phone, paymentType, message || null, ip);
 
     const aptInfo = `${aptDetails.project_name}, №${aptDetails.number} xonadon`;
-    await notifyTelegram(`💰 *Yangi so'rov (Narxini bilish)*\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n🏢 *Xonadon:* ${md(aptInfo)}`);
+    const title = viewing ? "🏠 *Ko'rishga yozilish (Uy tanlash o'yini)*" : "💰 *Yangi so'rov (Narxini bilish)*";
+    await notifyTelegram(`${title}\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n🏢 *Xonadon:* ${md(aptInfo)}${message ? `\n💬 *Izoh:* ${md(message)}` : ''}`);
 
     return { success: true };
   } catch (error) {

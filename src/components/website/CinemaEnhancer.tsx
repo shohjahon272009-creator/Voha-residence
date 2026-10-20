@@ -45,7 +45,8 @@ export default function CinemaEnhancer() {
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
 
     // Zaxira: IntersectionObserver ba'zan o'tkazib yuboradi (sahifa almashinuvi, juda tez scroll) —
-    // shunda element abadiy yashirin qolardi. Scroll paytida ekranga kirgan "pending"larni majburan ochamiz.
+    // shunda element abadiy yashirin qolardi. Ekranga kirgan "pending"larni majburan ochamiz:
+    // scroll, oyna o'lchami va sahifa balandligi o'zgarganda (scroll'siz siljish — rasm yuklanishi, o'yin bosqichi).
     let checkQueued = 0;
     const safety = () => {
       if (checkQueued) return;
@@ -59,6 +60,8 @@ export default function CinemaEnhancer() {
       }, 250);
     };
     window.addEventListener('scroll', safety, { passive: true });
+    window.addEventListener('resize', safety);
+    const ro = new ResizeObserver(safety);
 
     const scan = () => {
       const els = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR));
@@ -86,7 +89,7 @@ export default function CinemaEnhancer() {
       debounce = window.setTimeout(() => { cancelAnimationFrame(pending); pending = requestAnimationFrame(scan); }, 500);
     });
     const main = document.querySelector('main');
-    if (main) mo.observe(main, { childList: true, subtree: true });
+    if (main) { mo.observe(main, { childList: true, subtree: true }); ro.observe(main); }
 
     return () => {
       timers.forEach(clearTimeout);
@@ -95,6 +98,8 @@ export default function CinemaEnhancer() {
       mo.disconnect();
       io.disconnect();
       window.removeEventListener('scroll', safety);
+      window.removeEventListener('resize', safety);
+      ro.disconnect();
       clearTimeout(checkQueued);
       // Kuzatuvchi o'chdi — yashirin qolganlarni ko'rsatib qo'yamiz
       document.querySelectorAll<HTMLElement>('[data-cine="pending"]').forEach((el) => { el.dataset.cine = 'done'; });

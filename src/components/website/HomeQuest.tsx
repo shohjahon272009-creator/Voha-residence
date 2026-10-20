@@ -31,7 +31,7 @@ const TX = {
       { t: 'Qachon ko‘chmoqchisiz?', o: [['now', '🔑', 'Imkon qadar tez'], ['year', '📅', '1 yil ichida'], ['later', '🕰️', 'Shoshilmayman']] },
     ],
     pick: 'Bir nechtasini tanlang', resultTitle: 'Sizga eng mos uylar', match: 'mos', fast: 'Tez qaror! Siz {s} soniyada topdingiz',
-    floorW: 'qavat', roomsW: 'xona', perMonth: 'oyiga', months: 'oy', sum: "so'm", priceAsk: 'Narxi — so‘rov bo‘yicha',
+    floorW: 'qavat', roomsW: 'xona', perMonth: 'oyiga', sum: "so'm", priceAsk: 'Narxi — so‘rov bo‘yicha',
     reasons: { rooms: 'Oilangizga mos xonalar', budget: 'Byudjetingizga to‘g‘ri', floor: 'Siz xohlagan qavat', ready: 'Tayyor uy' } as Record<string, string>,
     book: 'Shu uyni ko‘rishga yozilish', name: 'Ismingiz', phone: '+998 __ ___ __ __', send: 'Yozilish', sent: 'Qabul qilindi! Menejerimiz tez orada qo‘ng‘iroq qiladi.',
     replay: 'Qayta o‘ynash', none: 'Hozir aniq mos bo‘sh xonadon topilmadi — menejerimiz siz uchun shaxsan tanlab beradi.', noneCta: 'Menga tanlab bering',
@@ -48,7 +48,7 @@ const TX = {
       { t: 'Когда хотите переехать?', o: [['now', '🔑', 'Как можно скорее'], ['year', '📅', 'В течение года'], ['later', '🕰️', 'Не спешу']] },
     ],
     pick: 'Выберите несколько', resultTitle: 'Самые подходящие для вас', match: 'совпадение', fast: 'Быстрое решение! Вы нашли за {s} сек',
-    floorW: 'этаж', roomsW: 'комн.', perMonth: 'в месяц', months: 'мес', sum: 'сум', priceAsk: 'Цена — по запросу',
+    floorW: 'этаж', roomsW: 'комн.', perMonth: 'в месяц', sum: 'сум', priceAsk: 'Цена — по запросу',
     reasons: { rooms: 'Комнаты под вашу семью', budget: 'Подходит по бюджету', floor: 'Желаемый этаж', ready: 'Готовый дом' } as Record<string, string>,
     book: 'Записаться на просмотр', name: 'Ваше имя', phone: '+998 __ ___ __ __', send: 'Записаться', sent: 'Принято! Наш менеджер скоро позвонит.',
     replay: 'Сыграть снова', none: 'Сейчас точного совпадения нет — менеджер подберёт квартиру лично для вас.', noneCta: 'Подберите мне',
@@ -65,7 +65,7 @@ const TX = {
       { t: 'When do you want to move?', o: [['now', '🔑', 'As soon as possible'], ['year', '📅', 'Within a year'], ['later', '🕰️', 'No rush']] },
     ],
     pick: 'Pick a few', resultTitle: 'Your best matches', match: 'match', fast: 'Quick decision! Found in {s} sec',
-    floorW: 'floor', roomsW: 'rooms', perMonth: '/month', months: 'mo', sum: 'UZS', priceAsk: 'Price on request',
+    floorW: 'floor', roomsW: 'rooms', perMonth: '/month', sum: 'UZS', priceAsk: 'Price on request',
     reasons: { rooms: 'Rooms fit your family', budget: 'Fits your budget', floor: 'Your preferred floor', ready: 'Ready home' } as Record<string, string>,
     book: 'Book a viewing', name: 'Your name', phone: '+998 __ ___ __ __', send: 'Book', sent: 'Got it! Our manager will call you shortly.',
     replay: 'Play again', none: 'No exact match right now — our manager will hand-pick one for you.', noneCta: 'Pick one for me',
@@ -149,9 +149,11 @@ export default function HomeQuest({ lang }: { lang: string }) {
     });
   };
 
+  // Menejer uchun o'qiladigan xulosa (doim o'zbekcha — menejer o'zbek tilida o'qiydi)
   const summary = () => {
-    const pr = (answers.priorities || []).join(', ') || '—';
-    return `Uy tanlash o'yini: ${answers.household}, byudjet ${answers.budget}, qavat ${answers.floor}, muhim: ${pr}, ko'chish: ${answers.when}`;
+    const lbl = (qi: number, v?: string) => TX.uz.q[qi].o?.find((o) => o[0] === v)?.[2] || '—';
+    const pr = (answers.priorities || []).map((k) => CATEGORIES.find((c) => c.key === k)?.label.uz || k).join(', ') || '—';
+    return `Uy tanlash o'yini: ${lbl(0, answers.household)}, oylik byudjet ${lbl(1, answers.budget)}, qavat ${lbl(2, answers.floor)}, muhim: ${pr}, ko'chish: ${lbl(4, answers.when)}`;
   };
 
   const sendLead = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -161,7 +163,8 @@ export default function HomeQuest({ lang }: { lang: string }) {
     const m = matches.find((x) => x.id === bookId);
     fd.set('message', `${summary()}${m ? ` | Tanlangan: ${m.project}, ${m.floor}-qavat, №${m.number}, mos ${m.score}%` : ''}`);
     try {
-      const res = m ? (fd.set('apartmentId', String(m.id)), await submitPriceRequest(fd)) : await submitContact(fd);
+      if (m) { fd.set('apartmentId', String(m.id)); fd.set('kind', 'viewing'); }
+      const res = m ? await submitPriceRequest(fd) : await submitContact(fd);
       if (res.success) setSent(true); else setErr(res.error || t.err);
     } catch { setErr(t.err); }
     setBusy(false);
@@ -284,7 +287,7 @@ export default function HomeQuest({ lang }: { lang: string }) {
                       <div className="relative aspect-[4/3] bg-[#f4efe4]">
                         {m.hasPlan ? (
                           // eslint-disable-next-line @next/next/no-img-element -- reja /api/apt-image orqali (bazadagi data URL)
-                          <img src={`/api/apt-image/${m.id}?t=plan`} alt={t.planAlt} loading="lazy" className="absolute inset-0 w-full h-full object-contain p-3" />
+                          <img src={`/api/apt-image/${m.id}?t=plan`} alt={t.planAlt} loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; }} className="absolute inset-0 w-full h-full object-contain p-3" />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center text-6xl">🏢</div>
                         )}
@@ -294,9 +297,8 @@ export default function HomeQuest({ lang }: { lang: string }) {
                         <div className="font-extrabold text-xl">{m.project} · №{m.number}</div>
                         <div className="mt-1 text-gray-500 text-sm">{m.floor}-{t.floorW} · {m.rooms} {t.roomsW} · {m.area} m²</div>
                         <div className="mt-3 text-2xl font-black">
-                          {m.monthly ? <>{fmt(m.monthly)} <span className="text-sm font-bold text-gray-400">{t.sum} {t.perMonth}</span></> : <span className="text-base font-bold text-gray-500">{t.priceAsk}</span>}
+                          {m.monthly ? <>≈ {fmt(m.monthly)} <span className="text-sm font-bold text-gray-400">{t.sum} {t.perMonth}</span></> : <span className="text-base font-bold text-gray-500">{t.priceAsk}</span>}
                         </div>
-                        {m.monthly && m.months && <div className="text-xs text-gray-400">{m.months} {t.months}</div>}
                         <div className="mt-3 flex flex-wrap gap-1.5">
                           {m.reasons.slice(0, 4).map((r) => {
                             const label = r.startsWith('cat:') ? (CATEGORIES.find((c) => c.key === r.slice(4))?.label[(lang as L)] || '') : t.reasons[r];

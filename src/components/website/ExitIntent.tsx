@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X, Zap, Home } from 'lucide-react';
+import { scrollToQuest } from '@/lib/goToQuest';
 
 /*
   Chiqib ketishdan oldin — "30 soniyada uyingizni toping" taklifi (sessiyada 1 marta).
@@ -54,9 +55,8 @@ export default function ExitIntent({ lang }: { lang: string }) {
 
   const go = () => {
     setOpen(false);
-    const home = pathname === `/${lang}` || pathname === '/';
-    if (home) document.getElementById('uy-tanlash')?.scrollIntoView({ behavior: 'smooth' });
-    else router.push(`/${lang}#uy-tanlash`);
+    // O'yin shu sahifada bo'lsa (bosh sahifa, xonadonlar) — chiqmasdan unga tushamiz
+    if (!scrollToQuest()) router.push(`/${lang}#uy-tanlash`);
   };
 
   return (

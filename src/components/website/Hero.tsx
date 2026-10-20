@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import { usePortrait } from '@/lib/useOrientation';
 import { useIntroDone, finishIntro } from './IntroScreen';
+import { onQuestLinkClick } from '@/lib/goToQuest';
 
 type HeroSlide = { image: string; name: string; id: number; city?: string };
 
@@ -202,7 +203,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
       {/* Qorong'ilashtirish + kino "vinyetka" */}
       <motion.div className="absolute inset-0 z-0 bg-black pointer-events-none" style={{ opacity: shade }} />
       {/* Yengil qatlamlar: video yorqin va tiniq ko'rinsin — matn ortida faqat yumshoq soya */}
-      <div className="absolute inset-0 z-0 pointer-events-none [background:radial-gradient(ellipse_50%_40%_at_50%_50%,rgba(0,0,0,0.3),transparent_100%)]" />
+      <div className="absolute inset-0 z-0 pointer-events-none [background:radial-gradient(ellipse_50%_40%_at_50%_50%,rgba(0,0,0,0.36),transparent_100%)]" />
       <div className="absolute inset-x-0 top-0 h-32 z-0 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-[26%] z-0 bg-gradient-to-t from-[#011f1f] via-[#011f1f]/45 to-transparent pointer-events-none" />
 
@@ -264,7 +265,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
             <span className="relative">{dict.hero.details}</span>
             <ArrowRight size={17} className="relative transition-transform group-hover:translate-x-1" />
           </a>
-          <a href={`/${lang}#uy-tanlash`} className="group px-7 md:px-10 py-3.5 md:py-4 bg-white/5 text-white font-bold rounded-full border border-white/30 hover:bg-white hover:text-primary transition-all duration-500 inline-flex items-center gap-2 text-sm md:text-base">
+          <a href={`/${lang}#uy-tanlash`} onClick={onQuestLinkClick} className="group px-7 md:px-10 py-3.5 md:py-4 bg-black/35 text-white font-bold rounded-full border border-white/60 [text-shadow:0_1px_3px_rgba(0,0,0,0.5)] hover:bg-white hover:text-primary transition-all duration-500 inline-flex items-center gap-2 text-sm md:text-base">
             {t.btn2}
             <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
           </a>

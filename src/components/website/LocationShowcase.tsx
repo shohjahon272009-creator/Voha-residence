@@ -238,7 +238,7 @@ export default function LocationShowcase({ lang, phone, address, hours }: { lang
                 </div>
               </div>
 
-              <div className="absolute bottom-2 right-3 z-10 text-[9px] text-black/55 bg-white/70 rounded px-1.5">© OpenStreetMap</div>
+              <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="absolute bottom-2 right-3 z-10 text-[10px] text-black/70 bg-white/80 rounded px-1.5 hover:underline">© OpenStreetMap contributors</a>
             </div>
           </motion.div>
         </div>

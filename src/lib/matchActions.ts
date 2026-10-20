@@ -1,11 +1,13 @@
 'use server';
 
+import { headers } from 'next/headers';
 import db from './db';
 import { computePayment } from './paymentCalc';
 
 /*
   "Uyingizni toping" o'yini — javoblar bo'yicha eng mos BO'SH xonadonlarni topadi.
-  Hisob serverda: narx (price_cash) mijozga yuborilmaydi — faqat oylik to'lov va muddat.
+  Hisob serverda: narx (price_cash) mijozga yuborilmaydi. Oylik to'lov 10 ming so'mgacha yaxlitlanadi
+  va muddat (oy) qaytarilmaydi — aks holda oylik × muddat orqali narxni aniq hisoblab olish mumkin edi.
   100 balllik baho: xonalar 35, byudjet 30, qavat 15, qulayliklar (loyiha kategoriyalari) 15, muddat 5.
 */
 
@@ -27,15 +29,49 @@ export type QuestMatch = {
   area: number;
   hasPlan: boolean;
   monthly: number | null;
-  months: number | null;
   score: number;
   reasons: string[]; // reason kalitlari — klient tarjima qiladi
 };
 
 const ROOMS: Record<QuestAnswers['household'], number[]> = { solo: [1], couple: [1, 2], family: [2, 3], big: [3, 4, 5] };
-const BUDGET: Record<QuestAnswers['budget'], number> = { b4: 4_500_000, b6: 6_500_000, b9: 9_500_000, cash: Infinity };
+// Tugmadagi yozuv bilan bir xil: "4 mln gacha", "4–6 mln", "6–9 mln"
+const BUDGET: Record<QuestAnswers['budget'], number> = { b4: 4_000_000, b6: 6_000_000, b9: 9_000_000, cash: Infinity };
 const FLOOR: Record<QuestAnswers['floor'], [number, number]> = { low: [1, 3], mid: [4, 7], high: [8, 99], any: [1, 99] };
 const READY = ['Topshirilgan', 'Sanoqli kunlar qoldi'];
+
+// Bo'sh xonadonlar ro'yxati — 60 soniya keshda (har o'yinda bazani qayta o'qimaslik uchun).
+// plan_image — base64 (katta) ustun: uni o'qimaymiz, faqat turini tekshiramiz (typeof() qiymatni yuklamaydi).
+type Snapshot = { at: number; rows: Record<string, unknown>[]; settings: Record<string, string> };
+let snapshot: Snapshot | null = null;
+const TTL_MS = 60_000;
+
+async function loadSnapshot(): Promise<Snapshot> {
+  if (snapshot && Date.now() - snapshot.at < TTL_MS) return snapshot;
+  const rows = (await db.prepare(`
+    SELECT a.id, a.project_id, a.floor, a.number, a.rooms, a.area, a.price_cash,
+           (typeof(a.plan_image) = 'text') AS has_plan,
+           p.name_uz, p.status AS pstatus, p.categories
+    FROM apartments a JOIN projects p ON p.id = a.project_id
+    WHERE a.status = ? AND COALESCE(p.is_sold_out, 0) = 0
+  `).all("Bo'sh")) as Record<string, unknown>[];
+  const settingsRows = (await db.prepare('SELECT key, value FROM settings').all()) as { key: string; value: string }[];
+  snapshot = { at: Date.now(), rows, settings: Object.fromEntries(settingsRows.map((r) => [r.key, r.value])) };
+  return snapshot;
+}
+
+// Oddiy himoya: bir IP'dan daqiqasiga ko'pi bilan 20 ta qidiruv (server nusxasi xotirasida)
+const hits = new Map<string, number[]>();
+async function allowed(): Promise<boolean> {
+  const h = await headers();
+  const ip = (h.get('x-forwarded-for')?.split(',')[0] || h.get('x-real-ip') || 'local').trim();
+  const now = Date.now();
+  const recent = (hits.get(ip) || []).filter((t) => now - t < 60_000);
+  if (recent.length >= 20) return false;
+  recent.push(now);
+  hits.set(ip, recent);
+  if (hits.size > 5000) hits.clear();
+  return true;
+}
 
 const parseList = (v: unknown): string[] => {
   if (!v || typeof v !== 'string') return [];
@@ -47,16 +83,8 @@ export async function findHomes(a: QuestAnswers): Promise<QuestMatch[]> {
   if (!a || !ROOMS[a.household] || !(a.budget in BUDGET) || !FLOOR[a.floor]) return [];
   const priorities = Array.isArray(a.priorities) ? a.priorities.slice(0, 8).map(String) : [];
 
-  const rows = (await db.prepare(`
-    SELECT a.id, a.project_id, a.floor, a.number, a.rooms, a.area, a.price_cash,
-           (LENGTH(a.plan_image) > 0) AS has_plan,
-           p.name_uz, p.status AS pstatus, p.categories, p.is_sold_out
-    FROM apartments a JOIN projects p ON p.id = a.project_id
-    WHERE a.status = ? AND COALESCE(p.is_sold_out, 0) = 0
-  `).all("Bo'sh")) as Record<string, unknown>[];
-
-  const settingsRows = (await db.prepare('SELECT key, value FROM settings').all()) as { key: string; value: string }[];
-  const s = Object.fromEntries(settingsRows.map((r) => [r.key, r.value]));
+  if (!(await allowed())) return [];
+  const { rows, settings: s } = await loadSnapshot();
 
   const wantRooms = ROOMS[a.household];
   const maxMonthly = BUDGET[a.budget];
@@ -104,8 +132,7 @@ export async function findHomes(a: QuestAnswers): Promise<QuestMatch[]> {
       rooms,
       area: Number(r.area) || 0,
       hasPlan: Boolean(Number(r.has_plan)),
-      monthly: pay ? pay.monthly : null,
-      months: pay ? pay.months : null,
+      monthly: pay && pay.monthly > 0 ? Math.round(pay.monthly / 10_000) * 10_000 : null,
       score: Math.min(99, score),
       reasons,
     } satisfies QuestMatch;
