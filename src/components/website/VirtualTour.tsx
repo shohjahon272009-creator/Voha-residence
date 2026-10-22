@@ -11,8 +11,18 @@ const labels: Record<Locale, { pin: string; title: string; loading: string; newT
   en: { pin: "360° Virtual Tour", title: "360° Virtual Tour", loading: "Loading…", newTab: "Open in new tab", hint: "Drag with your mouse to look around", hintTour: "Click the markers to move between points" },
 };
 
+// Yuklangan panorama: fayl kengaytmali URL, bazadagi rasm (/api/media ... f=tour) yoki data URL.
+// Aks holda (Matterport va h.k. havola) — iframe.
 function isPanoramaImage(url: string): boolean {
-  return /\.(jpe?g|png|webp|avif)(\?.*)?$/i.test(url);
+  return /\.(jpe?g|png|webp|avif)(\?.*)?$/i.test(url) || url.startsWith('/api/media?') || url.startsWith('data:image/');
+}
+
+// Admin kiritgan havola: faqat https/http yoki sayt ichidagi yo'l. "javascript:" va boshqalar
+// iframe/havolaga tushib, sayt nomidan skript ishga tushirmasin.
+function safeTourUrl(url?: string): string {
+  const u = (url || '').trim();
+  if (/^https?:\/\//i.test(u) || (u.startsWith('/') && !u.startsWith('//')) || u.startsWith('data:image/')) return u;
+  return '';
 }
 
 // Inject one small stylesheet that turns Pannellum scene-hotspots into glowing pins.
@@ -77,7 +87,7 @@ export default function VirtualTour({
   const t = labels[lang] || labels.uz;
 
   const hasTour = Array.isArray(tourScenes) && tourScenes.length > 0;
-  const singleUrl = url || '';
+  const singleUrl = safeTourUrl(url);
   const isImage = !hasTour && isPanoramaImage(singleUrl);
   const usePannellum = hasTour || isImage;
 
@@ -175,14 +185,14 @@ export default function VirtualTour({
           </span>
           <span className="w-5 h-5 -mt-2 rotate-45 bg-[#c47e4d] ring-4 ring-white shadow-lg" />
         </span>
-        <span className="mt-3 px-4 py-1.5 rounded-full bg-white/95 backdrop-blur text-primary text-xs font-bold shadow-lg whitespace-nowrap transition-all duration-300 group-hover:bg-accent group-hover:text-white">
+        <span className="mt-3 px-4 py-1.5 rounded-full bg-white text-primary text-xs font-bold shadow-lg whitespace-nowrap transition-all duration-300 group-hover:bg-accent group-hover:text-white">
           {t.pin}
         </span>
       </button>
 
       {/* Fullscreen tour modal */}
       {open && (
-        <div className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-sm flex flex-col animate-fade-in">
+        <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col animate-fade-in">
           <div className="flex items-center justify-between px-4 md:px-6 py-4 shrink-0">
             <div className="flex items-center gap-3 text-white min-w-0">
               <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center shrink-0">
@@ -237,7 +247,7 @@ export default function VirtualTour({
                 />
               )}
 
-              <div className="absolute left-3 bottom-3 z-10 hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur text-white/80 text-xs font-medium pointer-events-none">
+              <div className="absolute left-3 bottom-3 z-10 hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 text-white/80 text-xs font-medium pointer-events-none">
                 <Maximize2 className="w-3.5 h-3.5" /> {hasTour ? t.hintTour : t.hint}
               </div>
             </div>

@@ -1,6 +1,6 @@
 'use server';
 
-import { headers } from 'next/headers';
+import { clientIp } from './clientIp';
 import db from './db';
 import { computePayment } from './paymentCalc';
 
@@ -39,11 +39,12 @@ const BUDGET: Record<QuestAnswers['budget'], number> = { b4: 4_000_000, b6: 6_00
 const FLOOR: Record<QuestAnswers['floor'], [number, number]> = { low: [1, 3], mid: [4, 7], high: [8, 99], any: [1, 99] };
 const READY = ['Topshirilgan', 'Sanoqli kunlar qoldi'];
 
-// Bo'sh xonadonlar ro'yxati — 60 soniya keshda (har o'yinda bazani qayta o'qimaslik uchun).
+// Bo'sh xonadonlar ro'yxati — 20 soniya keshda (har o'yinda bazani qayta o'qimaslik uchun; ariza
+// yuborilganda xonadon holati baribir qayta tekshiriladi — contactActions).
 // plan_image — base64 (katta) ustun: uni o'qimaymiz, has_plan bayrog'idan foydalanamiz.
 type Snapshot = { at: number; rows: Record<string, unknown>[]; settings: Record<string, string> };
 let snapshot: Snapshot | null = null;
-const TTL_MS = 60_000;
+const TTL_MS = 20_000;
 
 async function loadSnapshot(): Promise<Snapshot> {
   if (snapshot && Date.now() - snapshot.at < TTL_MS) return snapshot;
@@ -62,8 +63,7 @@ async function loadSnapshot(): Promise<Snapshot> {
 // Oddiy himoya: bir IP'dan daqiqasiga ko'pi bilan 20 ta qidiruv (server nusxasi xotirasida)
 const hits = new Map<string, number[]>();
 async function allowed(): Promise<boolean> {
-  const h = await headers();
-  const ip = (h.get('x-forwarded-for')?.split(',')[0] || h.get('x-real-ip') || 'local').trim();
+  const ip = (await clientIp()) || 'local';
   const now = Date.now();
   const recent = (hits.get(ip) || []).filter((t) => now - t < 60_000);
   if (recent.length >= 20) return false;

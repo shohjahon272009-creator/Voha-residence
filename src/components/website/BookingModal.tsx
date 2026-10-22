@@ -10,6 +10,7 @@ import { X, CheckCircle, Loader2 } from 'lucide-react';
 import { Apartment } from '@/lib/types';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import { submitPriceRequest } from '@/lib/contactActions';
+import { useHydrated } from '@/lib/useHydrated';
 
 export default function BookingModal({ 
   apartment, 
@@ -22,6 +23,8 @@ export default function BookingModal({
 }) {
   const dict = getDictionary(lang);
   const [loading, setLoading] = useState(false);
+  // JS yuklanmaguncha yuborilmasin — aks holda brauzer formani GET qilib, ism/telefonni URL'ga yozardi
+  const hydrated = useHydrated();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
@@ -45,7 +48,7 @@ export default function BookingModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-      <div className="absolute inset-0 bg-primary/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-primary/60" onClick={onClose} />
       
       <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
         <button 
@@ -73,7 +76,7 @@ export default function BookingModal({
              </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-10">
+          <form onSubmit={handleSubmit} method="post" className="p-10">
             <h3 className="text-2xl font-bold text-primary mb-2">Narxini bilish</h3>
             <p className="text-gray-400 text-sm mb-8">№ {apartment.number} xonadon, {apartment.floor}-qavat. Telefon raqamingizni qoldiring, narxini aytamiz!</p>
             
@@ -101,7 +104,7 @@ export default function BookingModal({
                
                <div className="pt-4">
                   <button 
-                    disabled={loading}
+                    disabled={loading || !hydrated}
                     type="submit"
                     className="w-full py-4 bg-accent text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-accent/20 disabled:opacity-50 hover:bg-primary transition-all"
                   >

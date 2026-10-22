@@ -1,6 +1,7 @@
 'use server';
 
-import { cookies, headers } from 'next/headers';
+import { cookies } from 'next/headers';
+import { clientIp } from './clientIp';
 import { redirect } from 'next/navigation';
 import db from './db';
 import { hashPassword, verifyPassword, isHashed } from './password';
@@ -29,7 +30,7 @@ async function setSessionCookie(userId: number, version: number) {
 export type LoginState = { error: string } | null;
 
 const LOGIN_MAX_FAILS = 5;          // bitta IP + email: 15 daqiqada
-const LOGIN_MAX_FAILS_EMAIL = 50;   // email bo'yicha jami (ko'p IP'dan taxmin qilishni sekinlatadi)
+const LOGIN_MAX_FAILS_EMAIL = 50;   // email bo'yicha jami (faqat xato qilgan IP'larga — pastga qarang)
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
 
 type FailCounter = { key: string; count: number; since: number; open: boolean; exists: boolean };
@@ -61,11 +62,14 @@ export async function login(_prevState: LoginState, formData: FormData): Promise
   //  • IP + email: 15 daqiqada 5 ta xato. Faqat email bo'yicha bo'lsa, begona odam ataylab 5 marta
   //    xato kiritib haqiqiy adminni cheksiz to'sib qo'yishi mumkin edi.
   //  • email bo'yicha jami 50 ta — ko'p IP'dan parol terishni sekinlatadi.
-  const h = await headers();
-  const ip = (h.get('x-forwarded-for')?.split(',')[0] || h.get('x-real-ip') || 'unknown').trim();
+  const ip = (await clientIp()) || 'unknown';
   const ipFail = await readCounter(`_login_fail:${ip}:${email}`);
   const emailFail = await readCounter(`_login_fail:${email}`);
-  if ((ipFail.open && ipFail.count >= LOGIN_MAX_FAILS) || (emailFail.open && emailFail.count >= LOGIN_MAX_FAILS_EMAIL)) {
+  // Email bo'yicha jami chegara faqat ALLAQACHON xato qilgan IP'larga qo'llanadi: hujumchi 50 ta xato
+  // yuborib haqiqiy adminni (toza IP'dan) to'sib qo'ya olmaydi, ko'p IP'dan parol terish esa
+  // har IP'ga 1 urinishgacha sekinlashadi.
+  const ipHasFails = ipFail.open && ipFail.count > 0;
+  if ((ipFail.open && ipFail.count >= LOGIN_MAX_FAILS) || (ipHasFails && emailFail.open && emailFail.count >= LOGIN_MAX_FAILS_EMAIL)) {
     return { error: "Juda ko'p noto'g'ri urinish. 15 daqiqadan keyin qayta urinib ko'ring." };
   }
 

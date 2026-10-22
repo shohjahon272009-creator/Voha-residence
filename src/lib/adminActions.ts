@@ -10,6 +10,15 @@ import { revalidatePath } from 'next/cache';
 import { saveUpload } from './storage';
 import { requireAdmin } from './requireAdmin';
 
+// Bazadagi CHECK cheklovlari bilan bir xil — noto'g'ri qiymat DB xatosi (500) va
+// bekorga saqlangan rasmlar o'rniga, rasm yuklashdan OLDIN aniq xato beradi.
+const PROJECT_STATUSES = ['Jarayonda', 'Topshirilgan', 'Tez kunda', 'Sanoqli kunlar qoldi'];
+const APARTMENT_STATUSES = ["Bo'sh", 'Band', 'Bronlangan'];
+function assertStatus(value: string | null, allowed: string[]): string {
+  if (!value || !allowed.includes(value)) throw new Error(`Noto'g'ri holat: ${value ?? "bo'sh"}`);
+  return value;
+}
+
 // Bir nechta galereya rasmini saqlaydi va URL ro'yxatini qaytaradi (ixtiyoriy)
 async function saveGalleryFiles(files: File[]): Promise<string[]> {
   const urls: string[] = [];
@@ -37,7 +46,7 @@ export async function addApartment(formData: FormData) {
   const rooms = parseInt(formData.get('rooms') as string) || 1;
   const area = parseFloat(formData.get('area') as string) || 0;
   const price_cash = parseFloat(formData.get('price_cash') as string) || 0;
-  const status = (formData.get('status') as string) || "Bo'sh";
+  const status = assertStatus((formData.get('status') as string) || "Bo'sh", APARTMENT_STATUSES);
 
   // Chizma (plan) rasmi — ixtiyoriy
   let planUrl = '';
@@ -114,7 +123,7 @@ export async function addProject(formData: FormData) {
   const description_en = formData.get('description_en') as string;
   const city = formData.get('city') as string;
   const district = formData.get('district') as string;
-  const status = formData.get('status') as string;
+  const status = assertStatus(formData.get('status') as string, PROJECT_STATUSES);
   const total_floors = parseInt(formData.get('total_floors') as string) || 0;
   const apts_per_floor = parseInt(formData.get('apts_per_floor') as string) || 4;
   const min_price = Math.round((parseFloat(formData.get('min_price') as string) || 0) * 1000000);
@@ -215,7 +224,7 @@ export async function updateProject(id: number, formData: FormData) {
   const description_en = formData.get('description_en') as string;
   const city = formData.get('city') as string;
   const district = formData.get('district') as string;
-  const status = formData.get('status') as string;
+  const status = assertStatus(formData.get('status') as string, PROJECT_STATUSES);
   const total_floors = parseInt(formData.get('total_floors') as string) || 0;
   const apts_per_floor = parseInt(formData.get('apts_per_floor') as string) || 4;
   const min_price = Math.round((parseFloat(formData.get('min_price') as string) || 0) * 1000000);
@@ -425,7 +434,8 @@ export async function updateApartment(id: number, formData: FormData) {
   const floor = parseInt(formData.get('floor') as string) || 1;
   const number = (formData.get('number') as string || '').trim();
   // Xonadon holati endi formada yo'q — kelmasa, bazadagi mavjud qiymat saqlanadi.
-  const status = formData.get('status') as string | null;
+  const rawStatus = formData.get('status') as string | null;
+  const status = rawStatus ? assertStatus(rawStatus, APARTMENT_STATUSES) : null;
 
   const imageFile = formData.get('plan_image') as File | null;
   let planUrl = null;
@@ -483,15 +493,7 @@ export async function updateApartment(id: number, formData: FormData) {
 
   await db.prepare(`UPDATE apartments SET ${updateFields.join(', ')} WHERE id = ?`).run(...updateValues);
 
-  const client_name = formData.get('client_name') as string;
-  const client_phone = formData.get('client_phone') as string;
-
-  if (client_name && client_phone && (status === 'Band' || status === 'Bronlangan')) {
-    await db.prepare(`
-      INSERT INTO bookings (apartment_id, client_name, client_phone, status, note)
-      VALUES (?, ?, ?, 'Tasdiqlangan', ?)
-    `).run(id, client_name, client_phone, "Admin tomonidan tahrirlash darchasi orqali qo'shildi");
-  }
+  // Xaridorni yozish tahrirlash oynasida emas — "Sotuvlar" bo'limidagi addSale orqali.
 
   revalidatePath('/admin/apartments');
   revalidatePath('/admin/bookings');
@@ -573,9 +575,14 @@ export async function updateBookingStatus(formData: FormData) {
   await db.prepare("UPDATE bookings SET status = ? WHERE id = ?").run(status, id);
 
   if (status === 'Tasdiqlangan' && booking.apartment_id) {
+    // Holatni faqat oldinga suramiz: Bo'sh -> Bronlangan -> Band. Sotilgan ("Band") xonadon eski
+    // arizani tasdiqlash bilan "Bronlangan"ga tushib qolmasin (keyin bo'shab, qayta sotilishi mumkin edi).
+    const apt = await db.prepare('SELECT status FROM apartments WHERE id = ?').get(booking.apartment_id) as { status: string } | undefined;
     if (actionType === 'sell') {
-      await db.prepare("UPDATE apartments SET status = 'Band' WHERE id = ?").run(booking.apartment_id);
-    } else {
+      if (apt && apt.status !== 'Band') {
+        await db.prepare("UPDATE apartments SET status = 'Band' WHERE id = ?").run(booking.apartment_id);
+      }
+    } else if (apt?.status === "Bo'sh") {
       await db.prepare("UPDATE apartments SET status = 'Bronlangan' WHERE id = ?").run(booking.apartment_id);
     }
   } else if (status === 'Bekor qilingan' && booking.apartment_id && booking.status === 'Tasdiqlangan') {

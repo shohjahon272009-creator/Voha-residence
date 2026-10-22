@@ -1,7 +1,7 @@
 'use server';
 
-import { headers } from 'next/headers';
 import db from '@/lib/db';
+import { clientIp } from '@/lib/clientIp';
 
 /*
   Saytdagi ommaviy formalar (murojaat, narxni bilish).
@@ -23,11 +23,6 @@ function normalizePhone(raw: string): string | null {
   if (digits.length === 9) return `+998${digits}`;
   if (digits.length >= 10 && digits.length <= 15) return `+${digits}`;
   return null;
-}
-
-async function clientIp(): Promise<string> {
-  const h = await headers();
-  return (h.get('x-forwarded-for')?.split(',')[0] || h.get('x-real-ip') || '').trim();
 }
 
 // Limitdan oshgan bo'lsa xato matnini qaytaradi
@@ -98,12 +93,16 @@ export async function submitPriceRequest(formData: FormData) {
 
   try {
     const aptDetails = await db.prepare(`
-      SELECT a.number, p.name_uz as project_name
+      SELECT a.number, a.status, p.name_uz as project_name
       FROM apartments a
       JOIN projects p ON a.project_id = p.id
       WHERE a.id = ?
-    `).get(apartmentId) as { number: string, project_name: string } | undefined;
+    `).get(apartmentId) as { number: string, status: string, project_name: string } | undefined;
     if (!aptDetails) return { success: false, error: "Xonadon topilmadi" };
+    // O'yindan ko'rishga yozilish faqat bo'sh xonadonga (ro'yxat keshda bo'lgani uchun yaqinda sotilgan bo'lishi mumkin)
+    if (viewing && aptDetails.status !== "Bo'sh") {
+      return { success: false, error: "Bu xonadon yaqinda band qilindi. Qayta o'ynab boshqasini tanlang yoki bizga qo'ng'iroq qiling." };
+    }
 
     const ip = await clientIp();
     const limited = await checkRateLimit(ip, phone);

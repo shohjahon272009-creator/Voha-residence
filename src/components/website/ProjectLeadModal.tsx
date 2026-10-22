@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, Loader2, Phone } from 'lucide-react';
 import { Locale } from '@/lib/dictionaries';
 import { submitContact } from '@/lib/contactActions';
+import { useHydrated } from '@/lib/useHydrated';
 
 const T: Record<Locale, {
   title: string; sub: string; name: string; namePh: string; phone: string; msg: string; msgPh: string;
@@ -43,6 +44,8 @@ export default function ProjectLeadModal({
 }) {
   const t = T[lang] || T.uz;
   const [loading, setLoading] = useState(false);
+  // JS yuklanmaguncha yuborilmasin — aks holda brauzer formani GET qilib, ism/telefonni URL'ga yozardi
+  const hydrated = useHydrated();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
@@ -70,7 +73,7 @@ export default function ProjectLeadModal({
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-primary/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-primary/65" onClick={onClose} />
 
       <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
         <button onClick={onClose} className="absolute top-5 right-5 text-gray-400 hover:text-primary transition-colors z-10">
@@ -89,7 +92,7 @@ export default function ProjectLeadModal({
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-8 md:p-10">
+          <form onSubmit={handleSubmit} method="post" className="p-8 md:p-10">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-11 h-11 rounded-2xl bg-accent/15 flex items-center justify-center text-accent shrink-0">
                 <Phone size={20} />
@@ -115,7 +118,7 @@ export default function ProjectLeadModal({
                 <label className="block text-sm font-bold text-gray-700 mb-2">{t.msg}</label>
                 <textarea name="message" rows={3} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-accent transition-colors resize-none" placeholder={t.msgPh}></textarea>
               </div>
-              <button disabled={loading} type="submit" className="w-full py-4 bg-accent text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-accent/20 disabled:opacity-50 hover:bg-primary transition-all">
+              <button disabled={loading || !hydrated} type="submit" className="w-full py-4 bg-accent text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-accent/20 disabled:opacity-50 hover:bg-primary transition-all">
                 {loading ? <Loader2 className="animate-spin" size={20} /> : t.submit}
               </button>
             </div>
