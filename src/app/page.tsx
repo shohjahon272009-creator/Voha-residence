@@ -21,7 +21,7 @@ export default async function RootPage() {
   const dict = getDictionary(localeLang);
 
   const settings = await getPublicSettings();
-  const companyName = settings.company_name || 'Qurilish';
+  const companyName = settings.company_name || 'Voha Residence';
 
   const allProjects = await getPublicProjects();
   const heroImages = allProjects

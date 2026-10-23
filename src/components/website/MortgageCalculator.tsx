@@ -5,6 +5,7 @@ import { Locale } from '@/lib/dictionaries';
 import { Calculator, Info, Phone, X, MousePointerClick } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getApartmentPayment, type PublicPay } from '@/lib/paymentActions';
+import { onSectionLinkClick } from '@/lib/goToQuest';
 import { SelectedApartment } from '@/lib/types';
 
 // Kalkulyator BLOKKA qarab avtomatik hisoblaydi (gibrid yoki ipoteka) — server hal qiladi.
@@ -119,7 +120,7 @@ export default function MortgageCalculator({
                       <div className="flex justify-between text-sm"><span className="text-gray-500">{T.rate}</span><span className="font-black text-primary">{srv!.rate}%</span></div>
                     )}
                   </div>
-                  <a href={`/${lang}#contact`} className="mt-auto flex items-center justify-center gap-2 w-full py-4 bg-accent text-white font-bold rounded-2xl hover:bg-opacity-90 transition-all shadow-lg shadow-accent/30"><Phone size={16} /> {T.consult}</a>
+                  <a href={`/${lang}#contact`} onClick={onSectionLinkClick('contact')} className="mt-auto flex items-center justify-center gap-2 w-full py-4 bg-accent text-white font-bold rounded-2xl hover:bg-opacity-90 transition-all shadow-lg shadow-accent/30"><Phone size={16} /> {T.consult}</a>
                   <div className="mt-4 flex gap-2 items-start text-[11px] text-gray-400 leading-relaxed"><Info size={14} className="min-w-3.5 text-accent mt-0.5" /><span>{T.note}</span></div>
                 </div>
               </div>

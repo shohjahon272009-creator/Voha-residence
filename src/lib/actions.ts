@@ -20,12 +20,7 @@ const parseList = (v: unknown): any[] => {
   }
 };
 
-// cache: bitta so'rov ichida (bosh sahifa + ProjectsList) baza faqat bir marta so'raladi
-export const getProjects = cache(async (): Promise<Project[]> => {
-  // Active/selling projects first, completed ("Topshirilgan") last; newest first within each group.
-  // This way a newly added "Jarayonda" project shows at the top, and the earliest projects sit at the end.
-  const projects = await db.prepare(`
-    SELECT * FROM projects
+const PROJECT_ORDER = `
     ORDER BY
       CASE status
         WHEN 'Jarayonda' THEN 1
@@ -34,25 +29,52 @@ export const getProjects = cache(async (): Promise<Project[]> => {
         WHEN 'Topshirilgan' THEN 4
         ELSE 5
       END,
-      id DESC
-  `).all() as any[];
-  return projects.map(p => ({
-    ...p,
-    gallery: parseList(p.gallery),
-    amenities: parseList(p.amenities),
-    categories: parseList(p.categories),
-    is_sold_out: Boolean(p.is_sold_out)
-  }));
+      id DESC`;
+
+const toProject = (p: any): Project => ({
+  ...p,
+  gallery: parseList(p.gallery),
+  amenities: parseList(p.amenities),
+  categories: parseList(p.categories),
+  is_sold_out: Boolean(p.is_sold_out),
 });
+
+// cache: bitta so'rov ichida (bosh sahifa + ProjectsList) baza faqat bir marta so'raladi.
+// Asl qiymatlar (base64 rasmlar bilan) — FAQAT admin uchun.
+export const getProjects = cache(async (): Promise<Project[]> => {
+  // Active/selling projects first, completed ("Topshirilgan") last; newest first within each group.
+  // This way a newly added "Jarayonda" project shows at the top, and the earliest projects sit at the end.
+  const projects = await db.prepare(`SELECT * FROM projects ${PROJECT_ORDER}`).all() as any[];
+  return projects.map(toProject);
+});
+
+// Ommaviy sahifalar uchun yengil ustunlar: base64 rasm (data URL) o'rniga faqat 'data:' belgisi
+// qaytadi — megabaytlab rasm bazadan har so'rovda tortilmaydi; publicProjectMedia uni /api/media
+// manziliga aylantiradi (galereyada tartib raqami saqlanadi).
+const LIGHT = (col: string) => `CASE WHEN substr(${col}, 1, 5) = 'data:' THEN 'data:' ELSE ${col} END AS ${col}`;
+const PUBLIC_PROJECT_COLS = [
+  'id', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en',
+  'address', 'city', 'district', 'status', 'min_price', 'total_floors', 'lat', 'lng', 'amenities',
+  'apts_per_floor', 'days_left', 'tour_scenes', 'discount_label', 'gift_label', 'categories',
+  'delivery_year', 'is_sold_out',
+  LIGHT('main_image'), LIGHT('virtual_tour_url'),
+  `(SELECT json_group_array(CASE WHEN substr(value, 1, 5) = 'data:' THEN 'data:' ELSE value END)
+      FROM json_each(CASE WHEN json_valid(projects.gallery) THEN projects.gallery ELSE '[]' END)) AS gallery`,
+].join(', ');
 
 // Ommaviy sahifalar uchun: base64 rasmlar o'rniga /api/media manzillari (sahifa yengil bo'lsin).
 // Admin sahifalari getProjects()/getProjectBySlug() ning asl qiymatlaridan foydalanadi.
-export const getPublicProjects = cache(async (): Promise<Project[]> => (await getProjects()).map(publicProjectMedia));
+export const getPublicProjects = cache(async (): Promise<Project[]> => {
+  const rows = await db.prepare(`SELECT ${PUBLIC_PROJECT_COLS} FROM projects ${PROJECT_ORDER}`).all() as any[];
+  return rows.map(toProject).map(publicProjectMedia);
+});
 
-export const getPublicProjectBySlug = async (id: number): Promise<Project | null> => {
-  const p = await getProjectBySlug(id);
-  return p ? publicProjectMedia(p) : null;
-};
+// cache: generateMetadata va sahifa bir xil loyihani ikki marta so'ramasin
+export const getPublicProjectBySlug = cache(async (id: number): Promise<Project | null> => {
+  if (!Number.isInteger(id)) return null;
+  const p = await db.prepare(`SELECT ${PUBLIC_PROJECT_COLS} FROM projects WHERE id = ?`).get(id) as any;
+  return p ? publicProjectMedia(toProject(p)) : null;
+});
 
 export const getProjectBySlug = async (id: number): Promise<Project | null> => {
 

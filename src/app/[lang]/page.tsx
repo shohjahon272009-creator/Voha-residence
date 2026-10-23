@@ -47,7 +47,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const dict = getDictionary(localeLang);
 
   const settings = await getPublicSettings();
-  const companyName = settings.company_name || 'Qurilish';
+  const companyName = settings.company_name || 'Voha Residence';
 
   // Bosh sahifa slideri uchun loyiha rasmlari (eng yangi loyihalar oldinda)
   const allProjects = await getPublicProjects();

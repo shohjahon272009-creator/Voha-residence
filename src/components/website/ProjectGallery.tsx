@@ -35,9 +35,11 @@ export default function ProjectGallery({
       else if (e.key === 'ArrowRight') next();
     };
     document.body.style.overflow = 'hidden';
+    window.__lenis?.stop(); // Lenis o'z scroll'ini davom ettirmasin
     window.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = '';
+      window.__lenis?.start();
       window.removeEventListener('keydown', onKey);
     };
   }, [open, close, prev, next]);
@@ -98,7 +100,7 @@ export default function ProjectGallery({
 
           {/* Thumbnails */}
           {images.length > 1 && (
-            <div className="shrink-0 flex items-center justify-center gap-2 pb-6 px-4 overflow-x-auto">
+            <div className="shrink-0 flex items-center justify-start sm:justify-center gap-2 pb-6 px-4 overflow-x-auto">
               {images.map((src, i) => (
                 <button
                   key={i}

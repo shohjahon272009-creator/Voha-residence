@@ -23,6 +23,14 @@ export default function Navbar({ lang }: { lang: Locale }) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+
+  // Mobil menyu ochiq — orqadagi sahifa (Lenis) scroll bo'lmasin
+  useEffect(() => {
+    if (!isOpen) return;
+    window.__lenis?.stop();
+    document.body.style.overflow = 'hidden';
+    return () => { window.__lenis?.start(); document.body.style.overflow = ''; };
+  }, [isOpen]);
   const dict = getDictionary(lang);
   const pathname = usePathname();
 
@@ -139,8 +147,10 @@ export default function Navbar({ lang }: { lang: Locale }) {
 
         {/* Mobile Toggle */}
         <button 
-          className={cn("lg:hidden", isNavbarWhite ? "text-[#014242]" : "text-white")}
+          className={cn("lg:hidden p-2 -m-2", isNavbarWhite ? "text-[#014242]" : "text-white")}
           onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? (lang === 'ru' ? 'Закрыть меню' : lang === 'en' ? 'Close menu' : 'Menyuni yopish') : (lang === 'ru' ? 'Открыть меню' : lang === 'en' ? 'Open menu' : 'Menyuni ochish')}
+          aria-expanded={isOpen}
         >
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>

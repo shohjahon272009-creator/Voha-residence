@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
@@ -14,6 +13,15 @@ import { Locale, getDictionary } from '@/lib/dictionaries';
 import { notFound } from 'next/navigation';
 import { MapPin, CheckCircle } from 'lucide-react';
 import type { Metadata } from 'next';
+import { categoryLabel } from '@/lib/categories';
+import { getPublicSettings } from '@/lib/settings';
+
+// Yon panel matnlari (avval faqat o'zbekcha va har loyihaga bir xil "afzalliklar" yozilgan edi)
+const SIDE: Record<string, { adv: string; office: string; officeSub: string; call: string; fallbackSub: string }> = {
+  uz: { adv: 'Loyiha afzalliklari', office: 'Sotuv ofisi', officeSub: "Savollar bormi? Mutaxassislarimiz bilan bog'laning!", call: "Qo'ng'iroq qilish", fallbackSub: 'Zamonaviy turar-joy majmuasi' },
+  ru: { adv: 'Преимущества проекта', office: 'Офис продаж', officeSub: 'Есть вопросы? Свяжитесь с нашими специалистами!', call: 'Позвонить', fallbackSub: 'Современный жилой комплекс' },
+  en: { adv: 'Project highlights', office: 'Sales office', officeSub: 'Have questions? Talk to our specialists!', call: 'Call us', fallbackSub: 'Modern residential complex' },
+};
 import { pageMetadata } from '@/lib/seo';
 
 // Doim yangi ma'lumot — admin o'zgartirsa darhol ko'rinadi
@@ -49,6 +57,17 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const projectName = (project as any)[`name_${lang}`] || project.name_uz;
   const projectDesc = (project as any)[`description_${lang}`] || '';
   const dict = getDictionary(lang as Locale);
+  const side = SIDE[lang] || SIDE.uz;
+  const settings = await getPublicSettings();
+  const phone = settings.contact_phone || '+998 91 011 66 66';
+  const telHref = 'tel:' + phone.replace(/[^\d+]/g, '');
+  // Holat matni tanlangan tilda (ProjectStatusBadge bilan bir xil lug'at)
+  const statusMap: Record<string, string> = {
+    Jarayonda: dict.projects.status.ongoing, Topshirilgan: dict.projects.status.completed,
+    'Tez kunda': dict.projects.status.soon, 'Sanoqli kunlar qoldi': dict.projects.status.fewDaysLeft,
+  };
+  const statusText = statusMap[project.status] || project.status;
+  const highlights = (Array.isArray(project.categories) ? project.categories : []).map((k) => categoryLabel(String(k), lang as Locale));
   // "Sotib tugatilgan" — admin belgilagan loyiha bayrog'idan (xonadon holatidan emas)
   const isSoldOut = Boolean((project as any).is_sold_out);
 
@@ -71,7 +90,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         size="full"
         kicker={[project.district, project.city].filter(Boolean).join(', ') || project.status}
         title={projectName}
-        subtitle={(projectDesc || 'Premium klassdagi zamonaviy xonadonlar').slice(0, 220)}
+        subtitle={(projectDesc || side.fallbackSub).slice(0, 220)}
         images={[project.main_image || '/cinema/poster.webp', ...(Array.isArray(project.gallery) ? project.gallery.slice(0, 3) : [])]}
         overlay={
           <>
@@ -97,7 +116,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       >
         <div className="flex flex-wrap items-center gap-5 text-white/80 text-sm font-medium">
           <span className="flex items-center gap-2"><MapPin size={16} className="text-accent" /> {project.district}, {project.city}</span>
-          <span className="flex items-center gap-2"><CheckCircle size={16} className="text-accent" /> {project.status}</span>
+          <span className="flex items-center gap-2"><CheckCircle size={16} className="text-accent" /> {statusText}</span>
         </div>
       </PageHero>
 
@@ -153,16 +172,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                </div>
                
                <AnimatedReveal direction="right" className="space-y-8">
+                  {highlights.length > 0 && (
                   <div className="bg-white p-8 rounded-3xl shadow-xl shadow-black/5">
-                     <h4 className="font-bold text-xl text-primary mb-6">Loyha afzalliklari</h4>
+                     <h4 className="font-bold text-xl text-primary mb-6">{side.adv}</h4>
                      <ul className="space-y-4">
-                        {[
-                          'Yopiq hovli', 
-                          'Yer osti parking', 
-                          'Bolalar maydonchasi', 
-                          '24/7 Qorovul xizmati',
-                          'Premium liftlar'
-                        ].map((txt, i) => (
+                        {highlights.map((txt, i) => (
                           <li key={i} className="flex items-center gap-3 text-sm text-gray-500 font-medium">
                              <CheckCircle size={16} className="text-accent" />
                              {txt}
@@ -170,13 +184,14 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                         ))}
                      </ul>
                   </div>
+                  )}
 
                   <div className="bg-accent p-8 rounded-3xl text-white shadow-xl shadow-accent/20">
-                     <h4 className="font-bold text-xl mb-4">Sotuv ofisi</h4>
-                     <p className="text-white/80 text-sm mb-6">Savollar bormi? Mutaxassislarimiz bilan bog'laning!</p>
-                     <a href="tel:+998910116666" className="block text-2xl font-bold mb-2 hover:opacity-90 transition-opacity">+998 91 011 66 66</a>
-                     <a href="tel:+998910116666" className="block text-center w-full py-3 bg-white text-primary font-bold rounded-xl mt-4 hover:bg-primary hover:text-white transition-colors">
-                        Qo'ng'iroq qilish
+                     <h4 className="font-bold text-xl mb-4">{side.office}</h4>
+                     <p className="text-white/80 text-sm mb-6">{side.officeSub}</p>
+                     <a href={telHref} className="block text-2xl font-bold mb-2 hover:opacity-90 transition-opacity">{phone}</a>
+                     <a href={telHref} className="block text-center w-full py-3 bg-white text-primary font-bold rounded-xl mt-4 hover:bg-primary hover:text-white transition-colors">
+                        {side.call}
                      </a>
                   </div>
                </AnimatedReveal>

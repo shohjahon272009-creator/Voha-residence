@@ -115,6 +115,8 @@ export default function HomeQuest({ lang }: { lang: string }) {
 
   const start = () => {
     startedAt.current = nowMs();
+    // O'yinni boshlagan mijozga "ketishdan oldin" oynasi chiqmasin
+    try { sessionStorage.setItem('voha_exit_shown', '1'); } catch { /* ignore */ }
     stepRef.current = 0;
     setPhase('quiz'); setStep(0); setAnswers({ priorities: [] }); setPoints(0); setMatches([]); setSent(false); setBookId(null); setErr('');
   };

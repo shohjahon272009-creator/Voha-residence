@@ -5,7 +5,7 @@
  
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Apartment } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
 import { Info } from 'lucide-react';
@@ -26,6 +26,14 @@ export default function FloorPlan({
   onSelect: (apt: Apartment) => void
 }) {
   const [selectedApt, setSelectedApt] = useState<Apartment | null>(null);
+  // Telefonda xonadon tafsilotlari jadval ostida chiqadi — tanlanganda unga tushamiz
+  const detailRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!selectedApt || !detailRef.current || !window.matchMedia('(max-width: 1023px)').matches) return;
+    const el = detailRef.current;
+    if (window.__lenis) window.__lenis.scrollTo(el, { offset: -90 });
+    else el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [selectedApt]);
 
   // Simplified logic to group apartments by floor
   const floors = Array.from(new Set(apartments.map(a => a.floor))).sort((a, b) => b - a);
@@ -174,7 +182,7 @@ export default function FloorPlan({
         </div>
 
         {/* Selected Apartment Side Panel */}
-        <div className={cn("flex flex-col transition-all duration-500", selectedApt ? "lg:col-span-2" : "lg:col-span-1")}>
+        <div ref={detailRef} className={cn("flex flex-col transition-all duration-500", selectedApt ? "lg:col-span-2" : "lg:col-span-1")}>
            {selectedApt ? (
              <div className="animate-fade-in bg-white border border-gray-100 rounded-3xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.05)]">
                 {/* Apartment Plan — haqiqiy chizma (bo'lsa), aks holda placeholder */}

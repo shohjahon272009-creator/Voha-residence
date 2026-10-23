@@ -38,6 +38,10 @@ export default function ExitIntent({ lang }: { lang: string }) {
     };
     const trigger = () => {
       if (Date.now() - startedAt < 8000 || questVisible()) return;
+      // Mijoz forma to'ldirayotgan bo'lsa (yoki o'yinni o'ynagan bo'lsa) — xalaqit bermaymiz
+      const a = document.activeElement;
+      if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return;
+      try { if (sessionStorage.getItem(KEY) === '1') { cleanup(); return; } } catch { /* ignore */ }
       try { sessionStorage.setItem(KEY, '1'); } catch { /* ignore */ }
       setOpen(true);
       cleanup();

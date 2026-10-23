@@ -6,7 +6,7 @@ import { ArrowRight } from 'lucide-react';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import { usePortrait } from '@/lib/useOrientation';
 import { useIntroDone, finishIntro } from './IntroScreen';
-import { onQuestLinkClick } from '@/lib/goToQuest';
+import { onQuestLinkClick, onSectionLinkClick } from '@/lib/goToQuest';
 
 type HeroSlide = { image: string; name: string; id: number; city?: string };
 
@@ -70,6 +70,22 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
     v.muted = true; // React 'muted'ni SSR HTML'ga yozmaydi — autoplay bloklanmasligi uchun
     v.play().catch(() => { /* jim: poster ko'rinib turadi */ });
   }, [started]);
+
+  // Video ekrandan chiqqanda (pastga scroll) yoki tab yashirilganda to'xtaydi — 1080p dekodlash
+  // ortiqcha CPU/batareya sarflab, pastdagi animatsiyalarni sekinlashtirmasin
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!started || !v) return;
+    let inView = true;
+    const sync = () => {
+      if (inView && !document.hidden) v.play().catch(() => {});
+      else v.pause();
+    };
+    const io = new IntersectionObserver(([e]) => { inView = e.isIntersecting; sync(); }, { threshold: 0 });
+    io.observe(v);
+    document.addEventListener('visibilitychange', sync);
+    return () => { io.disconnect(); document.removeEventListener('visibilitychange', sync); };
+  }, [started, loadVideo, portrait]);
 
   const [videoFailed, setVideoFailed] = useState(false);
   const useVideo = settings.hero_video !== 'false' && !videoFailed;
@@ -260,7 +276,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
           transition={{ delay: 1.15, duration: 0.9, ease: EASE }}
           className="flex flex-wrap justify-center gap-3 md:gap-4"
         >
-          <a href={`/${lang}#about`} className="group relative overflow-hidden px-7 md:px-10 py-3.5 md:py-4 bg-accent text-primary font-bold rounded-full tracking-wide inline-flex items-center gap-2 text-sm md:text-base shadow-[0_10px_40px_rgba(209,142,91,0.45)]">
+          <a href={`/${lang}#about`} onClick={onSectionLinkClick('about')} className="group relative overflow-hidden px-7 md:px-10 py-3.5 md:py-4 bg-accent text-primary font-bold rounded-full tracking-wide inline-flex items-center gap-2 text-sm md:text-base shadow-[0_10px_40px_rgba(209,142,91,0.45)]">
             <span className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
             <span className="relative">{dict.hero.details}</span>
             <ArrowRight size={17} className="relative transition-transform group-hover:translate-x-1" />

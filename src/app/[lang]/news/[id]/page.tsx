@@ -9,7 +9,7 @@ import { Locale, getDictionary } from '@/lib/dictionaries';
 import { Newspaper, ArrowLeft, Calendar } from 'lucide-react';
 import db from '@/lib/db';
 import { publicNewsMedia } from '@/lib/media';
-import { redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import PageHero from '@/components/website/PageHero';
 import type { Metadata } from 'next';
 import { pageMetadata } from '@/lib/seo';
@@ -40,7 +40,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ lan
   const newsItem = await db.prepare('SELECT * FROM news WHERE id = ? AND visible = 1').get(id) as any;
 
   if (!newsItem) {
-    redirect(`/${localeLang}/news`);
+    notFound(); // o'chirilgan/yashirilgan yangilik — 404 (Google eskisini indeksdan olib tashlasin)
   }
 
   const date = new Date(newsItem.date).toLocaleDateString(
