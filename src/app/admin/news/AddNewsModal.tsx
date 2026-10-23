@@ -27,10 +27,15 @@ export default function AddNewsModal() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
-    await addNews(formData);
-    setLoading(false);
-    setIsOpen(false);
-    setPreview(null);
+    try {
+      await addNews(formData);
+      setIsOpen(false);
+      setPreview(null);
+    } catch (err) {
+      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib ko'ring.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

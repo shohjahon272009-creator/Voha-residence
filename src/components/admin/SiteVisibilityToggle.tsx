@@ -21,8 +21,13 @@ export default function SiteVisibilityToggle({
   const toggle = () => {
     const next = !on;
     setOn(next);
-    startTransition(() => {
-      setSiteSetting(settingKey, next ? 'true' : 'false');
+    startTransition(async () => {
+      try {
+        await setSiteSetting(settingKey, next ? 'true' : 'false');
+      } catch {
+        setOn(!next); // saqlanmadi — tugmani avvalgi holatiga qaytaramiz
+        alert("Sozlama saqlanmadi. Qayta urinib ko'ring.");
+      }
     });
   };
 

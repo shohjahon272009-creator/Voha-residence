@@ -165,7 +165,7 @@ export default function HomeQuest({ lang }: { lang: string }) {
     try {
       if (m) { fd.set('apartmentId', String(m.id)); fd.set('kind', 'viewing'); }
       const res = m ? await submitPriceRequest(fd) : await submitContact(fd);
-      if (res.success) setSent(true); else setErr(res.error || t.err);
+      if (res.success) setSent(true); else setErr(lang === 'uz' && res.error ? res.error : t.err);
     } catch { setErr(t.err); }
     setBusy(false);
   };

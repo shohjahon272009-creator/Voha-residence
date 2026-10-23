@@ -14,7 +14,9 @@ export async function translateText(text: string, from: string, to: string) {
     const res = await fetch(url);
     if (!res.ok) return '';
     const data = await res.json();
-    return data[0][0][0] as string;
+    // Javob gaplar bo'yicha bo'linadi — barchasini birlashtiramiz (avval faqat birinchi gap qolardi)
+    if (!Array.isArray(data?.[0])) return '';
+    return (data[0] as unknown[]).map((seg) => (Array.isArray(seg) && typeof seg[0] === 'string' ? seg[0] : '')).join('');
   } catch (error) {
     console.error("Translation error:", error);
     return '';

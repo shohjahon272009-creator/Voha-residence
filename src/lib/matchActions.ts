@@ -1,6 +1,6 @@
 'use server';
 
-import { clientIp } from './clientIp';
+import { allowRequest } from './memLimit';
 import db from './db';
 import { computePayment } from './paymentCalc';
 
@@ -60,18 +60,6 @@ async function loadSnapshot(): Promise<Snapshot> {
   return snapshot;
 }
 
-// Oddiy himoya: bir IP'dan daqiqasiga ko'pi bilan 20 ta qidiruv (server nusxasi xotirasida)
-const hits = new Map<string, number[]>();
-async function allowed(): Promise<boolean> {
-  const ip = (await clientIp()) || 'local';
-  const now = Date.now();
-  const recent = (hits.get(ip) || []).filter((t) => now - t < 60_000);
-  if (recent.length >= 20) return false;
-  recent.push(now);
-  hits.set(ip, recent);
-  if (hits.size > 5000) hits.clear();
-  return true;
-}
 
 const parseList = (v: unknown): string[] => {
   if (!v || typeof v !== 'string') return [];
@@ -83,7 +71,8 @@ export async function findHomes(a: QuestAnswers): Promise<QuestMatch[]> {
   if (!a || !ROOMS[a.household] || !(a.budget in BUDGET) || !FLOOR[a.floor]) return [];
   const priorities = Array.isArray(a.priorities) ? a.priorities.slice(0, 8).map(String) : [];
 
-  if (!(await allowed())) return [];
+  // Bir IP'dan daqiqasiga ko'pi bilan 20 ta qidiruv
+  if (!(await allowRequest('quest', 20))) return [];
   const { rows, settings: s } = await loadSnapshot();
 
   const wantRooms = ROOMS[a.household];

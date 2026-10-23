@@ -10,6 +10,18 @@ import { revalidatePath } from 'next/cache';
 import { saveUpload } from './storage';
 import { requireAdmin } from './requireAdmin';
 
+// Xonadon o'chirilganda unga bog'liq arizalar/sotuvlar YO'QOLMASIN: umumiy murojaatga aylanadi
+// (apartment_id = NULL), izohga qaysi xonadon bo'lgani yoziladi.
+async function detachBookings(where: string, args: unknown[]) {
+  await db.prepare(`
+    UPDATE bookings SET
+      note = TRIM(COALESCE(note, '') || ' | O''chirilgan xonadon: ' ||
+        COALESCE((SELECT p.name_uz || ', №' || a.number FROM apartments a LEFT JOIN projects p ON p.id = a.project_id WHERE a.id = bookings.apartment_id), '?')),
+      apartment_id = NULL
+    WHERE apartment_id IN (SELECT id FROM apartments WHERE ${where})
+  `).run(...args);
+}
+
 // Bazadagi CHECK cheklovlari bilan bir xil — noto'g'ri qiymat DB xatosi (500) va
 // bekorga saqlangan rasmlar o'rniga, rasm yuklashdan OLDIN aniq xato beradi.
 const PROJECT_STATUSES = ['Jarayonda', 'Topshirilgan', 'Tez kunda', 'Sanoqli kunlar qoldi'];
@@ -196,12 +208,8 @@ export async function addProject(formData: FormData) {
 }
 export async function deleteProject(id: number) {
   await requireAdmin();
-  // First delete all bookings related to apartments in this project
-  const apartments = await db.prepare('SELECT id FROM apartments WHERE project_id = ?').all(id) as { id: number }[];
-  for (const apt of apartments) {
-    await db.prepare('DELETE FROM bookings WHERE apartment_id = ?').run(apt.id);
-  }
-  // Delete all apartments in this project
+  // Arizalar va sotuvlar saqlanadi (umumiy murojaatga aylanadi), keyin xonadonlar o'chiriladi
+  await detachBookings('project_id = ?', [id]);
   await db.prepare('DELETE FROM apartments WHERE project_id = ?').run(id);
 
   // Finally delete the project
@@ -262,6 +270,11 @@ export async function updateProject(id: number, formData: FormData) {
     } catch (error) {
       console.error('Error saving 360 image:', error);
     }
+  } else if (!finalTourUrl && formData.get('virtual_tour_remove') !== '1') {
+    // Havola maydoni bo'sh, yangi rasm yo'q: yuklangan panorama (forma uni ko'rsatmaydi) saqlanib qoladi —
+    // aks holda har qanday tahrir 360° turni o'chirib yuborardi. O'chirish — "O'chirish" belgisi bilan.
+    const cur = await db.prepare('SELECT virtual_tour_url FROM projects WHERE id = ?').get(id) as { virtual_tour_url: string | null } | undefined;
+    if (cur?.virtual_tour_url && !/^https?:\/\//i.test(cur.virtual_tour_url)) finalTourUrl = cur.virtual_tour_url;
   }
 
   if (imageUrl) {
@@ -504,10 +517,10 @@ export async function updateApartment(id: number, formData: FormData) {
   revalidatePath('/en');
 }
 
-// Bitta xonadonni butunlay o'chirish (unga bog'liq bronlar ham o'chadi)
+// Bitta xonadonni butunlay o'chirish (unga bog'liq arizalar saqlanib, umumiy murojaatga aylanadi)
 export async function deleteApartment(id: number) {
   await requireAdmin();
-  await db.prepare('DELETE FROM bookings WHERE apartment_id = ?').run(id);
+  await detachBookings('id = ?', [id]);
   await db.prepare('DELETE FROM apartments WHERE id = ?').run(id);
   revalidatePath('/admin/apartments');
   revalidatePath('/admin/dashboard');
@@ -610,7 +623,12 @@ export async function addSale(formData: FormData) {
 
   if (!apartment_id || !client_name || !client_phone) return;
 
-  await db.prepare("UPDATE apartments SET status = 'Band' WHERE id = ?").run(apartment_id);
+  // Faqat bo'sh yoki bronlangan xonadon sotiladi — allaqachon sotilganini (ikki marta bosish,
+  // eski ochiq oyna) qayta sotib, ikkinchi xaridor yozuvi yaratilmasin
+  const res = await db.prepare(
+    "UPDATE apartments SET status = 'Band' WHERE id = ? AND status IN ('Bo''sh', 'Bronlangan')"
+  ).run(apartment_id);
+  if (!res.changes) throw new Error("Bu xonadon allaqachon sotilgan yoki topilmadi.");
 
   await db.prepare(`
     INSERT INTO bookings (apartment_id, client_name, client_phone, status, note)

@@ -65,10 +65,16 @@ export default function ProjectLeadModal({
     // Tag the lead with the project so the admin knows what it's about
     const userMsg = String(fd.get('message') || '');
     fd.set('message', `🏢 ${projectName} — narx so'rovi. ${userMsg}`.trim());
-    const res = await submitContact(fd);
-    if (res.success) setSuccess(true);
-    else setError(res.error || t.err);
-    setLoading(false);
+    try {
+      const res = await submitContact(fd);
+      if (res.success) setSuccess(true);
+      // Server xabarlari o'zbekcha — boshqa tillarda tarjima qilingan umumiy matn
+      else setError(lang === 'uz' && res.error ? res.error : t.err);
+    } catch {
+      setError(t.err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

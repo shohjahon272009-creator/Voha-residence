@@ -19,13 +19,19 @@ export default function AddSaleModal({ projects, apartments }: { projects: any[]
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
-    await addSale(formData);
-    setLoading(false);
-    setIsOpen(false);
+    try {
+      await addSale(formData);
+      setIsOpen(false);
+    } catch {
+      alert("Sotuv saqlanmadi: xonadon allaqachon sotilgan bo'lishi mumkin. Sahifani yangilab, qayta urinib ko'ring.");
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Bo'sh va bronlangan xonadonlarni sotish mumkin (bron -> sotuv)
   const availableApartments = apartments.filter(a => 
-    a.project_id.toString() === selectedProject && a.status === "Bo'sh"
+    a.project_id.toString() === selectedProject && (a.status === "Bo'sh" || a.status === 'Bronlangan')
   );
 
   return (
@@ -73,7 +79,7 @@ export default function AddSaleModal({ projects, apartments }: { projects: any[]
                 >
                   <option value="">Xonadonni tanlang...</option>
                   {availableApartments.map(a => (
-                    <option key={a.id} value={a.id}>№{a.number} - {a.rooms} xona, {a.area}m²</option>
+                    <option key={a.id} value={a.id}>№{a.number} - {a.rooms} xona, {a.area}m²{a.status === 'Bronlangan' ? ' (bronlangan)' : ''}</option>
                   ))}
                 </select>
                 {selectedProject && availableApartments.length === 0 && (

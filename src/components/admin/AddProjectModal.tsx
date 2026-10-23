@@ -25,13 +25,18 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
-    await addProject(formData);
-    setLoading(false);
-    setIsOpen(false);
-    // reset form
-    setNames({ uz: '', ru: '', en: '' });
-    setDescs({ uz: '', ru: '', en: '' });
-    setStatus('Jarayonda');
+    try {
+      await addProject(formData);
+      setIsOpen(false);
+      // reset form
+      setNames({ uz: '', ru: '', en: '' });
+      setDescs({ uz: '', ru: '', en: '' });
+      setStatus('Jarayonda');
+    } catch (err) {
+      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib ko'ring.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleNameBlur = async (lang: 'uz'|'ru'|'en') => {
@@ -40,13 +45,18 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
     setTranslating(true);
     const langs = ['uz', 'ru', 'en'] as const;
     const newNames = { ...names };
-    for (const target of langs) {
-      if (target !== lang && !newNames[target]) {
-        newNames[target] = await translateText(text, lang, target);
+    try {
+      for (const target of langs) {
+        if (target !== lang && !newNames[target]) {
+          newNames[target] = await translateText(text, lang, target);
+        }
       }
+      setNames(newNames);
+    } catch {
+      // Tarjima xizmati ishlamasa — admin qo'lda yozadi, oyna qotib qolmaydi
+    } finally {
+      setTranslating(false);
     }
-    setNames(newNames);
-    setTranslating(false);
   };
 
   const handleDescBlur = async (lang: 'uz'|'ru'|'en') => {
@@ -55,13 +65,18 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
     setTranslating(true);
     const langs = ['uz', 'ru', 'en'] as const;
     const newDescs = { ...descs };
-    for (const target of langs) {
-      if (target !== lang && !newDescs[target]) {
-        newDescs[target] = await translateText(text, lang, target);
+    try {
+      for (const target of langs) {
+        if (target !== lang && !newDescs[target]) {
+          newDescs[target] = await translateText(text, lang, target);
+        }
       }
+      setDescs(newDescs);
+    } catch {
+      // Tarjima xizmati ishlamasa — admin qo'lda yozadi, oyna qotib qolmaydi
+    } finally {
+      setTranslating(false);
     }
-    setDescs(newDescs);
-    setTranslating(false);
   };
 
   return (
@@ -167,7 +182,7 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
                   </div>
                   <div>
                     <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tashqi tur havolasi</span>
-                    <input type="url" name="virtual_tour_url" placeholder="https://... (atlasvr, kuula, momento360 va h.k.)" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                    <input type="text" inputMode="url" name="virtual_tour_url" placeholder="https://... (atlasvr, kuula, momento360 va h.k.)" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                 </div>
               </div>

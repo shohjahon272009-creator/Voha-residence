@@ -5,7 +5,6 @@ import PageHero from '@/components/website/PageHero';
 import BuySteps from '@/components/website/BuySteps';
 import { Locale } from '@/lib/dictionaries';
 import { getPublicProjects } from '@/lib/actions';
-import db from '@/lib/db';
 import { getPublicSettings } from '@/lib/settings';
 import type { Metadata } from 'next';
 import { pageMetadata, PAGE_SEO } from '@/lib/seo';

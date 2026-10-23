@@ -43,10 +43,15 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
   const submit = async () => {
     if (!text.trim()) return;
     setLoading(true);
-    await addApartmentsBulk(projectId, text);
-    setLoading(false);
-    setText('');
-    setIsOpen(false);
+    try {
+      await addApartmentsBulk(projectId, text);
+      setText('');
+      setIsOpen(false);
+    } catch (err) {
+      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib ko'ring.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

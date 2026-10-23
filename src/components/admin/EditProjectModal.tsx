@@ -34,9 +34,14 @@ export default function EditProjectModal({ project }: { project: any }) {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
-    await updateProject(project.id, formData);
-    setLoading(false);
-    setIsOpen(false);
+    try {
+      await updateProject(project.id, formData);
+      setIsOpen(false);
+    } catch (err) {
+      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib ko'ring.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleNameBlur = async (lang: 'uz'|'ru'|'en') => {
@@ -45,13 +50,18 @@ export default function EditProjectModal({ project }: { project: any }) {
     setTranslating(true);
     const langs = ['uz', 'ru', 'en'] as const;
     const newNames = { ...names };
-    for (const target of langs) {
-      if (target !== lang && !newNames[target]) {
-        newNames[target] = await translateText(text, lang, target);
+    try {
+      for (const target of langs) {
+        if (target !== lang && !newNames[target]) {
+          newNames[target] = await translateText(text, lang, target);
+        }
       }
+      setNames(newNames);
+    } catch {
+      // Tarjima xizmati ishlamasa — admin qo'lda yozadi, oyna qotib qolmaydi
+    } finally {
+      setTranslating(false);
     }
-    setNames(newNames);
-    setTranslating(false);
   };
 
   const handleDescBlur = async (lang: 'uz'|'ru'|'en') => {
@@ -60,13 +70,18 @@ export default function EditProjectModal({ project }: { project: any }) {
     setTranslating(true);
     const langs = ['uz', 'ru', 'en'] as const;
     const newDescs = { ...descs };
-    for (const target of langs) {
-      if (target !== lang && !newDescs[target]) {
-        newDescs[target] = await translateText(text, lang, target);
+    try {
+      for (const target of langs) {
+        if (target !== lang && !newDescs[target]) {
+          newDescs[target] = await translateText(text, lang, target);
+        }
       }
+      setDescs(newDescs);
+    } catch {
+      // Tarjima xizmati ishlamasa — admin qo'lda yozadi, oyna qotib qolmaydi
+    } finally {
+      setTranslating(false);
     }
-    setDescs(newDescs);
-    setTranslating(false);
   };
 
   return (
@@ -171,11 +186,14 @@ export default function EditProjectModal({ project }: { project: any }) {
                 </div>
                 <div className="col-span-2 space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
                   <label className="block text-xs font-bold text-gray-600">🌐 360° Virtual Tur (ixtiyoriy)</label>
-                  {project.virtual_tour_url && /\.(jpe?g|png|webp|avif)$/i.test(project.virtual_tour_url) && (
-                    <div className="flex items-center gap-3">
+                  {project.virtual_tour_url && (/\.(jpe?g|png|webp|avif)$/i.test(project.virtual_tour_url) || project.virtual_tour_url.startsWith('data:image/')) && (
+                    <div className="flex flex-wrap items-center gap-3">
                       {/* eslint-disable-next-line @next/next/no-img-element -- admin oldindan ko'rinishi: data URL / tashqi panorama */}
                       <img src={project.virtual_tour_url} alt="360" className="w-24 h-14 object-cover rounded-lg border border-gray-200" />
                       <span className="text-[11px] text-gray-400">Joriy panorama rasm. Yangisini yuklasangiz, almashtiriladi.</span>
+                      <label className="flex items-center gap-1.5 text-[11px] font-bold text-danger">
+                        <input type="checkbox" name="virtual_tour_remove" value="1" /> O&apos;chirish
+                      </label>
                     </div>
                   )}
                   <div>
@@ -188,7 +206,7 @@ export default function EditProjectModal({ project }: { project: any }) {
                   </div>
                   <div>
                     <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tashqi tur havolasi</span>
-                    <input type="url" name="virtual_tour_url" defaultValue={project.virtual_tour_url || ''} placeholder="https://... (atlasvr, kuula, momento360 va h.k.)" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                    <input type="text" inputMode="url" name="virtual_tour_url" defaultValue={/^https?:\/\//i.test(project.virtual_tour_url || '') ? project.virtual_tour_url : ''} placeholder="https://... (atlasvr, kuula, momento360 va h.k.)" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                 </div>
               </div>

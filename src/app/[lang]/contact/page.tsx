@@ -4,7 +4,6 @@ import ContactSection from '@/components/website/ContactSection';
 import LocationShowcase from '@/components/website/LocationShowcase';
 import PageHero from '@/components/website/PageHero';
 import { Locale } from '@/lib/dictionaries';
-import db from '@/lib/db';
 import { getPublicSettings } from '@/lib/settings';
 import type { Metadata } from 'next';
 import { pageMetadata, PAGE_SEO } from '@/lib/seo';

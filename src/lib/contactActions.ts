@@ -101,7 +101,18 @@ export async function submitPriceRequest(formData: FormData) {
     if (!aptDetails) return { success: false, error: "Xonadon topilmadi" };
     // O'yindan ko'rishga yozilish faqat bo'sh xonadonga (ro'yxat keshda bo'lgani uchun yaqinda sotilgan bo'lishi mumkin)
     if (viewing && aptDetails.status !== "Bo'sh") {
-      return { success: false, error: "Bu xonadon yaqinda band qilindi. Qayta o'ynab boshqasini tanlang yoki bizga qo'ng'iroq qiling." };
+      // Mijoz yo'qolmasin: band xonadonga emas, umumiy murojaat sifatida saqlaymiz —
+      // menejer unga o'xshash boshqa xonadonni taklif qiladi
+      const ipBusy = await clientIp();
+      const limitedBusy = await checkRateLimit(ipBusy, phone);
+      if (limitedBusy) return { success: false, error: limitedBusy };
+      const busyNote = `${message ? message + ' | ' : ''}Tanlangan xonadon band bo'lib qoldi: ${aptDetails.project_name}, №${aptDetails.number} — o'xshashini taklif qiling`;
+      await db.prepare(`
+        INSERT INTO bookings (client_name, client_phone, payment_type, note, status, ip)
+        VALUES (?, ?, ?, ?, 'Yangi', ?)
+      `).run(name, phone, paymentType, busyNote, ipBusy);
+      await notifyTelegram(`🏠 *Ko'rishga yozilish (xonadon band bo'lib qolgan)*\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n💬 *Izoh:* ${md(busyNote)}`);
+      return { success: true };
     }
 
     const ip = await clientIp();

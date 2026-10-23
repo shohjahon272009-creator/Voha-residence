@@ -28,13 +28,18 @@ export default function NewsRowActions({ item }: { item: any }) {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
-    await updateNews(item.id, formData);
-    setLoading(false);
-    setIsEditOpen(false);
+    try {
+      await updateNews(item.id, formData);
+      setIsEditOpen(false);
+    } catch (err) {
+      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib ko'ring.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async () => {
-    if (confirm('Rostdan ham ushbu yangilikni o&apos;chirmoqchimisiz?')) {
+    if (confirm("Rostdan ham ushbu yangilikni o'chirmoqchimisiz?")) {
       await deleteNews(item.id);
     }
   };

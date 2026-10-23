@@ -100,6 +100,17 @@ export default async function AdminBookings() {
                           </div>
                         ) : bron.status === 'Tasdiqlangan' ? (
                           <div className="flex items-center justify-end gap-2">
+                             {/* Bronlangan xonadonni sotilgan (Band) qilish — boshqa yo'l yo'q edi */}
+                             {bron.apartment_id && (
+                               <form action={updateBookingStatus}>
+                                  <input type="hidden" name="id" value={bron.id} />
+                                  <input type="hidden" name="status" value="Tasdiqlangan" />
+                                  <input type="hidden" name="action_type" value="sell" />
+                                  <button type="submit" className="p-2 text-primary hover:bg-primary/5 rounded-lg transition-all" title="Sotildi (xonadon Band bo'ladi)">
+                                     <DollarSign size={18} />
+                                  </button>
+                               </form>
+                             )}
                              <form action={updateBookingStatus}>
                                 <input type="hidden" name="id" value={bron.id} />
                                 <input type="hidden" name="status" value="Bekor qilingan" />

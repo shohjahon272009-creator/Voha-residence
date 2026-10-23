@@ -30,11 +30,14 @@ export default function MortgageCalculator({
     if (!selected) return;
     const aptId = selected.id;
     let cancelled = false;
-    getApartmentPayment(aptId, { downPct: downTier, years }).then((res) => {
-      if (cancelled) return;
-      if (res) setSrv({ ...res, aptId });
-      else setNoPriceId(aptId);
-    });
+    getApartmentPayment(aptId, { downPct: downTier, years })
+      .then((res) => {
+        if (cancelled) return;
+        if (res) setSrv({ ...res, aptId });
+        else setNoPriceId(aptId);
+      })
+      // Tarmoq/server xatosi — "…" abadiy aylanmasin, "bog'laning" xabari chiqsin
+      .catch(() => { if (!cancelled) setNoPriceId(aptId); });
     return () => { cancelled = true; };
   }, [selected, downTier, years]);
 

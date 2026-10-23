@@ -7,7 +7,6 @@ import { Timeline, Testimonials } from '@/components/website/VohaStory';
 import BuildStory from '@/components/website/BuildStory';
 import VohaLogo from '@/components/common/VohaLogo';
 import { Locale } from '@/lib/dictionaries';
-import db from '@/lib/db';
 import { getPublicSettings } from '@/lib/settings';
 import {
   Award, ShieldCheck, Clock, Wallet, Building2, MapPin,

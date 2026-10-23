@@ -95,18 +95,23 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
     setLoading(true);
     setError('');
     
-    const formData = new FormData(e.currentTarget);
-    const res = await submitContact(formData);
-    
-    if (res.success) {
-      setSuccess(true);
-      (e.target as HTMLFormElement).reset();
-      setTimeout(() => setSuccess(false), 5000);
-    } else {
-      setError(res.error || t.errorMsg);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    try {
+      const res = await submitContact(formData);
+      if (res.success) {
+        setSuccess(true);
+        form.reset();
+        setTimeout(() => setSuccess(false), 5000);
+      } else {
+        // Server xabarlari o'zbekcha — boshqa tillarda tarjima qilingan umumiy matn
+        setError(lang === 'uz' && res.error ? res.error : t.errorMsg);
+      }
+    } catch {
+      setError(t.errorMsg);
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
