@@ -11,7 +11,9 @@ module.exports = {
       name: 'voha',
       cwd: '/var/www/qurilish',        // <-- serverdagi loyiha papkasi (DEPLOY.md bilan bir xil)
       script: 'node_modules/next/dist/bin/next',
-      args: 'start -p 3000',
+      // Faqat lokal (nginx orqali) — 3000-port tashqaridan ochiq bo'lsa X-Real-IP'ni soxtalashtirib
+      // so'rovlar limitini aylanib o'tish mumkin bo'lardi
+      args: 'start -p 3000 -H 127.0.0.1',
       instances: 1,
       exec_mode: 'fork',
       autorestart: true,

@@ -14,13 +14,13 @@ import { Locale, getDictionary } from '@/lib/dictionaries';
 import AnimatedReveal from '@/components/website/AnimatedReveal';
 import VohaLogo from '@/components/common/VohaLogo';
 import db from '@/lib/db';
+import { getPublicSettings } from '@/lib/settings';
 
 export default async function RootPage() {
   const localeLang: Locale = 'uz';
   const dict = getDictionary(localeLang);
 
-  const settingsRows = await db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
-  const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
+  const settings = await getPublicSettings();
   const companyName = settings.company_name || 'Qurilish';
 
   const allProjects = await getPublicProjects();

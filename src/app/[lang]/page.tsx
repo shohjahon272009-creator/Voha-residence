@@ -23,6 +23,7 @@ import { PaymentTerms, Timeline, Testimonials, SocialStrip } from '@/components/
 import VohaLogo from '@/components/common/VohaLogo';
 
 import db from '@/lib/db';
+import { getPublicSettings } from '@/lib/settings';
 import type { Metadata } from 'next';
 import { pageMetadata, PAGE_SEO } from '@/lib/seo';
 
@@ -45,8 +46,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const localeLang = lang as Locale;
   const dict = getDictionary(localeLang);
 
-  const settingsRows = await db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
-  const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
+  const settings = await getPublicSettings();
   const companyName = settings.company_name || 'Qurilish';
 
   // Bosh sahifa slideri uchun loyiha rasmlari (eng yangi loyihalar oldinda)

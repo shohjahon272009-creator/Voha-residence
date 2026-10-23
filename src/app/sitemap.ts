@@ -1,5 +1,4 @@
 import { MetadataRoute } from 'next';
-import { getProjects } from '@/lib/actions';
 import db from '@/lib/db';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -32,7 +31,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Loyiha sahifalari
   const projectRoutes: MetadataRoute.Sitemap = [];
   try {
-    const projects = await getProjects();
+    // Faqat id — SELECT * butun base64 rasmlarni ham tortardi
+    const projects = await db.prepare('SELECT id FROM projects').all() as { id: number }[];
     for (const project of projects) {
       for (const lang of langs) {
         projectRoutes.push({

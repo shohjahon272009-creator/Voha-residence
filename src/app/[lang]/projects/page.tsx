@@ -6,6 +6,7 @@ import BuySteps from '@/components/website/BuySteps';
 import { Locale } from '@/lib/dictionaries';
 import { getPublicProjects } from '@/lib/actions';
 import db from '@/lib/db';
+import { getPublicSettings } from '@/lib/settings';
 import type { Metadata } from 'next';
 import { pageMetadata, PAGE_SEO } from '@/lib/seo';
 
@@ -20,8 +21,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
   const { lang } = await params;
   const localeLang = lang as Locale;
 
-  const settingsRows = await db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
-  const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
+  const settings = await getPublicSettings();
   const companyName = settings.company_name || 'Voha Residence';
 
   // Banner slideri uchun loyiha rasmlari

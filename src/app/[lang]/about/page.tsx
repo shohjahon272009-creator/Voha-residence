@@ -8,6 +8,7 @@ import BuildStory from '@/components/website/BuildStory';
 import VohaLogo from '@/components/common/VohaLogo';
 import { Locale } from '@/lib/dictionaries';
 import db from '@/lib/db';
+import { getPublicSettings } from '@/lib/settings';
 import {
   Award, ShieldCheck, Clock, Wallet, Building2, MapPin,
   CheckCircle2, Phone, ArrowRight,
@@ -24,8 +25,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
   const { lang } = await params;
   const localeLang = lang as Locale;
 
-  const settingsRows = await db.prepare("SELECT key, value FROM settings").all() as { key: string, value: string }[];
-  const settings = settingsRows.reduce((acc, row) => ({ ...acc, [row.key]: row.value }), {} as Record<string, string>);
+  const settings = await getPublicSettings();
   const companyName = settings.company_name || 'Voha Residence';
   const phone = settings.contact_phone || '+998 91 011 66 66';
 
