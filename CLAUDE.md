@@ -17,7 +17,12 @@ npm run build        # production build
 
 - There are no tests. Verification means lint, `tsc` and `next build`, then checking in the browser.
 - Do not run `next dev` and `next build` at the same time: `.next` gets corrupted. Stop the dev server, run `rm -rf .next`, then build.
-- **A push to `main` deploys to production automatically** (Vercel → voharesidence.uz). Only push after the build passes.
+- **A push to `main` deploys automatically to Vercel** (voharesidence.uz, until the domain is moved). Only push after the build passes.
+- **Airnet VPS** (`46.8.114.120`, `ubuntu`, SSH key `~/.ssh/voha_airnet`): `/var/www/voha`, PM2 process `voha` (`voha.config.js`, 127.0.0.1:3000), nginx at `/etc/nginx/sites-available/voha`.
+  - Ship updates with `bash deploy/airnet.sh`: it sends the last commit, then builds and does `pm2 reload`.
+  - The server `.env.local` (Turso and its own `AUTH_SECRET`) and admin-uploaded images (`public/uploads`) are kept across deploys.
+  - Uploads added after the build are served by nginx's `/uploads/` location (Next doesn't serve them).
+  - `salehouse-bot.service` (the Sale House Telegram bot) also runs on this server. Don't touch it.
 
 ## ⚠️ Local environment = production database
 
