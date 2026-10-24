@@ -51,6 +51,42 @@ async function makeTursoBackend(): Promise<Backend> {
   };
 }
 
+// Airnet VPS: Turso'ning MAHALLIY nusxasi (embedded replica). O'qish — server diskidagi fayldan
+// (millisekundlar; avval har so'rov AQShga borib-kelardi, sahifa 1–2 s kechikardi), yozish — asosiy
+// Turso bazaga (read-your-writes kafolatlangan). Har 30 soniyada fonda sinxronlanadi.
+// PM2 cluster: har bir nusxa o'z faylida (bir faylni ikki jarayon sinxronlasa buziladi).
+async function makeReplicaBackend(): Promise<Backend> {
+  const { createClient } = await import('@libsql/client');
+  const instance = process.env.NODE_APP_INSTANCE ?? process.env.pm_id ?? '0';
+  const file = `${process.env.TURSO_REPLICA_PATH}-${instance}.db`;
+  const c = createClient({
+    url: `file:${file}`,
+    syncUrl: process.env.TURSO_DATABASE_URL,
+    authToken: process.env.TURSO_AUTH_TOKEN,
+    syncInterval: 30,
+  });
+  await c.sync();
+  const norm = (a: unknown[]) => a.map((x) => (x === undefined ? null : x)) as InArgs;
+  return {
+    async all(sql, args) {
+      return (await c.execute({ sql, args: norm(args) })).rows as unknown as Row[];
+    },
+    async get(sql, args) {
+      return (await c.execute({ sql, args: norm(args) })).rows[0] as Row | undefined;
+    },
+    async run(sql, args) {
+      const r = await c.execute({ sql, args: norm(args) });
+      return {
+        changes: Number(r.rowsAffected),
+        lastInsertRowid: r.lastInsertRowid != null ? Number(r.lastInsertRowid) : undefined,
+      };
+    },
+    async exec(sql) {
+      await c.executeMultiple(sql);
+    },
+  };
+}
+
 async function makeLocalBackend(): Promise<Backend> {
   /* eslint-disable @typescript-eslint/no-require-imports */
   const path = require('path');
@@ -84,7 +120,15 @@ async function makeLocalBackend(): Promise<Backend> {
 function getBackend(): Promise<Backend> {
   if (globalForDb.__qurilishBackend) return globalForDb.__qurilishBackend;
   const p = (async () => {
-    const backend = process.env.TURSO_DATABASE_URL ? await makeTursoBackend() : await makeLocalBackend();
+    const backend = !process.env.TURSO_DATABASE_URL
+      ? await makeLocalBackend()
+      : process.env.TURSO_REPLICA_PATH
+        ? await makeReplicaBackend().catch((e) => {
+            // Mahalliy nusxa ochilmasa — to'g'ridan-to'g'ri Turso (sayt baribir ishlasin)
+            console.error('Turso replica xatosi, HTTP rejimiga otildi:', (e as Error)?.message);
+            return makeTursoBackend();
+          })
+        : await makeTursoBackend();
     await initSchema(backend);
     return backend;
   })();

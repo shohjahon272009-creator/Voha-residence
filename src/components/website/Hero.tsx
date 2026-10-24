@@ -3,10 +3,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, animate, useInView } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { Locale, getDictionary } from '@/lib/dictionaries';
+import { Locale } from '@/lib/dictionaries';
 import { usePortrait } from '@/lib/useOrientation';
 import { useIntroDone, finishIntro } from './IntroScreen';
-import { onQuestLinkClick, onSectionLinkClick } from '@/lib/goToQuest';
+import { onQuestLinkClick } from '@/lib/goToQuest';
 
 type HeroSlide = { image: string; name: string; id: number; city?: string };
 
@@ -38,7 +38,6 @@ function CountUp({ value, start }: { value: string; start: boolean }) {
 }
 
 export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, settings = {} }: { lang: Locale, companyName?: string, heroTitle?: string, heroDesc?: string, images?: string[], slides?: HeroSlide[], settings?: Record<string, string> }) {
-  const dict = getDictionary(lang);
   const videoRef = useRef<HTMLVideoElement>(null);
   const portrait = usePortrait();
 
@@ -112,11 +111,12 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const shade = useTransform(scrollYProgress, [0, 1], [0.04, 0.7]);
 
-  const heroText: Record<Locale, { tag: string; title2: string; desc: string; btn2: string; scroll: string }> = {
+  const heroText: Record<Locale, { tag: string; title2: string; desc: string; btn1: string; btn2: string; scroll: string }> = {
     uz: {
       tag: 'Premium Toifadagi Turar-Joy Majmuasi',
       title2: 'Kelajagingiz uchun betakror maskan',
       desc: 'Mukammal arxitektura va zamonaviy yechimlar uyg\'unligi. O\'zingiz va oilangiz uchun Xorazmning eng prestijli nuqtasida chinakam qulaylikni kashf eting.',
+      btn1: 'Xonadon tanlash',
       btn2: 'Uyingizni toping',
       scroll: 'Pastga suring',
     },
@@ -124,6 +124,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
       tag: 'Жилой Комплекс Премиум Класса',
       title2: 'Неповторимое пространство для вашего будущего',
       desc: 'Гармония совершенной архитектуры и современных решений. Откройте для себя истинный комфорт в самой престижной точке Хорезма.',
+      btn1: 'Выбрать квартиру',
       btn2: 'Найти свою квартиру',
       scroll: 'Листайте вниз',
     },
@@ -131,6 +132,7 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
       tag: 'Premium Class Residential Complex',
       title2: 'A unique space for your future',
       desc: 'The harmony of perfect architecture and modern solutions. Discover true comfort in the most prestigious location of Khorezm.',
+      btn1: 'Choose an apartment',
       btn2: 'Find your home',
       scroll: 'Scroll down',
     },
@@ -161,8 +163,9 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
   const baseStats = stats[lang] || stats.uz;
   // Admin sozlagan statistika (bo'sh bo'lsa — standart qiymat)
   const currentStats = baseStats.map((s, i) => ({
+    // Admin sozlamasi o'zbekcha kiritiladi — ru/en sahifada raqam olinadi, nomi esa o'sha tilda
     value: settings[`hero_stat${i + 1}_value`] || s.value,
-    label: settings[`hero_stat${i + 1}_label`] || s.label,
+    label: (lang === 'uz' && settings[`hero_stat${i + 1}_label`]) || s.label,
   }));
 
   const go = started ? 'show' : 'hidden';
@@ -276,9 +279,10 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
           transition={{ delay: 1.15, duration: 0.9, ease: EASE }}
           className="flex flex-wrap justify-center gap-3 md:gap-4"
         >
-          <a href={`/${lang}#about`} onClick={onSectionLinkClick('about')} className="group relative overflow-hidden px-7 md:px-10 py-3.5 md:py-4 bg-accent text-primary font-bold rounded-full tracking-wide inline-flex items-center gap-2 text-sm md:text-base shadow-[0_10px_40px_rgba(209,142,91,0.45)]">
+          {/* Asosiy CTA — xaridorni darhol xonadonlarga olib boradi (avval "Batafsil" -> Biz haqimizda edi) */}
+          <a href={`/${lang}/apartments`} className="group relative overflow-hidden px-7 md:px-10 py-3.5 md:py-4 bg-accent text-primary font-bold rounded-full tracking-wide inline-flex items-center gap-2 text-sm md:text-base shadow-[0_10px_40px_rgba(209,142,91,0.45)]">
             <span className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
-            <span className="relative">{dict.hero.details}</span>
+            <span className="relative">{t.btn1}</span>
             <ArrowRight size={17} className="relative transition-transform group-hover:translate-x-1" />
           </a>
           <a href={`/${lang}#uy-tanlash`} onClick={onQuestLinkClick} className="group px-7 md:px-10 py-3.5 md:py-4 bg-black/35 text-white font-bold rounded-full border border-white/60 [text-shadow:0_1px_3px_rgba(0,0,0,0.5)] hover:bg-white hover:text-primary transition-all duration-500 inline-flex items-center gap-2 text-sm md:text-base">

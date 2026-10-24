@@ -6,6 +6,8 @@ import { Calculator, Info, Phone, X, MousePointerClick } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getApartmentPayment, type PublicPay } from '@/lib/paymentActions';
 import { onSectionLinkClick } from '@/lib/goToQuest';
+import BookingModal from './BookingModal';
+import type { Apartment } from '@/lib/types';
 import { SelectedApartment } from '@/lib/types';
 
 // Kalkulyator BLOKKA qarab avtomatik hisoblaydi (gibrid yoki ipoteka) — server hal qiladi.
@@ -22,6 +24,8 @@ export default function MortgageCalculator({
 }) {
   const [downTier, setDownTier] = useState(15); // ipoteka boshlang'ich %
   const [years, setYears] = useState(5); // ipoteka muddati (yil)
+  // Hisobdan keyin — aynan shu xonadon bo'yicha ariza (avval footer'ga olib ketardi, xonadon yo'qolardi)
+  const [bookOpen, setBookOpen] = useState(false);
   const [srv, setSrv] = useState<(PublicPay & { aptId: number }) | null>(null);
   // Narxi kiritilmagan xonadon (server null qaytaradi) — avval "…" abadiy aylanib turardi
   const [noPriceId, setNoPriceId] = useState<number | null>(null);
@@ -47,9 +51,9 @@ export default function MortgageCalculator({
   const noPrice = !ready && !!selected && noPriceId === selected.id;
 
   const T = ({
-    uz: { tag: 'TO‘LOV KALKULYATORI', selApt: 'Tanlangan xonadon', xona: 'xona', prompt: 'To‘lovni ko‘rish uchun yuqoridan xonadonni tanlang', monthly: 'Oylik to‘lov', downRow: 'Boshlang‘ich to‘lov', remRow: 'Qoldiq summa', termRow: 'Muddat', mo: 'oy', yr: 'yil', down: 'Boshlang‘ich (%)', term: 'Muddat (yil)', rate: 'Foiz', mortgage: 'Ipoteka', hybrid: 'Muddatli (0%)', consult: 'Konsultatsiya', noPrice: 'Bu xonadon narxini bilish uchun biz bilan bog‘laning', note: '* Dastlabki hisob. Yakuniy shartlar loyihaga bog‘liq.' },
-    ru: { tag: 'КАЛЬКУЛЯТОР ОПЛАТЫ', selApt: 'Выбранная квартира', xona: 'комн.', prompt: 'Выберите квартиру выше, чтобы увидеть оплату', monthly: 'Ежемесячный платёж', downRow: 'Первый взнос', remRow: 'Остаток', termRow: 'Срок', mo: 'мес', yr: 'лет', down: 'Взнос (%)', term: 'Срок (лет)', rate: 'Ставка', mortgage: 'Ипотека', hybrid: 'Рассрочка (0%)', consult: 'Консультация', noPrice: 'Чтобы узнать цену этой квартиры, свяжитесь с нами', note: '* Предварительный расчёт. Условия зависят от проекта.' },
-    en: { tag: 'PAYMENT CALCULATOR', selApt: 'Selected apartment', xona: 'rooms', prompt: 'Select an apartment above to see the payment', monthly: 'Monthly payment', downRow: 'Down payment', remRow: 'Remaining', termRow: 'Term', mo: 'mo', yr: 'yr', down: 'Down (%)', term: 'Term (yr)', rate: 'Rate', mortgage: 'Mortgage', hybrid: 'Installment (0%)', consult: 'Consultation', noPrice: 'Contact us to get the price of this apartment', note: '* Preliminary calculation. Terms depend on the project.' },
+    uz: { tag: 'TO‘LOV KALKULYATORI', selApt: 'Tanlangan xonadon', xona: 'xona', prompt: 'To‘lovni ko‘rish uchun yuqoridan xonadonni tanlang', monthly: 'Oylik to‘lov', downRow: 'Boshlang‘ich to‘lov', remRow: 'Qoldiq summa', termRow: 'Muddat', mo: 'oy', yr: 'yil', down: 'Boshlang‘ich (%)', term: 'Muddat (yil)', rate: 'Foiz', mortgage: 'Ipoteka', hybrid: 'Muddatli (0%)', consult: 'Shu xonadonga ariza qoldirish', noPrice: 'Bu xonadon narxini bilish uchun biz bilan bog‘laning', note: '* Dastlabki hisob. Yakuniy shartlar loyihaga bog‘liq.' },
+    ru: { tag: 'КАЛЬКУЛЯТОР ОПЛАТЫ', selApt: 'Выбранная квартира', xona: 'комн.', prompt: 'Выберите квартиру выше, чтобы увидеть оплату', monthly: 'Ежемесячный платёж', downRow: 'Первый взнос', remRow: 'Остаток', termRow: 'Срок', mo: 'мес', yr: 'лет', down: 'Взнос (%)', term: 'Срок (лет)', rate: 'Ставка', mortgage: 'Ипотека', hybrid: 'Рассрочка (0%)', consult: 'Оставить заявку на эту квартиру', noPrice: 'Чтобы узнать цену этой квартиры, свяжитесь с нами', note: '* Предварительный расчёт. Условия зависят от проекта.' },
+    en: { tag: 'PAYMENT CALCULATOR', selApt: 'Selected apartment', xona: 'rooms', prompt: 'Select an apartment above to see the payment', monthly: 'Monthly payment', downRow: 'Down payment', remRow: 'Remaining', termRow: 'Term', mo: 'mo', yr: 'yr', down: 'Down (%)', term: 'Term (yr)', rate: 'Rate', mortgage: 'Mortgage', hybrid: 'Installment (0%)', consult: 'Request this apartment', noPrice: 'Contact us to get the price of this apartment', note: '* Preliminary calculation. Terms depend on the project.' },
   } as const)[lang] || ({} as never);
 
   const isMort = ready && srv!.mode === 'mortgage';
@@ -120,7 +124,11 @@ export default function MortgageCalculator({
                       <div className="flex justify-between text-sm"><span className="text-gray-500">{T.rate}</span><span className="font-black text-primary">{srv!.rate}%</span></div>
                     )}
                   </div>
-                  <a href={`/${lang}#contact`} onClick={onSectionLinkClick('contact')} className="mt-auto flex items-center justify-center gap-2 w-full py-4 bg-accent text-white font-bold rounded-2xl hover:bg-opacity-90 transition-all shadow-lg shadow-accent/30"><Phone size={16} /> {T.consult}</a>
+                  {selected ? (
+                    <button type="button" onClick={() => setBookOpen(true)} className="mt-auto flex items-center justify-center gap-2 w-full py-4 bg-accent text-white font-bold rounded-2xl hover:bg-opacity-90 transition-all shadow-lg shadow-accent/30"><Phone size={16} /> {T.consult}</button>
+                  ) : (
+                    <a href={`/${lang}#contact`} onClick={onSectionLinkClick('contact')} className="mt-auto flex items-center justify-center gap-2 w-full py-4 bg-accent text-white font-bold rounded-2xl hover:bg-opacity-90 transition-all shadow-lg shadow-accent/30"><Phone size={16} /> {T.consult}</a>
+                  )}
                   <div className="mt-4 flex gap-2 items-start text-[11px] text-gray-400 leading-relaxed"><Info size={14} className="min-w-3.5 text-accent mt-0.5" /><span>{T.note}</span></div>
                 </div>
               </div>
@@ -128,6 +136,13 @@ export default function MortgageCalculator({
           </div>
         </motion.div>
       </div>
+      {bookOpen && selected && (
+        <BookingModal
+          lang={lang}
+          onClose={() => setBookOpen(false)}
+          apartment={{ id: selected.id, number: selected.number, floor: selected.floor, rooms: selected.rooms, area: selected.area } as unknown as Apartment}
+        />
+      )}
     </section>
   );
 }

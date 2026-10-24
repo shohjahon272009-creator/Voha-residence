@@ -249,10 +249,10 @@ export default function LocationShowcase({ lang, phone, address, hours }: { lang
             <span className="w-14 h-14 rounded-2xl bg-accent text-primary flex items-center justify-center shrink-0"><MapPin size={26} /></span>
             <div className="flex-1 min-w-0">
               <div className="text-accent text-[11px] uppercase tracking-[0.25em] font-bold">{t.office}</div>
-              <div className="mt-1 font-bold text-lg leading-snug">{address || t.address}</div>
+              <div className="mt-1 font-bold text-lg leading-snug">{(lang === 'uz' && address) || t.address}</div>
               <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-white/65">
                 <a href={telHref} className="inline-flex items-center gap-1.5 hover:text-accent transition-colors"><Phone size={14} />{phoneVal}</a>
-                <span className="inline-flex items-center gap-1.5"><Clock size={14} />{hours || t.hours}</span>
+                <span className="inline-flex items-center gap-1.5"><Clock size={14} />{(lang === 'uz' && hours) || t.hours}</span>
               </div>
             </div>
           </div>

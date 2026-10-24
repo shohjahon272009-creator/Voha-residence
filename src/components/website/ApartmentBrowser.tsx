@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
+import { scrollToId } from '@/lib/goToQuest';
+
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Apartment, Project, SelectedApartment } from '@/lib/types';
@@ -24,11 +26,12 @@ const L: Record<Locale, Record<string, string>> = {
 
 export default function ApartmentBrowser({ apartments, projects, lang, onSelect, showLocations = true }: Props) {
   const t = L[lang] || L.uz;
-  const scrollToCalc = () => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const scrollToCalc = () => scrollToId('calculator');
   // Sotib tugatilgan va topshirilgan loyihalar xonadon tanlash bo'limida ko'rinmaydi
   const activeProjects = useMemo(() => projects.filter((p) => p.status !== 'Topshirilgan' && !p.is_sold_out), [projects]);
   const activeIds = useMemo(() => new Set(activeProjects.map((p) => p.id)), [activeProjects]);
-  const apts = useMemo(() => apartments.filter((a) => activeIds.has(a.project_id)), [apartments, activeIds]);
+  // Faqat sotuvdagi (bo'sh) xonadonlar — sotilgan/bronlangani "mavjud" bo'lib ko'rinmasin
+  const apts = useMemo(() => apartments.filter((a) => activeIds.has(a.project_id) && a.status === "Bo'sh"), [apartments, activeIds]);
   const projById = useMemo(() => new Map(activeProjects.map((p) => [p.id, p])), [activeProjects]);
   const projName = (p: Project) => (p as unknown as Record<string, string>)[`name_${lang}`] || p.name_uz;
   const years = useMemo(() => Array.from(new Set(activeProjects.map((p) => p.delivery_year).filter(Boolean))).sort() as number[], [activeProjects]);
@@ -179,7 +182,8 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect,
             {cats.length > 0 && <span className="text-accent normal-case">({cats.length})</span>}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-            {CATEGORIES.map((c) => {
+            {/* Natija bermaydigan (0 ta) joylashuv tugmalari ko'rsatilmaydi — bo'sh natijaga olib bormasin */}
+            {CATEGORIES.filter((c) => catCount(c.key) > 0 || cats.includes(c.key)).map((c) => {
               const isActive = cats.includes(c.key);
               const n = catCount(c.key);
               const Icon = CAT_ICON[c.key] || MapPin;

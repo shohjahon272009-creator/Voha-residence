@@ -86,8 +86,9 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
 
   // Admin sozlagan aloqa ma'lumotlari (bo'sh bo'lsa — til bo'yicha standart matn)
   const phoneVal = phone || '+998 91 011 66 66';
-  const addressVal = address || t.addressValue;
-  const hoursVal = hours || t.timeValue;
+  // Admin manzil/ish vaqti o'zbekcha — ru/en sahifada tarjima qilingan standart matn
+  const addressVal = (lang === 'uz' && address) || t.addressValue;
+  const hoursVal = (lang === 'uz' && hours) || t.timeValue;
   const telHref = 'tel:' + phoneVal.replace(/[^\d+]/g, '');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -178,11 +179,11 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                        <label className="text-xs font-bold text-white/70 uppercase tracking-wider">{t.namePlaceholder}</label>
-                       <input name="name" required type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors" placeholder={t.nameValue} />
+                       <input name="name" required type="text" autoComplete="name" maxLength={100} className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors" placeholder={t.nameValue} />
                     </div>
                     <div className="space-y-2">
                        <label className="text-xs font-bold text-white/70 uppercase tracking-wider">{t.phoneLabel}</label>
-                       <input name="phone" required type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors" placeholder={phoneVal} />
+                       <input name="phone" required type="tel" inputMode="tel" autoComplete="tel" maxLength={40} className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors" placeholder="+998 __ ___ __ __" />
                     </div>
                  </div>
                  <div className="space-y-2">
@@ -190,7 +191,7 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
                     <textarea name="message" rows={4} className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors resize-none" placeholder={t.msgValue}></textarea>
                  </div>
                  <button disabled={loading || !hydrated} type="submit" className="w-full py-4 bg-accent text-primary font-bold rounded-xl hover:bg-white transition-all shadow-[0_0_20px_rgba(250,218,165,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] flex justify-center items-center gap-3 disabled:opacity-50">
-                    {loading ? 'Yuborilmoqda...' : t.send} {!loading && <Send size={18} />}
+                    {loading ? (lang === 'ru' ? 'Отправка…' : lang === 'en' ? 'Sending…' : 'Yuborilmoqda…') : t.send} {!loading && <Send size={18} />}
                  </button>
               </form>
            </div>

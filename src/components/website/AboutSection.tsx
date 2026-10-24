@@ -45,12 +45,14 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
     },
   } as const)[lang] || ({} as never);
 
-  const title = settings.about_title;
-  const desc = settings.about_desc || t.desc;
+  // Admin matnlari o'zbekcha — faqat uz sahifada; ru/en'da tarjima qilingan standart matn
+  const uzOnly = (v?: string) => (lang === 'uz' ? v : undefined);
+  const title = uzOnly(settings.about_title);
+  const desc = uzOnly(settings.about_desc) || t.desc;
   const s1v = settings.about_stat1_value || t.s1v;
-  const s1l = settings.about_stat1_label || t.s1l;
+  const s1l = uzOnly(settings.about_stat1_label) || t.s1l;
   const s2v = settings.about_stat2_value || t.s2v;
-  const s2l = settings.about_stat2_label || t.s2l;
+  const s2l = uzOnly(settings.about_stat2_label) || t.s2l;
 
   return (
     <section id="about" className="py-20 md:py-28 px-6 bg-brand-mesh-lux relative overflow-hidden">
@@ -105,8 +107,8 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
                 <adv.i className="w-6 h-6 text-primary group-hover:text-white transition-colors duration-300" />
               </div>
               <div>
-                <div className="font-bold text-primary text-base mb-1">{settings[`about_adv${i + 1}_title`] || adv.t}</div>
-                <div className="text-sm text-gray-500 leading-snug">{settings[`about_adv${i + 1}_desc`] || adv.d}</div>
+                <div className="font-bold text-primary text-base mb-1">{uzOnly(settings[`about_adv${i + 1}_title`]) || adv.t}</div>
+                <div className="text-sm text-gray-500 leading-snug">{uzOnly(settings[`about_adv${i + 1}_desc`]) || adv.d}</div>
               </div>
             </div>
           ))}
