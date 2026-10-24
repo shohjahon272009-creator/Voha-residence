@@ -2,7 +2,7 @@ import React from 'react';
 import { RefreshCw, ShieldCheck, CheckCircle2, AlertTriangle } from 'lucide-react';
 import db from '@/lib/db';
 import { salehouseConfigured } from '@/lib/salehouse';
-import { readJob } from '@/lib/salehouseJob';
+import { readJob, cronStatus } from '@/lib/salehouseJob';
 import { applySaleHouseSync, setSaleHouseAuto, startSaleHouseReport } from '@/lib/salehouseActions';
 import AutoRefresh from './AutoRefresh';
 
@@ -23,6 +23,7 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
 
   // Hisobot fonda tayyorlanadi (1–2 daqiqa) — bu yerda faqat oxirgi natija o'qiladi
   const { job, report: lastReport, running } = await readJob();
+  const cron = await cronStatus();
   const error = job?.status === 'error' ? job.error || 'Xatolik' : '';
   const report = running ? null : lastReport;
 
@@ -68,7 +69,13 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
             <form action={setSaleHouseAuto} className="bg-white rounded-3xl p-6 border border-gray-100 flex items-center justify-between gap-4">
               <div>
                 <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Avtomatik (har 10 daqiqada)</div>
-                <div className={`font-bold ${auto ? 'text-success' : 'text-gray-500'}`}>{auto ? 'Yoqilgan' : "O'chirilgan"}</div>
+                <div className={`font-bold ${auto && cron.alive ? 'text-success' : 'text-gray-500'}`}>
+                  {!auto ? "O'chirilgan" : cron.alive ? 'Ishlayapti' : 'Yoqilgan, lekin ishlamayapti'}
+                </div>
+                {auto && !cron.alive && (
+                  <div className="text-[11px] text-warning mt-1">Serverda 10 daqiqalik vazifa o&apos;rnatilmagan — hozircha faqat qo&apos;lda &quot;Qo&apos;llash&quot;.</div>
+                )}
+                {cron.lastAt && <div className="text-[11px] text-gray-400 mt-1">Oxirgi tekshiruv: {new Date(cron.lastAt).toLocaleString('ru-RU')}</div>}
               </div>
               <input type="hidden" name="on" value={auto ? '0' : '1'} />
               <button className={`px-5 py-2.5 rounded-xl font-bold text-sm ${auto ? 'bg-gray-100 text-gray-600' : 'bg-primary text-white'}`}>

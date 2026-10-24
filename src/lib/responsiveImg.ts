@@ -1,28 +1,22 @@
 import variants from './uploadVariants.json';
 
 /*
-  /uploads rasmlari uchun srcSet: telefon 640px, kartochka/planshet 1280px, katta ekran asl (2560px).
+  /uploads rasmlari uchun srcSet: telefon 640px, kartochka/planshet 1280px, katta ekran asl rasm.
   Nusxalar scripts/make-image-variants.mjs bilan oldindan yaratilgan; ro'yxatda yo'q rasm
   (masalan, admin keyin yuklagan) o'zgarishsiz qaytadi.
 */
-const HAS = new Set<string>(variants as string[]);
+// nom -> asl rasm kengligi (srcSet'da haqiqiy o'lcham — brauzer keraksiz katta faylni tanlamasin)
+const WIDTH = variants as Record<string, number>;
+const has = (name: string) => Object.prototype.hasOwnProperty.call(WIDTH, name);
 
 export function responsive(src: string | null | undefined, sizes = '(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw') {
   const s = src || '';
   const m = s.match(/^\/uploads\/([^/?#]+)$/);
-  if (!m || !HAS.has(m[1])) return { src: s };
+  if (!m || !has(m[1])) return { src: s };
   const base = m[1].replace(/\.[^.]+$/, '');
-  return {
-    src: `/uploads/_w/1280/${base}.webp`,
-    srcSet: `/uploads/_w/640/${base}.webp 640w, /uploads/_w/1280/${base}.webp 1280w, ${s} 2560w`,
-    sizes,
-  };
-}
-
-// Fon rasmlari (CSS background) uchun: telefon/planshetda 1280px nusxa, katta ekranda asl
-export function bgFor(src: string | null | undefined, wide: boolean): string {
-  const s = src || '';
-  const m = s.match(/^\/uploads\/([^/?#]+)$/);
-  if (wide || !m || !HAS.has(m[1])) return s;
-  return `/uploads/_w/1280/${m[1].replace(/\.[^.]+$/, '')}.webp`;
+  const w = WIDTH[m[1]] || 1280;
+  const set = [`/uploads/_w/640/${base}.webp ${Math.min(640, w)}w`];
+  if (w > 640) set.push(`/uploads/_w/1280/${base}.webp ${Math.min(1280, w)}w`);
+  if (w > 1280) set.push(`${s} ${w}w`); // asl rasm — faqat haqiqatan kattaroq bo'lsa
+  return { src: `/uploads/_w/1280/${base}.webp`, srcSet: set.join(', '), sizes };
 }

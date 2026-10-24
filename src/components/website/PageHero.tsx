@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
-import { bgFor } from '@/lib/responsiveImg';
+import { responsive } from '@/lib/responsiveImg';
 
 /*
   Ichki sahifalar uchun kino-sarlavha: to'liq kenglikdagi rasm (bir nechta bo'lsa sekin
@@ -31,15 +31,6 @@ export default function PageHero({ lang, kicker, title, subtitle, images = [], s
   const ref = useRef<HTMLElement>(null);
   const list = images.filter(Boolean).length ? images.filter(Boolean) : ['/cinema/poster.webp'];
   const [current, setCurrent] = useState(0);
-  // Katta ekranmi (asl 2560px rasm kerak) — SSR'da false, klientda aniqlanadi
-  const [wide, setWide] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1280px)');
-    const on = () => setWide(mq.matches);
-    on();
-    mq.addEventListener('change', on);
-    return () => mq.removeEventListener('change', on);
-  }, []);
 
   useEffect(() => {
     if (list.length <= 1) return;
@@ -65,19 +56,27 @@ export default function PageHero({ lang, kicker, title, subtitle, images = [], s
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 2.2, ease: EASE }}
         >
-          {list.map((src, i) => (
-            <div
-              key={src + i}
-              className="absolute inset-0 bg-cover bg-center transition-opacity duration-[2000ms] ease-in-out"
-              style={{
-                // Faqat joriy va keyingi slayd yuklanadi (avval hammasi birdan, har biri 2560px);
-                // telefon/planshetda 1280px nusxa
-                backgroundImage: i === current || i === (current + 1) % list.length ? `url("${bgFor(src, wide)}")` : undefined,
-                opacity: i === current ? 1 : 0,
-                animation: i === current ? 'ph-kb 12s ease-out forwards' : 'none',
-              }}
-            />
-          ))}
+          {list.map((src, i) => {
+            // Faqat joriy va keyingi slayd yuklanadi; srcSet — brauzer ekranga mos bitta o'lchamni
+            // birinchi marta tanlaydi (telefon 640/1280, katta ekran asl) — ikki marta yuklanmaydi
+            const load = i === current || i === (current + 1) % list.length;
+            return load ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={src + i}
+                {...responsive(src, '100vw')}
+                alt=""
+                aria-hidden="true"
+                decoding="async"
+                fetchPriority={i === 0 ? 'high' : 'low'}
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ease-in-out"
+                style={{
+                  opacity: i === current ? 1 : 0,
+                  animation: i === current ? 'ph-kb 12s ease-out forwards' : 'none',
+                }}
+              />
+            ) : null;
+          })}
         </motion.div>
       </motion.div>
 

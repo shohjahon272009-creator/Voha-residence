@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { salehouseConfigured } from '@/lib/salehouse';
 import { buildReport, applyReport } from '@/lib/salehouseSync';
+import { readJob } from '@/lib/salehouseJob';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,9 +18,14 @@ export async function POST(req: NextRequest) {
   if (!secret || req.headers.get('x-cron-secret') !== secret || req.headers.get('x-real-ip')) {
     return new NextResponse('Not found', { status: 404 });
   }
+  // "Avtomatik" ishlayotganini admin ko'rsin — har chaqiruv vaqti yoziladi
+  const now = new Date().toISOString();
+  await db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run('_salehouse_cron_at', now, now);
   if (!salehouseConfigured()) return NextResponse.json({ ok: false, reason: 'not-configured' });
   const auto = await db.prepare('SELECT value FROM settings WHERE key = ?').get('_salehouse_auto') as { value: string } | undefined;
   if (auto?.value !== '1') return NextResponse.json({ ok: true, skipped: 'auto-off' });
+  // Admin qo'lda hisobot olayotgan bo'lsa — bu safar o'tkazib yuboramiz (Sale House limiti)
+  if ((await readJob()).running) return NextResponse.json({ ok: true, skipped: 'manual-running' });
   try {
     const report = await buildReport();
     const applied = await applyReport(report);

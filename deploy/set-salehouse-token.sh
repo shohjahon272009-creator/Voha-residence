@@ -1,9 +1,9 @@
 #!/bin/bash
-# Sale House tokenini serverga xavfsiz kiritish (Airnet VPS, /var/www/voha).
+# Sale House tokenini serverga xavfsiz kiritish (Airnet VPS, /var/www/voha-shared/.env.local).
 # Token ekranda ko'rinmaydi, chatga/faylga/gitga tushmaydi — faqat .env.local'ga (chmod 600) yoziladi.
-# Ishga tushirish (kompyuterdan):  ssh -t -i C:/Users/user/.ssh/voha_airnet ubuntu@46.8.114.120 /var/www/voha/set-salehouse-token.sh
+# Ishga tushirish (kompyuterdan):  ssh -t -i C:/Users/user/.ssh/voha_airnet ubuntu@46.8.114.120 /var/www/voha-current/deploy/set-salehouse-token.sh
 set -e
-cd /var/www/voha
+cd /var/www/voha-shared
 read -r -s -p "Sale House token (ekranda ko'rinmaydi, qo'yib Enter bosing): " T
 echo
 T="$(printf %s "$T" | tr -d '[:space:]')"

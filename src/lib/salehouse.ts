@@ -40,6 +40,16 @@ export function salehouseConfigured(): boolean {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+// Butun jarayon uchun YAGONA navbat: qo'lda hisobot va avtomatik sinxron bir vaqtda ishlasa ham
+// Sale House'ga sekundiga 1 tadan ortiq so'rov ketmaydi (limitni bot bilan bo'lishamiz)
+let nextSlot = 0;
+async function takeSlot() {
+  const now = Date.now();
+  const at = Math.max(now, nextSlot);
+  nextSlot = at + PACE_MS;
+  if (at > now) await sleep(at - now);
+}
+
 function client() {
   const base = (process.env.SALEHOUSE_API_URL || '').replace(/\/+$/, '');
   const root = /\/api\/v1\/inventory$/.test(base) ? base : `${base}/api/v1/inventory`;
@@ -49,12 +59,9 @@ function client() {
   else headers.Authorization = `Bearer ${token}`;
   const hide = (s: string) => (token ? s.split(token).join('***') : s);
 
-  let last = 0;
   // Yagona ruxsat etilgan usul — GET
   return async function get(path: string): Promise<unknown> {
-    const wait = last + PACE_MS - Date.now();
-    if (wait > 0) await sleep(wait);
-    last = Date.now();
+    await takeSlot();
     for (let attempt = 1; ; attempt++) {
       let res: Response;
       try {
@@ -83,8 +90,10 @@ const unwrap = (body: unknown): Record<string, unknown>[] => {
 /** Sale House'dagi barcha bloklar va xonadonlar (kompaniya filtri bilan). */
 export async function fetchSaleHouseInventory(): Promise<{ blocks: ShBlock[]; apartments: ShApartment[] }> {
   const get = client();
-  const companies = (process.env.SALEHOUSE_COMPANY_ID || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const ours = (r: Record<string, unknown>) => !companies.length || r.company_id == null || companies.includes(String(r.company_id));
+  // Faqat Voha kompaniyasi (bitta Sale House'da boshqa kompaniyalar ham bor — ularning "5-blok"i
+  // Voha loyihasiga yopishib qolmasin). SALEHOUSE_SITE_COMPANY_ID, bo'lmasa 1 (Voha Residence).
+  const siteCompany = (process.env.SALEHOUSE_SITE_COMPANY_ID || '1').trim();
+  const ours = (r: Record<string, unknown>) => r.company_id != null && String(r.company_id) === siteCompany;
 
   const listAll = async (path: string) => {
     const out: Record<string, unknown>[] = [];

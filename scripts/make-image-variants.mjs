@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dir = path.join(root, 'public', 'uploads');
 const WIDTHS = [640, 1280];
-const names = [];
+const widths = {};
 
 for (const f of fs.readdirSync(dir)) {
   if (!/\.(jpe?g|png|webp)$/i.test(f) || /qr/i.test(f)) continue;
@@ -24,8 +24,9 @@ for (const f of fs.readdirSync(dir)) {
     if (fs.existsSync(out) && fs.statSync(out).mtimeMs >= fs.statSync(src).mtimeMs) continue;
     await sharp(src).resize({ width: Math.min(w, meta.width || w), withoutEnlargement: true }).webp({ quality: 80 }).toFile(out);
   }
-  names.push(f);
+  widths[f] = meta.width || 0;
 }
-names.sort();
-fs.writeFileSync(path.join(root, 'src', 'lib', 'uploadVariants.json'), JSON.stringify(names, null, 0) + '\n');
-console.log(`${names.length} ta rasm uchun nusxalar tayyor`);
+// nom -> asl kenglik: srcSet'da haqiqiy o'lcham ko'rsatilsin (brauzer keraksiz katta faylni tanlamasin)
+const sorted = Object.fromEntries(Object.keys(widths).sort().map((k) => [k, widths[k]]));
+fs.writeFileSync(path.join(root, 'src', 'lib', 'uploadVariants.json'), JSON.stringify(sorted) + '\n');
+console.log(`${Object.keys(sorted).length} ta rasm uchun nusxalar tayyor`);

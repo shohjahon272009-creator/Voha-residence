@@ -21,6 +21,13 @@ export async function readJob(): Promise<{ job: Job | null; report: SyncReport |
   return { job, report: parse<SyncReport>(s._salehouse_report), running };
 }
 
+/** Avtomatik sinxron (server cron'i) haqiqatan ishlayaptimi: oxirgi chaqiruv 20 daqiqadan yangi bo'lsa — ha */
+export async function cronStatus(): Promise<{ lastAt: string | null; alive: boolean }> {
+  const row = await db.prepare('SELECT value FROM settings WHERE key = ?').get('_salehouse_cron_at') as { value: string } | undefined;
+  const lastAt = row?.value || null;
+  return { lastAt, alive: Boolean(lastAt && Date.now() - new Date(lastAt).getTime() < 20 * 60_000) };
+}
+
 /** Fon vazifasini boshlaydi (allaqachon ishlayotgan bo'lsa — qaytadan boshlamaydi). */
 export async function startReportJob(): Promise<void> {
   const { running } = await readJob();
