@@ -37,10 +37,12 @@ $SSH "set -e
   cp -ru public/uploads/. /var/www/voha-shared/uploads/
   rm -rf public/uploads && ln -s /var/www/voha-shared/uploads public/uploads
   # Atomik almashtirish
-  ln -sfn '$R' /var/www/voha-current.new && mv -Tf /var/www/voha-current.new /var/www/voha-current
+  # /var/www — root'niki, shuning uchun sudo
+  sudo ln -sfn '$R' /var/www/voha-current.new && sudo mv -Tf /var/www/voha-current.new /var/www/voha-current
   pm2 reload voha >/dev/null && pm2 save >/dev/null
   # Eski relizlar: oxirgi 3 tasi qoladi
-  ls -1dt /var/www/voha-releases/* | tail -n +4 | xargs -r rm -rf"
+  ls -1dt /var/www/voha-releases/* | tail -n +4 | xargs -r rm -rf
+  [ \"\$(readlink /var/www/voha-current)\" = '$R' ] || { echo 'symlink almashmadi'; exit 1; }"
 
 echo "→ Tekshiruv"
 for i in $(seq 1 20); do
