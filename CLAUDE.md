@@ -17,7 +17,11 @@ npm run build        # production build
 
 - There are no tests. Verification means lint, `tsc` and `next build`, then checking in the browser.
 - Do not run `next dev` and `next build` at the same time: `.next` gets corrupted. Stop the dev server, run `rm -rf .next`, then build.
-- **A push to `main` deploys automatically to Vercel** (voharesidence.uz, until the domain is moved). Only push after the build passes.
+- **Production = Airnet VPS** (since 2026-10-24 the domain points there). A push to `main` still deploys to Vercel automatically, but the domain no longer goes there (it is a backup copy). **After a push, always run `bash deploy/airnet.sh`**, otherwise the change won't reach the live site.
+- Domain and SSL:
+  - DNS is in Cloudflare. `voharesidence.uz` (DNS only) → 46.8.114.120, and nginx redirects it with 301 to `https://www.voharesidence.uz`. `www` is proxied by Cloudflare.
+  - SSL is Let's Encrypt (certbot, renews automatically).
+  - nginx takes the visitor's real IP from `CF-Connecting-IP` (`/etc/nginx/conf.d/cloudflare-realip.conf`); the request limits depend on this.
 - **Airnet VPS** (`46.8.114.120`, `ubuntu`, SSH key `~/.ssh/voha_airnet`): `/var/www/voha`, PM2 process `voha` (`voha.config.js`, 127.0.0.1:3000), nginx at `/etc/nginx/sites-available/voha`.
   - Ship updates with `bash deploy/airnet.sh`: it sends the last commit, then builds and does `pm2 reload`.
   - The server `.env.local` (Turso and its own `AUTH_SECRET`) and admin-uploaded images (`public/uploads`) are kept across deploys.
