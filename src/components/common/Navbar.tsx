@@ -19,7 +19,8 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export default function Navbar({ lang }: { lang: Locale }) {
+export default function Navbar({ lang, phone = '+998 91 011 66 66' }: { lang: Locale; phone?: string }) {
+  const tel = 'tel:' + phone.replace(/[^\d+]/g, '');
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -116,16 +117,16 @@ export default function Navbar({ lang }: { lang: Locale }) {
         <div className="hidden lg:flex items-center gap-4 xl:gap-6">
           <div className="hidden xl:flex items-center gap-2 text-accent whitespace-nowrap">
             <Phone size={18} />
-            <a href="tel:+998910116666" className={cn(
+            <a href={tel} className={cn(
               "font-bold hover:opacity-80 transition-opacity",
               isNavbarWhite ? "text-[#014242]" : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
             )}>
-              +998 91 011 66 66
+              {phone}
             </a>
           </div>
           
           <div className="flex items-center gap-2">
-             <a href="tel:+998910116666" className="whitespace-nowrap px-5 xl:px-6 py-2.5 bg-gradient-to-r from-accent to-[#c47e4d] text-white rounded-full text-sm font-bold shadow-lg shadow-accent/30 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-accent/40 transition-all">
+             <a href={tel} className="whitespace-nowrap px-5 xl:px-6 py-2.5 bg-gradient-to-r from-accent to-[#c47e4d] text-white rounded-full text-sm font-bold shadow-lg shadow-accent/30 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-accent/40 transition-all">
                 {dict.nav.order_call}
              </a>
              <div className="flex gap-1 ml-2 xl:ml-4">
@@ -205,7 +206,7 @@ export default function Navbar({ lang }: { lang: Locale }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-             <a href="tel:+998910116666" className="text-2xl text-accent font-bold hover:opacity-80 transition-opacity">+998 91 011 66 66</a>
+             <a href={tel} className="text-2xl text-accent font-bold hover:opacity-80 transition-opacity">{phone}</a>
              <div className="flex gap-3">
                 {['uz', 'ru', 'en'].map((l) => (
                   <Link

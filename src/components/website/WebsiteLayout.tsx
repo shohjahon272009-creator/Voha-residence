@@ -12,8 +12,9 @@ import ExitIntent from './ExitIntent';
 import CinemaEnhancer from './CinemaEnhancer';
 import { FooterCTA, FooterBigType } from './FooterCinema';
 import { Locale } from '@/lib/dictionaries';
+import { getContacts, telHref } from '@/lib/contacts';
 
-export default function WebsiteLayout({
+export default async function WebsiteLayout({
   children,
   lang,
   companyName = 'Voha Residence'
@@ -22,6 +23,7 @@ export default function WebsiteLayout({
   lang: Locale;
   companyName?: string;
 }) {
+  const contacts = await getContacts();
 
   const t = {
     uz: {
@@ -79,9 +81,9 @@ export default function WebsiteLayout({
       <CinemaEnhancer />
       <IntroScreen />
       <ExitIntent lang={lang} />
-      <Navbar lang={lang} />
+      <Navbar lang={lang} phone={contacts.phone} />
       <main>{children}</main>
-      <FooterCTA lang={lang} />
+      <FooterCTA lang={lang} phone={contacts.phone} />
       <footer id="contact" className="bg-primary text-white py-20 px-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-px rule-accent" />
         <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
@@ -117,9 +119,9 @@ export default function WebsiteLayout({
           <div>
             <h4 className="font-bold mb-6">{t.contact}</h4>
             <ul className="space-y-4 text-white/60 text-sm">
-              <li>{t.address}</li>
-              <li>+998 91 011 66 66</li>
-              <li>+998 97 321 66 66</li>
+              <li>{contacts.address || t.address}</li>
+              <li><a href={telHref(contacts.phone)} className="hover:text-white transition-colors">{contacts.phone}</a></li>
+              {contacts.phone2 && <li><a href={telHref(contacts.phone2)} className="hover:text-white transition-colors">{contacts.phone2}</a></li>}
             </ul>
           </div>
         </div>
@@ -131,7 +133,7 @@ export default function WebsiteLayout({
 
       {/* Floating Call Button */}
       <a 
-        href="tel:+998910116666" 
+        href={telHref(contacts.phone)} 
         className="call-fab fixed bottom-5 right-5 md:bottom-8 md:right-8 z-40 w-14 h-14 md:w-16 md:h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(37,211,102,0.5)] hover:scale-110 hover:shadow-[0_8px_30px_rgba(37,211,102,0.7)] transition-all"
         aria-label="Call Us"
       >

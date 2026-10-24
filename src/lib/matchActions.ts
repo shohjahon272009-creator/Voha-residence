@@ -51,7 +51,7 @@ async function loadSnapshot(): Promise<Snapshot> {
   const rows = (await db.prepare(`
     SELECT a.id, a.project_id, a.floor, a.number, a.rooms, a.area, a.price_cash,
            a.has_plan,
-           p.name_uz, p.status AS pstatus, p.categories
+           p.name_uz, p.block_no, p.status AS pstatus, p.categories
     FROM apartments a JOIN projects p ON p.id = a.project_id
     WHERE a.status = ? AND COALESCE(p.is_sold_out, 0) = 0
   `).all("Bo'sh")) as Record<string, unknown>[];
@@ -82,7 +82,7 @@ export async function findHomes(a: QuestAnswers): Promise<QuestMatch[]> {
   const scored = rows.map((r) => {
     const rooms = Number(r.rooms) || 0;
     const floor = Number(r.floor) || 0;
-    const pay = computePayment({ price_cash: Number(r.price_cash) || 0, floor, rooms, name_uz: String(r.name_uz) }, s);
+    const pay = computePayment({ price_cash: Number(r.price_cash) || 0, floor, rooms, name_uz: String(r.name_uz), block_no: r.block_no == null ? null : Number(r.block_no) }, s);
     const cats = parseList(r.categories);
     const reasons: string[] = [];
     let score = 0;

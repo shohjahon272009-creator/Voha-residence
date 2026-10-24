@@ -37,9 +37,9 @@ export async function getApartmentPayment(
   // Bir IP'dan daqiqasiga ko'pi bilan 40 ta hisob (barcha xonadonlarni skript bilan tortib olishni sekinlatadi)
   if (!(await allowRequest('calc', 40))) return null;
   const row = (await db
-    .prepare(`SELECT a.price_cash, a.floor, a.rooms, a.status, p.name_uz, COALESCE(p.is_sold_out, 0) AS sold_out
+    .prepare(`SELECT a.price_cash, a.floor, a.rooms, a.status, p.name_uz, p.block_no, COALESCE(p.is_sold_out, 0) AS sold_out
               FROM apartments a JOIN projects p ON p.id = a.project_id WHERE a.id = ?`)
-    .get(apartmentId)) as { price_cash: number; floor: number; rooms: number; status: string; name_uz: string; sold_out: number } | undefined;
+    .get(apartmentId)) as { price_cash: number; floor: number; rooms: number; status: string; name_uz: string; block_no: number | null; sold_out: number } | undefined;
   // Sotilgan/bronlangan xonadon uchun to'lov hisoblanmaydi (sotuv narxi oshkor bo'lmasin)
   if (!row || row.status !== "Bo'sh" || Number(row.sold_out)) return null;
   const r = computePayment(row, await loadSettings(), { downPct, years });

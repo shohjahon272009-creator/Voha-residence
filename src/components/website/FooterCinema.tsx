@@ -19,7 +19,7 @@ const T: Record<string, { kicker: string; title: string; cta: string; call: stri
   en: { kicker: 'Next step', title: 'Your dream home is here', cta: 'Choose an apartment', call: 'Call us' },
 };
 
-export function FooterCTA({ lang }: { lang: string }) {
+export function FooterCTA({ lang, phone = '+998 91 011 66 66' }: { lang: string; phone?: string }) {
   const t = T[lang] || T.uz;
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
@@ -71,7 +71,7 @@ export function FooterCTA({ lang }: { lang: string }) {
             <span className="relative">{t.cta}</span>
             <ArrowUpRight size={20} className="relative transition-transform duration-500 group-hover:rotate-45" />
           </Link>
-          <a href="tel:+998910116666" className="inline-flex items-center gap-3 px-9 py-4 md:py-5 rounded-full border border-white/25 text-white font-bold text-base md:text-lg hover:bg-white hover:text-primary transition-colors duration-500">
+          <a href={'tel:' + phone.replace(/[^\d+]/g, '')} className="inline-flex items-center gap-3 px-9 py-4 md:py-5 rounded-full border border-white/25 text-white font-bold text-base md:text-lg hover:bg-white hover:text-primary transition-colors duration-500">
             {t.call}
           </a>
         </motion.div>

@@ -21,7 +21,7 @@ export type PayResult = {
   downPct?: number;
 };
 
-export type PayRow = { price_cash: number; floor: number; rooms: number; name_uz: string };
+export type PayRow = { price_cash: number; floor: number; rooms: number; name_uz: string; block_no?: number | null };
 
 const parseList = (s?: string) =>
   (s || '').split(',').map((x) => parseInt(x.trim(), 10)).filter((n) => !isNaN(n));
@@ -33,7 +33,8 @@ export function computePayment(
 ): PayResult | null {
   const price = Number(row.price_cash) || 0;
   if (price <= 0) return null;
-  const blockNum = parseInt(row.name_uz, 10) || 0; // "10-blok" -> 10
+  // Blok raqami — admin belgilagan maydon; bo'lmasa (eski yozuv) nomdan: "10-blok" -> 10
+  const blockNum = Number(row.block_no) || parseInt(row.name_uz, 10) || 0;
 
   const mortgageBlocks = parseList(s.pay_mortgage_blocks || '10,11');
   const fixedBlocks = parseList(s.pay_fixed_blocks || '7,8');

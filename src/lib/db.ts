@@ -169,6 +169,11 @@ async function initSchema(b: Backend): Promise<void> {
   await ensureColumn(b, 'projects', 'delivery_year', 'INTEGER');
   // Loyiha "sotib tugatilgan" bayrog'i — endi xonadon holatidan emas, admin belgilaydi
   await ensureColumn(b, 'projects', 'is_sold_out', 'INTEGER DEFAULT 0');
+  // To'lov qoidalari uchun blok raqami (ipoteka/qat'iy boshlang'ich bloklari). Avval loyiha NOMIDAN
+  // olinardi ("10-blok" -> 10) — nom o'zgartirilsa xaridor shartlari jimgina o'zgarib ketardi.
+  if (await ensureColumn(b, 'projects', 'block_no', 'INTEGER')) {
+    await b.run('UPDATE projects SET block_no = CAST(name_uz AS INTEGER) WHERE CAST(name_uz AS INTEGER) > 0', []);
+  }
   await ensureColumn(b, 'apartments', 'image', 'TEXT');
   // Sessiyani bekor qilish uchun: parol almashtirilsa yoki chiqilsa oshiriladi
   await ensureColumn(b, 'users', 'session_version', 'INTEGER DEFAULT 0');

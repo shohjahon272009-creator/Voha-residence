@@ -165,7 +165,12 @@ export default async function AdminSettings() {
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Telefon raqami</label>
                   <input name="contact_phone" type="text" defaultValue={settings.contact_phone || "+998 91 011 66 66"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
-                  <p className="text-[11px] text-gray-400">Aloqa va sotuv ofisi bo‘limlarida ko‘rinadi.</p>
+                  <p className="text-[11px] text-gray-400">Butun saytda ko‘rinadi: menyu, footer, qo‘ng‘iroq tugmasi, aloqa bo‘limlari.</p>
+               </div>
+               <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">Qo‘shimcha telefon (ixtiyoriy)</label>
+                  <input name="contact_phone2" type="text" defaultValue={settings.contact_phone2 ?? "+998 97 321 66 66"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <p className="text-[11px] text-gray-400">Footer&apos;da ikkinchi raqam sifatida. Bo‘sh qoldirilsa ko‘rinmaydi.</p>
                </div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Ish vaqti</label>

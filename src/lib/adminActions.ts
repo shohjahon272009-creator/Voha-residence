@@ -196,6 +196,12 @@ export async function addProject(formData: FormData) {
     discount_label, gift_label, categories, delivery_year, is_sold_out ? 1 : 0
   );
 
+  // Blok raqami (to'lov qoidalari): kiritilmasa — nomdagi raqam ("10-blok" -> 10)
+  const blockNoAdd = parseInt(formData.get('block_no') as string, 10) || parseInt(name_uz, 10) || null;
+  if (result.lastInsertRowid != null) {
+    await db.prepare('UPDATE projects SET block_no = ? WHERE id = ?').run(blockNoAdd, Number(result.lastInsertRowid));
+  }
+
   // Xonadonlar avtomatik yaratilMAYDI — admin har xonadonni o'zi (real maydon,
   // xona, chizma bilan) "Xonadon qo'shish" orqali kiritadi.
   void result;
@@ -309,6 +315,10 @@ export async function updateProject(id: number, formData: FormData) {
     );
   }
 
+  // Blok raqami (to'lov qoidalari) — bo'sh qoldirilsa o'zgarmaydi
+  const blockNoUpd = parseInt(formData.get('block_no') as string, 10);
+  if (blockNoUpd > 0) await db.prepare('UPDATE projects SET block_no = ? WHERE id = ?').run(blockNoUpd, id);
+
   // Yangi galereya rasmlari yuklangan bo'lsa — mavjudlariga qo'shamiz (ixtiyoriy)
   const newGallery = await saveGalleryFiles(formData.getAll('gallery_images') as File[]);
   if (newGallery.length > 0) {
@@ -366,6 +376,9 @@ export async function saveSettings(formData: FormData) {
   if (contact_phone) await updateSetting('contact_phone', contact_phone);
   if (contact_address) await updateSetting('contact_address', contact_address);
   if (contact_hours) await updateSetting('contact_hours', contact_hours);
+  // Qo'shimcha raqam bo'sh qoldirilsa ham saqlanadi (o'chirish uchun)
+  const contact_phone2 = formData.get('contact_phone2');
+  if (contact_phone2 !== null) await updateSetting('contact_phone2', String(contact_phone2).trim());
 
   // Hero (bosh ekran) statistikasi — 4 ta (raqam + nomi)
   for (let i = 1; i <= 4; i++) {

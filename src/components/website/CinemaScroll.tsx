@@ -183,7 +183,9 @@ export default function CinemaScroll({ lang }: { lang: Locale }) {
       io.disconnect();
       if (document.readyState === 'complete') start();
       else window.addEventListener('load', start, { once: true });
-    }, { rootMargin: '100% 0px' });
+      // 25%: bo'lim hero'ning darhol ostida — 100% bo'lganda 11 MB kadr sahifa ochilishi bilan, hatto
+      // scroll qilmagan mehmonga ham yuklanardi. Endi faqat foydalanuvchi pastga tusha boshlaganda.
+    }, { rootMargin: '25% 0px' });
     io.observe(el);
     return () => { cancelled = true; io.disconnect(); window.removeEventListener('load', start); };
   }, [portrait]);

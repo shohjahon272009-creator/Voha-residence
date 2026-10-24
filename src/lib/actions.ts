@@ -56,7 +56,7 @@ const PUBLIC_PROJECT_COLS = [
   'id', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en',
   'address', 'city', 'district', 'status', 'min_price', 'total_floors', 'lat', 'lng', 'amenities',
   'apts_per_floor', 'days_left', 'tour_scenes', 'discount_label', 'gift_label', 'categories',
-  'delivery_year', 'is_sold_out',
+  'delivery_year', 'is_sold_out', 'block_no',
   LIGHT('main_image'), LIGHT('virtual_tour_url'),
   `(SELECT json_group_array(CASE WHEN substr(value, 1, 5) = 'data:' THEN 'data:' ELSE value END)
       FROM json_each(CASE WHEN json_valid(projects.gallery) THEN projects.gallery ELSE '[]' END)) AS gallery`,

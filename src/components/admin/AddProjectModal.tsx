@@ -198,6 +198,10 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
                     <input name="gift_label" placeholder="Masalan: Ta'mir sovg'a" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                   <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">🔢 Blok raqami <span className="text-gray-300 font-normal">— to&apos;lov shartlari uchun</span></label>
+                    <input name="block_no" type="number" min={1} max={999} placeholder="Masalan: 10" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                  </div>
+                  <div>
                     <label className="block text-xs font-bold text-gray-500 mb-1">📅 Topshirish yili <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
                     <input name="delivery_year" type="number" min={2024} max={2035} placeholder="Masalan: 2027" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
