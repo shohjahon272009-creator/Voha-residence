@@ -13,7 +13,8 @@ import {
   Newspaper,
   Settings,
   MessageSquare,
-  LogOut
+  LogOut,
+  RefreshCw
 } from 'lucide-react';
 import VohaLogo from '@/components/common/VohaLogo';
 import { clsx, type ClassValue } from 'clsx';
@@ -40,6 +41,7 @@ export default function Sidebar({
     { href: '/admin/apartments', icon: Home, label: 'Xonadonlar' },
     { href: '/admin/inquiries', icon: MessageSquare, label: 'Murojaatlar', badge: newInquiriesCount },
     { href: '/admin/news', icon: Newspaper, label: 'Yangiliklar' },
+    { href: '/admin/salehouse', icon: RefreshCw, label: 'Sale House' },
     { href: '/admin/settings', icon: Settings, label: 'Sozlamalar' },
   ];
 
