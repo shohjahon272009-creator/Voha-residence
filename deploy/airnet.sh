@@ -29,12 +29,13 @@ echo "→ Paketlar va build (ishlab turgan saytga tegilmaydi)"
 $SSH "set -e
   cd '$R'
   ln -sfn /var/www/voha-shared/.env.local .env.local
-  # Repo rasmlari umumiy papkaga (yangilari/yangilanganlari), keyin reliz shu papkaga ulanadi
+  npm ci --no-audit --no-fund >/tmp/npmci.log 2>&1 || { tail -20 /tmp/npmci.log; exit 1; }
+  NODE_OPTIONS=--max-old-space-size=2560 npx next build >/tmp/build.log 2>&1 || { tail -30 /tmp/build.log; exit 1; }
+  # Build'dan KEYIN: repo rasmlari umumiy papkaga (yangi/yangilanganlari), reliz esa shu papkaga ulanadi
+  # (Turbopack build vaqtida loyihadan tashqariga qaragan symlink'ni qabul qilmaydi)
   mkdir -p /var/www/voha-shared/uploads
   cp -ru public/uploads/. /var/www/voha-shared/uploads/
   rm -rf public/uploads && ln -s /var/www/voha-shared/uploads public/uploads
-  npm ci --no-audit --no-fund >/tmp/npmci.log 2>&1 || { tail -20 /tmp/npmci.log; exit 1; }
-  NODE_OPTIONS=--max-old-space-size=2560 npx next build >/tmp/build.log 2>&1 || { tail -30 /tmp/build.log; exit 1; }
   # Atomik almashtirish
   ln -sfn '$R' /var/www/voha-current.new && mv -Tf /var/www/voha-current.new /var/www/voha-current
   pm2 reload voha >/dev/null && pm2 save >/dev/null
