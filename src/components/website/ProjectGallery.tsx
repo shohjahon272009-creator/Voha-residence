@@ -1,5 +1,7 @@
 'use client';
 
+import { responsive } from '@/lib/responsiveImg';
+
 import React, { useEffect, useState, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight, Expand } from 'lucide-react';
 import { Locale } from '@/lib/dictionaries';
@@ -60,7 +62,7 @@ export default function ProjectGallery({
             className="group relative aspect-[4/3] rounded-[24px] overflow-hidden bg-gray-100 focus:outline-none shadow-[0_8px_30px_rgba(20,20,40,0.06)]"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={src} alt={`${projectName} ${i + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <img {...responsive(src, '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw')} alt={`${projectName} ${i + 1}`} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             <span className="absolute bottom-4 left-4 flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 text-primary text-xs font-bold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
               <Expand size={14} /> {t.view}
@@ -108,7 +110,7 @@ export default function ProjectGallery({
                   className={`h-16 w-24 shrink-0 rounded-lg overflow-hidden border-2 transition-all ${i === index ? 'border-accent opacity-100' : 'border-transparent opacity-50 hover:opacity-90'}`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={src} alt="" className="w-full h-full object-cover" />
+                  <img {...responsive(src, '96px')} alt="" loading="lazy" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

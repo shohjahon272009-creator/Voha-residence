@@ -39,8 +39,8 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
   }> = {
     uz: {
       tag: 'BIZ HAQIMIZDA', title: 'Zamonaviy va ishonchli ', accent: 'qurilish', tail: '',
-      desc: "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 50 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzuidagi hayotni topdi. Har bir binomiz — mustahkam sifat, o'z vaqtida topshirish va zamonaviy me'morchilik uyg'unligi.",
-      stat1value: '15 yil', stat1label: 'Tajriba', stat2value: '50+', stat2label: 'Barpo etilgan loyihalar',
+      desc: "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 28 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzuidagi hayotni topdi. Har bir binomiz — mustahkam sifat, o'z vaqtida topshirish va zamonaviy me'morchilik uyg'unligi.",
+      stat1value: '15 yil', stat1label: 'Tajriba', stat2value: '28+', stat2label: 'Barpo etilgan loyihalar',
       badgeValue: '2500+', badgeLabel: 'Baxtli oila',
       valuesTag: 'NIMA UCHUN BIZ', valuesTitle: 'Ishonch bilan tanlanadigan qurilishchi',
       valuesDesc: 'Har bir loyihamiz ortida — sifat, halollik va o‘z vaqtida topshirish turadi.',
@@ -61,8 +61,8 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
     },
     ru: {
       tag: 'О НАС', title: 'Современное и надёжное ', accent: 'строительство', tail: '',
-      desc: 'За более чем 15 лет опыта мы построили свыше 50 современных жилых комплексов по всему Хорезму. Тысячи семей обрели дом своей мечты. Каждый проект — это надёжное качество, сдача точно в срок и современная архитектура.',
-      stat1value: '15 лет', stat1label: 'Опыта', stat2value: '50+', stat2label: 'Построенных проектов',
+      desc: 'За более чем 15 лет опыта мы построили свыше 28 современных жилых комплексов по всему Хорезму. Тысячи семей обрели дом своей мечты. Каждый проект — это надёжное качество, сдача точно в срок и современная архитектура.',
+      stat1value: '15 лет', stat1label: 'Опыта', stat2value: '28+', stat2label: 'Построенных проектов',
       badgeValue: '2500+', badgeLabel: 'Счастливых семей',
       valuesTag: 'ПОЧЕМУ МЫ', valuesTitle: 'Застройщик, которому доверяют',
       valuesDesc: 'За каждым нашим проектом — качество, честность и сдача точно в срок.',
@@ -83,8 +83,8 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
     },
     en: {
       tag: 'ABOUT US', title: 'Modern and reliable ', accent: 'construction', tail: '',
-      desc: 'Over more than 15 years, we have built 50+ modern residential complexes across Khorezm. Thousands of families have found their dream home in our buildings. Every project blends solid quality, on-time delivery, and modern architecture.',
-      stat1value: '15 yrs', stat1label: 'Experience', stat2value: '50+', stat2label: 'Projects built',
+      desc: 'Over more than 15 years, we have built 28+ modern residential complexes across Khorezm. Thousands of families have found their dream home in our buildings. Every project blends solid quality, on-time delivery, and modern architecture.',
+      stat1value: '15 yrs', stat1label: 'Experience', stat2value: '28+', stat2label: 'Projects built',
       badgeValue: '2500+', badgeLabel: 'Happy families',
       valuesTag: 'WHY US', valuesTitle: 'A builder you can trust',
       valuesDesc: 'Behind every project stands quality, honesty and on-time delivery.',

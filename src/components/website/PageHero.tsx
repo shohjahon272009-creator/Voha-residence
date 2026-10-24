@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
+import { bgFor } from '@/lib/responsiveImg';
 
 /*
   Ichki sahifalar uchun kino-sarlavha: to'liq kenglikdagi rasm (bir nechta bo'lsa sekin
@@ -30,6 +31,15 @@ export default function PageHero({ lang, kicker, title, subtitle, images = [], s
   const ref = useRef<HTMLElement>(null);
   const list = images.filter(Boolean).length ? images.filter(Boolean) : ['/cinema/poster.webp'];
   const [current, setCurrent] = useState(0);
+  // Katta ekranmi (asl 2560px rasm kerak) — SSR'da false, klientda aniqlanadi
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1280px)');
+    const on = () => setWide(mq.matches);
+    on();
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
 
   useEffect(() => {
     if (list.length <= 1) return;
@@ -60,7 +70,9 @@ export default function PageHero({ lang, kicker, title, subtitle, images = [], s
               key={src + i}
               className="absolute inset-0 bg-cover bg-center transition-opacity duration-[2000ms] ease-in-out"
               style={{
-                backgroundImage: `url("${src}")`,
+                // Faqat joriy va keyingi slayd yuklanadi (avval hammasi birdan, har biri 2560px);
+                // telefon/planshetda 1280px nusxa
+                backgroundImage: i === current || i === (current + 1) % list.length ? `url("${bgFor(src, wide)}")` : undefined,
                 opacity: i === current ? 1 : 0,
                 animation: i === current ? 'ph-kb 12s ease-out forwards' : 'none',
               }}

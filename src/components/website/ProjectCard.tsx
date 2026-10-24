@@ -9,6 +9,7 @@ import { Locale } from '@/lib/dictionaries';
 import { motion } from 'framer-motion';
 import { MapPin, Gift, Tag, ArrowRight } from 'lucide-react';
 import ProjectStatusBadge from './ProjectStatusBadge';
+import { responsive } from '@/lib/responsiveImg';
 
 interface ProjectCardProps {
   project: Project;
@@ -36,7 +37,7 @@ export default function ProjectCard({ project, lang, soldOut = false }: ProjectC
         {/* Inset "floating" photo with rounded corners */}
         <div className="relative aspect-[16/11] rounded-[22px] overflow-hidden">
           <img
-            src={project.main_image || '/cinema/poster.webp'}
+            {...responsive(project.main_image || '/cinema/poster.webp', '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw')}
             alt={projectName}
             loading="lazy"
             decoding="async"

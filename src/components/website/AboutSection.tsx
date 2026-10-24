@@ -10,8 +10,8 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
     uz: {
       tag: 'BIZ HAQIMIZDA',
       title: 'Zamonaviy va ishonchli', accent: 'qurilish',
-      desc: "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 50 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzuidagi hayotni topdi. Har bir binomiz — mustahkam sifat, o'z vaqtida topshirish va zamonaviy me'morchilik uyg'unligi.",
-      s1v: '15 yil', s1l: 'Tajriba', s2v: '50+', s2l: 'Barpo etilgan loyihalar', s3v: '2500+', s3l: 'Baxtli oilalar',
+      desc: "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 28 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzuidagi hayotni topdi. Har bir binomiz — mustahkam sifat, o'z vaqtida topshirish va zamonaviy me'morchilik uyg'unligi.",
+      s1v: '15 yil', s1l: 'Tajriba', s2v: '28+', s2l: 'Barpo etilgan loyihalar', s3v: '2500+', s3l: 'Baxtli oilalar',
       a: [
         { i: Award, t: 'Xalqaro sifat', d: 'Zamonaviy texnologiya va materiallar' },
         { i: ShieldCheck, t: 'Kafolat', d: 'Har bir loyihaga to‘liq kafolat' },
@@ -22,8 +22,8 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
     ru: {
       tag: 'О НАС',
       title: 'Современное и надёжное', accent: 'строительство',
-      desc: 'За более чем 15 лет опыта мы построили свыше 50 современных жилых комплексов по всему Хорезму. Тысячи семей обрели дом своей мечты в наших зданиях. Каждый проект — это надёжное качество, сдача точно в срок и современная архитектура.',
-      s1v: '15 лет', s1l: 'Опыта', s2v: '50+', s2l: 'Построенных проектов', s3v: '2500+', s3l: 'Счастливых семей',
+      desc: 'За более чем 15 лет опыта мы построили свыше 28 современных жилых комплексов по всему Хорезму. Тысячи семей обрели дом своей мечты в наших зданиях. Каждый проект — это надёжное качество, сдача точно в срок и современная архитектура.',
+      s1v: '15 лет', s1l: 'Опыта', s2v: '28+', s2l: 'Построенных проектов', s3v: '2500+', s3l: 'Счастливых семей',
       a: [
         { i: Award, t: 'Международное качество', d: 'Современные технологии и материалы' },
         { i: ShieldCheck, t: 'Гарантия', d: 'Полная гарантия на каждый проект' },
@@ -34,8 +34,8 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
     en: {
       tag: 'ABOUT US',
       title: 'Modern and reliable', accent: 'construction',
-      desc: "Over more than 15 years, we have built 50+ modern residential complexes across Khorezm. Thousands of families have found their dream home in our buildings. Every project blends solid quality, on-time delivery, and modern architecture.",
-      s1v: '15 yrs', s1l: 'Experience', s2v: '50+', s2l: 'Projects built', s3v: '2500+', s3l: 'Happy families',
+      desc: "Over more than 15 years, we have built 28+ modern residential complexes across Khorezm. Thousands of families have found their dream home in our buildings. Every project blends solid quality, on-time delivery, and modern architecture.",
+      s1v: '15 yrs', s1l: 'Experience', s2v: '28+', s2l: 'Projects built', s3v: '2500+', s3l: 'Happy families',
       a: [
         { i: Award, t: 'International quality', d: 'Modern technology and materials' },
         { i: ShieldCheck, t: 'Warranty', d: 'Full warranty on every project' },

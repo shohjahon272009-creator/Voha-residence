@@ -141,20 +141,20 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
   const stats: Record<Locale, Array<{label: string; value: string}>> = {
     uz: [
       { label: 'Tajriba', value: '15 Yil' },
-      { label: 'Loyiha', value: '15+' },
-      { label: 'Mijoz', value: '5000+' },
+      { label: 'Loyiha', value: '28+' },
+      { label: 'Mijoz', value: '2500+' },
       { label: 'Sifat', value: 'A\'lo' },
     ],
     ru: [
       { label: 'Опыт', value: '15 лет' },
-      { label: 'Проектов', value: '15+' },
-      { label: 'Клиентов', value: '5000+' },
+      { label: 'Проектов', value: '28+' },
+      { label: 'Клиентов', value: '2500+' },
       { label: 'Качество', value: 'Отличное' },
     ],
     en: [
       { label: 'Experience', value: '15 Years' },
-      { label: 'Projects', value: '15+' },
-      { label: 'Clients', value: '5000+' },
+      { label: 'Projects', value: '28+' },
+      { label: 'Clients', value: '2500+' },
       { label: 'Quality', value: 'Excellent' },
     ],
   };
