@@ -5,10 +5,8 @@ import { SESSION_COOKIE, verifySessionToken } from './lib/session';
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Root route / -> rewrite to /uz seamlessly
-  if (pathname === '/' || pathname === '') {
-    return NextResponse.rewrite(new URL('/uz', req.url));
-  }
+  // "/" -> "/uz" endi next.config.ts rewrites'da: bu yerdagi NextResponse.rewrite(new URL('/uz', req.url))
+  // nginx (https) ortida https://localhost:3000/uz ga "proksi" qilmoqchi bo'lib 500 berardi.
 
   if (pathname.startsWith('/admin')) {
     // Admin layout yo'lni bilishi uchun (bekor qilingan sessiyada login'ga qaytarish)
@@ -38,5 +36,5 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/admin/:path*', '/(uz|ru|en)', '/(uz|ru|en)/:path*'],
+  matcher: ['/admin/:path*', '/(uz|ru|en)', '/(uz|ru|en)/:path*'],
 };

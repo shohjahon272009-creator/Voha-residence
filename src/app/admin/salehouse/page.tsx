@@ -1,10 +1,10 @@
 import React from 'react';
-import Link from 'next/link';
 import { RefreshCw, ShieldCheck, CheckCircle2, AlertTriangle } from 'lucide-react';
 import db from '@/lib/db';
 import { salehouseConfigured } from '@/lib/salehouse';
-import { buildReport, type SyncReport } from '@/lib/salehouseSync';
-import { applySaleHouseSync, setSaleHouseAuto } from '@/lib/salehouseActions';
+import { readJob } from '@/lib/salehouseJob';
+import { applySaleHouseSync, setSaleHouseAuto, startSaleHouseReport } from '@/lib/salehouseActions';
+import AutoRefresh from './AutoRefresh';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,8 +12,8 @@ export const dynamic = 'force-dynamic';
   Sale House -> sayt xonadon holatlari. "Solishtirish" faqat hisobot (hech narsa o'zgarmaydi),
   "Qo'llash" sayt bazasidagi holatlarni yangilaydi. Sale House'ga hech qachon yozilmaydi.
 */
-export default async function SaleHousePage({ searchParams }: { searchParams: Promise<{ run?: string; applied?: string }> }) {
-  const { run, applied } = await searchParams;
+export default async function SaleHousePage({ searchParams }: { searchParams: Promise<{ applied?: string; stale?: string }> }) {
+  const { applied, stale } = await searchParams;
   const configured = salehouseConfigured();
   const rows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('_salehouse_auto', '_salehouse_last_sync', '_salehouse_error')").all() as { key: string; value: string }[];
   const s = Object.fromEntries(rows.map((r) => [r.key, r.value]));
@@ -21,11 +21,10 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
   let last: { at?: string; applied?: number; changes?: number } = {};
   try { last = s._salehouse_last_sync ? JSON.parse(s._salehouse_last_sync) : {}; } catch { /* ignore */ }
 
-  let report: SyncReport | null = null;
-  let error = '';
-  if (configured && run) {
-    try { report = await buildReport(); } catch (e) { error = (e as Error).message; }
-  }
+  // Hisobot fonda tayyorlanadi (1–2 daqiqa) — bu yerda faqat oxirgi natija o'qiladi
+  const { job, report: lastReport, running } = await readJob();
+  const error = job?.status === 'error' ? job.error || 'Xatolik' : '';
+  const report = running ? null : lastReport;
 
   return (
     <div className="space-y-8 max-w-6xl">
@@ -79,9 +78,11 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Link href="/admin/salehouse?run=1" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-bold">
-              <RefreshCw size={18} /> Solishtirish (hisobot)
-            </Link>
+            <form action={startSaleHouseReport}>
+              <button disabled={running} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-bold disabled:opacity-60">
+                <RefreshCw size={18} className={running ? 'animate-spin' : ''} /> {running ? 'Hisobot tayyorlanmoqda…' : 'Solishtirish (hisobot)'}
+              </button>
+            </form>
             {report && report.changes.length > 0 && (
               <form action={applySaleHouseSync}>
                 <button className="px-6 py-3 rounded-xl bg-accent text-white font-bold">
@@ -91,7 +92,17 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
             )}
           </div>
 
-          {error && <div className="bg-danger/10 text-danger rounded-2xl p-4 text-sm">{error}</div>}
+          {running && (
+            <div className="bg-primary/5 text-primary rounded-2xl p-4 text-sm">
+              Sale House&apos;dan ma&apos;lumot olinmoqda (1–2 daqiqa, Sale House cheklovi tufayli sekin). Sahifa o&apos;zi yangilanadi — kutib turing yoki keyinroq qaytib keling.
+              <AutoRefresh seconds={5} />
+            </div>
+          )}
+          {stale && <div className="bg-warning/10 text-warning rounded-2xl p-4 text-sm">Hisobot eskirgan — avval qayta solishtiring.</div>}
+          {error && <div className="bg-danger/10 text-danger rounded-2xl p-4 text-sm">Hisobot xatosi: {error}</div>}
+          {report && (
+            <p className="text-xs text-gray-400">Hisobot vaqti: {new Date(report.at).toLocaleString('ru-RU')}</p>
+          )}
 
           {report && (
             <div className="space-y-6">
