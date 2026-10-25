@@ -63,9 +63,12 @@ async function makeReplicaBackend(): Promise<Backend> {
     url: `file:${file}`,
     syncUrl: process.env.TURSO_DATABASE_URL,
     authToken: process.env.TURSO_AUTH_TOKEN,
-    syncInterval: 30,
+    // PM2'da 2 ta nusxa: biri yozganini ikkinchisi shu vaqt ichida ko'radi
+    syncInterval: 5,
   });
   await c.sync();
+  // Yozuvdan keyin darhol tortamiz — admin saqlab, sahifani yangilaganda eski ma'lumot ko'rinmasin
+  const pull = () => c.sync().catch(() => {});
   const norm = (a: unknown[]) => a.map((x) => (x === undefined ? null : x)) as InArgs;
   return {
     async all(sql, args) {
@@ -76,6 +79,7 @@ async function makeReplicaBackend(): Promise<Backend> {
     },
     async run(sql, args) {
       const r = await c.execute({ sql, args: norm(args) });
+      await pull();
       return {
         changes: Number(r.rowsAffected),
         lastInsertRowid: r.lastInsertRowid != null ? Number(r.lastInsertRowid) : undefined,
@@ -83,6 +87,7 @@ async function makeReplicaBackend(): Promise<Backend> {
     },
     async exec(sql) {
       await c.executeMultiple(sql);
+      await pull();
     },
   };
 }
