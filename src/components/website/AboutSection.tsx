@@ -6,7 +6,7 @@ import VohaLogo from '@/components/common/VohaLogo';
 import { ShieldCheck, Clock, Award, Wallet } from 'lucide-react';
 
 export default function AboutSection({ lang, settings }: { lang: Locale; settings: Record<string, string> }) {
-  const t = ({
+  const T = ({
     uz: {
       tag: 'BIZ HAQIMIZDA',
       title: 'Zamonaviy va ishonchli', accent: 'qurilish',
@@ -43,7 +43,9 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
         { i: Wallet, t: 'Easy payment', d: 'Installment and mortgage options' },
       ],
     },
-  } as const)[lang] || ({} as never);
+  } as const);
+  // Noma'lum til kelsa (bot, buzuq URL) — o'zbekcha; aks holda t.a.map xato berardi
+  const t = T[lang as keyof typeof T] || T.uz;
 
   // Admin matnlari o'zbekcha — faqat uz sahifada; ru/en'da tarjima qilingan standart matn
   const uzOnly = (v?: string) => (lang === 'uz' ? v : undefined);
