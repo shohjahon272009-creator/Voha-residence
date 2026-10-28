@@ -59,7 +59,7 @@ export default async function NewsPage({ params }: { params: Promise<{ lang: str
                      <div className="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-all z-10 duration-500"></div>
                      <div className="w-full h-full rounded-[24px] overflow-hidden relative">
                        {item.image ? (
-                         <img src={item.image} alt={item.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                         <img src={item.image} alt={item.title} loading="lazy" decoding="async" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
                        ) : (
                          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                            <Newspaper size={64} className="text-gray-400 transform group-hover:scale-110 transition-transform duration-700" />

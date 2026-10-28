@@ -50,6 +50,10 @@ export function publicProjectMedia<T extends WithImages>(p: T): T {
   };
 }
 
+// Eski yangiliklardagi ~1 MB'lik PNG o'rniga siqilgan WebP nusxasi
+const LIGHTER: Record<string, string> = { '/voha-actual-bg.png': '/voha-actual-bg.webp' };
+
 export function publicNewsMedia<T extends { id: number; image?: string | null }>(n: T): T {
-  return { ...n, image: isDataUrl(n.image) ? `/api/media?t=news&id=${n.id}&f=image` : n.image };
+  const image = isDataUrl(n.image) ? `/api/media?t=news&id=${n.id}&f=image` : n.image;
+  return { ...n, image: (image && LIGHTER[image]) || image };
 }

@@ -55,7 +55,7 @@ export default async function NewsSection({ lang }: { lang: Locale }) {
                 <div className="h-64 overflow-hidden relative shrink-0 bg-gray-100 flex items-center justify-center">
                    <div className="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-all z-10 duration-500"></div>
                    {item.image ? (
-                     <img src={item.image} alt={item.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                     <img src={item.image} alt={item.title} loading="lazy" decoding="async" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
                    ) : (
                      <Newspaper size={48} className="text-gray-300 transform group-hover:scale-110 transition-transform duration-700" />
                    )}
