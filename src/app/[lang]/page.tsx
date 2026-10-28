@@ -93,7 +93,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           <ProjectsList lang={localeLang} companyName={companyName} limit={6} />
         </AnimatedReveal>
       )}
-      <VelocityMarquee words={['Voha Residence', '0% foiz', 'Urganch', 'Kadastr tayyor', 'Xorazm']} />
+      <VelocityMarquee words={localeLang === 'ru' ? ['Voha Residence', '0% рассрочка', 'Ургенч', 'Кадастр готов', 'Хорезм'] : localeLang === 'en' ? ['Voha Residence', '0% installment', 'Urgench', 'Cadastre ready', 'Khorezm'] : ['Voha Residence', '0% foiz', 'Urganch', 'Kadastr tayyor', 'Xorazm']} />
 
       {/* About Section */}
       {settings.show_about !== 'false' && (

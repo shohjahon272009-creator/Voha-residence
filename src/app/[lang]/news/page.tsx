@@ -76,7 +76,7 @@ export default async function NewsPage({ params }: { params: Promise<{ lang: str
                        <p className="text-gray-500 text-base leading-relaxed line-clamp-3 font-medium">{item.desc}</p>
                      </div>
                      <div className="mt-6 flex items-center gap-2 text-accent font-bold uppercase tracking-widest text-xs group-hover:translate-x-2 transition-transform">
-                       Batafsil <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg>
+                       {lang === 'ru' ? 'Подробнее' : lang === 'en' ? 'Read more' : 'Batafsil'} <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg>
                      </div>
                   </div>
                </a>

@@ -57,6 +57,14 @@ export default function ExitIntent({ lang }: { lang: string }) {
     return cleanup;
   }, [pathname]);
 
+  // Escape bilan yopiladi
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
+
   const go = () => {
     setOpen(false);
     // O'yin shu sahifada bo'lsa (bosh sahifa, xonadonlar) — chiqmasdan unga tushamiz
@@ -74,7 +82,7 @@ export default function ExitIntent({ lang }: { lang: string }) {
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-md rounded-[28px] bg-primary text-white p-8 text-center shadow-2xl border border-white/10"
           >
-            <button onClick={() => setOpen(false)} aria-label="Yopish" className="absolute top-4 right-4 text-white/50 hover:text-white"><X size={22} /></button>
+            <button onClick={() => setOpen(false)} aria-label="Yopish" className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center text-white/50 hover:text-white"><X size={22} /></button>
             <div className="mx-auto w-16 h-16 rounded-2xl bg-accent text-primary flex items-center justify-center"><Home size={30} /></div>
             <h3 className="mt-5 text-3xl font-extrabold tracking-tight">{t.title}</h3>
             <p className="mt-3 text-white/75 leading-relaxed">{t.sub}</p>

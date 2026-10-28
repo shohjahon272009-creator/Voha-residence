@@ -199,7 +199,7 @@ export default function ApartmentBrowser({ apartments, projects, lang, onSelect,
                     <Icon size={20} />
                   </div>
                   <span className={`font-bold text-[11px] leading-tight ${isActive ? 'text-accent' : 'text-primary'}`}>{c.label[lang]}</span>
-                  {n > 0 && <span className="text-[10px] font-bold text-gray-400">{n} xonadon</span>}
+                  {n > 0 && <span className="text-[10px] font-bold text-gray-400">{n} {lang === 'ru' ? 'кв.' : lang === 'en' ? 'apts' : 'xonadon'}</span>}
                 </button>
               );
             })}

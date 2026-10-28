@@ -142,7 +142,8 @@ export default function Hero({ lang, heroTitle, heroDesc, images = [], slides, s
   // Admin sozlagan statistika (bo'sh bo'lsa — standart qiymat)
   const currentStats = baseStats.map((s, i) => ({
     // Admin sozlamasi o'zbekcha kiritiladi — ru/en sahifada raqam olinadi, nomi esa o'sha tilda
-    value: settings[`hero_stat${i + 1}_value`] || s.value,
+    // Admin qiymatida harf bo'lsa ("15 yil") — faqat uz'da; sof raqam ("28+") hamma tilda
+    value: ((v) => (v && (lang === 'uz' || !/\p{L}/u.test(v)) ? v : ''))(settings[`hero_stat${i + 1}_value`]) || s.value,
     label: (lang === 'uz' && settings[`hero_stat${i + 1}_label`]) || s.label,
   }));
 

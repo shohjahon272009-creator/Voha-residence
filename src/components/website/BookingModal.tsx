@@ -16,21 +16,21 @@ const T: Record<string, {
   send: string; done: string; doneSub: string; close: string; err: string;
 }> = {
   uz: {
-    title: 'Narxini bilish', sub: (n, f) => `№ ${n} xonadon, ${f}-qavat. Telefon raqamingizni qoldiring — narxini aytamiz!`,
+    title: 'Ariza qoldirish', sub: (n, f) => `№ ${n} xonadon, ${f}-qavat. Telefon raqamingizni qoldiring — menejer narx va qolgan summani aytadi.`,
     name: 'Ismingiz', namePh: 'Ixtiyoriy', phone: 'Telefon raqam', msg: "Qo'shimcha xabar (ixtiyoriy)", msgPh: "Savol yoki xohishingizni yozing…",
-    send: 'Narxini bilish', done: "So'rovingiz qabul qilindi!", doneSub: "Tez orada menejerlarimiz siz bilan bog'lanishadi.", close: 'Yopish',
+    send: 'Ariza yuborish', done: "So'rovingiz qabul qilindi!", doneSub: "Tez orada menejerlarimiz siz bilan bog'lanishadi.", close: 'Yopish',
     err: "Xatolik yuz berdi. Qayta urinib ko'ring yoki qo'ng'iroq qiling.",
   },
   ru: {
-    title: 'Узнать цену', sub: (n, f) => `Квартира № ${n}, ${f}-этаж. Оставьте номер телефона — мы сообщим цену!`,
+    title: 'Оставить заявку', sub: (n, f) => `Квартира № ${n}, ${f}-этаж. Оставьте номер телефона — менеджер сообщит цену и оставшуюся сумму.`,
     name: 'Ваше имя', namePh: 'Необязательно', phone: 'Номер телефона', msg: 'Дополнительное сообщение (необязательно)', msgPh: 'Напишите вопрос или пожелание…',
-    send: 'Узнать цену', done: 'Заявка принята!', doneSub: 'Наш менеджер скоро свяжется с вами.', close: 'Закрыть',
+    send: 'Отправить заявку', done: 'Заявка принята!', doneSub: 'Наш менеджер скоро свяжется с вами.', close: 'Закрыть',
     err: 'Произошла ошибка. Попробуйте ещё раз или позвоните нам.',
   },
   en: {
-    title: 'Get the price', sub: (n, f) => `Apartment No. ${n}, floor ${f}. Leave your phone number and we will tell you the price!`,
+    title: 'Leave a request', sub: (n, f) => `Apartment No. ${n}, floor ${f}. Leave your phone number — a manager will tell you the price and the remaining amount.`,
     name: 'Your name', namePh: 'Optional', phone: 'Phone number', msg: 'Additional message (optional)', msgPh: 'Write your question or wish…',
-    send: 'Get the price', done: 'Request received!', doneSub: 'Our manager will contact you shortly.', close: 'Close',
+    send: 'Send request', done: 'Request received!', doneSub: 'Our manager will contact you shortly.', close: 'Close',
     err: 'Something went wrong. Please try again or call us.',
   },
 };

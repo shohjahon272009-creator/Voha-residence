@@ -98,7 +98,7 @@ export default function IntroScreen() {
       </div>
 
       <div className="vx-count font-bebas">{String(count).padStart(3, '0')}</div>
-      <div className="vx-meta">Urganch · Xorazm</div>
+      <div className="vx-meta">{lang === 'ru' ? 'Ургенч · Хорезм' : lang === 'en' ? 'Urgench · Khorezm' : 'Urganch · Xorazm'}</div>
 
       <style jsx global>{`
         .vx { position: fixed; inset: 0; z-index: 9999; pointer-events: auto; }
