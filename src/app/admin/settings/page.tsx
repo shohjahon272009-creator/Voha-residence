@@ -196,24 +196,26 @@ export default async function AdminSettings() {
          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-3 mb-2">
                <Globe className="text-accent" />
-               <h3 className="font-bold text-xl text-primary">To‘lov shartlari (foizlar)</h3>
+               <h3 className="font-bold text-xl text-primary">To‘lov shartlari</h3>
             </div>
-            <p className="text-sm text-gray-400 mb-8">To‘lov blokka qarab avtomatik hisoblanadi. Bu yerdan barcha shartlarni o‘zgartirishingiz mumkin — sayt darhol shunga moslashadi.</p>
+            <p className="text-sm text-gray-400 mb-8">Oylik to‘lov xonalar soniga, boshlang‘ich to‘lov blokka qarab avtomatik ko‘rsatiladi. Bu yerdan barcha shartlarni o‘zgartirishingiz mumkin — sayt darhol shunga moslashadi.</p>
 
-            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Gibrid bloklar (30%)</h4>
+            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Standart oylik to‘lov (xonalar soniga qarab)</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-2">
+               {([[1, '1 xonali', '4000000'], [2, '2 xonali', '5000000'], [3, '3 xonali', '6000000'], [4, '4+ xonali', '7000000']] as const).map(([n, label, def]) => (
+                  <div key={n} className="space-y-2">
+                     <label className="text-sm font-bold text-gray-700">{label} (so‘m/oy)</label>
+                     <input name={`pay_monthly_${n}`} type="number" min={0} step={100000} defaultValue={settings[`pay_monthly_${n}`] || def} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  </div>
+               ))}
+            </div>
+            <p className="text-[11px] text-gray-400 mb-8">Saytda boshlang‘ich va oylik to‘lov ko‘rsatiladi; qolgan summani bilish uchun mijoz kontakt qoldiradi.</p>
+
+            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Boshlang‘ich to‘lov</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Boshlang‘ich to‘lov (%)</label>
+                  <label className="text-sm font-bold text-gray-700">Boshlang‘ich to‘lov (%) — oddiy bloklar</label>
                   <input name="pay_down_pct" type="number" min={0} max={90} defaultValue={settings.pay_down_pct || '30'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
-               </div>
-               <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Oylik to‘lov eng kam (so‘m)</label>
-                  <input name="pay_min_monthly" type="number" min={0} defaultValue={settings.pay_min_monthly || '4000000'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
-                  <p className="text-[11px] text-gray-400">Oylik shu summadan boshlanadi (3+ xonalilardan tashqari).</p>
-               </div>
-               <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Gibrid — eng uzoq muddat (oy)</label>
-                  <input name="pay_hybrid_max_months" type="number" min={1} max={120} defaultValue={settings.pay_hybrid_max_months || '60'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
             </div>
 
@@ -235,19 +237,15 @@ export default async function AdminSettings() {
             </div>
 
             <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Ipoteka bloklari (10, 11)</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Ipoteka bloklari</label>
                   <input name="pay_mortgage_blocks" type="text" defaultValue={settings.pay_mortgage_blocks || '10,11'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                   <p className="text-[11px] text-gray-400">Masalan: 10,11</p>
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Foiz — 15% uchun</label>
-                  <input name="mort_rate_low" type="number" min={0} max={40} step={0.5} defaultValue={settings.mort_rate_low || '17.5'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
-               </div>
-               <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Foiz — 25/30% uchun</label>
-                  <input name="mort_rate_high" type="number" min={0} max={40} step={0.5} defaultValue={settings.mort_rate_high || '17'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <label className="text-sm font-bold text-gray-700">Ipoteka bloklarida boshlang‘ich (%)</label>
+                  <input name="pay_mort_down_pct" type="number" min={0} max={90} defaultValue={settings.pay_mort_down_pct || '15'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
             </div>
          </div>

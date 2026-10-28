@@ -10,7 +10,7 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
     uz: {
       tag: 'BIZ HAQIMIZDA',
       title: 'Zamonaviy va ishonchli', accent: 'qurilish',
-      desc: "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 28 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzuidagi hayotni topdi. Har bir binomiz — mustahkam sifat, o'z vaqtida topshirish va zamonaviy me'morchilik uyg'unligi.",
+      desc: "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 28 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzusidagi hayotni topdi. Har bir binomiz — mustahkam sifat, o'z vaqtida topshirish va zamonaviy me'morchilik uyg'unligi.",
       s1v: '15 yil', s1l: 'Tajriba', s2v: '28+', s2l: 'Barpo etilgan loyihalar', s3v: '2500+', s3l: 'Baxtli oilalar',
       a: [
         { i: Award, t: 'Xalqaro sifat', d: 'Zamonaviy texnologiya va materiallar' },
@@ -51,9 +51,11 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
   const uzOnly = (v?: string) => (lang === 'uz' ? v : undefined);
   const title = uzOnly(settings.about_title);
   const desc = uzOnly(settings.about_desc) || t.desc;
-  const s1v = settings.about_stat1_value || t.s1v;
+  // Qiymat harf bo'lsa (masalan, "15 yil") — faqat uz sahifada; raqam/belgi bo'lsa hamma tilda
+  const valOk = (v?: string) => (v && (lang === 'uz' || !/[a-zа-яё]/i.test(v)) ? v : undefined);
+  const s1v = valOk(settings.about_stat1_value) || t.s1v;
   const s1l = uzOnly(settings.about_stat1_label) || t.s1l;
-  const s2v = settings.about_stat2_value || t.s2v;
+  const s2v = valOk(settings.about_stat2_value) || t.s2v;
   const s2l = uzOnly(settings.about_stat2_label) || t.s2l;
 
   return (

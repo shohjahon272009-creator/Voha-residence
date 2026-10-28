@@ -39,7 +39,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
   }> = {
     uz: {
       tag: 'BIZ HAQIMIZDA', title: 'Zamonaviy va ishonchli ', accent: 'qurilish', tail: '',
-      desc: "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 28 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzuidagi hayotni topdi. Har bir binomiz — mustahkam sifat, o'z vaqtida topshirish va zamonaviy me'morchilik uyg'unligi.",
+      desc: "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 28 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzusidagi hayotni topdi. Har bir binomiz — mustahkam sifat, o'z vaqtida topshirish va zamonaviy me'morchilik uyg'unligi.",
       stat1value: '15 yil', stat1label: 'Tajriba', stat2value: '28+', stat2label: 'Barpo etilgan loyihalar',
       badgeValue: '2500+', badgeLabel: 'Baxtli oila',
       valuesTag: 'NIMA UCHUN BIZ', valuesTitle: 'Ishonch bilan tanlanadigan qurilishchi',
@@ -52,9 +52,9 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
         { i: Building2, t: 'Zamonaviy arxitektura', d: 'Estetik va funksional me’moriy yechimlar' },
         { i: MapPin, t: 'Qulay joylashuv', d: 'Shahar infratuzilmasiga yaqin hududlar' },
       ],
-      missionTag: 'BIZNING MAQSAD', missionTitle: 'Har bir oila uchun ishonchli uy',
+      missionTag: 'BIZNING MAQSADIMIZ', missionTitle: 'Har bir oila uchun ishonchli uy',
       missionText: 'Biz shunchaki bino qurmaymiz — oilalar uchun yillar davomida xizmat qiladigan mustahkam va zamonaviy makon yaratamiz. Maqsadimiz — mijoz ishonchini har bir g‘ishtda oqlash.',
-      missionPoints: ['Mustahkam va sifatli qurilish', 'Shaffof shartnoma va narxlar', 'Doimiy mijozlar bilan aloqa'],
+      missionPoints: ['Mustahkam va sifatli qurilish', 'Shaffof shartnoma va narxlar', 'Mijozlar bilan doimiy aloqa'],
       ctaTitle: 'Kelajakdagi uyingizni biz bilan tanlang',
       ctaDesc: 'Mutaxassislarimiz siz uchun eng mos xonadonni tanlashda yordam beradi.',
       ctaBtn: 'Bog‘lanish',

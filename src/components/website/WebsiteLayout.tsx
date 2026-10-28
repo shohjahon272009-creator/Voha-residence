@@ -111,8 +111,9 @@ export default async function WebsiteLayout({
           <div>
             <h4 className="font-bold mb-6">{t.sections}</h4>
             <ul className="space-y-4 text-white/60">
-              <li><Link href={`/${lang}#projects`} className="hover:text-white transition-colors">{t.project}</Link></li>
+              <li><Link href={`/${lang}/apartments`} className="hover:text-white transition-colors">{t.apartments}</Link></li>
               <li><Link href={`/${lang}#about`} className="hover:text-white transition-colors">{t.about}</Link></li>
+              <li><Link href={`/${lang}#projects`} className="hover:text-white transition-colors">{t.project}</Link></li>
               <li><Link href={`/${lang}#news`} className="hover:text-white transition-colors">{t.news}</Link></li>
             </ul>
           </div>

@@ -17,7 +17,7 @@ import { pageMetadata } from '@/lib/seo';
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; id: string }> }): Promise<Metadata> {
   const { lang, id } = await params;
   const n = await db.prepare('SELECT * FROM news WHERE id = ? AND visible = 1').get(id) as Record<string, string> | undefined;
-  if (!n) return { title: 'Yangilik topilmadi — Voha Residence' };
+  if (!n) return { title: `${lang === 'ru' ? 'Новость не найдена' : lang === 'en' ? 'News not found' : 'Yangilik topilmadi'} — Voha Residence` };
   const title = `${n[`title_${lang}`] || n.title_uz} — Voha Residence`;
   const description = String(n[`content_${lang}`] || n.content_uz || '').replace(/\s+/g, ' ').slice(0, 160);
   const t = { title, description };

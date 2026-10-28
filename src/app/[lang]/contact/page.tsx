@@ -30,7 +30,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     <WebsiteLayout lang={localeLang} companyName={companyName}>
       <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/cinema/stills/life-2.webp']} />
       <div className="min-h-screen bg-[#FDFBF7]">
-        <ContactSection lang={localeLang}  />
+        <ContactSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />
         <LocationShowcase lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />
       </div>
     </WebsiteLayout>

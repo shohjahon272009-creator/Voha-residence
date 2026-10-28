@@ -408,6 +408,8 @@ export async function saveSettings(formData: FormData) {
     'pay_down_pct', 'pay_fixed_amount', 'pay_fixed_blocks', 'pay_fixed_from_floor',
     'pay_mortgage_blocks', 'pay_min_monthly', 'pay_hybrid_max_months',
     'mort_rate_low', 'mort_rate_high',
+    // Standart oylik to'lov (xonalar soniga qarab) va ipoteka bloklari boshlang'ichi — paymentCalc.ts
+    'pay_monthly_1', 'pay_monthly_2', 'pay_monthly_3', 'pay_monthly_4', 'pay_mort_down_pct',
   ]) {
     const v = formData.get(key);
     if (v !== null && String(v).trim() !== '') await updateSetting(key, String(v).trim());

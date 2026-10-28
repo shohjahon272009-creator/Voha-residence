@@ -2,12 +2,12 @@
 
 import { allowRequest } from './memLimit';
 import db from './db';
-import { computePayment } from './paymentCalc';
+import { standardMonthly } from './paymentCalc';
 
 /*
   "Uyingizni toping" o'yini — javoblar bo'yicha eng mos BO'SH xonadonlarni topadi.
-  Hisob serverda: narx (price_cash) mijozga yuborilmaydi. Oylik to'lov 10 ming so'mgacha yaxlitlanadi
-  va muddat (oy) qaytarilmaydi — aks holda oylik × muddat orqali narxni aniq hisoblab olish mumkin edi.
+  Hisob serverda: narx (price_cash) o'qilmaydi ham. Oylik to'lov — xonalar soniga qarab STANDART summa
+  (paymentCalc.standardMonthly, admin: pay_monthly_1..4), narxga bog'liq emas.
   100 balllik baho: xonalar 35, byudjet 30, qavat 15, qulayliklar (loyiha kategoriyalari) 15, muddat 5.
 */
 
@@ -35,7 +35,8 @@ export type QuestMatch = {
 
 const ROOMS: Record<QuestAnswers['household'], number[]> = { solo: [1], couple: [1, 2], family: [2, 3], big: [3, 4, 5] };
 // Tugmadagi yozuv bilan bir xil: "4 mln gacha", "4–6 mln", "6–9 mln"
-const BUDGET: Record<QuestAnswers['budget'], number> = { b4: 4_000_000, b6: 6_000_000, b9: 9_000_000, cash: Infinity };
+// Standart oylik to'lov jadvaliga mos: b4 = 4–5 mln (1–2 xona), b6 = 5–6 mln (3 xonagacha), b9 = 7 mln+ (hammasi)
+const BUDGET: Record<QuestAnswers['budget'], number> = { b4: 5_000_000, b6: 6_000_000, b9: 9_000_000, cash: Infinity };
 const FLOOR: Record<QuestAnswers['floor'], [number, number]> = { low: [1, 3], mid: [4, 7], high: [8, 99], any: [1, 99] };
 const READY = ['Topshirilgan', 'Sanoqli kunlar qoldi'];
 
@@ -49,7 +50,7 @@ const TTL_MS = 20_000;
 async function loadSnapshot(): Promise<Snapshot> {
   if (snapshot && Date.now() - snapshot.at < TTL_MS) return snapshot;
   const rows = (await db.prepare(`
-    SELECT a.id, a.project_id, a.floor, a.number, a.rooms, a.area, a.price_cash,
+    SELECT a.id, a.project_id, a.floor, a.number, a.rooms, a.area,
            a.has_plan,
            p.name_uz, p.block_no, p.status AS pstatus, p.categories
     FROM apartments a JOIN projects p ON p.id = a.project_id
@@ -82,7 +83,7 @@ export async function findHomes(a: QuestAnswers): Promise<QuestMatch[]> {
   const scored = rows.map((r) => {
     const rooms = Number(r.rooms) || 0;
     const floor = Number(r.floor) || 0;
-    const pay = computePayment({ price_cash: Number(r.price_cash) || 0, floor, rooms, name_uz: String(r.name_uz), block_no: r.block_no == null ? null : Number(r.block_no) }, s);
+    const monthly = standardMonthly(rooms, s);
     const cats = parseList(r.categories);
     const reasons: string[] = [];
     let score = 0;
@@ -91,12 +92,10 @@ export async function findHomes(a: QuestAnswers): Promise<QuestMatch[]> {
     if (wantRooms.includes(rooms)) { score += 35; reasons.push('rooms'); }
     else if (wantRooms.some((w) => Math.abs(w - rooms) === 1)) score += 18;
 
-    // Byudjet (30) — narx kiritilmagan bo'lsa neytral
+    // Byudjet (30) — standart oylik to'lov (xonalar soniga qarab)
     if (a.budget === 'cash') score += 22;
-    else if (pay) {
-      if (pay.monthly <= maxMonthly) { score += 30; reasons.push('budget'); }
-      else if (pay.monthly <= maxMonthly * 1.25) score += 14;
-    } else score += 12;
+    else if (monthly <= maxMonthly) { score += 30; reasons.push('budget'); }
+    else if (monthly <= maxMonthly * 1.25) score += 14;
 
     // Qavat (15)
     if (floor >= fMin && floor <= fMax) { score += 15; if (a.floor !== 'any') reasons.push('floor'); }
@@ -121,7 +120,7 @@ export async function findHomes(a: QuestAnswers): Promise<QuestMatch[]> {
       rooms,
       area: Number(r.area) || 0,
       hasPlan: Boolean(Number(r.has_plan)),
-      monthly: pay && pay.monthly > 0 ? Math.round(pay.monthly / 10_000) * 10_000 : null,
+      monthly: monthly > 0 ? monthly : null,
       score: Math.min(99, score),
       reasons,
     } satisfies QuestMatch;

@@ -24,10 +24,10 @@ export default async function NewsPage({ params }: { params: Promise<{ lang: str
   const dict = getDictionary(localeLang);
 
   const t = {
-    uz: { title: "Barcha Yangiliklar", empty: "Hozircha yangiliklar yo'q.", kicker: 'Yangiliklar', sub: "Qurilish jarayoni, yangi loyihalar va aksiyalar haqida birinchi bo'lib biling." },
+    uz: { title: "Barcha yangiliklar", empty: "Hozircha yangiliklar yo'q.", kicker: 'Yangiliklar', sub: "Qurilish jarayoni, yangi loyihalar va aksiyalar haqida birinchi bo'lib biling." },
     ru: { title: "Все новости", empty: "Пока нет новостей.", kicker: 'Новости', sub: 'Узнавайте первыми о ходе строительства, новых проектах и акциях.' },
     en: { title: "All News", empty: "No news yet.", kicker: 'News', sub: 'Be the first to hear about construction progress, new projects and offers.' }
-  }[localeLang] || { title: "Barcha Yangiliklar", empty: "Hozircha yangiliklar yo'q.", kicker: 'Yangiliklar', sub: '' };
+  }[localeLang] || { title: "Barcha yangiliklar", empty: "Hozircha yangiliklar yo'q.", kicker: 'Yangiliklar', sub: '' };
 
   const dbNews = await db.prepare('SELECT * FROM news WHERE visible = 1 ORDER BY date DESC').all() as any[];
 

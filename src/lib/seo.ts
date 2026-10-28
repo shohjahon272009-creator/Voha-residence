@@ -37,9 +37,9 @@ export function pageMetadata(lang: string, path: string, texts: Texts, image?: s
 
 export const PAGE_SEO: Record<string, Texts> = {
   home: {
-    uz: { title: 'Voha Residence — Urganchda yangi xonadonlar, 0% foizli muddatli to‘lov', description: '15 yillik tajribaga ega qurilish kompaniyasi. Shovot kanali bo‘yida, Urganch markazida kadastri tayyor xonadonlar: boshlang‘ich to‘lov 15% dan, oylik 3 mln so‘mdan, bank foizisiz.' },
-    ru: { title: 'Voha Residence — новостройки в Ургенче, рассрочка без процентов', description: 'Строительная компания с 15-летним опытом. Квартиры с готовым кадастром в центре Ургенча у канала Шават: взнос от 15%, от 3 млн сумов в месяц, без банковских процентов.' },
-    en: { title: 'Voha Residence — new apartments in Urgench, 0% installment plan', description: 'A construction company with 15 years of experience. Cadastre-ready apartments in central Urgench on the Shovot canal: from 15% down, from 3M UZS a month, no bank interest.' },
+    uz: { title: 'Voha Residence — Urganchda yangi xonadonlar, 0% foizli muddatli to‘lov', description: '15 yillik tajribaga ega qurilish kompaniyasi. Shovot kanali bo‘yida, Urganch markazida kadastri tayyor xonadonlar: boshlang‘ich to‘lov 15% dan, oylik 4 mln so‘mdan, bank foizisiz.' },
+    ru: { title: 'Voha Residence — новостройки в Ургенче, рассрочка без процентов', description: 'Строительная компания с 15-летним опытом. Квартиры с готовым кадастром в центре Ургенча у канала Шават: взнос от 15%, от 4 млн сумов в месяц, без банковских процентов.' },
+    en: { title: 'Voha Residence — new apartments in Urgench, 0% installment plan', description: 'A construction company with 15 years of experience. Cadastre-ready apartments in central Urgench on the Shovot canal: from 15% down, from 4M UZS a month, no bank interest.' },
   },
   projects: {
     uz: { title: 'Loyihalarimiz — Voha Residence', description: 'Voha Residence turar-joy majmualari: Shovot kanali bo‘yidagi bloklar, “Sokin Makon”, “Yangi O‘zbekiston” massivi va topshirilgan uylar.' },

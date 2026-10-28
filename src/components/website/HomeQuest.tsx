@@ -25,7 +25,7 @@ const TX = {
     start: 'Boshlash', step: 'Savol', of: '/', points: 'ball', next: 'Davom etish', searching: 'Sizga mos uylar qidirilmoqda…',
     q: [
       { t: 'Kim bilan yashaysiz?', o: [['solo', '🧑', 'Yolg‘iz'], ['couple', '👫', 'Juftlik'], ['family', '👨‍👩‍👧', 'Kichik oila'], ['big', '👨‍👩‍👧‍👦', 'Katta oila']] },
-      { t: 'Oyiga qancha to‘lay olasiz?', o: [['b4', '💵', '4 mln gacha'], ['b6', '💰', '4–6 mln'], ['b9', '💎', '6–9 mln'], ['cash', '🏦', 'Naqd / to‘liq']] },
+      { t: 'Oyiga qancha to‘lay olasiz?', o: [['b4', '💵', '4–5 mln'], ['b6', '💰', '5–6 mln'], ['b9', '💎', '7 mln va undan ko‘p'], ['cash', '🏦', 'Naqd / to‘liq']] },
       { t: 'Qaysi qavat yoqadi?', o: [['low', '🌳', '1–3 qavat'], ['mid', '🏙️', '4–7 qavat'], ['high', '🌇', '8+ qavat'], ['any', '✨', 'Farqi yo‘q']] },
       { t: 'Atrofda nima bo‘lishi muhim?', multi: true },
       { t: 'Qachon ko‘chmoqchisiz?', o: [['now', '🔑', 'Imkon qadar tez'], ['year', '📅', '1 yil ichida'], ['later', '🕰️', 'Shoshilmayman']] },
@@ -42,7 +42,7 @@ const TX = {
     start: 'Начать', step: 'Вопрос', of: '/', points: 'очков', next: 'Далее', searching: 'Подбираем подходящие квартиры…',
     q: [
       { t: 'С кем вы живёте?', o: [['solo', '🧑', 'Один'], ['couple', '👫', 'Пара'], ['family', '👨‍👩‍👧', 'Небольшая семья'], ['big', '👨‍👩‍👧‍👦', 'Большая семья']] },
-      { t: 'Сколько готовы платить в месяц?', o: [['b4', '💵', 'До 4 млн'], ['b6', '💰', '4–6 млн'], ['b9', '💎', '6–9 млн'], ['cash', '🏦', 'Наличными / сразу']] },
+      { t: 'Сколько готовы платить в месяц?', o: [['b4', '💵', '4–5 млн'], ['b6', '💰', '5–6 млн'], ['b9', '💎', '7 млн и больше'], ['cash', '🏦', 'Наличными / сразу']] },
       { t: 'Какой этаж нравится?', o: [['low', '🌳', '1–3 этаж'], ['mid', '🏙️', '4–7 этаж'], ['high', '🌇', '8+ этаж'], ['any', '✨', 'Неважно']] },
       { t: 'Что важно рядом?', multi: true },
       { t: 'Когда хотите переехать?', o: [['now', '🔑', 'Как можно скорее'], ['year', '📅', 'В течение года'], ['later', '🕰️', 'Не спешу']] },
@@ -59,7 +59,7 @@ const TX = {
     start: 'Start', step: 'Question', of: '/', points: 'pts', next: 'Continue', searching: 'Finding homes that fit you…',
     q: [
       { t: 'Who do you live with?', o: [['solo', '🧑', 'Alone'], ['couple', '👫', 'Couple'], ['family', '👨‍👩‍👧', 'Small family'], ['big', '👨‍👩‍👧‍👦', 'Big family']] },
-      { t: 'Monthly budget?', o: [['b4', '💵', 'Up to 4M'], ['b6', '💰', '4–6M'], ['b9', '💎', '6–9M'], ['cash', '🏦', 'Cash / full']] },
+      { t: 'Monthly budget?', o: [['b4', '💵', '4–5M'], ['b6', '💰', '5–6M'], ['b9', '💎', '7M and more'], ['cash', '🏦', 'Cash / full']] },
       { t: 'Preferred floor?', o: [['low', '🌳', 'Floors 1–3'], ['mid', '🏙️', 'Floors 4–7'], ['high', '🌇', 'Floor 8+'], ['any', '✨', 'Any']] },
       { t: 'What matters nearby?', multi: true },
       { t: 'When do you want to move?', o: [['now', '🔑', 'As soon as possible'], ['year', '📅', 'Within a year'], ['later', '🕰️', 'No rush']] },
@@ -299,7 +299,7 @@ export default function HomeQuest({ lang }: { lang: string }) {
                         <div className="font-extrabold text-xl">{m.project} · №{m.number}</div>
                         <div className="mt-1 text-gray-500 text-sm">{m.floor}-{t.floorW} · {m.rooms} {t.roomsW} · {m.area} m²</div>
                         <div className="mt-3 text-2xl font-black">
-                          {m.monthly ? <>≈ {fmt(m.monthly)} <span className="text-sm font-bold text-gray-400">{t.sum} {t.perMonth}</span></> : <span className="text-base font-bold text-gray-500">{t.priceAsk}</span>}
+                          {m.monthly ? <>{fmt(m.monthly)}<span className="text-sm font-bold text-gray-400">{t.sum} {t.perMonth}</span></> : <span className="text-base font-bold text-gray-500">{t.priceAsk}</span>}
                         </div>
                         <div className="mt-3 flex flex-wrap gap-1.5">
                           {m.reasons.slice(0, 4).map((r) => {

@@ -31,11 +31,16 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; id: string }> }): Promise<Metadata> {
   const { lang, id } = await params;
   const project = await getPublicProjectBySlug(parseInt(id));
-  if (!project) return { title: 'Loyiha topilmadi — Voha Residence' };
+  if (!project) return { title: `${lang === 'ru' ? 'Проект не найден' : lang === 'en' ? 'Project not found' : 'Loyiha topilmadi'} — Voha Residence` };
   const name = (project as unknown as Record<string, string>)[`name_${lang}`] || project.name_uz;
   const city = project.city || 'Xorazm';
-  const desc = (project as unknown as Record<string, string>)[`description_${lang}`] ||
-    `${name} — ${city}dagi zamonaviy turar-joy majmuasi. Xonadonlar, chizmalar, narx va qulay to‘lov shartlari.`;
+  // Tavsif bo'lmasa — tanlangan tilda standart matn (avval ru/en sahifada ham o'zbekcha chiqardi)
+  const fallback = lang === 'ru'
+    ? `${name} — современный жилой комплекс (${city}). Квартиры, планировки, цены и удобные условия оплаты.`
+    : lang === 'en'
+      ? `${name} — a modern residential complex in ${city}. Apartments, floor plans, prices and convenient payment terms.`
+      : `${name} — ${city}dagi zamonaviy turar-joy majmuasi. Xonadonlar, chizmalar, narx va qulay to‘lov shartlari.`;
+  const desc = (project as unknown as Record<string, string>)[`description_${lang}`] || fallback;
   const t = { title: `${name} — Voha Residence`, description: desc.slice(0, 160) };
   const img = project.main_image && !project.main_image.startsWith('data:') ? project.main_image : undefined;
   return pageMetadata(lang, `/projects/${id}`, { uz: t, ru: t, en: t }, img);

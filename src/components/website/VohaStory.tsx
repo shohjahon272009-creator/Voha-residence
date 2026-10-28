@@ -3,12 +3,12 @@
 import React, { useRef } from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
-import { ArrowUpRight, Quote } from 'lucide-react';
+import { ArrowUpRight, PhoneCall, Quote } from 'lucide-react';
 
 /*
   Kompaniyaning haqiqiy ma'lumotlari asosidagi kino-bo'limlar
   (manba: rasmiy Telegram kanali t.me/voharesidence va Instagram @voha_residence, 2026).
-  - PaymentTerms  — to'lov shartlari (0% foiz, boshlang'ich 15–30%, oylik 3 mln dan)
+  - PaymentTerms  — to'lov shartlari (0% foiz, boshlang'ich 15–20%, qolgan summa — kontakt orqali)
   - Timeline      — 15 yillik tarix, gorizontal "pin" scroll
   - Testimonials  — mijozlar fikri (ismlarsiz)
   - SocialStrip   — Instagram / Telegram
@@ -75,8 +75,8 @@ export function PaymentTerms({ lang }: { lang: string }) {
       sub: "Ipoteka foizlariga yillab to'lash shart emas. Voha Residence'da uy olish — adolatli va oddiy.",
       items: [
         { n: 0, s: '%', label: 'Foiz', text: "Hech qanday bank foizi va ustama to'lovsiz" },
-        { n: 15, s: '%', p: '', label: "Boshlang'ich to'lov", text: "1 xonali uchun 15% dan, 2 xonali — 20% dan" },
-        { n: 3, s: 'mln', label: "Oylik to'lov", text: "Oyiga 3 mln so'mdan boshlanadigan qulay grafik" },
+        { n: 15, s: '%', label: "Boshlang'ich to'lov", text: "1 xonali uchun 15% dan, 2 xonali — 20% dan" },
+        { n: -1, s: '', label: 'Qolgan summa', text: "Kontakt qoldiring — menejer siz uchun qulay to'lov grafigini hisoblab beradi" },
         { n: 1, s: '', label: 'Hujjat', text: "Faqat pasport — onlayn ham rasmiylashtiriladi" },
       ],
       cta: "To'lovni hisoblash",
@@ -87,7 +87,7 @@ export function PaymentTerms({ lang }: { lang: string }) {
       items: [
         { n: 0, s: '%', label: 'Процент', text: 'Без банковских процентов и переплат' },
         { n: 15, s: '%', label: 'Первый взнос', text: 'От 15% за 1-комнатную, от 20% за 2-комнатную' },
-        { n: 3, s: 'млн', label: 'Ежемесячно', text: 'Удобный график — от 3 млн сумов в месяц' },
+        { n: -1, s: '', label: 'Оставшаяся сумма', text: 'Оставьте контакт — менеджер рассчитает для вас удобный график платежей' },
         { n: 1, s: '', label: 'Документ', text: 'Только паспорт — можно оформить онлайн' },
       ],
       cta: 'Рассчитать платёж',
@@ -98,7 +98,7 @@ export function PaymentTerms({ lang }: { lang: string }) {
       items: [
         { n: 0, s: '%', label: 'Interest', text: 'No bank interest, no hidden markups' },
         { n: 15, s: '%', label: 'Down payment', text: 'From 15% for 1-room, from 20% for 2-room' },
-        { n: 3, s: 'M', label: 'Monthly', text: 'Flexible plan from 3M UZS per month' },
+        { n: -1, s: '', label: 'Remaining balance', text: 'Leave your contact — a manager will work out a convenient payment schedule for you' },
         { n: 1, s: '', label: 'Document', text: 'Just your passport — can be done online' },
       ],
       cta: 'Calculate payment',
@@ -134,7 +134,7 @@ export function PaymentTerms({ lang }: { lang: string }) {
               className="group relative pt-8 pb-10 lg:px-8 lg:first:pl-0 lg:border-l lg:first:border-l-0 border-white/10 border-b sm:border-b-0"
             >
               <div className="font-bebas text-accent leading-none whitespace-nowrap text-7xl lg:text-[5.5rem] xl:text-8xl">
-                {it.n === 1 && it.s === '' ? '1' : <Counter to={it.n} suffix={it.s} />}
+                {it.n === -1 ? <PhoneCall aria-hidden="true" className="h-[0.8em] w-[0.8em]" strokeWidth={1.5} /> : it.n === 1 && it.s === '' ? '1' : <Counter to={it.n} suffix={it.s} />}
               </div>
               <div className="mt-3 text-white font-bold text-lg">{it.label}</div>
               <p className="mt-2 text-white/60 text-sm leading-relaxed max-w-[16rem]">{it.text}</p>
@@ -245,7 +245,7 @@ export function Testimonials({ lang }: { lang: string }) {
       kicker: 'Mijozlar fikri', title: "Ular allaqachon uyli bo'ldi",
       stat: [{ n: 200, s: '+', l: 'oila tanlovi' }, { n: 43, s: '', l: 'shartnoma — aksiyaning 1-kunida' }, { n: 24, s: 'K', l: 'Instagram kuzatuvchi' }],
       q: [
-        { text: "Instagramda ko'rib kelgandik. 2000$ to'lab, oylik to'lovi 3 mln — haqiqat ekan. Hammaga tavsiya qilaman.", who: 'Mijozimiz, 2 xonali xonadon' },
+        { text: "Instagramda ko'rib kelgandik. Aytilgan to'lov shartlari shartnomada ham aynan shunday — haqiqat ekan. Hammaga tavsiya qilaman.", who: 'Mijozimiz, 2 xonali xonadon' },
         { text: "Taqdimotda aytilgan hamma gaplar aytilgandek bo'ldi. 2 xonali uy xarid qildim, tavsiya qilaman.", who: 'Onlayn taqdimot ishtirokchisi' },
         { text: "Asosiysi — toza shaharcha qurilayotgani va joylashuvi qulayligi. Gollandiyada turib xarid qildik.", who: 'Xorijdagi mijozimiz' },
         { text: "50 mln boshlang'ich to'lov bilan tayyor ta'mirlangan xonadon oldim. Oylik 4 mln — rost ekan.", who: '"Sokin Makon" xaridori' },
@@ -255,7 +255,7 @@ export function Testimonials({ lang }: { lang: string }) {
       kicker: 'Отзывы', title: 'Они уже со своим домом',
       stat: [{ n: 200, s: '+', l: 'семей выбрали нас' }, { n: 43, s: '', l: 'договора — в 1-й день акции' }, { n: 24, s: 'K', l: 'подписчиков в Instagram' }],
       q: [
-        { text: 'Увидели в Instagram. Взнос 2000$, ежемесячно 3 млн — оказалось правдой. Всем рекомендую.', who: 'Клиент, 2-комнатная квартира' },
+        { text: 'Увидели в Instagram. Условия оплаты в договоре — ровно такие, как обещали. Всем рекомендую.', who: 'Клиент, 2-комнатная квартира' },
         { text: 'Всё, что обещали на презентации, так и оказалось. Купил 2-комнатную, рекомендую.', who: 'Участник онлайн-презентации' },
         { text: 'Главное — строится чистый городок и удобное расположение. Купили, находясь в Нидерландах.', who: 'Клиент из-за рубежа' },
         { text: 'Взнос 50 млн — и готовая квартира с ремонтом. Ежемесячно 4 млн — правда.', who: 'Покупатель «Sokin Makon»' },
@@ -265,7 +265,7 @@ export function Testimonials({ lang }: { lang: string }) {
       kicker: 'Testimonials', title: 'They already have their home',
       stat: [{ n: 200, s: '+', l: 'families chose us' }, { n: 43, s: '', l: 'contracts on day 1 of the offer' }, { n: 24, s: 'K', l: 'Instagram followers' }],
       q: [
-        { text: 'We saw it on Instagram. $2,000 down and 3M a month — it was true. I recommend it to everyone.', who: 'Client, 2-room apartment' },
+        { text: 'We saw it on Instagram. The payment terms in the contract were exactly as promised. I recommend it to everyone.', who: 'Client, 2-room apartment' },
         { text: 'Everything promised at the presentation came true. I bought a 2-room flat — recommended.', who: 'Online presentation attendee' },
         { text: 'What matters most is the clean new neighbourhood and the location. We bought from the Netherlands.', who: 'Client living abroad' },
         { text: '50M down for a ready, renovated apartment. 4M a month — it is real.', who: '"Sokin Makon" buyer' },

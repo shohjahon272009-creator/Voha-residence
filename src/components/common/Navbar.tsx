@@ -66,9 +66,9 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66' }: { lang: Lo
   };
 
   const navLinks = [
-    { href: `/${lang}/projects`, label: dict.nav.projects },
-    { href: `/${lang}/about`, label: dict.nav.about },
     { href: `/${lang}/apartments`, label: dict.nav.apartments },
+    { href: `/${lang}/about`, label: dict.nav.about },
+    { href: `/${lang}/projects`, label: dict.nav.projects },
     { href: `/${lang}/news`, label: dict.nav.news },
     { href: `/${lang}/contact`, label: dict.nav.contact },
   ];

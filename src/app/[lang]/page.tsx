@@ -69,13 +69,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     <WebsiteLayout lang={localeLang} companyName={companyName}>
       <Hero lang={localeLang} companyName={companyName} heroTitle={settings.hero_title} heroDesc={settings.hero_desc} images={heroImages} slides={heroSlides} settings={settings} />
       {settings.show_cinema !== 'false' && <CinemaScroll lang={localeLang} />}
-      {settings.show_projects !== 'false' && (
-        <AnimatedReveal>
-          <ProjectsList lang={localeLang} companyName={companyName} limit={6} />
-        </AnimatedReveal>
-      )}
       <BuildStory lang={localeLang} />
-      <PaymentTerms lang={localeLang} />
       <AnimatedReveal>
         <ApartmentAndPayment
           apartments={browserApartments}
@@ -93,6 +87,12 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           }}
         />
       </AnimatedReveal>
+      <PaymentTerms lang={localeLang} />
+      {settings.show_projects !== 'false' && (
+        <AnimatedReveal>
+          <ProjectsList lang={localeLang} companyName={companyName} limit={6} />
+        </AnimatedReveal>
+      )}
       <VelocityMarquee words={['Voha Residence', '0% foiz', 'Urganch', 'Kadastr tayyor', 'Xorazm']} />
 
       {/* About Section */}

@@ -33,7 +33,7 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
       msgPlaceholder: "Xabaringiz",
       msgValue: "Qo'shimcha savollaringiz bo'lsa yozing...",
       successMsg: "Xabaringiz yuborildi! Tez orada siz bilan bog'lanamiz.",
-      errorMsg: "Xatolik yuz berdi. Iltimos qaytadan urinib ko'ring."
+      errorMsg: "Xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring."
     },
     ru: { 
       title: "Свяжитесь с нами", 
@@ -49,7 +49,7 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
       msgPlaceholder: "Ваше сообщение",
       msgValue: "Напишите, если у вас есть дополнительные вопросы...",
       successMsg: "Ваше сообщение отправлено! Мы свяжемся с вами в ближайшее время.",
-      errorMsg: "Произошла ошибка. Пожалуйста, попробуйте еще раз."
+      errorMsg: "Произошла ошибка. Пожалуйста, попробуйте ещё раз."
     },
     en: { 
       title: "Contact Us", 
@@ -81,7 +81,7 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
       msgPlaceholder: "Xabaringiz",
       msgValue: "Qo'shimcha savollaringiz bo'lsa yozing...",
       successMsg: "Xabaringiz yuborildi! Tez orada siz bilan bog'lanamiz.",
-      errorMsg: "Xatolik yuz berdi. Iltimos qaytadan urinib ko'ring."
+      errorMsg: "Xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring."
   };
 
   // Admin sozlagan aloqa ma'lumotlari (bo'sh bo'lsa — til bo'yicha standart matn)
@@ -90,6 +90,9 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
   const addressVal = (lang === 'uz' && address) || t.addressValue;
   const hoursVal = (lang === 'uz' && hours) || t.timeValue;
   const telHref = 'tel:' + phoneVal.replace(/[^\d+]/g, '');
+  // Ikkinchi sotuv raqami (asosiy raqam bilan bir xil bo'lmasa ko'rsatiladi)
+  const phone2 = '+998 97 321 66 66';
+  const showPhone2 = !phoneVal.replace(/\D/g, '').includes(phone2.replace(/\D/g, '').slice(3));
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -149,6 +152,9 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
                 <div>
                    <h4 className="text-lg font-bold text-white mb-2">{t.phoneLabel}</h4>
                    <a href={telHref} className="text-white/60 text-xl font-medium tracking-wide hover:text-accent transition-colors">{phoneVal}</a>
+                   {showPhone2 && (
+                     <a href={'tel:' + phone2.replace(/[^\d+]/g, '')} className="block mt-1 text-white/60 text-xl font-medium tracking-wide hover:text-accent transition-colors">{phone2}</a>
+                   )}
                 </div>
              </div>
 

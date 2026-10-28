@@ -12,10 +12,10 @@ import AnimatedReveal from './AnimatedReveal';
 
 export default async function NewsSection({ lang }: { lang: Locale }) {
   const t = {
-    uz: { title: "So'nggi Yangiliklar", subtitle: "YANGILIKLAR", more: "Barchasini o'qish" },
+    uz: { title: "So'nggi yangiliklar", subtitle: "YANGILIKLAR", more: "Barchasini o'qish" },
     ru: { title: "Последние новости", subtitle: "НОВОСТИ", more: "Читать все" },
     en: { title: "Latest News", subtitle: "NEWS", more: "Read all" },
-  }[lang] || { title: "So'nggi Yangiliklar", subtitle: "YANGILIKLAR", more: "Barchasini o'qish" };
+  }[lang] || { title: "So'nggi yangiliklar", subtitle: "YANGILIKLAR", more: "Barchasini o'qish" };
 
 
   const dbNews = await db.prepare('SELECT * FROM news WHERE visible = 1 ORDER BY date DESC LIMIT 3').all() as any[];

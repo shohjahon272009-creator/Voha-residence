@@ -21,10 +21,10 @@ export default function ProjectCard({ project, lang, soldOut = false }: ProjectC
   const projectName = (project as any)[`name_${lang}`] || project.name_uz;
 
   const t = ({
-    uz: { complex: 'Turar joy majmuasi', price: 'shartnomaviy' },
+    uz: { complex: 'Turar-joy majmuasi', price: 'shartnomaviy' },
     ru: { complex: 'Жилой комплекс', price: 'договорная' },
     en: { complex: 'Residential complex', price: 'on request' },
-  } as const)[lang] || { complex: 'Turar joy majmuasi', price: 'shartnomaviy' };
+  } as const)[lang] || { complex: 'Turar-joy majmuasi', price: 'shartnomaviy' };
 
   const href = `/${lang}/projects/${project.id}`;
 

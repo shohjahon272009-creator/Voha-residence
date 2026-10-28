@@ -2,16 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { Locale } from '@/lib/dictionaries';
-import { Calculator, Info, Phone, X, MousePointerClick } from 'lucide-react';
+import { Wallet, Info, Phone, X, MousePointerClick } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getApartmentPayment, type PublicPay } from '@/lib/paymentActions';
-import { onSectionLinkClick } from '@/lib/goToQuest';
 import BookingModal from './BookingModal';
 import type { Apartment } from '@/lib/types';
 import { SelectedApartment } from '@/lib/types';
 
-// Kalkulyator BLOKKA qarab avtomatik hisoblaydi (gibrid yoki ipoteka) — server hal qiladi.
-// Narx mijozga yuborilmaydi. Ipoteka bloklarida (10,11) boshlang'ich va muddat tanlanadi.
+// To'lov kartasi: boshlang'ich to'lov (foiz yoki qat'iy summa) + xonalar soniga qarab STANDART
+// oylik to'lov (server hisoblaydi, paymentCalc.ts). Narx, qolgan summa va muddat mijozga
+// yuborilmaydi — "qolgan summani bilish uchun kontakt qoldiring" (BookingModal).
 export default function MortgageCalculator({
   lang,
   selected = null,
@@ -22,42 +22,45 @@ export default function MortgageCalculator({
   onClearSelected?: () => void;
   terms?: unknown;
 }) {
-  const [downTier, setDownTier] = useState(15); // ipoteka boshlang'ich %
-  const [years, setYears] = useState(5); // ipoteka muddati (yil)
-  // Hisobdan keyin — aynan shu xonadon bo'yicha ariza (avval footer'ga olib ketardi, xonadon yo'qolardi)
+  // Aynan shu xonadon bo'yicha ariza
   const [bookOpen, setBookOpen] = useState(false);
   const [srv, setSrv] = useState<(PublicPay & { aptId: number }) | null>(null);
-  // Narxi kiritilmagan xonadon (server null qaytaradi) — avval "…" abadiy aylanib turardi
-  const [noPriceId, setNoPriceId] = useState<number | null>(null);
+  // Server null qaytardi (sotilgan / limit / xato) — "…" abadiy aylanmasin
+  const [failId, setFailId] = useState<number | null>(null);
 
   useEffect(() => {
-    // Tanlov yo'q bo'lsa hisob ko'rsatilmaydi — 'ready' srv.aptId === selected.id ni tekshiradi
     if (!selected) return;
     const aptId = selected.id;
     let cancelled = false;
-    getApartmentPayment(aptId, { downPct: downTier, years })
+    getApartmentPayment(aptId)
       .then((res) => {
         if (cancelled) return;
         if (res) setSrv({ ...res, aptId });
-        else setNoPriceId(aptId);
+        else setFailId(aptId);
       })
-      // Tarmoq/server xatosi — "…" abadiy aylanmasin, "bog'laning" xabari chiqsin
-      .catch(() => { if (!cancelled) setNoPriceId(aptId); });
+      .catch(() => { if (!cancelled) setFailId(aptId); });
     return () => { cancelled = true; };
-  }, [selected, downTier, years]);
+  }, [selected]);
 
   const nf = (x: number) => Math.round(x).toLocaleString('ru-RU');
   const ready = !!(selected && srv && srv.aptId === selected.id);
-  const noPrice = !ready && !!selected && noPriceId === selected.id;
+  const failed = !ready && !!selected && failId === selected.id;
 
   const T = ({
-    uz: { tag: 'TO‘LOV KALKULYATORI', selApt: 'Tanlangan xonadon', xona: 'xona', prompt: 'To‘lovni ko‘rish uchun yuqoridan xonadonni tanlang', monthly: 'Oylik to‘lov', downRow: 'Boshlang‘ich to‘lov', remRow: 'Qoldiq summa', termRow: 'Muddat', mo: 'oy', yr: 'yil', down: 'Boshlang‘ich (%)', term: 'Muddat (yil)', rate: 'Foiz', mortgage: 'Ipoteka', hybrid: 'Muddatli (0%)', consult: 'Shu xonadonga ariza qoldirish', noPrice: 'Bu xonadon narxini bilish uchun biz bilan bog‘laning', note: '* Dastlabki hisob. Yakuniy shartlar loyihaga bog‘liq.' },
-    ru: { tag: 'КАЛЬКУЛЯТОР ОПЛАТЫ', selApt: 'Выбранная квартира', xona: 'комн.', prompt: 'Выберите квартиру выше, чтобы увидеть оплату', monthly: 'Ежемесячный платёж', downRow: 'Первый взнос', remRow: 'Остаток', termRow: 'Срок', mo: 'мес', yr: 'лет', down: 'Взнос (%)', term: 'Срок (лет)', rate: 'Ставка', mortgage: 'Ипотека', hybrid: 'Рассрочка (0%)', consult: 'Оставить заявку на эту квартиру', noPrice: 'Чтобы узнать цену этой квартиры, свяжитесь с нами', note: '* Предварительный расчёт. Условия зависят от проекта.' },
-    en: { tag: 'PAYMENT CALCULATOR', selApt: 'Selected apartment', xona: 'rooms', prompt: 'Select an apartment above to see the payment', monthly: 'Monthly payment', downRow: 'Down payment', remRow: 'Remaining', termRow: 'Term', mo: 'mo', yr: 'yr', down: 'Down (%)', term: 'Term (yr)', rate: 'Rate', mortgage: 'Mortgage', hybrid: 'Installment (0%)', consult: 'Request this apartment', noPrice: 'Contact us to get the price of this apartment', note: '* Preliminary calculation. Terms depend on the project.' },
+    uz: { tag: 'TO‘LOV TIZIMI', title: 'To‘lov shartlari', selApt: 'Tanlangan xonadon', xona: 'xona', prompt: 'To‘lovni ko‘rish uchun yuqoridan xonadonni tanlang', down: 'Boshlang‘ich to‘lov', monthly: 'Oylik to‘lov', sum: 'so‘m', perMonth: 'oyiga', agreed: 'Kelishiladi', restTitle: 'Qolgan summa', rest: 'Qolgan summani bilish uchun kontakt qoldiring', cta: 'Kontakt qoldirish', note: '* Yakuniy shartlar menejer bilan kelishiladi.' },
+    ru: { tag: 'СИСТЕМА ОПЛАТЫ', title: 'Условия оплаты', selApt: 'Выбранная квартира', xona: 'комн.', prompt: 'Выберите квартиру выше, чтобы увидеть оплату', down: 'Первый взнос', monthly: 'Ежемесячный платёж', sum: 'сум', perMonth: 'в месяц', agreed: 'По договорённости', restTitle: 'Оставшаяся сумма', rest: 'Чтобы узнать оставшуюся сумму, оставьте контакт', cta: 'Оставить контакт', note: '* Окончательные условия согласовываются с менеджером.' },
+    en: { tag: 'PAYMENT PLAN', title: 'Payment terms', selApt: 'Selected apartment', xona: 'rooms', prompt: 'Select an apartment above to see the payment', down: 'Down payment', monthly: 'Monthly payment', sum: 'UZS', perMonth: '/ month', agreed: 'By agreement', restTitle: 'Remaining amount', rest: 'Leave your contact to learn the remaining amount', cta: 'Leave contact', note: '* Final terms are agreed with a manager.' },
   } as const)[lang] || ({} as never);
 
-  const isMort = ready && srv!.mode === 'mortgage';
-  const pill = (on: boolean) => `px-4 h-10 rounded-xl font-bold text-sm transition-all ${on ? 'bg-accent text-white shadow-lg' : 'bg-white/10 text-white/70 hover:bg-white/20'}`;
+  // "Standart: 2 xonali" kabi izoh — oylik xonalar soniga bog'liqligini tushuntiradi
+  const r = selected ? Math.min(4, Math.max(1, Number(selected.rooms) || 1)) : 1;
+  const rl = `${r}${r >= 4 ? '+' : ''}`;
+  const stdNote = ({ uz: `${rl} xonali uchun standart`, ru: `Стандарт для ${rl}-комнатных`, en: `Standard for ${rl}-room` } as Record<string, string>)[lang] || '';
+
+  const downText = ready
+    ? (srv!.downFixed != null ? `${nf(srv!.downFixed)} ${T.sum}` : srv!.downPct != null ? `${srv!.downPct}%` : T.agreed)
+    : failed ? T.agreed : '…';
+  const monthlyText = ready ? nf(srv!.monthly) : failed ? T.agreed : '…';
 
   return (
     <section id="calculator" className="py-16 px-6 scroll-mt-20">
@@ -67,12 +70,10 @@ export default function MortgageCalculator({
           <div className="absolute top-0 right-0 w-72 h-72 bg-accent/10 rounded-full soft-blob -translate-y-1/3 translate-x-1/3 pointer-events-none" />
           <div className="relative z-10 p-6 md:p-10">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 bg-accent rounded-2xl flex items-center justify-center shadow-lg"><Calculator className="text-white" size={24} /></div>
+              <div className="w-12 h-12 bg-accent rounded-2xl flex items-center justify-center shadow-lg"><Wallet className="text-white" size={24} /></div>
               <div>
                 <span className="text-accent text-xs font-bold uppercase tracking-widest">{T.tag}</span>
-                <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">
-                  {ready ? (srv!.mode === 'mortgage' ? T.mortgage : T.hybrid) : T.tag}
-                </h2>
+                <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">{T.title}</h2>
               </div>
             </div>
 
@@ -83,54 +84,51 @@ export default function MortgageCalculator({
                 <p className="font-medium max-w-sm">{T.prompt}</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Chap: tanlangan xonadon + (ipoteka bo'lsa) sozlamalar */}
-                <div className="lg:col-span-2 space-y-4">
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="text-accent text-xs font-bold uppercase tracking-wider mb-1">{T.selApt}</div>
-                      <div className="text-white text-lg font-black truncate">№{selected.number} · {selected.rooms} {T.xona} · {selected.area} m²</div>
-                      {selected.projectName && <div className="text-white/40 text-xs truncate">{selected.projectName}</div>}
+              <div className="space-y-4">
+                {/* Tanlangan xonadon */}
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-accent text-xs font-bold uppercase tracking-wider mb-1">{T.selApt}</div>
+                    <div className="text-white text-lg font-black truncate">№{selected.number} · {selected.rooms} {T.xona} · {selected.area} m²</div>
+                    {selected.projectName && <div className="text-white/40 text-xs truncate">{selected.projectName}</div>}
+                  </div>
+                  <button type="button" onClick={onClearSelected} aria-label="Bekor qilish" className="w-9 h-9 shrink-0 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"><X size={16} /></button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* 1. Boshlang'ich to'lov */}
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col">
+                    <div className="flex items-center gap-2 text-white/50 text-xs font-bold uppercase tracking-wider mb-3">
+                      <span className="w-6 h-6 shrink-0 rounded-full bg-accent/20 text-accent flex items-center justify-center text-[11px]">1</span>{T.down}
                     </div>
-                    <button type="button" onClick={onClearSelected} aria-label="Bekor qilish" className="w-9 h-9 shrink-0 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"><X size={16} /></button>
+                    <div className="text-3xl font-black text-white tracking-tight" aria-live="polite">{downText}</div>
                   </div>
 
-                  {isMort && (
-                    <>
-                      <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-                        <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-3">{T.down}</label>
-                        <div className="flex gap-2">{[15, 25, 30].map((d) => (<button key={d} onClick={() => setDownTier(d)} className={pill(downTier === d) + ' flex-1'}>{d}%</button>))}</div>
-                      </div>
-                      <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-                        <label className="block text-white/50 text-xs font-bold uppercase tracking-wider mb-3">{T.term}</label>
-                        <div className="flex gap-2 flex-wrap">{[3, 5, 10, 15, 20].map((y) => (<button key={y} onClick={() => setYears(y)} className={pill(years === y)}>{y} {T.yr}</button>))}</div>
-                      </div>
-                    </>
-                  )}
+                  {/* 2. Oylik to'lov — xonalar soniga qarab standart */}
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col">
+                    <div className="flex items-center gap-2 text-white/50 text-xs font-bold uppercase tracking-wider mb-3">
+                      <span className="w-6 h-6 shrink-0 rounded-full bg-accent/20 text-accent flex items-center justify-center text-[11px]">2</span>{T.monthly}
+                    </div>
+                    <div className="text-3xl font-black text-white tracking-tight" aria-live="polite">
+                      {monthlyText}
+                      {ready && <span className="text-base font-bold text-white/50"> {T.sum} {T.perMonth}</span>}
+                    </div>
+                    {ready && <div className="text-white/40 text-xs mt-2">{stdNote}</div>}
+                  </div>
+
+                  {/* 3. Qolgan summa — faqat kontakt orqali */}
+                  <div className="bg-white rounded-2xl p-5 flex flex-col shadow-2xl">
+                    <div className="flex items-center gap-2 text-gray-400 text-xs font-black uppercase tracking-wider mb-3">
+                      <span className="w-6 h-6 shrink-0 rounded-full bg-accent text-white flex items-center justify-center text-[11px]">3</span>{T.restTitle}
+                    </div>
+                    <p className="text-primary font-bold leading-snug mb-4">{T.rest}</p>
+                    <button type="button" onClick={() => setBookOpen(true)} className="mt-auto flex items-center justify-center gap-2 w-full py-4 bg-accent text-white font-bold rounded-2xl hover:bg-opacity-90 transition-all shadow-lg shadow-accent/30">
+                      <Phone size={16} /> {T.cta}
+                    </button>
+                  </div>
                 </div>
 
-                {/* O'ng: natija */}
-                <div className="bg-white rounded-3xl p-6 flex flex-col shadow-2xl">
-                  <div className="text-gray-400 text-xs uppercase font-black tracking-widest mb-1">{T.monthly}</div>
-                  {noPrice ? (
-                    <div className="text-lg font-bold text-primary leading-snug mb-5">{T.noPrice}</div>
-                  ) : (
-                    <div className="text-3xl font-black text-primary tracking-tight mb-5">{ready ? `≈ ${nf(srv!.monthly)}` : '…'} <span className="text-lg text-gray-400">UZS</span></div>
-                  )}
-                  <div className="space-y-3 border-t-2 border-gray-100 pt-5 mb-6">
-                    <div className="flex justify-between text-sm"><span className="text-gray-500">{T.downRow}</span><span className="font-black text-primary">{ready ? (srv!.downFixed != null ? nf(srv!.downFixed) : `${srv!.downPct ?? 0}%`) : noPrice ? '—' : '…'}</span></div>
-                    <div className="flex justify-between text-sm"><span className="text-gray-500">{T.termRow}</span><span className="font-black text-primary">{ready ? (srv!.mode === 'mortgage' ? `${srv!.months / 12} ${T.yr}` : `${srv!.months} ${T.mo}`) : noPrice ? '—' : '…'}</span></div>
-                    {ready && srv!.mode === 'mortgage' && srv!.rate != null && (
-                      <div className="flex justify-between text-sm"><span className="text-gray-500">{T.rate}</span><span className="font-black text-primary">{srv!.rate}%</span></div>
-                    )}
-                  </div>
-                  {selected ? (
-                    <button type="button" onClick={() => setBookOpen(true)} className="mt-auto flex items-center justify-center gap-2 w-full py-4 bg-accent text-white font-bold rounded-2xl hover:bg-opacity-90 transition-all shadow-lg shadow-accent/30"><Phone size={16} /> {T.consult}</button>
-                  ) : (
-                    <a href={`/${lang}#contact`} onClick={onSectionLinkClick('contact')} className="mt-auto flex items-center justify-center gap-2 w-full py-4 bg-accent text-white font-bold rounded-2xl hover:bg-opacity-90 transition-all shadow-lg shadow-accent/30"><Phone size={16} /> {T.consult}</a>
-                  )}
-                  <div className="mt-4 flex gap-2 items-start text-[11px] text-gray-400 leading-relaxed"><Info size={14} className="min-w-3.5 text-accent mt-0.5" /><span>{T.note}</span></div>
-                </div>
+                <div className="flex gap-2 items-start text-[11px] text-white/40 leading-relaxed"><Info size={14} className="min-w-3.5 text-accent mt-0.5" /><span>{T.note}</span></div>
               </div>
             )}
           </div>
