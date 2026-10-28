@@ -19,6 +19,7 @@ export type ShApartment = {
   number: string;
   floor: number | null;
   rooms: number | null;
+  area: number | null;
   status: ShStatus;
 };
 export type ShBlock = { id: string; name: string; projectName: string };
@@ -35,7 +36,15 @@ const STATUS: Record<string, ShStatus> = {
 };
 
 export function salehouseConfigured(): boolean {
-  return Boolean(process.env.SALEHOUSE_API_URL && process.env.SALEHOUSE_API_TOKEN);
+  return Boolean((process.env.SALEHOUSE_API_URL && process.env.SALEHOUSE_API_TOKEN) || fixturePath());
+}
+
+// Faqat lokal sinov uchun: Turso'siz (qurilish.db) nusxada Sale House javobi o'rniga JSON fayl
+const fixturePath = () => (!process.env.TURSO_DATABASE_URL && process.env.SALEHOUSE_FIXTURE) || '';
+export function salehouseFixture(): Promise<{ blocks: ShBlock[]; apartments: ShApartment[] }> | null {
+  const p = fixturePath();
+  if (!p) return null;
+  return import('fs').then((fs) => JSON.parse(fs.readFileSync(p, 'utf8')));
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -122,6 +131,8 @@ export async function fetchSaleHouseInventory(): Promise<{ blocks: ShBlock[]; ap
           number: String(a.number ?? '').trim(),
           floor: a.floor == null ? null : Number(a.floor),
           rooms: a.rooms == null ? null : Number(a.rooms),
+          // Narx maydonlari (price_per_sqm, total_price) ataylab olinmaydi — saytga narx tushmaydi
+          area: a.area_sqm == null || a.area_sqm === '' ? null : Number(a.area_sqm),
           status: STATUS[String(a.status ?? '').trim().toLowerCase()] ?? 'inactive',
         });
       }

@@ -3,14 +3,15 @@ import { RefreshCw, ShieldCheck, CheckCircle2, AlertTriangle } from 'lucide-reac
 import db from '@/lib/db';
 import { salehouseConfigured } from '@/lib/salehouse';
 import { readJob, cronStatus } from '@/lib/salehouseJob';
+import { reportSize } from '@/lib/salehouseSync';
 import { applySaleHouseSync, setSaleHouseAuto, startSaleHouseReport } from '@/lib/salehouseActions';
 import AutoRefresh from './AutoRefresh';
 
 export const dynamic = 'force-dynamic';
 
 /*
-  Sale House -> sayt xonadon holatlari. "Solishtirish" faqat hisobot (hech narsa o'zgarmaydi),
-  "Qo'llash" sayt bazasidagi holatlarni yangilaydi. Sale House'ga hech qachon yozilmaydi.
+  Sale House -> sayt: loyihalar va xonadonlar to'liq (narxsiz). "Solishtirish" faqat hisobot
+  (hech narsa o'zgarmaydi), "Qo'llash" sayt bazasini yangilaydi. Sale House'ga hech qachon yozilmaydi.
 */
 export default async function SaleHousePage({ searchParams }: { searchParams: Promise<{ applied?: string; stale?: string }> }) {
   const { applied, stale } = await searchParams;
@@ -31,8 +32,8 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
     <div className="space-y-8 max-w-6xl">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-primary">Sale House sinxronlash</h1>
-          <p className="text-gray-500 mt-1">Xonadonlar holati (bo&apos;sh / bron / sotilgan) Sale House&apos;dan saytga olinadi.</p>
+          <h1 className="text-3xl font-bold text-primary">Sale House&apos;dan yuklash</h1>
+          <p className="text-gray-500 mt-1">Loyihalar va xonadonlar (raqam, qavat, xona, m², holat) Sale House&apos;dan saytga olinadi. Narx olinmaydi.</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-success font-bold bg-success/10 px-4 py-2 rounded-xl">
           <ShieldCheck size={18} /> Faqat o&apos;qish — Sale House&apos;da hech narsa o&apos;zgarmaydi
@@ -51,7 +52,7 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
         <>
           {applied != null && (
             <div className="flex items-center gap-3 bg-success/10 text-success font-bold rounded-2xl p-4">
-              <CheckCircle2 size={20} /> {applied} ta xonadon holati yangilandi.
+              <CheckCircle2 size={20} /> Saytga yozildi: {applied} ta o&apos;zgarish.
             </div>
           )}
           {s._salehouse_error && (
@@ -90,10 +91,10 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
                 <RefreshCw size={18} className={running ? 'animate-spin' : ''} /> {running ? 'Hisobot tayyorlanmoqda…' : 'Solishtirish (hisobot)'}
               </button>
             </form>
-            {report && report.changes.length > 0 && (
+            {report && reportSize(report) > 0 && (
               <form action={applySaleHouseSync}>
                 <button className="px-6 py-3 rounded-xl bg-accent text-white font-bold">
-                  Qo&apos;llash — {report.changes.length} ta xonadonni yangilash
+                  Qo&apos;llash — {reportSize(report)} ta o&apos;zgarishni saytga yozish
                 </button>
               </form>
             )}
@@ -115,10 +116,14 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
             <div className="space-y-6">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
+                  ["Qo'shiladigan xonadonlar", report.creates?.length ?? report.notOnSite],
+                  ["Holati o'zgaradigan", report.changes.length],
+                  ['Qavat / xona / m² tuzatiladigan', report.updates?.length ?? 0],
+                  ["Sotuvdan chiqadigan (Sale House'da yo'q)", report.hides?.length ?? report.notInSaleHouse],
+                  ['Yangi loyihalar', report.newProjects?.length ?? 0],
+                  ["“Topshirilgan” bo'ladigan loyihalar", report.retire?.length ?? 0],
+                  ["Olinmagan (do'kon, parkovka)", report.skipped ?? 0],
                   ['Sale House bloklari', report.blocks.length],
-                  ["O'zgaradigan holatlar", report.changes.length],
-                  ["Saytda yo'q xonadonlar", report.notOnSite],
-                  ["Sale House'da yo'q", report.notInSaleHouse],
                 ].map(([l, v]) => (
                   <div key={String(l)} className="bg-white rounded-2xl p-5 border border-gray-100">
                     <div className="text-2xl font-black text-primary">{v}</div>
@@ -137,7 +142,7 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
                     {report.blocks.map((b) => (
                       <tr key={b.sh.id} className="border-t border-gray-50">
                         <td className="px-6 py-3">{b.sh.projectName} · {b.sh.name}</td>
-                        <td className={`px-6 py-3 ${b.siteProject ? '' : 'text-danger font-bold'}`}>{b.siteProject?.name_uz ?? 'mos topilmadi'}</td>
+                        <td className={`px-6 py-3 ${b.siteProject ? '' : 'text-accent font-bold'}`}>{b.siteProject?.name_uz ?? `yangi: ${b.sh.name}`}</td>
                         <td className="px-6 py-3 text-gray-500">{b.how}</td>
                         <td className="px-6 py-3 text-right">{b.matched} / {b.shCount}</td>
                       </tr>
@@ -167,8 +172,18 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
                 </div>
               )}
 
-              {report.unmatchedSiteProjects.length > 0 && (
-                <p className="text-xs text-gray-400">Sale House&apos;ga mos kelmagan sayt loyihalari (o&apos;zgarmaydi): {report.unmatchedSiteProjects.join(', ')}</p>
+              {(report.retire?.length ?? 0) > 0 && (
+                <div className="bg-white rounded-3xl border border-gray-100 p-6 text-sm">
+                  <div className="font-bold text-primary mb-2">Sale House&apos;da yo&apos;q — &quot;Topshirilgan&quot; bo&apos;ladi (xonadonlari sotuvdan chiqadi, o&apos;chirilmaydi)</div>
+                  <ul className="text-gray-600 space-y-1">
+                    {report.retire.map((p) => <li key={p.projectId}>{p.name} — hozir: {p.from}, sotuvdagi xonadonlar: {p.freeApts}</li>)}
+                  </ul>
+                </div>
+              )}
+              {(report.creates?.length ?? 0) > 0 && (
+                <p className="text-xs text-gray-400">
+                  Yangi xonadonlar rasmsiz qo&apos;shiladi — chizma va rasmlarni &quot;Xonadonlar&quot; bo&apos;limida qo&apos;shasiz.
+                </p>
               )}
             </div>
           )}

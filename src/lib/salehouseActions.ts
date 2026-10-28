@@ -17,6 +17,8 @@ export async function applySaleHouseSync() {
   if (!report || Date.now() - new Date(report.at).getTime() > 30 * 60_000) redirect('/admin/salehouse?stale=1');
   const n = await applyReport(report);
   revalidatePath('/admin/apartments');
+  revalidatePath('/admin/projects');
+  revalidatePath('/', 'layout');
   redirect(`/admin/salehouse?applied=${n}`);
 }
 

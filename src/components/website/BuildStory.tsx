@@ -12,12 +12,11 @@ import ProjectVideoCard from './showcase/ProjectVideoCard';
   Animatsiyalar faqat opacity/transform (CLAUDE.md qoidasi).
 */
 
-// ⚠️ VIDEO QAYSI LOYIHANI KO'RSATADI — egasi tasdiqlashi kerak. Nomni shu yerda o'zgartiring.
-// (Bazada "Xorazmiy" nomli loyiha topilmadi; egasi taklif qilgan nom ishlatilmoqda.)
+// Video kartochkasidagi yozuv — aniq loyiha nomi qo'yilmaydi (egasi: "nomlash kerak emas")
 const VIDEO_PROJECT_NAME: Record<string, string> = {
-  uz: 'Al-Xorazmiy massivi',
-  ru: 'Массив Аль-Хорезми',
-  en: 'Al-Khwarizmi district',
+  uz: 'Zamonaviy turar-joy majmuasi',
+  ru: 'Современный жилой комплекс',
+  en: 'Modern residential complex',
 };
 
 const AUTO_MS = 3800; // foydalanuvchi tegmaguncha bosqichlar o'zi almashadi
