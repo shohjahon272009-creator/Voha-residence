@@ -15,13 +15,17 @@ import { hashPassword } from './password';
 
 type Row = Record<string, unknown>;
 type RunResult = { changes: number; lastInsertRowid: number | bigint | undefined };
+export type BatchStmt = { sql: string; args: unknown[] };
 
 interface Backend {
   all(sql: string, args: unknown[]): Promise<Row[]>;
   get(sql: string, args: unknown[]): Promise<Row | undefined>;
   run(sql: string, args: unknown[]): Promise<RunResult>;
   exec(sql: string): Promise<void>;
+  batch(stmts: BatchStmt[]): Promise<number[]>;
 }
+
+const BATCH_CHUNK = 100;
 
 const globalForDb = globalThis as unknown as { __qurilishBackend?: Promise<Backend> };
 
@@ -48,6 +52,14 @@ async function makeTursoBackend(): Promise<Backend> {
     async exec(sql) {
       await c.executeMultiple(sql);
     },
+    async batch(stmts) {
+      const changes: number[] = [];
+      for (let i = 0; i < stmts.length; i += BATCH_CHUNK) {
+        const part = stmts.slice(i, i + BATCH_CHUNK).map((st) => ({ sql: st.sql, args: norm(st.args) }));
+        for (const r of await c.batch(part, 'write')) changes.push(Number(r.rowsAffected));
+      }
+      return changes;
+    },
   };
 }
 
@@ -69,6 +81,8 @@ async function makeReplicaBackend(): Promise<Backend> {
   await c.sync();
   // Yozuvdan keyin darhol tortamiz — admin saqlab, sahifani yangilaganda eski ma'lumot ko'rinmasin
   const pull = () => c.sync().catch(() => {});
+  let httpBackend: Promise<Backend> | undefined;
+  const http = () => (httpBackend ??= makeTursoBackend());
   const norm = (a: unknown[]) => a.map((x) => (x === undefined ? null : x)) as InArgs;
   return {
     async all(sql, args) {
@@ -88,6 +102,15 @@ async function makeReplicaBackend(): Promise<Backend> {
     async exec(sql) {
       await c.executeMultiple(sql);
       await pull();
+    },
+    // Ommaviy yozuv. Replica'ning yozish va sync() chaqiruvlari Node oqimini to'sadi (sync'da timeout ham yo'q):
+    // yuzlab yozuvda har biridan keyin sync sayt so'rovlarini to'xtatib qo'yardi. Shuning uchun yozuv HTTP
+    // orqali (oqimni to'smaydi) va oxirida bitta sync.
+    async batch(stmts) {
+      if (!stmts.length) return [];
+      const changes = await (await http()).batch(stmts);
+      await pull();
+      return changes;
     },
   };
 }
@@ -119,6 +142,10 @@ async function makeLocalBackend(): Promise<Backend> {
       };
     },
     async exec(sql) { bs.exec(sql); },
+    async batch(stmts) {
+      const tx = bs.transaction(() => stmts.map((st) => Number(bs.prepare(st.sql).run(...st.args).changes)));
+      return tx() as number[];
+    },
   };
 }
 
@@ -284,6 +311,8 @@ const db = {
     };
   },
   exec: async (sql: string) => (await getBackend()).exec(sql),
+  /** Ko'p yozuvni bir yo'la yozadi. Qaytaradi: har bir yozuv o'zgartirgan qatorlar soni. */
+  batch: async (stmts: BatchStmt[]) => (await getBackend()).batch(stmts),
 };
 
 export default db;

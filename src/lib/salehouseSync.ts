@@ -1,4 +1,4 @@
-import db from './db';
+import db, { type BatchStmt } from './db';
 import { fetchSaleHouseInventory, salehouseFixture, type ShApartment, type ShBlock, type ShStatus } from './salehouse';
 
 /*
@@ -166,42 +166,46 @@ export async function applyReport(report: SyncReport): Promise<number> {
   }
   await save('_salehouse_map', JSON.stringify(map));
 
-  // 2) Yangi xonadonlar
+  // Qolgan yozuvlar bitta to'plamda (db.batch): sayt yozish davomida to'xtab qolmaydi
+  const stmts: BatchStmt[] = [];
+
+  // 2) Yangi xonadonlar. Oradagi ikkinchi import bilan takrorlanmasin
+  const key = (projectId: unknown, number: unknown) => `${projectId}|${String(number ?? '').trim().toLowerCase()}`;
+  const existing = await db.prepare('SELECT project_id, number FROM apartments').all() as { project_id: number; number: string }[];
+  const taken = new Set(existing.map((a) => key(a.project_id, a.number)));
   for (const c of report.creates || []) {
     const pid = projectOf.get(c.blockId);
-    if (!pid) continue;
-    // Oradagi ikkinchi import bilan takrorlanmasin
-    const exists = await db.prepare('SELECT id FROM apartments WHERE project_id = ? AND LOWER(TRIM(number)) = LOWER(TRIM(?))').get(pid, c.number);
-    if (exists) continue;
-    await db.prepare('INSERT INTO apartments (project_id, floor, number, rooms, area, status) VALUES (?, ?, ?, ?, ?, ?)')
-      .run(pid, c.floor, c.number, c.rooms, c.area, c.status);
-    n++;
+    if (!pid || taken.has(key(pid, c.number))) continue;
+    taken.add(key(pid, c.number));
+    stmts.push({
+      sql: 'INSERT INTO apartments (project_id, floor, number, rooms, area, status) VALUES (?, ?, ?, ?, ?, ?)',
+      args: [pid, c.floor, c.number, c.rooms, c.area, c.status],
+    });
   }
 
   // 3) Qavat / xona / maydon
   for (const u of report.updates || []) {
-    const r = await db.prepare('UPDATE apartments SET floor = COALESCE(?, floor), rooms = COALESCE(?, rooms), area = COALESCE(?, area) WHERE id = ?')
-      .run(u.floor, u.rooms, u.area, u.aptId);
-    n += Number(r.changes) || 0;
+    stmts.push({
+      sql: 'UPDATE apartments SET floor = COALESCE(?, floor), rooms = COALESCE(?, rooms), area = COALESCE(?, area) WHERE id = ?',
+      args: [u.floor, u.rooms, u.area, u.aptId],
+    });
   }
 
   // 4) Holatlar ("WHERE status = eski" — oradagi qo'lda o'zgarishni bosib ketmaydi)
   for (const c of report.changes) {
-    const r = await db.prepare('UPDATE apartments SET status = ? WHERE id = ? AND status = ?').run(c.to, c.aptId, c.from);
-    n += Number(r.changes) || 0;
+    stmts.push({ sql: 'UPDATE apartments SET status = ? WHERE id = ? AND status = ?', args: [c.to, c.aptId, c.from] });
   }
   for (const h of report.hides || []) {
-    const r = await db.prepare("UPDATE apartments SET status = 'Band' WHERE id = ? AND status = ?").run(h.aptId, h.from);
-    n += Number(r.changes) || 0;
+    stmts.push({ sql: "UPDATE apartments SET status = 'Band' WHERE id = ? AND status = ?", args: [h.aptId, h.from] });
   }
 
   // 5) Sale House'da yo'q loyihalar — topshirilgan
   for (const p of report.retire || []) {
-    const r = await db.prepare("UPDATE projects SET status = 'Topshirilgan' WHERE id = ? AND COALESCE(status, '') <> 'Topshirilgan'").run(p.projectId);
-    n += Number(r.changes) || 0;
-    const a = await db.prepare("UPDATE apartments SET status = 'Band' WHERE project_id = ? AND status <> 'Band'").run(p.projectId);
-    n += Number(a.changes) || 0;
+    stmts.push({ sql: "UPDATE projects SET status = 'Topshirilgan' WHERE id = ? AND COALESCE(status, '') <> 'Topshirilgan'", args: [p.projectId] });
+    stmts.push({ sql: "UPDATE apartments SET status = 'Band' WHERE project_id = ? AND status <> 'Band'", args: [p.projectId] });
   }
+
+  n += (await db.batch(stmts)).reduce((sum, c) => sum + c, 0);
 
   const summary = JSON.stringify({ at: report.at, applied: n, changes: reportSize(report), notOnSite: report.creates?.length || 0 });
   await save('_salehouse_last_sync', summary);
