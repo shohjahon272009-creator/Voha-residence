@@ -1,7 +1,9 @@
 'use server';
 
+import { after } from 'next/server';
 import db from '@/lib/db';
 import { clientIp } from '@/lib/clientIp';
+import { sendLeadToAmo, type AmoLead } from '@/lib/amocrm';
 
 /*
   Saytdagi ommaviy formalar (murojaat, narxni bilish).
@@ -53,6 +55,18 @@ async function notifyTelegram(text: string) {
   }).catch(e => console.error("Telegram error:", e));
 }
 
+// Mijoz amoCRM javobini kutmaydi: ariza bazada, yuborish javobdan keyin. Tushmasa — Telegram'ga ogohlantirish
+function pushToAmo(lead: AmoLead) {
+  after(async () => {
+    if (await sendLeadToAmo(lead)) return;
+    await notifyTelegram(`⚠️ *Ariza amoCRM'ga tushmadi*
+
+👤 *Ism:* ${md(lead.name)}
+📞 *Telefon:* ${lead.phone}
+💬 ${md(lead.note)}`);
+  });
+}
+
 export async function submitContact(formData: FormData) {
   const name = clip(formData.get('name'), 100);
   const message = clip(formData.get('message'), 1000);
@@ -72,6 +86,7 @@ export async function submitContact(formData: FormData) {
     `).run(name, phone, message, ip);
 
     await notifyTelegram(`🔔 *Yangi xabar (Saytdan)*\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n💬 *Xabar:* ${md(message) || "Yo'q"}`);
+    pushToAmo({ title: `Sayt: murojaat — ${name}`, name, phone, note: message });
 
     return { success: true };
   } catch (error) {
@@ -112,6 +127,7 @@ export async function submitPriceRequest(formData: FormData) {
         VALUES (?, ?, ?, ?, 'Yangi', ?)
       `).run(name, phone, paymentType, busyNote, ipBusy);
       await notifyTelegram(`🏠 *Ko'rishga yozilish (xonadon band bo'lib qolgan)*\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n💬 *Izoh:* ${md(busyNote)}`);
+      pushToAmo({ title: `Sayt: ${paymentType} — ${name}`, name, phone, note: busyNote });
       return { success: true };
     }
 
