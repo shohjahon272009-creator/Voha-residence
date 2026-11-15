@@ -59,11 +59,7 @@ async function notifyTelegram(text: string) {
 function pushToAmo(lead: AmoLead) {
   after(async () => {
     if (await sendLeadToAmo(lead)) return;
-    await notifyTelegram(`⚠️ *Ariza amoCRM'ga tushmadi*
-
-👤 *Ism:* ${md(lead.name)}
-📞 *Telefon:* ${lead.phone}
-💬 ${md(lead.note)}`);
+    await notifyTelegram(`⚠️ *Ariza amoCRM'ga tushmadi*\n\n👤 *Ism:* ${md(lead.name)}\n📞 *Telefon:* ${lead.phone}\n💬 ${md(lead.note)}`);
   });
 }
 
@@ -143,6 +139,7 @@ export async function submitPriceRequest(formData: FormData) {
     const aptInfo = `${aptDetails.project_name}, №${aptDetails.number} xonadon`;
     const title = viewing ? "🏠 *Ko'rishga yozilish (Uy tanlash o'yini)*" : "💰 *Yangi so'rov (Narxini bilish)*";
     await notifyTelegram(`${title}\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n🏢 *Xonadon:* ${md(aptInfo)}${message ? `\n💬 *Izoh:* ${md(message)}` : ''}`);
+    pushToAmo({ title: `Sayt: ${paymentType} — ${aptInfo}`, name, phone, note: [paymentType, aptInfo, message].filter(Boolean).join('\n') });
 
     return { success: true };
   } catch (error) {
