@@ -50,8 +50,12 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     .slice(0, 8)
     .map((p) => ({ image: p.main_image as string, name: p.name_uz, id: p.id, city: p.city || '' }));
 
-  // Xonadon brauzeri uchun — narxlar mijozga yuborilmaydi (xavfsizlik)
-  const browserApartments = (await getApartments()).map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
+  // Xonadon tanlovchi uchun — faqat sotuvdagi bloklar va faqat kerakli maydonlar.
+  // Narx, izoh va topshirilgan bloklar xonadonlari brauzerga umuman yuborilmaydi.
+  const sellingIds = new Set(selling.map((p) => p.id));
+  const browserApartments = (await getApartments())
+    .filter((a) => sellingIds.has(a.project_id))
+    .map((a) => ({ id: a.id, project_id: a.project_id, floor: a.floor, number: a.number, rooms: a.rooms, area: a.area, status: a.status, plan_image: a.plan_image, image: a.image, price_cash: 0, price_installment: 0, orientation: '', note: '' }));
 
   // Hero paneli: sotuvdagi bloklar va ulardagi bo'sh xonadonlar — tanlovchi bilan bir xil hisob
   // (bir manba: buildModel; takroriy yozuvlar bir marta sanaladi)
