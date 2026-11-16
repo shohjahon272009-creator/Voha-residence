@@ -121,7 +121,10 @@ async function makeLocalBackend(): Promise<Backend> {
   const fs = require('fs');
   const Database = require('better-sqlite3');
   /* eslint-enable @typescript-eslint/no-require-imports */
-  let dbPath = path.join(process.cwd(), 'qurilish.db');
+  // DB_LOCAL=<fayl yo'li> — ishlab chiqishda jonli Turso o'rniga ko'rsatilgan sqlite faylni ishlatadi
+  // (.env.local jonli bazaga ulangan, lokal sinovda unga yozmaslik uchun). DB_LOCAL=1 — qurilish.db.
+  const local = process.env.DB_LOCAL;
+  let dbPath = local && local !== '1' ? local : path.join(process.cwd(), 'qurilish.db');
   if (process.env.VERCEL) {
     try {
       const tmp = path.join('/tmp', 'qurilish.db');
@@ -152,7 +155,7 @@ async function makeLocalBackend(): Promise<Backend> {
 function getBackend(): Promise<Backend> {
   if (globalForDb.__qurilishBackend) return globalForDb.__qurilishBackend;
   const p = (async () => {
-    const backend = !process.env.TURSO_DATABASE_URL
+    const backend = !process.env.TURSO_DATABASE_URL || process.env.DB_LOCAL
       ? await makeLocalBackend()
       : process.env.TURSO_REPLICA_PATH
         ? await makeReplicaBackend().catch((e) => {
@@ -215,7 +218,63 @@ const TABLE_DDLS = [
     role TEXT CHECK(role IN ('superadmin', 'menejer', 'operator'))
   );`,
   `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT);`,
+  // 3D tur: bino pinlari. project_id unique EMAS — bir loyiha bir nechta blokka ulanishi mumkin.
+  // mesh_name — .glb ichidagi bino obyekti nomi (brend rangda yoritish uchun), x/y/z — pin
+  // koordinatasi, cam_* — bino tanlanganda kamera uchib boradigan nuqta (model birligida).
+  `CREATE TABLE IF NOT EXISTS scene_pins (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_id INTEGER NOT NULL,
+    mesh_name TEXT,
+    x REAL, y REAL, z REAL,
+    cam_x REAL, cam_y REAL, cam_z REAL,
+    label_uz TEXT, label_ru TEXT, label_en TEXT,
+    sort_order INTEGER DEFAULT 0,
+    FOREIGN KEY (project_id) REFERENCES projects(id)
+  );`,
 ];
+
+/*
+  Placeholder mavze modeli (public/3d/placeholder.glb, scripts/make-placeholder-glb.mjs bilan yasaladi):
+  bloklar `blok_<n>` nomli, panjara shaklida — ROWS qator, COLS ustun. Blok markazi va pin/kamera
+  nuqtalari shu konstantalardan hisoblanadi; skript ham xuddi shu joylashuvni chizadi.
+  Haqiqiy .glb kelganda pinlar admin'dan o'sha modelning koordinatalariga ko'chiriladi.
+*/
+export const PLACEHOLDER_GRID = { cols: 7, rows: 4, stepX: 46, stepZ: 36, w: 34, d: 14, floorH: 3 };
+export function placeholderBlock(n: number) {
+  const { cols, rows, stepX, stepZ, floorH } = PLACEHOLDER_GRID;
+  const i = Math.max(0, n - 1);
+  const col = i % cols;
+  const row = Math.floor(i / cols) % rows;
+  const floors = 9 + ((i * 7) % 4); // 9–12 qavat (skript bilan bir xil formula)
+  const h = floors * floorH;
+  const x = (col - (cols - 1) / 2) * stepX;
+  const z = (row - (rows - 1) / 2) * stepZ;
+  // Kamera blokka mavzening tashqi tomonidan qaraydi (oldida boshqa qator to'sib qolmasin)
+  return { x, z, h, floors, pin: { x, y: h + 4, z }, cam: { x: x + 38, y: h + 40, z: z + (z < 0 ? -56 : 56) } };
+}
+
+// Birinchi ishga tushishda, FAQAT scene_pins bo'sh bo'lsa: blok raqami (block_no) bor loyihalar
+// placeholder modelning `blok_<n>` meshlariga ulanadi. Admin keyin "3D pinlar" bo'limida o'zgartiradi.
+async function seedScenePins(b: Backend): Promise<void> {
+  const n = await b.get('SELECT count(*) AS c FROM scene_pins', []);
+  if (Number((n as Row)?.c) > 0) return;
+  const projects = (await b.all(
+    'SELECT id, block_no FROM projects WHERE block_no IS NOT NULL AND block_no > 0 ORDER BY block_no',
+    [],
+  )) as { id: number; block_no: number }[];
+  const maxBlocks = PLACEHOLDER_GRID.cols * PLACEHOLDER_GRID.rows;
+  let order = 0;
+  for (const p of projects) {
+    const no = Number(p.block_no);
+    if (!Number.isInteger(no) || no < 1 || no > maxBlocks) continue;
+    const g = placeholderBlock(no);
+    await b.run(
+      `INSERT INTO scene_pins (project_id, mesh_name, x, y, z, cam_x, cam_y, cam_z, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [p.id, `blok_${no}`, g.pin.x, g.pin.y, g.pin.z, g.cam.x, g.cam.y, g.cam.z, order++],
+    );
+  }
+}
 
 // Ustun yo'q bo'lsa qo'shadi; yangi qo'shilgan bo'lsa true qaytaradi (bir martalik to'ldirish uchun)
 async function ensureColumn(b: Backend, table: string, column: string, definition: string): Promise<boolean> {
@@ -265,6 +324,7 @@ async function initSchema(b: Backend): Promise<void> {
   }
   // Spamga qarshi limit uchun — so'rov qaysi IP'dan kelgani
   await ensureColumn(b, 'bookings', 'ip', 'TEXT');
+  await seedScenePins(b);
 
   const users = await b.get('SELECT count(*) as count FROM users', []);
   if (Number((users as Row)?.count) > 0) return;
