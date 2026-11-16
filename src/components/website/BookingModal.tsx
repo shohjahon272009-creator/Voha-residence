@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { X, CheckCircle, Loader2 } from 'lucide-react';
 import { Apartment } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
@@ -50,6 +50,26 @@ export default function BookingModal({
   const hydrated = useHydrated();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const dialogRef = useRef<HTMLDivElement>(null);
+  // Ikki marta bosilsa ham bitta so'rov ketadi (state yangilanguncha ham)
+  const sending = useRef(false);
+
+  // Fokus dialog ichiga o'tadi, yopilganda ochgan tugmaga qaytadi; Tab dialogdan chiqmaydi
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    const root = dialogRef.current;
+    (root?.querySelector<HTMLElement>('input') || root?.querySelector<HTMLElement>('button'))?.focus();
+    const onTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !root) return;
+      const items = [...root.querySelectorAll<HTMLElement>('button, input, textarea, a[href]')].filter((el) => !el.hasAttribute('disabled'));
+      if (!items.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', onTab);
+    return () => { document.removeEventListener('keydown', onTab); opener?.focus?.(); };
+  }, []);
 
   // Escape bilan yopish + orqa sahifa scroll'ini to'xtatish (Lenis ham)
   useEffect(() => {
@@ -61,6 +81,8 @@ export default function BookingModal({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (sending.current) return;
+    sending.current = true;
     setLoading(true);
     setError('');
     const formData = new FormData(e.currentTarget);
@@ -74,15 +96,16 @@ export default function BookingModal({
       setError(t.err);
     } finally {
       setLoading(false);
+      sending.current = false;
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center p-4 sm:p-6 overflow-y-auto" role="dialog" aria-modal="true" aria-label={t.title}>
+    <div ref={dialogRef} className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center p-4 sm:p-6 overflow-y-auto" role="dialog" aria-modal="true" aria-label={t.title}>
       <div className="fixed inset-0 bg-primary/60" onClick={onClose} />
 
       <div className="relative w-full max-w-lg my-auto bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
-        <button onClick={onClose} aria-label={t.close} className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 text-gray-400 hover:text-primary transition-colors">
+        <button onClick={onClose} aria-label={t.close} className="absolute top-3 right-3 sm:top-5 sm:right-5 w-11 h-11 flex items-center justify-center text-ink-muted hover:text-primary transition-colors">
           <X size={24} />
         </button>
 
@@ -92,7 +115,7 @@ export default function BookingModal({
               <CheckCircle size={48} />
             </div>
             <h3 className="text-2xl font-bold text-primary mb-4">{t.done}</h3>
-            <p className="text-gray-400 mb-8">{t.doneSub}</p>
+            <p className="text-ink-muted mb-8" role="status">{t.doneSub}</p>
             <button onClick={onClose} className="px-10 py-4 bg-primary text-white font-bold rounded-xl w-full">
               {t.close}
             </button>
@@ -100,9 +123,9 @@ export default function BookingModal({
         ) : (
           <form onSubmit={handleSubmit} method="post" className="p-6 sm:p-10">
             <h3 className="text-2xl font-bold text-primary mb-2 pr-8">{t.title}</h3>
-            <p className="text-gray-400 text-sm mb-6 sm:mb-8">{t.sub(String(apartment.number), apartment.floor)}</p>
+            <p className="text-ink-muted text-sm mb-6 sm:mb-8">{t.sub(String(apartment.number), apartment.floor)}</p>
 
-            {error && <div className="mb-4 p-3 bg-danger/10 text-danger rounded-xl text-sm font-medium">{error}</div>}
+            {error && <div role="alert" className="mb-4 p-3 bg-st-error-bg text-st-error rounded-xl text-sm font-medium">{error}</div>}
 
             <div className="space-y-5">
               <div>
@@ -121,7 +144,7 @@ export default function BookingModal({
                 <button
                   disabled={loading || !hydrated}
                   type="submit"
-                  className="w-full py-4 bg-accent text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-accent/20 disabled:opacity-50 hover:bg-primary transition-all"
+                  className="w-full min-h-[52px] py-4 bg-cta text-cta-ink font-bold rounded-xl flex items-center justify-center gap-2 shadow-v-md disabled:opacity-60 hover:brightness-105 active:scale-[0.99] transition duration-v-fast ease-v"
                 >
                   {loading ? <Loader2 className="animate-spin" /> : t.send}
                 </button>

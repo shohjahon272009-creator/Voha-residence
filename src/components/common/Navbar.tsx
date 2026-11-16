@@ -19,7 +19,7 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export default function Navbar({ lang, phone = '+998 91 011 66 66' }: { lang: Locale; phone?: string }) {
+export default function Navbar({ lang, phone = '+998 91 011 66 66', ctaHref: ctaTarget }: { lang: Locale; phone?: string; ctaHref?: string }) {
   const tel = 'tel:' + phone.replace(/[^\d+]/g, '');
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -65,6 +65,11 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66' }: { lang: Lo
     return segments.join('/');
   };
 
+  // Yagona asosiy CTA — xonadon tanlash bo'limi (bosh sahifadagi #xonadon-tanlash)
+  const cta = { uz: 'Xonadon tanlash', ru: 'Выбрать квартиру', en: 'Choose an apartment' }[lang] || 'Xonadon tanlash';
+  // "Xonadonlar" sahifasida tanlovchi shu sahifaning o'zida — bosh sahifaga olib ketmaymiz
+  const ctaHref = pathname === `/${lang}/apartments` ? `/${lang}/apartments#xonadon-tanlash` : ctaTarget || `/${lang}#xonadon-tanlash`;
+
   const navLinks = [
     { href: `/${lang}/apartments`, label: dict.nav.apartments },
     { href: `/${lang}/about`, label: dict.nav.about },
@@ -100,7 +105,7 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66' }: { lang: Lo
                 href={link.href}
                 className={cn(
                   "group relative whitespace-nowrap text-[14px] xl:text-[15px] font-bold transition-colors hover:text-accent",
-                  active ? "text-accent" : isNavbarWhite ? "text-[#014242]" : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                  active ? (isNavbarWhite ? "text-accent-text" : "text-accent") : isNavbarWhite ? "text-[#014242]" : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
                 )}
               >
                 {link.label}
@@ -126,9 +131,9 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66' }: { lang: Lo
           </div>
           
           <div className="flex items-center gap-2">
-             <a href={tel} className="whitespace-nowrap px-5 xl:px-6 py-2.5 bg-gradient-to-r from-accent to-[#c47e4d] text-white rounded-full text-sm font-bold shadow-lg shadow-accent/30 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-accent/40 transition-all">
-                {dict.nav.order_call}
-             </a>
+             <Link href={ctaHref} className="whitespace-nowrap px-5 xl:px-6 py-2.5 min-h-[44px] inline-flex items-center bg-cta text-cta-ink rounded-full text-sm font-bold shadow-v-md hover:brightness-105 active:scale-[0.98] transition duration-v-fast ease-v">
+                {cta}
+             </Link>
              <div className="flex gap-1 ml-2 xl:ml-4">
                 {['uz', 'ru', 'en'].map((l) => (
                   <Link 
@@ -136,7 +141,7 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66' }: { lang: Lo
                     href={getLocalizedHref(l)}
                     className={cn(
                       'text-[13px] uppercase font-bold px-2 py-1 rounded transition-colors',
-                      lang === l ? 'bg-accent text-white shadow-sm' : (isNavbarWhite ? 'text-[#014242] hover:text-accent' : 'text-white hover:text-accent drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]')
+                      lang === l ? 'bg-cta text-cta-ink shadow-sm' : (isNavbarWhite ? 'text-[#014242] hover:text-accent' : 'text-white hover:text-accent drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]')
                     )}
                   >
                     {l}
@@ -175,6 +180,9 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66' }: { lang: Lo
           exit={{ clipPath: 'inset(0 0 100% 0)' }}
           transition={{ duration: 0.7, ease: [0.77, 0, 0.18, 1] }}
         >
+          <Link href={ctaHref} onClick={() => setIsOpen(false)} className="mb-10 inline-flex items-center justify-center min-h-[52px] rounded-full bg-cta text-cta-ink font-bold text-lg">
+            {cta}
+          </Link>
           <nav className="flex flex-col gap-3">
             {navLinks.map((link, i) => (
               <div key={link.href} className="overflow-hidden">
@@ -214,7 +222,7 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66' }: { lang: Lo
                     href={getLocalizedHref(l)}
                     className={cn(
                       'text-sm uppercase font-bold px-4 py-2 rounded-full border',
-                      lang === l ? 'bg-accent border-accent text-white' : 'border-white/20 text-white/60'
+                      lang === l ? 'bg-cta border-cta text-cta-ink' : 'border-white/20 text-white/70'
                     )}
                     onClick={() => setIsOpen(false)}
                   >
@@ -224,9 +232,9 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66' }: { lang: Lo
              </div>
           </motion.div>
           <button
-            className="absolute top-6 right-6 text-white"
+            className="absolute top-4 right-4 w-11 h-11 flex items-center justify-center text-white"
             onClick={() => setIsOpen(false)}
-            aria-label="Yopish"
+            aria-label={lang === 'ru' ? 'Закрыть меню' : lang === 'en' ? 'Close menu' : 'Menyuni yopish'}
           >
             <X size={32} />
           </button>

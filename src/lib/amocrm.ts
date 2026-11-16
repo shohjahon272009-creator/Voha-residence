@@ -51,6 +51,38 @@ async function findContactId(call: NonNullable<ReturnType<typeof client>>, phone
   return match?.id ?? null;
 }
 
+export type AmoStage = { id: number; name: string; n: number };
+export type AmoFunnel =
+  | { state: 'off' }
+  | { state: 'error'; message: string }
+  | { state: 'ok'; pipeline: string; stages: AmoStage[]; total: number };
+
+/**
+ * Saytdan ("Sayt" tegi) shu davrda kelgan lidlar amoCRM voronkasining qaysi bosqichida turibdi.
+ * Faqat o'qiydi. Manba — amoCRM; sayt bazasidagi arizalar bilan farq qilishi mumkin (masalan, API yopiq bo'lgan kunlar).
+ */
+export async function siteLeadFunnel(days: number): Promise<AmoFunnel> {
+  const call = client();
+  if (!call) return { state: 'off' };
+  try {
+    const from = Math.floor(Date.now() / 1000) - days * 86400;
+    const leads: { status_id: number; pipeline_id: number; name: string; _embedded?: { tags?: { name: string }[] } }[] = [];
+    for (let page = 1; page <= 10; page++) {
+      const body = (await call('GET', `/api/v4/leads?filter[created_at][from]=${from}&limit=250&page=${page}`)) as { _embedded?: { leads?: typeof leads }; _links?: { next?: unknown } } | null;
+      leads.push(...(body?._embedded?.leads || []));
+      if (!body?._links?.next) break;
+    }
+    const site = leads.filter((l) => l.name?.startsWith('Sayt:') || l._embedded?.tags?.some((t) => t.name === 'Sayt'));
+    const pipes = (await call('GET', '/api/v4/leads/pipelines')) as { _embedded: { pipelines: { id: number; name: string; is_main: boolean; _embedded: { statuses: { id: number; name: string; sort: number }[] } }[] } };
+    const main = pipes._embedded.pipelines.find((p) => p.is_main) || pipes._embedded.pipelines[0];
+    const stages = [...main._embedded.statuses].sort((a, b) => a.sort - b.sort)
+      .map((s) => ({ id: s.id, name: s.id === 142 ? 'Muvaffaqiyatli' : s.id === 143 ? 'Yopilgan (sotilmadi)' : s.name, n: site.filter((l) => l.status_id === s.id).length }));
+    return { state: 'ok', pipeline: main.name, stages, total: site.length };
+  } catch (e) {
+    return { state: 'error', message: (e as Error).message.replace(/Bearer\s+\S+/g, '') };
+  }
+}
+
 /** Lidni yuboradi. Qaytaradi: false — lid amoCRM'ga tushmadi (chaqiruvchi ogohlantiradi). */
 export async function sendLeadToAmo(lead: AmoLead): Promise<boolean> {
   const call = client();

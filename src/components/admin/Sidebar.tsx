@@ -37,7 +37,7 @@ export default function Sidebar({
   const pathname = usePathname();
 
   const menuItems = [
-    { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Sayt statistikasi' },
     { href: '/admin/projects', icon: Building2, label: 'Loyihalar' },
     { href: '/admin/apartments', icon: Home, label: 'Xonadonlar' },
     { href: '/admin/3d', icon: Boxes, label: '3D pinlar' },
