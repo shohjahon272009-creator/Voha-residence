@@ -14,8 +14,7 @@ import {
   Settings,
   MessageSquare,
   LogOut,
-  RefreshCw,
-  Boxes
+  RefreshCw
 } from 'lucide-react';
 import VohaLogo from '@/components/common/VohaLogo';
 import { clsx, type ClassValue } from 'clsx';
@@ -37,10 +36,9 @@ export default function Sidebar({
   const pathname = usePathname();
 
   const menuItems = [
-    { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Sayt statistikasi' },
+    { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/admin/projects', icon: Building2, label: 'Loyihalar' },
     { href: '/admin/apartments', icon: Home, label: 'Xonadonlar' },
-    { href: '/admin/3d', icon: Boxes, label: '3D pinlar' },
     { href: '/admin/inquiries', icon: MessageSquare, label: 'Murojaatlar', badge: newInquiriesCount },
     { href: '/admin/news', icon: Newspaper, label: 'Yangiliklar' },
     { href: '/admin/salehouse', icon: RefreshCw, label: 'Sale House' },

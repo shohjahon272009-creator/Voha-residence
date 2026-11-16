@@ -5,7 +5,7 @@
  
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Locale } from '@/lib/dictionaries';
 import { MapPin, Phone, Clock, Send, CheckCircle2 } from 'lucide-react';
 import { submitContact } from '@/lib/contactActions';
@@ -13,7 +13,6 @@ import { useHydrated } from '@/lib/useHydrated';
 
 export default function ContactSection({ lang, phone, address, hours }: { lang: Locale; phone?: string; address?: string; hours?: string }) {
   const [loading, setLoading] = useState(false);
-  const sending = useRef(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   // JS yuklanmaguncha yuborib bo'lmaydi — aks holda brauzer formani GET qilib, ism/telefonni URL'ga yozardi
@@ -97,8 +96,6 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (sending.current) return; // ikki marta bosish — bitta ariza
-    sending.current = true;
     setLoading(true);
     setError('');
     
@@ -118,7 +115,6 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
       setError(t.errorMsg);
     } finally {
       setLoading(false);
-      sending.current = false;
     }
   };
 
@@ -200,7 +196,7 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
                     <label className="text-xs font-bold text-white/70 uppercase tracking-wider">{t.msgPlaceholder}</label>
                     <textarea name="message" rows={4} className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors resize-none" placeholder={t.msgValue}></textarea>
                  </div>
-                 <button disabled={loading || !hydrated} type="submit" className="w-full min-h-[52px] py-4 bg-cta text-cta-ink font-bold rounded-xl hover:brightness-105 active:scale-[0.99] transition duration-v-fast ease-v flex justify-center items-center gap-3 disabled:opacity-60">
+                 <button disabled={loading || !hydrated} type="submit" className="w-full py-4 bg-accent text-primary font-bold rounded-xl hover:bg-white transition-all shadow-[0_0_20px_rgba(250,218,165,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] flex justify-center items-center gap-3 disabled:opacity-50">
                     {loading ? (lang === 'ru' ? 'Отправка…' : lang === 'en' ? 'Sending…' : 'Yuborilmoqda…') : t.send} {!loading && <Send size={18} />}
                  </button>
               </form>

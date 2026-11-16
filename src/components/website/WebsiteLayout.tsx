@@ -6,11 +6,13 @@ import React from 'react';
 import Link from 'next/link';
 import Navbar from '../common/Navbar';
 import VohaLogo from '@/components/common/VohaLogo';
+import IntroScreen from './IntroScreen';
 import SmoothScroll from './SmoothScroll';
+import ExitIntent from './ExitIntent';
+import CinemaEnhancer from './CinemaEnhancer';
 import { FooterCTA, FooterBigType } from './FooterCinema';
 import { Locale } from '@/lib/dictionaries';
-import { getContacts, pickerHref, telHref } from '@/lib/contacts';
-import { getPublicSettings } from '@/lib/settings';
+import { getContacts, telHref } from '@/lib/contacts';
 
 export default async function WebsiteLayout({
   children,
@@ -22,11 +24,10 @@ export default async function WebsiteLayout({
   companyName?: string;
 }) {
   const contacts = await getContacts();
-  const ctaHref = pickerHref(lang, await getPublicSettings());
 
   const t = {
     uz: {
-      desc: "Urganch shahridagi turar-joy bloklari: bo'sh xonadonlar, to'lov tartibi va sotuv ofisi bilan aloqa.",
+      desc: "O'zbekistondagi eng yaxshi qurilish loyihalari. Sifat, ishonch va zamonaviy yechimlar.",
       sections: "Bo'limlar",
       project: "Loyiha",
       about: "Biz haqimizda",
@@ -38,7 +39,7 @@ export default async function WebsiteLayout({
       links: "Foydali havolalar"
     },
     ru: {
-      desc: "Жилые блоки в Ургенче: свободные квартиры, порядок оплаты и связь с офисом продаж.",
+      desc: "Лучшие строительные проекты в Узбекистане. Качество, доверие и современные решения.",
       sections: "Разделы",
       project: "Проект",
       about: "О нас",
@@ -50,7 +51,7 @@ export default async function WebsiteLayout({
       links: "Полезные ссылки"
     },
     en: {
-      desc: "Residential blocks in Urgench: available apartments, payment terms and contact with the sales office.",
+      desc: "The best construction projects in Uzbekistan. Quality, trust and modern solutions.",
       sections: "Sections",
       project: "Project",
       about: "About Us",
@@ -62,7 +63,7 @@ export default async function WebsiteLayout({
       links: "Useful Links"
     }
   }[lang] || {
-      desc: "Urganch shahridagi turar-joy bloklari: bo'sh xonadonlar, to'lov tartibi va sotuv ofisi bilan aloqa.",
+      desc: "O'zbekistondagi eng yaxshi qurilish loyihalari. Sifat, ishonch va zamonaviy yechimlar.",
       sections: "Bo'limlar",
       project: "Loyiha",
       about: "Biz haqimizda",
@@ -77,10 +78,13 @@ export default async function WebsiteLayout({
   return (
     <div className="min-h-screen">
       <SmoothScroll />
-      <Navbar lang={lang} phone={contacts.phone} ctaHref={ctaHref} />
+      <CinemaEnhancer />
+      <IntroScreen />
+      <ExitIntent lang={lang} />
+      <Navbar lang={lang} phone={contacts.phone} />
       <main>{children}</main>
       <FooterCTA lang={lang} phone={contacts.phone} />
-      <footer id="site-footer" className="bg-primary text-white py-20 px-6 relative overflow-hidden">
+      <footer id="contact" className="bg-primary text-white py-20 px-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-px rule-accent" />
         <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
         <div className="max-container grid grid-cols-1 md:grid-cols-4 gap-12 relative z-10">
@@ -108,9 +112,9 @@ export default async function WebsiteLayout({
             <h4 className="font-bold mb-6">{t.sections}</h4>
             <ul className="space-y-4 text-white/60">
               <li><Link href={`/${lang}/apartments`} className="hover:text-white transition-colors">{t.apartments}</Link></li>
-              <li><Link href={`/${lang}/about`} className="hover:text-white transition-colors">{t.about}</Link></li>
-              <li><Link href={`/${lang}/projects`} className="hover:text-white transition-colors">{t.project}</Link></li>
-              <li><Link href={`/${lang}/news`} className="hover:text-white transition-colors">{t.news}</Link></li>
+              <li><Link href={`/${lang}#about`} className="hover:text-white transition-colors">{t.about}</Link></li>
+              <li><Link href={`/${lang}#projects`} className="hover:text-white transition-colors">{t.project}</Link></li>
+              <li><Link href={`/${lang}#news`} className="hover:text-white transition-colors">{t.news}</Link></li>
             </ul>
           </div>
           <div>
@@ -123,19 +127,15 @@ export default async function WebsiteLayout({
           </div>
         </div>
         <FooterBigType />
-        <div className="max-container mt-10 pt-10 border-t border-white/10 text-center text-white/70 text-sm relative z-10">
+        <div className="max-container mt-10 pt-10 border-t border-white/10 text-center text-white/40 text-sm relative z-10">
            {t.rights}
-           {/* Xodimlar uchun — mijoz navigatsiyasidan alohida */}
-           <Link href="/admin/login" rel="nofollow" className="ml-4 underline underline-offset-4 hover:text-white transition-colors">
-             {lang === 'ru' ? 'Вход для сотрудников' : lang === 'en' ? 'Staff login' : 'Xodimlar uchun kirish'}
-           </Link>
         </div>
       </footer>
 
       {/* Floating Call Button */}
       <a 
         href={telHref(contacts.phone)} 
-        className="call-fab md:hidden fixed bottom-5 right-5 z-40 w-14 h-14 md:w-16 md:h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(37,211,102,0.5)] hover:scale-110 hover:shadow-[0_8px_30px_rgba(37,211,102,0.7)] transition-all"
+        className="call-fab fixed bottom-5 right-5 md:bottom-8 md:right-8 z-40 w-14 h-14 md:w-16 md:h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(37,211,102,0.5)] hover:scale-110 hover:shadow-[0_8px_30px_rgba(37,211,102,0.7)] transition-all"
         aria-label={lang === 'ru' ? 'Позвонить' : lang === 'en' ? 'Call us' : 'Qo‘ng‘iroq qilish'}
       >
         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>

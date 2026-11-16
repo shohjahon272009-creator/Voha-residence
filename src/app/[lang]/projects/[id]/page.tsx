@@ -11,9 +11,7 @@ import BuySteps from '@/components/website/BuySteps';
 import { getPublicProjectBySlug, getApartments } from '@/lib/actions';
 import { Locale, getDictionary } from '@/lib/dictionaries';
 import { notFound } from 'next/navigation';
-import { MapPin, CheckCircle, Boxes } from 'lucide-react';
-import Link from 'next/link';
-import { hasScenePin } from '@/lib/scene';
+import { MapPin, CheckCircle } from 'lucide-react';
 import type { Metadata } from 'next';
 import { categoryLabel } from '@/lib/categories';
 import { getPublicSettings } from '@/lib/settings';
@@ -54,8 +52,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const apartments = await getApartments(parseInt(id));
 
   if (!project) return notFound();
-  // 3D turda bu loyihaga pin bo'lsa — "3D'da ko'rish" havolasi (sahna o'sha blokni ochadi)
-  const has3d = await hasScenePin(project.id);
 
   // SECURITY: strip real prices before the apartment data reaches the client bundle.
   // The public floor plan hides prices behind a "Narxini bilish" request, so the
@@ -126,14 +122,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         <div className="flex flex-wrap items-center gap-5 text-white/80 text-sm font-medium">
           <span className="flex items-center gap-2"><MapPin size={16} className="text-accent" /> {project.district}, {project.city}</span>
           <span className="flex items-center gap-2"><CheckCircle size={16} className="text-accent" /> {statusText}</span>
-          {has3d && (
-            <Link
-              href={`/${lang}/3d?project=${project.id}`}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-primary font-bold text-sm shadow-[0_8px_30px_rgba(209,142,91,0.4)] hover:bg-white transition-colors"
-            >
-              <Boxes size={16} /> {dict.tour3d.view3d}
-            </Link>
-          )}
         </div>
       </PageHero>
 

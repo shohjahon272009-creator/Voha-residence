@@ -1,43 +1,40 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
-import ComplexPicker from './picker/ComplexPicker';
-import AptPayment from './picker/AptPayment';
-import BookingModal from './BookingModal';
-import { Apartment, Project } from '@/lib/types';
+import React, { useState } from 'react';
+import ApartmentBrowser from './ApartmentBrowser';
+import MortgageCalculator from './MortgageCalculator';
+import { Apartment, Project, SelectedApartment } from '@/lib/types';
 import { Locale } from '@/lib/dictionaries';
 
-// Xonadon tanlash (majmua → blok → qavat → xonadon) + shu xonadon bo'yicha murojaat oynasi.
-// To'lov (serverda hisoblanadi) xonadon detalining o'zida ko'rinadi.
+// Xonadon tanlash + to'lov kalkulyatorini bitta holatga bog'laydi:
+// mijoz xonadonni tanlagach, uning to'lovi (serverda hisoblanadi) kalkulyatorda chiqadi.
 export default function ApartmentAndPayment({
   apartments,
   projects,
   lang,
   showSearch,
   showMortgage,
+  showLocations = true,
+  terms,
 }: {
   apartments: Apartment[];
   projects: Project[];
   lang: Locale;
   showSearch: boolean;
   showMortgage: boolean;
+  showLocations?: boolean;
+  terms?: { down: number; months: number; rate: number; mDown: number; mMonths: number };
 }) {
-  const [request, setRequest] = useState<Apartment | null>(null);
-  const pickerLang = lang === 'ru' || lang === 'en' ? lang : 'uz';
-  const renderPayment = useCallback((apt: Apartment) => <AptPayment aptId={apt.id} lang={pickerLang} />, [pickerLang]);
+  const [selected, setSelected] = useState<SelectedApartment | null>(null);
 
-  if (!showSearch) return null;
   return (
-    <div id="xonadon-tanlash">
-      <ComplexPicker
-        lang={pickerLang}
-        projects={projects}
-        apartments={apartments}
-        onRequest={setRequest}
-        renderPayment={showMortgage ? renderPayment : undefined}
-        suspendSheet={!!request}
-      />
-      {request && <BookingModal lang={lang} apartment={request} onClose={() => setRequest(null)} />}
-    </div>
+    <>
+      {showSearch && (
+        <ApartmentBrowser apartments={apartments} projects={projects} lang={lang} onSelect={setSelected} showLocations={showLocations} />
+      )}
+      {showMortgage && (
+        <MortgageCalculator lang={lang} selected={selected} onClearSelected={() => setSelected(null)} terms={terms} />
+      )}
+    </>
   );
 }

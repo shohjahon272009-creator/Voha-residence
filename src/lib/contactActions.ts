@@ -40,14 +40,6 @@ async function checkRateLimit(ip: string, phone: string): Promise<string | null>
   return null;
 }
 
-// Ikki marta bosish / qayta yuborish: shu raqamdan shu xonadonga 2 daqiqa ichida ariza bo'lsa — yangisi yozilmaydi
-async function isRepeat(phone: string, apartmentId: number | null): Promise<boolean> {
-  const row = await db.prepare(
-    `SELECT id FROM bookings WHERE client_phone = ? AND ${apartmentId ? 'apartment_id = ?' : 'apartment_id IS NULL'} AND created_at > datetime('now', '-2 minutes') LIMIT 1`,
-  ).get(...(apartmentId ? [phone, apartmentId] : [phone]));
-  return Boolean(row);
-}
-
 // Telegram Markdown belgilarini qochiradi — aks holda `_` yoki `*` bor ism xabarni buzadi
 const md = (s: string) => s.replace(/([_*`\[])/g, '\\$1');
 
@@ -82,7 +74,6 @@ export async function submitContact(formData: FormData) {
     const ip = await clientIp();
     const limited = await checkRateLimit(ip, phone);
     if (limited) return { success: false, error: limited };
-    if (await isRepeat(phone, null)) return { success: true };
 
     // Umumiy murojaat sifatida bookings jadvaliga yoziladi (apartment_id = NULL)
     await db.prepare(`
@@ -126,7 +117,6 @@ export async function submitPriceRequest(formData: FormData) {
       const ipBusy = await clientIp();
       const limitedBusy = await checkRateLimit(ipBusy, phone);
       if (limitedBusy) return { success: false, error: limitedBusy };
-      if (await isRepeat(phone, null)) return { success: true };
       const busyNote = `${message ? message + ' | ' : ''}Tanlangan xonadon band bo'lib qoldi: ${aptDetails.project_name}, №${aptDetails.number} — o'xshashini taklif qiling`;
       await db.prepare(`
         INSERT INTO bookings (client_name, client_phone, payment_type, note, status, ip)
@@ -140,7 +130,6 @@ export async function submitPriceRequest(formData: FormData) {
     const ip = await clientIp();
     const limited = await checkRateLimit(ip, phone);
     if (limited) return { success: false, error: limited };
-    if (await isRepeat(phone, apartmentId)) return { success: true };
 
     await db.prepare(`
       INSERT INTO bookings (apartment_id, client_name, client_phone, payment_type, note, status, ip)
