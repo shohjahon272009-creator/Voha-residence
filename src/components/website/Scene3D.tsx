@@ -95,13 +95,33 @@ function overviewOf(bounds: Bounds, buildings: SceneBuilding[]): { from: Vec3; p
   const vd = bounds.viewDir;
   if (vd && (vd[0] || vd[1])) {
     const len = Math.hypot(vd[0], vd[1]);
+    if (aspect < 1 && buildings.length) {
+      // Tik ekran (telefon): gorizontal ko'rish burchagi tor, shuning uchun hamma pinlar sig'adigan qilib,
+      // asosiy yo'nalishdan (deyarli to'g'ridan) va balandroqdan qaraymiz. Chegara — pinli bloklar bo'yicha.
+      const xs = buildings.map((b) => b.x);
+      const zs = buildings.map((b) => b.z);
+      const [x0, x1, z0, z1] = [Math.min(...xs) - 45, Math.max(...xs) + 45, Math.min(...zs) - 45, Math.max(...zs) + 45];
+      const [px, pz] = [(x0 + x1) / 2, (z0 + z1) / 2];
+      const main = Math.abs(vd[1]) >= Math.abs(vd[0]); // asosiy o'q: z (true) yoki x
+      const sign = Math.sign(main ? vd[1] : vd[0]) || 1;
+      const acrossP = main ? x1 - x0 : z1 - z0;
+      const depthP = main ? z1 - z0 : x1 - x0;
+      const distP = (acrossP / 2) / (fitH * aspect) * 1.04 + depthP * 0.12;
+      const elP = THREE.MathUtils.degToRad(52);
+      const hdP = Math.cos(elP) * distP;
+      const dirP: [number, number] = main ? [0.1, sign] : [sign, 0.1];
+      return {
+        target: [px, 0, pz],
+        pos: [px + dirP[0] * hdP, Math.sin(elP) * distP, pz + dirP[1] * hdP],
+        from: [px + dirP[0] * hdP * 1.4, distP * 1.7, pz + dirP[1] * hdP * 1.4],
+      };
+    }
     const [ux, uz] = [vd[0] / len, vd[1] / len];
     // Qarash yo'nalishiga ko'ndalang va bo'ylama o'lchamlar (to'rtburchak proyeksiyasi)
     const across = Math.abs(uz) * bounds.sx + Math.abs(ux) * bounds.sz;
     const depth = Math.abs(ux) * bounds.sx + Math.abs(uz) * bounds.sz;
-    // Tik ekranda butun mavze sig'ishi uchun juda uzoqlashish kerak bo'lardi — chetlari biroz kesilishiga yo'l qo'yamiz
-    const dist = ((across / 2) / (fitH * aspect) + depth / 2) * (aspect < 1 ? 0.62 : 0.86);
-    const el = THREE.MathUtils.degToRad(aspect < 1 ? 42 : 36);
+    const dist = ((across / 2) / (fitH * aspect) + depth / 2) * 0.86;
+    const el = THREE.MathUtils.degToRad(36);
     const hd = Math.cos(el) * dist;
     return {
       target: [cx, 0, cz],
@@ -296,11 +316,16 @@ function Pin({ b, label, freeLabel, selected, stagger, onSelect }: {
   // Bo'sh xonadoni bor bloklar va tanlangan blok — boshqa yozuvlar ustida
   const z: [number, number] = selected ? [60, 51] : free > 0 ? [50, 41] : [30, 11];
   return (
-    <Html position={[b.x, b.y, b.z]} zIndexRange={z}>
-      <div style={{ transform: 'translate(-50%, -100%)' }} className="flex flex-col items-center select-none">
+    // Html qobig'i bosishni ushlamaydi: uning siljitilmagan (ko'rinmas) qutisi qo'shni pinni yopib qo'yardi —
+    // telefonda pinlar zich turganda tugma bosilmay qolardi. Faqat tugmaning o'zi bosiladi.
+    <Html position={[b.x, b.y, b.z]} zIndexRange={z} style={{ pointerEvents: 'none' }}>
+      <div style={{ transform: 'translate(-50%, -100%)' }} className="flex flex-col items-center select-none pointer-events-none">
         <button
           type="button"
           onClick={onSelect}
+          // Bosilganda brauzer tugmani "ko'rinadigan qilish" uchun sahnani surmasin
+          onMouseDown={(e) => e.preventDefault()}
+          style={{ pointerEvents: 'auto' }}
           aria-label={`${label}: ${free} ${freeLabel}`}
           className={`flex items-center gap-1.5 whitespace-nowrap rounded-full font-bold shadow-lg border transition-colors ${
             selected
@@ -453,6 +478,8 @@ export default function Scene3D({ lang, initialProject }: { lang: Locale; initia
     <div className="absolute inset-0">
       {modelUrl && (
         <Canvas
+          // overflow: clip — ichidagi HTML yozuvlar (pinlar) chetga chiqsa ham sahna surilmaydi (hidden surilishga yo'l qo'yadi)
+          style={{ overflow: 'clip' }}
           dpr={dpr}
           shadows={false}
           gl={{ antialias: true, powerPreference: 'high-performance', alpha: false }}
@@ -501,7 +528,7 @@ export default function Scene3D({ lang, initialProject }: { lang: Locale; initia
           ))}
 
           {soon && (
-            <Html key={soon.key} position={soon.pos} zIndexRange={[70, 61]}>
+            <Html key={soon.key} position={soon.pos} zIndexRange={[70, 61]} style={{ pointerEvents: 'none' }}>
               <div style={{ transform: 'translate(-50%, -130%)' }} className="pointer-events-none whitespace-nowrap rounded-full bg-primary/90 text-white text-[12px] font-bold px-3 py-1.5 shadow-lg animate-fade-in">
                 {t.soon}
               </div>
