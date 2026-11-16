@@ -101,13 +101,17 @@ const keep = (o) => { o.userData.keep = true; return o; };
 // Koordinatalar: x — katta yo'l bo'ylab (sharqqa), z — yo'ldan ichkariga manfiy (shimolga). Birlik: metr.
 // Seksiya: b — blok raqami, x/z — markaz, w — uzunligi, d — eni, fl — qavat, rot — 90 bo'lsa uzun tomoni z bo'ylab,
 // st — fasad uslubi, front — lodjiyalar qaysi tomonga (lokal z: 1 yoki -1).
+// Fasad uslublari (renderdagi bino turlari bo'yicha):
+// band — qavatlararo gorizontal chiziq rangi; stripe — derazalar ortidagi tik to'q tasma (oq-kulrang uylar);
+// crown — yuqori ikki qavat rangi; arches — yuqori qavatda arkali derazalar; rail — balkon panjarasi;
+// curtain — fasadning katta qismi oyna devor (4-blok).
 const ST = {
-  beige: { wall: '#ead9b8', accent: '#9a7550', loggia: '#f3ead6', plinth: '#74624f' }, // 1, 2, 3: qum rang + jigarrang
-  white: { wall: '#eef1f3', accent: '#7fa3b5', loggia: '#dbe8ee', plinth: '#5f666b' }, // 4: oq, oynavand
-  brown: { wall: '#b08a63', accent: '#6f5138', loggia: '#d9c2a3', plinth: '#5b4a3c' }, // 5
-  teal: { wall: '#3f8f8c', accent: '#1f5f5e', loggia: '#e6efee', plinth: '#3d4a4a' }, // 6: kanal bo'yidagi yashil-ko'k
-  gray: { wall: '#e6e8ea', accent: '#4a535a', loggia: '#c8cfd4', plinth: '#565d63' }, // 7, 8: oq-kulrang
-  amber: { wall: '#e0b77a', accent: '#8a5f3a', loggia: '#f2e3c6', plinth: '#6b5644' }, // 10 va atrofi
+  beige: { wall: '#ead9b8', accent: '#9a7550', slab: '#f6efdf', plinth: '#6f5d4c', band: '#f3e9d2', crown: '#a47b55', arches: true, rail: '#3b3f44' }, // 1, 2, 3
+  white: { wall: '#f1f3f4', accent: '#c9d3d9', slab: '#ffffff', plinth: '#5f666b', band: '#ffffff', rail: '#9fb6c2', curtain: true }, // 4
+  brown: { wall: '#b08a63', accent: '#6f5138', slab: '#e2cfb3', plinth: '#5b4a3c', band: '#d9c2a3', crown: '#7a5a40', rail: '#4a3a2e' }, // 5
+  teal: { wall: '#3f8f8c', accent: '#256a69', slab: '#f2f6f5', plinth: '#3d4a4a', band: '#f2f6f5', crown: '#2c7673', rail: '#f2f6f5' }, // 6
+  gray: { wall: '#eceef0', accent: '#565f66', slab: '#f7f8f9', plinth: '#4f565c', stripe: '#3e474e', rail: '#30373c' }, // 7, 8
+  amber: { wall: '#e3b877', accent: '#8a5f3a', slab: '#faf0dc', plinth: '#6b5644', band: '#faf0dc', crown: '#9c6b3f', rail: '#4a3a2e' }, // 10 va atrofi
 };
 const SECTIONS = [
   // Yo'l bo'yi (old qator), chapdan o'ngga: 4, 3, 2, 1
@@ -335,10 +339,12 @@ scene.add(keep(colored(civic, 'jamoat_binolari', { roughness: 0.9 })));
 
 // ---------- Bloklar ----------
 const glass = new THREE.MeshStandardMaterial({ color: '#27414f', roughness: 0.18, metalness: 0.55 });
+const vitrageGlass = new THREE.MeshStandardMaterial({ color: '#6f9fb8', roughness: 0.12, metalness: 0.65 }); // vitrina va oyna devor
 const carGeos = [];
 const CAR = ['#e8e8e6', '#1f2328', '#9aa3ab', '#b3262b', '#2d4c7c', '#d9d4c7', '#5b6066'];
 
-// Bitta seksiya: lokal koordinatada (uzun tomoni x bo'ylab) quriladi, keyin buriladi va joyiga ko'chiriladi
+// Bitta seksiya: lokal koordinatada (uzun tomoni x bo'ylab) quriladi, keyin buriladi va joyiga ko'chiriladi.
+// Qaytaradi: det — rangli detallar, win — deraza oynalari, vit — katta oyna yuzalar (vitrina, oyna devor).
 const buildSection = (s) => {
   const st = ST[s.st];
   const { w, d } = s;
@@ -347,50 +353,115 @@ const buildSection = (s) => {
   const bays = Math.max(3, Math.round(w / 5.6));
   const bay = w / bays;
   const loggiaBays = bays >= 5 ? [1, bays - 2] : [1];
+  const crownFrom = st.crown ? s.fl - 2 : s.fl; // shu qavatdan yuqorisi "toj"
+  const out = (off) => d / 2 + off;
   const det = [];
   const win = [];
+  const vit = [];
+  const plane = (pw, ph, x, y, side, off, list = win) => {
+    const g = new THREE.PlaneGeometry(pw, ph);
+    if (side < 0) g.rotateY(Math.PI);
+    g.translate(x, y, side * out(off));
+    list.push(g);
+  };
+
   det.push(box(w, h, d, 0, h / 2, 0, st.wall)); // devor
-  det.push(box(w + 0.5, FLOOR_H + 0.2, d + 0.5, 0, (FLOOR_H + 0.2) / 2, 0, st.plinth)); // 1-qavat sokoli
-  det.push(box(w + 0.6, 0.9, d + 0.6, 0, h + 0.2, 0, st.accent)); // parapet
-  det.push(box(w - 0.8, 0.3, d - 0.8, 0, h + 0.75, 0, '#6f6a6c')); // tom
-  det.push(box(Math.min(6, w / 4), 2.6, Math.min(5, d / 3), 0, h + 2, 0, '#c9cbc9')); // lift xonasi
-  for (let k = 0; k <= bays; k++) { // tik pilyastrlar, ikkala fasadda
-    for (const side of [1, -1]) det.push(box(0.55, h - FLOOR_H, 0.4, -w / 2 + k * bay, FLOOR_H + (h - FLOOR_H) / 2, side * (d / 2 + 0.2), st.accent));
+  det.push(box(w + 0.5, FLOOR_H + 0.3, d + 0.5, 0, (FLOOR_H + 0.3) / 2, 0, st.plinth)); // 1-qavat sokoli
+  if (st.crown) det.push(box(w + 0.24, (s.fl - crownFrom) * FLOOR_H, d + 0.24, 0, crownFrom * FLOOR_H + (s.fl - crownFrom) * FLOOR_H / 2, 0, st.crown));
+  // Karniz, parapet, tom va tomdagi qurilmalar (pentxaus, lift xonasi, ventilyatsiya)
+  det.push(box(w + 1.1, 0.35, d + 1.1, 0, h + 0.1, 0, st.slab));
+  det.push(box(w + 0.5, 1.0, d + 0.5, 0, h + 0.7, 0, st.crown ?? st.accent));
+  det.push(box(w - 0.6, 0.25, d - 0.6, 0, h + 1.15, 0, '#7b787d'));
+  det.push(box(w * 0.42, 2.9, d * 0.5, -w * 0.12, h + 2.6, 0, st.wall));
+  det.push(box(w * 0.42 + 0.6, 0.3, d * 0.5 + 0.6, -w * 0.12, h + 4.15, 0, '#6a676c'));
+  det.push(box(3.2, 2.2, 3.2, w * 0.32, h + 2.2, d * 0.12, '#c9cbc9'));
+  det.push(box(1.4, 0.9, 1.4, w * 0.18, h + 1.6, -d * 0.22, '#9a9da0'));
+
+  if (st.band) { // qavatlararo gorizontal chiziqlar
+    for (let f = 2; f <= crownFrom; f++) det.push(box(w + 0.34, 0.24, d + 0.34, 0, f * FLOOR_H, 0, st.band));
   }
-  for (let f = 1; f < s.fl; f++) { // lodjiyalar
-    for (const k of loggiaBays) det.push(box(bay - 0.9, 1.3, 1.5, -w / 2 + (k + 0.5) * bay, f * FLOOR_H + 0.75, front * (d / 2 + 0.75), st.loggia));
+  for (let k = 0; k <= bays; k++) { // tik pilyastrlar, ikkala fasadda (toj qavatlargacha)
+    const ph = crownFrom * FLOOR_H - FLOOR_H;
+    for (const side of [1, -1]) det.push(box(0.6, ph, 0.44, -w / 2 + k * bay, FLOOR_H + ph / 2, side * out(0.22), st.accent));
   }
-  det.push(box(bay - 1, 0.3, 2.6, -w / 2 + (loggiaBays[0] + 0.5) * bay, 3.1, -front * (d / 2 + 1.3), st.accent)); // kirish ayvoni
-  for (let f = 0; f < s.fl; f++) {
-    const y = f * FLOOR_H + FLOOR_H / 2 + 0.15;
+  if (st.stripe) { // derazalar ortidagi tik to'q tasmalar
     for (let k = 0; k < bays; k++) {
+      for (const side of [1, -1]) det.push(box(Math.min(3.9, bay - 1.3), h - FLOOR_H - 0.8, 0.12, -w / 2 + (k + 0.5) * bay, FLOOR_H + (h - FLOOR_H - 0.8) / 2 + 0.2, side * out(0.06), st.stripe));
+    }
+  }
+
+  // Balkonlar: plita + panjara + yon to'siqlar
+  for (let f = 1; f < s.fl; f++) {
+    const y = f * FLOOR_H;
+    for (const k of loggiaBays) {
+      const bx = -w / 2 + (k + 0.5) * bay;
+      const bw = bay - 0.8;
+      det.push(box(bw, 0.2, 1.5, bx, y + 0.1, front * out(0.75), st.slab));
+      det.push(box(bw, 1.0, 0.1, bx, y + 0.7, front * out(1.45), st.rail));
+      det.push(box(0.1, 1.0, 1.5, bx - bw / 2, y + 0.7, front * out(0.75), st.rail));
+      det.push(box(0.1, 1.0, 1.5, bx + bw / 2, y + 0.7, front * out(0.75), st.rail));
+    }
+  }
+  // Kirish ayvonlari (hovli tomonda)
+  for (const k of loggiaBays) {
+    const ex = -w / 2 + (k + 0.5) * bay;
+    det.push(box(bay - 0.8, 0.3, 2.8, ex, 3.2, -front * out(1.4), st.slab));
+    det.push(box(0.25, 3.0, 0.25, ex - bay / 2 + 0.7, 1.5, -front * out(2.5), st.accent));
+    det.push(box(0.25, 3.0, 0.25, ex + bay / 2 - 0.7, 1.5, -front * out(2.5), st.accent));
+  }
+
+  const wOff = st.stripe ? 0.14 : 0.03;
+  for (let f = 0; f < s.fl; f++) {
+    const y = f * FLOOR_H + FLOOR_H / 2 + 0.2;
+    const inCrown = f >= crownFrom;
+    for (let k = 0; k < bays; k++) {
+      const x = -w / 2 + (k + 0.5) * bay;
       for (const side of [1, -1]) {
-        const loggia = side === front && loggiaBays.includes(k) && f > 0;
-        const g = new THREE.PlaneGeometry(loggia ? bay - 1.4 : Math.min(3.4, bay - 1.6), loggia ? 1.2 : 1.7);
-        if (side < 0) g.rotateY(Math.PI);
-        g.translate(-w / 2 + (k + 0.5) * bay, loggia ? y + 0.75 : y, side * (d / 2 + (loggia ? 1.52 : 0.03)));
+        if (f === 0 && s.shop && side === front) { plane(bay - 0.9, 2.5, x, 1.55, side, 0.29, vit); continue; } // vitrina
+        if (st.curtain && side === front && f > 0) continue; // oyna devor pastda alohida qo'yiladi
+        const balcony = side === front && loggiaBays.includes(k) && f > 0;
+        const ww = Math.min(balcony ? bay - 1.6 : 3.3, bay - 1.5);
+        const off = inCrown ? 0.15 : wOff;
+        plane(ww, balcony ? 2.2 : 1.7, x, balcony ? y - 0.25 : y, side, off);
+        if (st.arches && f === s.fl - 1) { // arkali deraza tepasi
+          const a = new THREE.CircleGeometry(ww / 2, 8, 0, Math.PI);
+          if (side < 0) a.rotateY(Math.PI);
+          a.translate(x, y + (balcony ? 0.85 : 0.85), side * out(off));
+          win.push(a);
+        }
+      }
+    }
+    for (const side of [1, -1]) { // yon devorlarda derazalar
+      for (const dz of d > 15 ? [-d / 4, d / 4] : [0]) {
+        const g = new THREE.PlaneGeometry(2.4, 1.7);
+        g.rotateY(side * Math.PI / 2);
+        g.translate(side * (w / 2 + (inCrown ? 0.15 : 0.03)), y, dz);
         win.push(g);
       }
     }
-    for (const side of [1, -1]) { // yon devorlarda bittadan deraza
-      const g = new THREE.PlaneGeometry(2.4, 1.7);
-      g.rotateY(side * Math.PI / 2);
-      g.translate(side * (w / 2 + 0.03), y, 0);
-      win.push(g);
-    }
   }
+  if (st.curtain) { // oyna devor: old fasad va bir yon tomon, oq impostlar bilan
+    plane(w - 1.6, h - FLOOR_H - 0.6, 0, FLOOR_H + (h - FLOOR_H - 0.6) / 2 + 0.2, front, 0.1, vit);
+    for (let k = 1; k < bays; k++) det.push(box(0.22, h - FLOOR_H, 0.3, -w / 2 + k * bay, FLOOR_H + (h - FLOOR_H) / 2, front * out(0.15), '#ffffff'));
+    const g = new THREE.PlaneGeometry(d - 1.6, h - FLOOR_H - 0.6);
+    g.rotateY(-Math.PI / 2);
+    g.translate(-(w / 2 + 0.1), FLOOR_H + (h - FLOOR_H - 0.6) / 2 + 0.2, 0);
+    vit.push(g);
+  }
+
   const m = new THREE.Matrix4().makeRotationY(s.rot === 90 ? Math.PI / 2 : 0).setPosition(s.x, 0, s.z);
-  for (const g of det) g.applyMatrix4(m);
-  for (const g of win) g.applyMatrix4(m);
-  return { det, win, h };
+  for (const g of [...det, ...win, ...vit]) g.applyMatrix4(m);
+  return { det, win, vit, h };
 };
 
-const blocks = new Map(); // blok raqami -> { det, win, sections }
+const blocks = new Map(); // blok raqami -> { det, win, vit, sections }
 for (const s of SECTIONS) {
+  if (s.z > 80 && !s.rot) s.shop = true; // katta yo'lga qaragan old qator: 1-qavat vitrinalar
   const part = buildSection(s);
-  const b = blocks.get(s.b) ?? { det: [], win: [], sections: [] };
+  const b = blocks.get(s.b) ?? { det: [], win: [], vit: [], sections: [] };
   b.det.push(...part.det);
   b.win.push(...part.win);
+  b.vit.push(...part.vit);
   b.sections.push({ ...s, h: part.h });
   blocks.set(s.b, b);
   const [fw, fd] = footprint(s);
@@ -404,6 +475,11 @@ for (const [n, b] of [...blocks].sort((a, c) => a[0] - c[0])) {
   const windows = new THREE.Mesh(mergeGeometries(b.win), glass);
   windows.name = `blok_${n}_oyna`;
   group.add(windows);
+  if (b.vit.length) {
+    const vitrage = new THREE.Mesh(mergeGeometries(b.vit), vitrageGlass);
+    vitrage.name = `blok_${n}_vitraj`;
+    group.add(vitrage);
+  }
   scene.add(group);
 
   if (n > 11) continue; // keyingi navbat bloklariga pin yo'q

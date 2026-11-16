@@ -201,7 +201,7 @@ function Model({
       const bucket = pinMats.current.get(pin) ?? [];
       // Oyna kabi to'q materiallar yoritilmaydi — tanlangan binoda derazalar o'z rangida qoladi
       const hsl = { h: 0, s: 0, l: 0 };
-      for (const c of own) if (std(c) && (c.vertexColors || c.color.getHSL(hsl).l > 0.3)) bucket.push(c);
+      for (const c of own) if (std(c) && (c.vertexColors || (c.metalness < 0.4 && c.color.getHSL(hsl).l > 0.3))) bucket.push(c);
       pinMats.current.set(pin, bucket);
       m.material = Array.isArray(orig) ? own : own[0];
     });
