@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
     "@types/better-sqlite3": "^9.6.0",
     "@vercel/blob": "^2.6.1",
     "better-sqlite3": "^13.0.2",
@@ -22,12 +24,14 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "sharp": "^0.34.5",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.187.0",
     "autoprefixer": "^10.5.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
