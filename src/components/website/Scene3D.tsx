@@ -3,7 +3,7 @@
 import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Canvas, useFrame, type ThreeEvent } from '@react-three/fiber';
-import { Html, OrbitControls, PerformanceMonitor, useGLTF, useProgress } from '@react-three/drei';
+import { Html, OrbitControls, PerformanceMonitor, Sky, useGLTF, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 import { Maximize2, MousePointerClick } from 'lucide-react';
 import { Locale, getDictionary } from '@/lib/dictionaries';
@@ -16,25 +16,26 @@ import ProjectLeadModal from './ProjectLeadModal';
 
   Qoidalar — placeholderga bog'lanmagan, haqiqiy .glb bilan ham xuddi shunday ishlaydi:
   • scene_pins.mesh_name ga mos mesh (yoki shu nomli guruh ichidagi hamma mesh) — sotuvdagi blok:
-    brend teal rangda, tanlanganda bronza bilan yoritiladi.
-  • userData.keep = true bo'lgan meshlar (yer, yo'l, daraxt) o'z materialida qoladi.
-  • Qolgan hamma mesh — och kulrang; bosilganda kichik "Tez kunda" yozuvi, panel ochilmaydi.
+    o'zining haqiqiy rang va materialida ko'rinadi, tanlanganda bronza bilan yoritiladi.
+  • userData.keep = true bo'lgan meshlar (yer, yo'l, daraxt, soya) o'z materialida qoladi.
+  • Qolgan hamma bino — rangi so'ndirilgan (och kulrang tus, shakli va derazalari saqlanadi);
+    bosilganda kichik "Tez kunda" yozuvi, panel ochilmaydi.
   • Kamera masofalari model o'lchamidan (chegaralovchi sfera) hisoblanadi — model katta-kichikligi
     yoki birligi o'zgarsa ham umumiy ko'rinish va kirish animatsiyasi to'g'ri ishlaydi.
 
-  Telefon uchun: dpr 1.5 dan oshmaydi, soyalar o'chiq, kadr tezligi tushsa PerformanceMonitor
+  Telefon uchun: dpr 1.5 dan oshmaydi, real vaqtdagi soyalar o'chiq (soya modelga pishirilgan), kadr tezligi tushsa PerformanceMonitor
   dpr'ni pasaytiradi.
 */
 
-const TEAL = '#014242';
 const BRONZE = '#D18E5B';
-const NEUTRAL = '#cfd4d8';
-const SKY = '#dfe9e6';
+const MUTED = new THREE.Color('#d3d7da'); // sotuvda bo'lmagan binolar shu tusga yaqinlashtiriladi
+const HAZE = '#d5e2ea'; // ufq tumani — osmon ufqiga mos
+const SUN: Vec3 = [-110, 190, -150]; // = scripts/make-placeholder-glb.mjs SUN (pishirilgan soyalar yo'nalishi)
+type Vec3 = [number, number, number];
 const MAX_DPR = 1.5;
 const MIN_DPR = 0.75;
 const PLACEHOLDER = '/3d/placeholder.glb';
 
-type Vec3 = [number, number, number];
 // Binolar chegarasi: markaz, eni (x) va chuqurligi (z), chegaralovchi sfera radiusi
 type Bounds = { center: Vec3; radius: number; sx: number; sz: number };
 const FOV = 45;
@@ -136,44 +137,72 @@ function Model({
   onReady: (bounds: Bounds) => void;
 }) {
   const { scene } = useGLTF(url);
-  const neutral = useMemo(() => new THREE.MeshStandardMaterial({ color: NEUTRAL, roughness: 0.95 }), []);
-  const pinMats = useRef(new Map<string, THREE.MeshStandardMaterial>());
+  // Asl materiallardan nusxalar: so'ndirilgan (sotuvda emas) va pin bloklari uchun (yoritish mumkin bo'lsin)
+  const muted = useRef(new Map<string, THREE.Material>());
+  const pinMats = useRef(new Map<string, THREE.MeshStandardMaterial[]>());
+  const originals = useRef(new Map<string, THREE.Material | THREE.Material[]>());
 
-  // Materiallarni qoidaga ko'ra taqsimlash: pin bloklari — teal, keep — o'zi, qolgani — kulrang
+  // Materiallarni qoidaga ko'ra taqsimlash: pin bloklari — asl rangida, keep — tegilmaydi, qolgani — so'ndirilgan
   useEffect(() => {
+    pinMats.current.clear();
+    const std = (m: THREE.Material): m is THREE.MeshStandardMaterial => (m as THREE.MeshStandardMaterial).isMeshStandardMaterial === true;
+    const mute = (src: THREE.Material): THREE.Material => {
+      const hit = muted.current.get(src.uuid);
+      if (hit) return hit;
+      const c = src.clone();
+      if (std(c)) {
+        // Vertex ranglar o'chiriladi, asosiy rang kulrang tusga tortiladi — shakl va oyna kontrasti qoladi
+        if (c.vertexColors) { c.vertexColors = false; c.color.copy(MUTED).multiplyScalar(0.93); }
+        else c.color.lerp(MUTED, 0.72);
+        c.metalness *= 0.5;
+      }
+      muted.current.set(src.uuid, c);
+      return c;
+    };
     scene.traverse((o) => {
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;
       m.castShadow = false;
       m.receiveShadow = false;
       if (m.userData?.keep) return;
+      if (!originals.current.has(m.uuid)) originals.current.set(m.uuid, m.material);
+      const orig = originals.current.get(m.uuid)!;
+      const list = Array.isArray(orig) ? orig : [orig];
       const pin = pinnedNameOf(m, pinnedNames);
-      if (!pin) { m.material = neutral; return; }
-      let mat = pinMats.current.get(pin);
-      if (!mat) {
-        mat = new THREE.MeshStandardMaterial({ color: TEAL, roughness: 0.7 });
-        pinMats.current.set(pin, mat);
+      if (!pin) {
+        const out = list.map(mute);
+        m.material = Array.isArray(orig) ? out : out[0];
+        return;
       }
-      m.material = mat;
+      const own = list.map((src) => src.clone());
+      const bucket = pinMats.current.get(pin) ?? [];
+      // Oyna kabi to'q materiallar yoritilmaydi — tanlangan binoda derazalar o'z rangida qoladi
+      const hsl = { h: 0, s: 0, l: 0 };
+      for (const c of own) if (std(c) && (c.vertexColors || c.color.getHSL(hsl).l > 0.3)) bucket.push(c);
+      pinMats.current.set(pin, bucket);
+      m.material = Array.isArray(orig) ? own : own[0];
     });
     onReady(boundsOf(scene));
-  }, [scene, pinnedNames, neutral, onReady]);
+  }, [scene, pinnedNames, onReady]);
 
-  // Tanlangan blok — bronza, qolgan pin bloklari — teal
+  // Tanlangan blok bronza bilan yoritiladi, qolgan pin bloklari asl holida
   useEffect(() => {
-    pinMats.current.forEach((mat, name) => {
+    pinMats.current.forEach((mats, name) => {
       const on = name === selectedName;
-      mat.color.set(on ? BRONZE : TEAL);
-      mat.emissive.set(on ? BRONZE : '#000000');
-      mat.emissiveIntensity = on ? 0.35 : 0;
+      for (const mat of mats) {
+        mat.emissive.set(on ? BRONZE : '#000000');
+        mat.emissiveIntensity = on ? 0.45 : 0;
+      }
     });
-  }, [selectedName, pinnedNames]);
+  }, [selectedName, pinnedNames, scene]);
 
   // Tanlangan blok sekin "nafas oladi"
   useFrame(({ clock }) => {
     if (!selectedName) return;
-    const mat = pinMats.current.get(selectedName);
-    if (mat) mat.emissiveIntensity = 0.3 + 0.18 * Math.sin(clock.elapsedTime * 3);
+    const mats = pinMats.current.get(selectedName);
+    if (!mats) return;
+    const k = 0.42 + 0.2 * Math.sin(clock.elapsedTime * 3);
+    for (const mat of mats) mat.emissiveIntensity = k;
   });
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
@@ -406,11 +435,13 @@ export default function Scene3D({ lang, initialProject }: { lang: Locale; initia
           gl={{ antialias: true, powerPreference: 'high-performance', alpha: false }}
           camera={{ position: [60, 400, 500], fov: FOV, near: 1, far: 5000 }}
         >
-          <color attach="background" args={[SKY]} />
-          {ready && <fog attach="fog" args={[SKY, radius * 5, radius * 14]} />}
-          <ambientLight intensity={0.9} />
-          <hemisphereLight args={['#ffffff', '#9fb0a8', 0.9]} />
-          <directionalLight position={[120, 200, 80]} intensity={1.6} />
+          <color attach="background" args={[HAZE]} />
+          {/* Osmon: yengil sheyder, tekstura yuklanmaydi. Tuman uzoqdagi shaharni ufqqa singdiradi */}
+          {ready && <Sky distance={radius * 30} sunPosition={SUN} turbidity={5} rayleigh={0.9} mieCoefficient={0.004} mieDirectionalG={0.82} />}
+          {ready && <fog attach="fog" args={[HAZE, radius * 3.8, radius * 9]} />}
+          <ambientLight intensity={0.45} />
+          <hemisphereLight args={['#dcebff', '#8d9882', 1.0]} />
+          <directionalLight position={SUN} intensity={2.1} color="#fff0d9" />
 
           {/* Kadr tezligi tushsa — piksel zichligini pasaytiramiz (0.75 gacha), tiklansa qaytaramiz */}
           <PerformanceMonitor
