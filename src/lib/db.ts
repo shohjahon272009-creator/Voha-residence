@@ -1,5 +1,6 @@
 import type { InArgs } from '@libsql/client';
 import { hashPassword } from './password';
+import placeholderLayout from './placeholderLayout.json';
 
 /*
   Ma'lumotlar bazasi — ikki rejimli, chidamli:
@@ -234,27 +235,15 @@ const TABLE_DDLS = [
 ];
 
 /*
-  Placeholder mavze modeli (public/3d/placeholder.glb, scripts/make-placeholder-glb.mjs bilan yasaladi):
-  bloklar `blok_<n>` nomli, panjara shaklida — ROWS qator, COLS ustun. Blok markazi va pin/kamera
-  nuqtalari shu konstantalardan hisoblanadi; skript ham xuddi shu joylashuvni chizadi.
+  Placeholder mavze modeli (public/3d/placeholder.glb) scripts/make-placeholder-glb.mjs bilan yasaladi:
+  bloklar `blok_<n>` nomli, rahbar bergan planirovka bo'yicha joylashgan. Skript har blokning pin va kamera
+  nuqtasini placeholderLayout.json ga yozadi — seed shundan o'qiydi.
   Haqiqiy .glb kelganda pinlar admin'dan o'sha modelning koordinatalariga ko'chiriladi.
 */
-export const PLACEHOLDER_GRID = { cols: 7, rows: 4, stepX: 46, stepZ: 36, w: 34, d: 14, floorH: 3 };
-export function placeholderBlock(n: number) {
-  const { cols, rows, stepX, stepZ, floorH } = PLACEHOLDER_GRID;
-  const i = Math.max(0, n - 1);
-  const col = i % cols;
-  const row = Math.floor(i / cols) % rows;
-  const floors = 9 + ((i * 7) % 4); // 9–12 qavat (skript bilan bir xil formula)
-  const h = floors * floorH;
-  const x = (col - (cols - 1) / 2) * stepX;
-  const z = (row - (rows - 1) / 2) * stepZ;
-  // Kamera blokka mavzening tashqi tomonidan qaraydi (oldida boshqa qator to'sib qolmasin)
-  return { x, z, h, floors, pin: { x, y: h + 4, z }, cam: { x: x + 38, y: h + 40, z: z + (z < 0 ? -56 : 56) } };
-}
+const PLACEHOLDER_PINS = placeholderLayout as Record<string, { pin: number[]; cam: number[] }>;
 
 // Birinchi ishga tushishda, FAQAT scene_pins bo'sh bo'lsa: blok raqami (block_no) bor loyihalar
-// placeholder modelning `blok_<n>` meshlariga ulanadi. Admin keyin "3D pinlar" bo'limida o'zgartiradi.
+// placeholder modelning `blok_<n>` guruhlariga ulanadi. Admin keyin "3D pinlar" bo'limida o'zgartiradi.
 async function seedScenePins(b: Backend): Promise<void> {
   const n = await b.get('SELECT count(*) AS c FROM scene_pins', []);
   if (Number((n as Row)?.c) > 0) return;
@@ -262,16 +251,14 @@ async function seedScenePins(b: Backend): Promise<void> {
     'SELECT id, block_no FROM projects WHERE block_no IS NOT NULL AND block_no > 0 ORDER BY block_no',
     [],
   )) as { id: number; block_no: number }[];
-  const maxBlocks = PLACEHOLDER_GRID.cols * PLACEHOLDER_GRID.rows;
   let order = 0;
   for (const p of projects) {
-    const no = Number(p.block_no);
-    if (!Number.isInteger(no) || no < 1 || no > maxBlocks) continue;
-    const g = placeholderBlock(no);
+    const g = PLACEHOLDER_PINS[String(Number(p.block_no))];
+    if (!g) continue; // modelda bunday blok yo'q
     await b.run(
       `INSERT INTO scene_pins (project_id, mesh_name, x, y, z, cam_x, cam_y, cam_z, sort_order)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [p.id, `blok_${no}`, g.pin.x, g.pin.y, g.pin.z, g.cam.x, g.cam.y, g.cam.z, order++],
+      [p.id, `blok_${Number(p.block_no)}`, g.pin[0], g.pin[1], g.pin[2], g.cam[0], g.cam[1], g.cam[2], order++],
     );
   }
 }

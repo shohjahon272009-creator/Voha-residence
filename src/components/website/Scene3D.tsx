@@ -30,14 +30,14 @@ import ProjectLeadModal from './ProjectLeadModal';
 const BRONZE = '#D18E5B';
 const MUTED = new THREE.Color('#d3d7da'); // sotuvda bo'lmagan binolar shu tusga yaqinlashtiriladi
 const HAZE = '#d5e2ea'; // ufq tumani — osmon ufqiga mos
-const SUN: Vec3 = [-110, 190, -150]; // = scripts/make-placeholder-glb.mjs SUN (pishirilgan soyalar yo'nalishi)
+const SUN: Vec3 = [70, 190, 170]; // = scripts/make-placeholder-glb.mjs SUN (pishirilgan soyalar yo'nalishi)
 type Vec3 = [number, number, number];
 const MAX_DPR = 1.5;
 const MIN_DPR = 0.75;
 const PLACEHOLDER = '/3d/placeholder.glb';
 
 // Binolar chegarasi: markaz, eni (x) va chuqurligi (z), chegaralovchi sfera radiusi
-type Bounds = { center: Vec3; radius: number; sx: number; sz: number };
+type Bounds = { center: Vec3; radius: number; sx: number; sz: number; viewDir?: [number, number] };
 const FOV = 45;
 type Flight = { from?: Vec3; pos: Vec3; target: Vec3; duration: number; key: number };
 // OrbitControls'dan kerakli qism (three-stdlib turiga bog'lanmaslik uchun)
@@ -77,6 +77,10 @@ function boundsOf(scene: THREE.Object3D): Bounds {
     radius: Math.max(1, sphere.radius),
     sx: Math.max(1, size.x),
     sz: Math.max(1, size.z),
+    // Model o'zi aytgan ko'rish yo'nalishi (glTF scene extras), bo'lsa
+    viewDir: Array.isArray(scene.userData?.viewDir) && scene.userData.viewDir.length === 2
+      ? [Number(scene.userData.viewDir[0]) || 0, Number(scene.userData.viewDir[1]) || 0]
+      : undefined,
   };
 }
 
@@ -86,6 +90,25 @@ function boundsOf(scene: THREE.Object3D): Bounds {
 function overviewOf(bounds: Bounds, buildings: SceneBuilding[]): { from: Vec3; pos: Vec3; target: Vec3 } {
   const [cx, , cz] = bounds.center;
   const aspect = window.innerWidth / Math.max(1, window.innerHeight);
+  const fitH = Math.tan(THREE.MathUtils.degToRad(FOV / 2));
+  // Model ko'rish yo'nalishini bergan bo'lsa (masalan, planirovka renderidagi kabi janubi-sharqdan) — shu tomondan
+  const vd = bounds.viewDir;
+  if (vd && (vd[0] || vd[1])) {
+    const len = Math.hypot(vd[0], vd[1]);
+    const [ux, uz] = [vd[0] / len, vd[1] / len];
+    // Qarash yo'nalishiga ko'ndalang va bo'ylama o'lchamlar (to'rtburchak proyeksiyasi)
+    const across = Math.abs(uz) * bounds.sx + Math.abs(ux) * bounds.sz;
+    const depth = Math.abs(ux) * bounds.sx + Math.abs(uz) * bounds.sz;
+    // Tik ekranda butun mavze sig'ishi uchun juda uzoqlashish kerak bo'lardi — chetlari biroz kesilishiga yo'l qo'yamiz
+    const dist = ((across / 2) / (fitH * aspect) + depth / 2) * (aspect < 1 ? 0.62 : 0.86);
+    const el = THREE.MathUtils.degToRad(aspect < 1 ? 42 : 36);
+    const hd = Math.cos(el) * dist;
+    return {
+      target: [cx, 0, cz],
+      pos: [cx + ux * hd, Math.sin(el) * dist, cz + uz * hd],
+      from: [cx + ux * hd * 1.5, dist * 1.8, cz + uz * hd * 1.5],
+    };
+  }
   const longIsX = bounds.sx >= bounds.sz;
   const viewAlongX = aspect < 1 ? longIsX : !longIsX; // kamera qaysi o'q bo'ylab qaraydi
   const across = viewAlongX ? bounds.sz : bounds.sx;
