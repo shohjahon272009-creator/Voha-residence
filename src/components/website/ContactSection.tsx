@@ -20,20 +20,20 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
 
   const t = {
     uz: { 
-      title: "Biz bilan bog'laning", 
+      title: "Biz bilan boğlaning", 
       subtitle: "ALOQA", 
-      send: "Xabar yuborish",
+      send: "Xabar yuboriş",
       addressLabel: "Manzil",
-      addressValue: "Urganch sh., Ulug'bek ko'chasi — Ekstrenniy shifoxonasi chorrahasi",
+      addressValue: "Urganç ş., Uluğbek köçasi — Ekstrenniy şifoxonasi çorrahasi",
       phoneLabel: "Telefon",
-      timeLabel: "Ish vaqti",
-      timeValue: "Har kuni 09:00 dan 18:00 gacha",
+      timeLabel: "Iş vaqti",
+      timeValue: "Har kuni 09:00 dan 18:00 gaça",
       namePlaceholder: "Ismingiz",
       nameValue: "Ali Valiyev",
       msgPlaceholder: "Xabaringiz",
-      msgValue: "Qo'shimcha savollaringiz bo'lsa yozing...",
-      successMsg: "Xabaringiz yuborildi! Tez orada siz bilan bog'lanamiz.",
-      errorMsg: "Xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring."
+      msgValue: "Qöşimça savollaringiz bölsa yozing...",
+      successMsg: "Xabaringiz yuborildi! Tez orada siz bilan boğlanamiz.",
+      errorMsg: "Xatolik yuz berdi. Iltimos, qaytadan urinib köring."
     },
     ru: { 
       title: "Свяжитесь с нами", 
@@ -68,20 +68,20 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
       errorMsg: "An error occurred. Please try again."
     },
   }[lang] || { 
-      title: "Biz bilan bog'laning", 
+      title: "Biz bilan boğlaning", 
       subtitle: "ALOQA", 
-      send: "Xabar yuborish",
+      send: "Xabar yuboriş",
       addressLabel: "Manzil",
-      addressValue: "Urganch sh., Ulug'bek ko'chasi — Ekstrenniy shifoxonasi chorrahasi",
+      addressValue: "Urganç ş., Uluğbek köçasi — Ekstrenniy şifoxonasi çorrahasi",
       phoneLabel: "Telefon",
-      timeLabel: "Ish vaqti",
-      timeValue: "Har kuni 09:00 dan 18:00 gacha",
+      timeLabel: "Iş vaqti",
+      timeValue: "Har kuni 09:00 dan 18:00 gaça",
       namePlaceholder: "Ismingiz",
       nameValue: "Ali Valiyev",
       msgPlaceholder: "Xabaringiz",
-      msgValue: "Qo'shimcha savollaringiz bo'lsa yozing...",
-      successMsg: "Xabaringiz yuborildi! Tez orada siz bilan bog'lanamiz.",
-      errorMsg: "Xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring."
+      msgValue: "Qöşimça savollaringiz bölsa yozing...",
+      successMsg: "Xabaringiz yuborildi! Tez orada siz bilan boğlanamiz.",
+      errorMsg: "Xatolik yuz berdi. Iltimos, qaytadan urinib köring."
   };
 
   // Admin sozlagan aloqa ma'lumotlari (bo'sh bo'lsa — til bo'yicha standart matn)
@@ -142,7 +142,7 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
               <dd className="mt-1 text-body-lg">{addressVal}</dd>
               <dd className="mt-2">
                 <a href="https://www.google.com/maps/search/?api=1&query=41.544716,60.599816" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center font-semibold text-accent-text underline underline-offset-4">
-                  {lang === 'ru' ? 'Открыть на карте' : lang === 'en' ? 'Open in maps' : 'Xaritada ochish'}
+                  {lang === 'ru' ? 'Открыть на карте' : lang === 'en' ? 'Open in maps' : 'Xaritada oçiş'}
                 </a>
               </dd>
             </div>

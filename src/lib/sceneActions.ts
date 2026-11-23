@@ -53,7 +53,7 @@ export async function saveScenePin(formData: FormData): Promise<Result> {
 
 export async function deleteScenePin(id: number): Promise<Result> {
   await requireAdmin();
-  if (!Number.isInteger(id) || id <= 0) return { ok: false, error: "Noto'g'ri pin." };
+  if (!Number.isInteger(id) || id <= 0) return { ok: false, error: "Notöğri pin." };
   await db.prepare('DELETE FROM scene_pins WHERE id = ?').run(id);
   revalidateScene();
   return { ok: true };
@@ -65,8 +65,8 @@ export async function saveSceneModel(formData: FormData): Promise<Result> {
   const url = text(formData.get('scene_model_url'), 500);
   if (url) {
     const okScheme = /^https:\/\//i.test(url) || (url.startsWith('/') && !url.startsWith('//'));
-    if (!okScheme) return { ok: false, error: "Manzil https:// yoki / bilan boshlanishi kerak (masalan /3d/mavze.glb)." };
-    if (!/\.(glb|gltf)(\?.*)?$/i.test(url)) return { ok: false, error: 'Fayl .glb yoki .gltf bo\'lishi kerak.' };
+    if (!okScheme) return { ok: false, error: "Manzil https:// yoki / bilan boşlanişi kerak (masalan /3d/mavze.glb)." };
+    if (!/\.(glb|gltf)(\?.*)?$/i.test(url)) return { ok: false, error: 'Fayl .glb yoki .gltf bölişi kerak.' };
   }
   const set = (key: string, value: string) =>
     db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run(key, value, value);

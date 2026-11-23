@@ -35,7 +35,7 @@ export default async function ApartmentsPage({ params }: { params: Promise<{ lan
     .map((a) => ({ id: a.id, project_id: a.project_id, floor: a.floor, number: a.number, rooms: a.rooms, area: a.area, status: a.status, plan_image: a.plan_image, image: a.image, price_cash: 0, price_installment: 0, orientation: '', note: '' }));
 
   const t = {
-    uz: { kicker: 'Xonadonlar', title: 'Xonadoningizni tanlang', sub: "Blok, qavat va xonalar soni bo'yicha qidiring — to'lovni darhol hisoblang." },
+    uz: { kicker: 'Xonadonlar', title: 'Xonadoningizni tanlang', sub: "Blok, qavat va xonalar soni böyiça qidiring — tölovni darhol hisoblang." },
     ru: { kicker: 'Квартиры', title: 'Выберите свою квартиру', sub: 'Ищите по блоку, этажу и числу комнат — платёж рассчитывается сразу.' },
     en: { kicker: 'Apartments', title: 'Choose your apartment', sub: 'Search by block, floor and rooms — see your payment instantly.' },
   }[localeLang] || { kicker: 'Xonadonlar', title: 'Xonadoningizni tanlang', sub: '' };

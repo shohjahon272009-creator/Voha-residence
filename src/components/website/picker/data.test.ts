@@ -33,15 +33,15 @@ assert.equal(statusKind('Band'), 'sold');
 assert.equal(dedupeApartments(apts).removed, 1);
 
 const m = buildModel(projects, apts);
-assert.deepEqual(m.blocks.map((b) => b.id), [1, 4], 'topshirilgan va sotib tugagan loyihalar chiqmaydi');
+assert.deepEqual(m.blocks.map((b) => b.id), [1, 4], 'topşirilgan va sotib tugagan loyihalar çiqmaydi');
 assert.equal(m.removedDuplicates, 1);
 const b1 = m.byId.get(1)!;
-assert.deepEqual(b1.floors.map((g) => g.key), ['3', '5', 'na'], "qavatlar o'sish tartibida, noma'lum oxirida");
-assert.equal(b1.maxFloor, 5, "total_floors yo'q — xonadonlardan olinadi");
+assert.deepEqual(b1.floors.map((g) => g.key), ['3', '5', 'na'], "qavatlar ösiş tartibida, noma'lum oxirida");
+assert.equal(b1.maxFloor, 5, "total_floors yöq — xonadonlardan olinadi");
 assert.equal(m.byId.get(4)!.maxFloor, 9);
 const f5 = b1.floors[1];
 assert.deepEqual(f5.apts.map((a) => a.number), ['10', '21', '22'], 'raqam tabiiy tartibda');
-assert.equal(f5.apts.find((a) => a.number === '21')!.status, 'Band', "nusxalar farq qilsa band holat ustun (sotilgan xonadon bo'sh ko'rinmasin)");
+assert.equal(f5.apts.find((a) => a.number === '21')!.status, 'Band', "nusxalar farq qilsa band holat ustun (sotilgan xonadon böş körinmasin)");
 assert.deepEqual(f5.counts, { total: 3, available: 0, reserved: 1, sold: 2 });
 assert.deepEqual(b1.counts, { total: 5, available: 2, reserved: 1, sold: 2 });
 

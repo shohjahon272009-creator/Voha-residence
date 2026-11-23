@@ -66,7 +66,7 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66', ctaHref: cta
   };
 
   // Yagona asosiy CTA — xonadon tanlash bo'limi (bosh sahifadagi #xonadon-tanlash)
-  const cta = { uz: 'Xonadon tanlash', ru: 'Выбрать квартиру', en: 'Choose an apartment' }[lang] || 'Xonadon tanlash';
+  const cta = { uz: 'Xonadon tanlaş', ru: 'Выбрать квартиру', en: 'Choose an apartment' }[lang] || 'Xonadon tanlaş';
   // "Xonadonlar" sahifasida tanlovchi shu sahifaning o'zida — bosh sahifaga olib ketmaymiz
   const ctaHref = pathname === `/${lang}/apartments` ? `/${lang}/apartments#xonadon-tanlash` : ctaTarget || `/${lang}#xonadon-tanlash`;
 
@@ -155,7 +155,7 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66', ctaHref: cta
         <button 
           className={cn("lg:hidden p-2 -m-2", isNavbarWhite ? "text-[#014242]" : "text-white")}
           onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? (lang === 'ru' ? 'Закрыть меню' : lang === 'en' ? 'Close menu' : 'Menyuni yopish') : (lang === 'ru' ? 'Открыть меню' : lang === 'en' ? 'Open menu' : 'Menyuni ochish')}
+          aria-label={isOpen ? (lang === 'ru' ? 'Закрыть меню' : lang === 'en' ? 'Close menu' : 'Menyuni yopiş') : (lang === 'ru' ? 'Открыть меню' : lang === 'en' ? 'Open menu' : 'Menyuni oçiş')}
           aria-expanded={isOpen}
         >
           {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -234,7 +234,7 @@ export default function Navbar({ lang, phone = '+998 91 011 66 66', ctaHref: cta
           <button
             className="absolute top-4 right-4 w-11 h-11 flex items-center justify-center text-white"
             onClick={() => setIsOpen(false)}
-            aria-label={lang === 'ru' ? 'Закрыть меню' : lang === 'en' ? 'Close menu' : 'Menyuni yopish'}
+            aria-label={lang === 'ru' ? 'Закрыть меню' : lang === 'en' ? 'Close menu' : 'Menyuni yopiş'}
           >
             <X size={32} />
           </button>

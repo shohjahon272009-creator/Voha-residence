@@ -23,11 +23,11 @@ export default async function AdminScene3D() {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-primary mb-2">3D pinlar</h1>
-          <p className="text-gray-400 text-sm">3D turdagi bino belgilari va model. Pin bog&apos;langan bino brend rangda ko&apos;rinadi.</p>
+          <p className="text-gray-400 text-sm">3D turdagi bino belgilari va model. Pin boğlangan bino brend rangda körinadi.</p>
         </div>
         <div className="flex items-center gap-3">
           <Link href="/uz/3d" target="_blank" className="flex items-center gap-1.5 px-5 py-3 bg-primary/10 text-primary font-bold rounded-xl text-sm hover:bg-primary hover:text-white transition-all">
-            <ExternalLink size={16} /> Saytda ko&apos;rish
+            <ExternalLink size={16} /> Saytda köriş
           </Link>
           <ScenePinModal projects={projects} />
         </div>
@@ -60,7 +60,7 @@ export default async function AdminScene3D() {
             {pins.map((pin) => (
               <tr key={pin.id} className="hover:bg-gray-50/50 transition-colors">
                 <td className="px-8 py-5">
-                  <div className="font-bold text-primary text-sm">{nameOf.get(pin.project_id) || <span className="text-danger">Loyiha o&apos;chirilgan (#{pin.project_id})</span>}</div>
+                  <div className="font-bold text-primary text-sm">{nameOf.get(pin.project_id) || <span className="text-danger">Loyiha öçirilgan (#{pin.project_id})</span>}</div>
                   <div className="text-[10px] text-gray-400">Tartib: {pin.sort_order}</div>
                 </td>
                 <td className="px-8 py-5 text-sm text-gray-500 font-mono">{pin.mesh_name || '—'}</td>
@@ -75,7 +75,7 @@ export default async function AdminScene3D() {
             {pins.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-8 py-12 text-center text-sm text-gray-400">
-                  Hali pin yo&apos;q. &quot;Pin qo&apos;shish&quot; tugmasi bilan birinchi binoni loyihaga bog&apos;lang.
+                  Hali pin yöq. &quot;Pin qöşiş&quot; tugmasi bilan birinçi binoni loyihaga boğlang.
                 </td>
               </tr>
             )}

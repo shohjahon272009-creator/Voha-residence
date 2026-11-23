@@ -21,20 +21,20 @@ const nowMs = () => Date.now();
 
 const TX = {
   uz: {
-    kicker: "O'yin · 30 soniya", title: 'Uyingizni 30 soniyada toping', sub: "5 ta savolga javob bering — bazadagi bo'sh xonadonlardan aynan sizga mosini topamiz.",
-    start: 'Boshlash', step: 'Savol', of: '/', points: 'ball', next: 'Davom etish', searching: 'Sizga mos uylar qidirilmoqda…',
+    kicker: "Öyin · 30 soniya", title: 'Uyingizni 30 soniyada toping', sub: "5 ta savolga javob bering — bazadagi böş xonadonlardan aynan sizga mosini topamiz.",
+    start: 'Boşlaş', step: 'Savol', of: '/', points: 'ball', next: 'Davom etiş', searching: 'Sizga mos uylar qidirilmoqda…',
     q: [
-      { t: 'Kim bilan yashaysiz?', o: [['solo', '🧑', 'Yolg‘iz'], ['couple', '👫', 'Juftlik'], ['family', '👨‍👩‍👧', 'Kichik oila'], ['big', '👨‍👩‍👧‍👦', 'Katta oila']] },
-      { t: 'Oyiga qancha to‘lay olasiz?', o: [['b4', '💵', '4–5 mln'], ['b6', '💰', '5–6 mln'], ['b9', '💎', '7 mln va undan ko‘p'], ['cash', '🏦', 'Naqd / to‘liq']] },
-      { t: 'Qaysi qavat yoqadi?', o: [['low', '🌳', '1–3 qavat'], ['mid', '🏙️', '4–7 qavat'], ['high', '🌇', '8+ qavat'], ['any', '✨', 'Farqi yo‘q']] },
-      { t: 'Atrofda nima bo‘lishi muhim?', multi: true },
-      { t: 'Qachon ko‘chmoqchisiz?', o: [['now', '🔑', 'Imkon qadar tez'], ['year', '📅', '1 yil ichida'], ['later', '🕰️', 'Shoshilmayman']] },
+      { t: 'Kim bilan yaşaysiz?', o: [['solo', '🧑', 'Yolğiz'], ['couple', '👫', 'Juftlik'], ['family', '👨‍👩‍👧', 'Kiçik oila'], ['big', '👨‍👩‍👧‍👦', 'Katta oila']] },
+      { t: 'Oyiga qança tölay olasiz?', o: [['b4', '💵', '4–5 mln'], ['b6', '💰', '5–6 mln'], ['b9', '💎', '7 mln va undan köp'], ['cash', '🏦', 'Naqd / töliq']] },
+      { t: 'Qaysi qavat yoqadi?', o: [['low', '🌳', '1–3 qavat'], ['mid', '🏙️', '4–7 qavat'], ['high', '🌇', '8+ qavat'], ['any', '✨', 'Farqi yöq']] },
+      { t: 'Atrofda nima bölişi muhim?', multi: true },
+      { t: 'Qaçon köçmoqçisiz?', o: [['now', '🔑', 'Imkon qadar tez'], ['year', '📅', '1 yil içida'], ['later', '🕰️', 'Şoşilmayman']] },
     ],
-    pick: 'Bir nechtasini tanlang', resultTitle: 'Sizga eng mos uylar', match: 'mos', fast: 'Tez qaror! Siz {s} soniyada topdingiz',
-    floorW: 'qavat', roomsW: 'xona', perMonth: 'oyiga', sum: "so'm", priceAsk: 'Narxi — so‘rov bo‘yicha',
-    reasons: { rooms: 'Oilangizga mos xonalar', budget: 'Byudjetingizga to‘g‘ri', floor: 'Siz xohlagan qavat', ready: 'Tayyor uy' } as Record<string, string>,
-    book: 'Shu uyni ko‘rishga yozilish', name: 'Ismingiz', phone: '+998 __ ___ __ __', send: 'Yozilish', sent: 'Qabul qilindi! Menejerimiz tez orada qo‘ng‘iroq qiladi.',
-    replay: 'Qayta o‘ynash', none: 'Hozir aniq mos bo‘sh xonadon topilmadi — menejerimiz siz uchun shaxsan tanlab beradi.', noneCta: 'Menga tanlab bering',
+    pick: 'Bir neçtasini tanlang', resultTitle: 'Sizga eng mos uylar', match: 'mos', fast: 'Tez qaror! Siz {s} soniyada topdingiz',
+    floorW: 'qavat', roomsW: 'xona', perMonth: 'oyiga', sum: "söm", priceAsk: 'Narxi — sörov böyiça',
+    reasons: { rooms: 'Oilangizga mos xonalar', budget: 'Byudjetingizga töğri', floor: 'Siz xohlagan qavat', ready: 'Tayyor uy' } as Record<string, string>,
+    book: 'Şu uyni körişga yoziliş', name: 'Ismingiz', phone: '+998 __ ___ __ __', send: 'Yoziliş', sent: 'Qabul qilindi! Menejerimiz tez orada qönğiroq qiladi.',
+    replay: 'Qayta öynaş', none: 'Hozir aniq mos böş xonadon topilmadi — menejerimiz siz uçun şaxsan tanlab beradi.', noneCta: 'Menga tanlab bering',
     err: 'Xatolik yuz berdi', planAlt: 'Xonadon rejasi',
   },
   ru: {
@@ -155,7 +155,7 @@ export default function HomeQuest({ lang }: { lang: string }) {
   const summary = () => {
     const lbl = (qi: number, v?: string) => TX.uz.q[qi].o?.find((o) => o[0] === v)?.[2] || '—';
     const pr = (answers.priorities || []).map((k) => CATEGORIES.find((c) => c.key === k)?.label.uz || k).join(', ') || '—';
-    return `Uy tanlash o'yini: ${lbl(0, answers.household)}, oylik byudjet ${lbl(1, answers.budget)}, qavat ${lbl(2, answers.floor)}, muhim: ${pr}, ko'chish: ${lbl(4, answers.when)}`;
+    return `Uy tanlaş öyini: ${lbl(0, answers.household)}, oylik byudjet ${lbl(1, answers.budget)}, qavat ${lbl(2, answers.floor)}, muhim: ${pr}, köçiş: ${lbl(4, answers.when)}`;
   };
 
   const sendLead = async (e: React.FormEvent<HTMLFormElement>) => {

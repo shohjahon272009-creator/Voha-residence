@@ -16,14 +16,14 @@ const ICONS = [Search, Eye, FileSignature, KeyRound];
 
 const T: Record<string, { kicker: string; title: string; steps: { h: string; d: string }[]; cta: string }> = {
   uz: {
-    kicker: 'Oddiy va shaffof', title: "Uyli bo'lish — 4 qadam",
+    kicker: 'Oddiy va şaffof', title: "Uyli böliş — 4 qadam",
     steps: [
-      { h: 'Tanlang', d: "Saytda yoki 30 soniyalik o'yinda o'zingizga mos xonadonni toping." },
-      { h: "Ko'ring", d: "Ofisga keling yoki qurilish maydoniga birga boramiz — o'z ko'zingiz bilan ko'ring." },
-      { h: 'Shartnoma', d: "Faqat pasport kifoya. Xohlasangiz — uydan chiqmasdan onlayn rasmiylashtiramiz." },
-      { h: "Kalitni oling", d: "0% foizli bo'lib to'lash va kadastr hujjatlari bilan — uy rasman sizniki." },
+      { h: 'Tanlang', d: "Saytda yoki 30 soniyalik öyinda özingizga mos xonadonni toping." },
+      { h: "Köring", d: "Ofisga keling yoki quriliş maydoniga birga boramiz — öz közingiz bilan köring." },
+      { h: 'Şartnoma', d: "Faqat pasport kifoya. Xohlasangiz — uydan çiqmasdan onlayn rasmiylaştiramiz." },
+      { h: "Kalitni oling", d: "0% foizli bölib tölaş va kadastr hujjatlari bilan — uy rasman sizniki." },
     ],
-    cta: 'Uyimni topish',
+    cta: 'Uyimni topiş',
   },
   ru: {
     kicker: 'Просто и прозрачно', title: 'Своя квартира — 4 шага',

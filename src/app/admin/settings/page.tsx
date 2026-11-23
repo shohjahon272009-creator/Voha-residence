@@ -18,7 +18,7 @@ export default async function AdminSettings() {
     <form action={saveSettings} className="space-y-10">
       <div>
          <h1 className="text-3xl font-bold text-primary mb-2">Sozlamalar</h1>
-         <p className="text-gray-400">Saytning global sozlamalari va integratsiyalarni boshqarish.</p>
+         <p className="text-gray-400">Saytning global sozlamalari va integratsiyalarni boşqariş.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-8">
@@ -31,7 +31,7 @@ export default async function AdminSettings() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Kompaniya nomi</label>
-                  <input name="company_name" type="text" defaultValue={settings.company_name || "Qurilish Premium"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <input name="company_name" type="text" defaultValue={settings.company_name || "Quriliş Premium"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Kompaniya logotipi</label>
@@ -51,12 +51,12 @@ export default async function AdminSettings() {
                   <input name="primary_color" type="color" defaultValue={settings.primary_color || "#014242"} className="w-full h-12 px-2 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white cursor-pointer" />
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Qo‘shimcha rang (Accent)</label>
+                  <label className="text-sm font-bold text-gray-700">Qöşimça rang (Accent)</label>
                   <input name="accent_color" type="color" defaultValue={settings.accent_color || "#D18E5B"} className="w-full h-12 px-2 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white cursor-pointer" />
                </div>
                <div className="col-span-2 space-y-2">
                   <label className="text-sm font-bold text-gray-700">Meta Description</label>
-                  <textarea name="meta_description" rows={3} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" defaultValue={settings.meta_description || "Xorazmdagi eng yaxshi yangi qurilgan uylar..."} />
+                  <textarea name="meta_description" rows={3} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" defaultValue={settings.meta_description || "Xorazmdagi eng yaxşi yangi qurilgan uylar..."} />
                </div>
             </div>
          </div>
@@ -69,21 +69,21 @@ export default async function AdminSettings() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Kirish qismi: Sarlavha</label>
-                  <input name="hero_title" type="text" defaultValue={settings.hero_title || "Yangi hayotni biz bilan boshlang!"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <label className="text-sm font-bold text-gray-700">Kiriş qismi: Sarlavha</label>
+                  <input name="hero_title" type="text" defaultValue={settings.hero_title || "Yangi hayotni biz bilan boşlang!"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Kirish qismi: Ta‘rif</label>
-                  <textarea name="hero_desc" rows={2} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" defaultValue={settings.hero_desc || "Eng sifatli qurilish, qulay joylashuv va zamonaviy yechimlar. Orzuingizdagi xonadonlar aynan shu yerda."} />
+                  <label className="text-sm font-bold text-gray-700">Kiriş qismi: Ta‘rif</label>
+                  <textarea name="hero_desc" rows={2} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" defaultValue={settings.hero_desc || "Eng sifatli quriliş, qulay joylaşuv va zamonaviy yeçimlar. Orzuingizdagi xonadonlar aynan şu yerda."} />
                </div>
                <div className="col-span-2 border-t border-gray-100 my-4"></div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Biz haqimizda: Sarlavha (Katta qora yozuv)</label>
-                  <input name="about_title" type="text" defaultValue={settings.about_title || "Zamonaviy va ishonchli qurilish"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <input name="about_title" type="text" defaultValue={settings.about_title || "Zamonaviy va işonçli quriliş"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Biz haqimizda: Asosiy matn</label>
-                  <textarea name="about_desc" rows={4} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" defaultValue={settings.about_desc || "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 50 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzuidagi hayotni topdi."} />
+                  <textarea name="about_desc" rows={4} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" defaultValue={settings.about_desc || "15 yildan ortiq tajribamiz davomida Xorazm böylab 50 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzuidagi hayotni topdi."} />
                </div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Statistika 1: Raqam</label>
@@ -108,9 +108,9 @@ export default async function AdminSettings() {
          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-3 mb-2">
                <Globe className="text-accent" />
-               <h3 className="font-bold text-xl text-primary">Bosh ekran statistikasi</h3>
+               <h3 className="font-bold text-xl text-primary">Boş ekran statistikasi</h3>
             </div>
-            <p className="text-sm text-gray-400 mb-8">Bosh sahifadagi 4 ta raqam (masalan: <b>15 Yil</b> — <b>Tajriba</b>).</p>
+            <p className="text-sm text-gray-400 mb-8">Boş sahifadagi 4 ta raqam (masalan: <b>15 Yil</b> — <b>Tajriba</b>).</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                {[
                  { v: 'hero_stat1_value', vd: '15 Yil', l: 'hero_stat1_label', ld: 'Tajriba' },
@@ -138,13 +138,13 @@ export default async function AdminSettings() {
                <Globe className="text-accent" />
                <h3 className="font-bold text-xl text-primary">Biz haqimizda — afzalliklar</h3>
             </div>
-            <p className="text-sm text-gray-400 mb-8">&quot;Biz haqimizda&quot; bo‘limidagi 4 ta afzallik kartasi (sarlavha + tavsif).</p>
+            <p className="text-sm text-gray-400 mb-8">&quot;Biz haqimizda&quot; bölimidagi 4 ta afzallik kartasi (sarlavha + tavsif).</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                {[
                  { t: 'about_adv1_title', td: 'Xalqaro sifat', d: 'about_adv1_desc', dd: 'Zamonaviy texnologiya va materiallar' },
-                 { t: 'about_adv2_title', td: 'Kafolat', d: 'about_adv2_desc', dd: 'Har bir loyihaga to‘liq kafolat' },
-                 { t: 'about_adv3_title', td: 'O‘z vaqtida', d: 'about_adv3_desc', dd: 'Belgilangan muddatda topshirish' },
-                 { t: 'about_adv4_title', td: 'Qulay to‘lov', d: 'about_adv4_desc', dd: 'Muddatli va ipoteka imkoniyati' },
+                 { t: 'about_adv2_title', td: 'Kafolat', d: 'about_adv2_desc', dd: 'Har bir loyihaga töliq kafolat' },
+                 { t: 'about_adv3_title', td: 'Öz vaqtida', d: 'about_adv3_desc', dd: 'Belgilangan muddatda topşiriş' },
+                 { t: 'about_adv4_title', td: 'Qulay tölov', d: 'about_adv4_desc', dd: 'Muddatli va ipoteka imkoniyati' },
                ].map((a, i) => (
                  <div key={i} className="space-y-2 p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Karta {i + 1}</label>
@@ -165,20 +165,20 @@ export default async function AdminSettings() {
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Telefon raqami</label>
                   <input name="contact_phone" type="text" defaultValue={settings.contact_phone || "+998 91 011 66 66"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
-                  <p className="text-[11px] text-gray-400">Butun saytda ko‘rinadi: menyu, footer, qo‘ng‘iroq tugmasi, aloqa bo‘limlari.</p>
+                  <p className="text-[11px] text-gray-400">Butun saytda körinadi: menyu, footer, qönğiroq tugmasi, aloqa bölimlari.</p>
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Qo‘shimcha telefon (ixtiyoriy)</label>
+                  <label className="text-sm font-bold text-gray-700">Qöşimça telefon (ixtiyoriy)</label>
                   <input name="contact_phone2" type="text" defaultValue={settings.contact_phone2 ?? "+998 97 321 66 66"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
-                  <p className="text-[11px] text-gray-400">Footer&apos;da ikkinchi raqam sifatida. Bo‘sh qoldirilsa ko‘rinmaydi.</p>
+                  <p className="text-[11px] text-gray-400">Footer&apos;da ikkinçi raqam sifatida. Böş qoldirilsa körinmaydi.</p>
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Ish vaqti</label>
-                  <input name="contact_hours" type="text" defaultValue={settings.contact_hours || "Har kuni 09:00 dan 18:00 gacha"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <label className="text-sm font-bold text-gray-700">Iş vaqti</label>
+                  <input name="contact_hours" type="text" defaultValue={settings.contact_hours || "Har kuni 09:00 dan 18:00 gaça"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
                <div className="col-span-2 space-y-2">
                   <label className="text-sm font-bold text-gray-700">Manzil</label>
-                  <input name="contact_address" type="text" defaultValue={settings.contact_address || "Xorazm viloyati, Urganch sh., Ulug‘bek ko‘chasi"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
+                  <input name="contact_address" type="text" defaultValue={settings.contact_address || "Xorazm viloyati, Urganç ş., Uluğbek köçasi"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Xarita — Kenglik (lat)</label>
@@ -187,7 +187,7 @@ export default async function AdminSettings() {
                <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700">Xarita — Uzunlik (lng)</label>
                   <input name="office_lng" type="text" defaultValue={settings.office_lng || "60.599816"} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
-                  <p className="text-[11px] text-gray-400">Yandex/Google xaritadan koordinatani nusxalab qo‘ying.</p>
+                  <p className="text-[11px] text-gray-400">Yandex/Google xaritadan koordinatani nusxalab qöying.</p>
                </div>
             </div>
          </div>
@@ -196,33 +196,33 @@ export default async function AdminSettings() {
          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-3 mb-2">
                <Globe className="text-accent" />
-               <h3 className="font-bold text-xl text-primary">To‘lov shartlari</h3>
+               <h3 className="font-bold text-xl text-primary">Tölov şartlari</h3>
             </div>
-            <p className="text-sm text-gray-400 mb-8">Oylik to‘lov xonalar soniga, boshlang‘ich to‘lov blokka qarab avtomatik ko‘rsatiladi. Bu yerdan barcha shartlarni o‘zgartirishingiz mumkin — sayt darhol shunga moslashadi.</p>
+            <p className="text-sm text-gray-400 mb-8">Oylik tölov xonalar soniga, boşlanğiç tölov blokka qarab avtomatik körsatiladi. Bu yerdan barça şartlarni özgartirişingiz mumkin — sayt darhol şunga moslaşadi.</p>
 
-            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Standart oylik to‘lov (xonalar soniga qarab)</h4>
+            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Standart oylik tölov (xonalar soniga qarab)</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-2">
                {([[1, '1 xonali', '4000000'], [2, '2 xonali', '5000000'], [3, '3 xonali', '6000000'], [4, '4+ xonali', '7000000']] as const).map(([n, label, def]) => (
                   <div key={n} className="space-y-2">
-                     <label className="text-sm font-bold text-gray-700">{label} (so‘m/oy)</label>
+                     <label className="text-sm font-bold text-gray-700">{label} (söm/oy)</label>
                      <input name={`pay_monthly_${n}`} type="number" min={0} step={100000} defaultValue={settings[`pay_monthly_${n}`] || def} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                   </div>
                ))}
             </div>
-            <p className="text-[11px] text-gray-400 mb-8">Saytda boshlang‘ich va oylik to‘lov ko‘rsatiladi; qolgan summani bilish uchun mijoz kontakt qoldiradi.</p>
+            <p className="text-[11px] text-gray-400 mb-8">Saytda boşlanğiç va oylik tölov körsatiladi; qolgan summani biliş uçun mijoz kontakt qoldiradi.</p>
 
-            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Boshlang‘ich to‘lov</h4>
+            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Boşlanğiç tölov</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Boshlang‘ich to‘lov (%) — oddiy bloklar</label>
+                  <label className="text-sm font-bold text-gray-700">Boşlanğiç tölov (%) — oddiy bloklar</label>
                   <input name="pay_down_pct" type="number" min={0} max={90} defaultValue={settings.pay_down_pct || '30'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
             </div>
 
-            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Qat‘iy boshlang‘ich (40 mln)</h4>
+            <h4 className="font-bold text-primary mb-3 text-sm uppercase tracking-wider">Qat‘iy boşlanğiç (40 mln)</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Qat‘iy summa (so‘m)</label>
+                  <label className="text-sm font-bold text-gray-700">Qat‘iy summa (söm)</label>
                   <input name="pay_fixed_amount" type="number" min={0} defaultValue={settings.pay_fixed_amount || '40000000'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
                <div className="space-y-2">
@@ -231,7 +231,7 @@ export default async function AdminSettings() {
                   <p className="text-[11px] text-gray-400">Masalan: 7,8</p>
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Nechanchi qavatdan</label>
+                  <label className="text-sm font-bold text-gray-700">Neçançi qavatdan</label>
                   <input name="pay_fixed_from_floor" type="number" min={1} defaultValue={settings.pay_fixed_from_floor || '7'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
             </div>
@@ -244,7 +244,7 @@ export default async function AdminSettings() {
                   <p className="text-[11px] text-gray-400">Masalan: 10,11</p>
                </div>
                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">Ipoteka bloklarida boshlang‘ich (%)</label>
+                  <label className="text-sm font-bold text-gray-700">Ipoteka bloklarida boşlanğiç (%)</label>
                   <input name="pay_mort_down_pct" type="number" min={0} max={90} defaultValue={settings.pay_mort_down_pct || '15'} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
                </div>
             </div>
@@ -254,17 +254,17 @@ export default async function AdminSettings() {
          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-3 mb-8">
                <Globe className="text-accent" />
-               <h3 className="font-bold text-xl text-primary">Sayt bo‘limlari (Yoqish / O‘chirish)</h3>
+               <h3 className="font-bold text-xl text-primary">Sayt bölimlari (Yoqiş / Öçiriş)</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                {[
-                 { id: 'show_projects', label: 'Loyihalar ro\'yxati' },
+                 { id: 'show_projects', label: 'Loyihalar röyxati' },
                  { id: 'show_search', label: 'Xonadon qidiruvi (filtr)' },
                  { id: 'show_mortgage', label: 'Ipoteka kalkulyatori' },
                  { id: 'show_about', label: 'Biz haqimizda' },
                  { id: 'show_news', label: 'Yangiliklar' },
                  { id: 'show_offices', label: 'Sotuv ofisi (xarita)' },
-                 { id: 'show_contact', label: 'Aloqa bo\'limi' },
+                 { id: 'show_contact', label: 'Aloqa bölimi' },
                ].map(item => (
                  <div key={item.id} className="flex flex-col gap-2 p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <label className="text-sm font-bold text-gray-700 flex justify-between items-center cursor-pointer">
@@ -291,7 +291,7 @@ export default async function AdminSettings() {
             <div className="space-y-6">
                <div className="p-4 bg-primary/5 rounded-2xl flex gap-4 items-center">
                   <InfoIcon className="text-primary shrink-0" size={24} />
-                  <p className="text-sm text-primary/60">Yangi bronlar haqida Telegram orqali bildirishnoma olish uchun bot tokeningizni kiriting.</p>
+                  <p className="text-sm text-primary/60">Yangi bronlar haqida Telegram orqali bildirişnoma oliş uçun bot tokeningizni kiriting.</p>
                </div>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -310,7 +310,7 @@ export default async function AdminSettings() {
       <div className="flex justify-end">
          <button type="submit" className="px-10 py-4 bg-primary text-white font-bold rounded-xl shadow-xl shadow-primary/20 flex items-center gap-3 transform hover:scale-105 transition-all">
             <Save size={20} />
-            O&apos;zgarishlarni saqlash
+            Özgarişlarni saqlaş
          </button>
       </div>
     </form>

@@ -11,7 +11,7 @@ export default function ChangePasswordForm() {
     <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
       <div className="flex items-center gap-3 mb-8">
         <KeyRound className="text-accent" />
-        <h3 className="font-bold text-xl text-primary">Parolni o&apos;zgartirish</h3>
+        <h3 className="font-bold text-xl text-primary">Parolni özgartiriş</h3>
       </div>
 
       <form action={formAction} className="space-y-6" key={state?.success ? 'reset' : 'form'}>
@@ -22,7 +22,7 @@ export default function ChangePasswordForm() {
         )}
         {state?.success && (
           <div className="p-4 bg-success/10 border border-success/20 text-success text-sm rounded-xl font-medium flex items-center gap-2">
-            <CheckCircle2 size={18} /> Parol muvaffaqiyatli o&apos;zgartirildi.
+            <CheckCircle2 size={18} /> Parol muvaffaqiyatli özgartirildi.
           </div>
         )}
 
@@ -44,7 +44,7 @@ export default function ChangePasswordForm() {
         <div className="flex justify-end">
           <button type="submit" disabled={pending} className="px-8 py-3.5 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 flex items-center gap-2 hover:bg-accent transition-all disabled:opacity-50">
             {pending ? <Loader2 size={18} className="animate-spin" /> : <KeyRound size={18} />}
-            Parolni yangilash
+            Parolni yangilaş
           </button>
         </div>
       </form>

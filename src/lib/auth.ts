@@ -70,7 +70,7 @@ export async function login(_prevState: LoginState, formData: FormData): Promise
   // har IP'ga 1 urinishgacha sekinlashadi.
   const ipHasFails = ipFail.open && ipFail.count > 0;
   if ((ipFail.open && ipFail.count >= LOGIN_MAX_FAILS) || (ipHasFails && emailFail.open && emailFail.count >= LOGIN_MAX_FAILS_EMAIL)) {
-    return { error: "Juda ko'p noto'g'ri urinish. 15 daqiqadan keyin qayta urinib ko'ring." };
+    return { error: "Juda köp notöğri uriniş. 15 daqiqadan keyin qayta urinib köring." };
   }
 
   const user = await db.prepare('SELECT id, email, password, session_version FROM users WHERE email = ?').get(email) as
@@ -80,7 +80,7 @@ export async function login(_prevState: LoginState, formData: FormData): Promise
   if (!user || !verifyPassword(password, user.password)) {
     await bumpCounter(ipFail);
     await bumpCounter(emailFail);
-    return { error: "Email yoki parol noto'g'ri!" };
+    return { error: "Email yoki parol notöğri!" };
   }
   if (ipFail.exists) await db.prepare('DELETE FROM settings WHERE key = ?').run(ipFail.key);
 
@@ -117,15 +117,15 @@ export async function changePassword(
   const next = String(formData.get('new_password') || '');
   const confirm = String(formData.get('confirm_password') || '');
 
-  if (!current || !next || !confirm) return { error: "Barcha maydonlarni to'ldiring." };
-  if (next.length < 6) return { error: "Yangi parol kamida 6 ta belgidan iborat bo'lsin." };
+  if (!current || !next || !confirm) return { error: "Barça maydonlarni töldiring." };
+  if (next.length < 6) return { error: "Yangi parol kamida 6 ta belgidan iborat bölsin." };
   if (next !== confirm) return { error: 'Yangi parollar bir-biriga mos kelmadi.' };
 
   const user = await db.prepare('SELECT id, password FROM users WHERE id = ?').get(userId) as
     | { id: number; password: string }
     | undefined;
   if (!user || !verifyPassword(current, user.password)) {
-    return { error: "Joriy parol noto'g'ri." };
+    return { error: "Joriy parol notöğri." };
   }
 
   // Parol almashdi — boshqa barcha sessiyalar bekor; joriy qurilmaga yangi cookie beramiz

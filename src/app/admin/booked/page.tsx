@@ -24,7 +24,7 @@ export default async function AdminBooked() {
     <div className="space-y-6">
       <div>
          <h1 className="text-3xl font-bold text-primary mb-2">Bron qilingan xonadonlar</h1>
-         <p className="text-gray-400">Hozirda band qilib qo'yilgan (sotilishi kutilayotgan) xonadonlar va mijozlar ro'yxati.</p>
+         <p className="text-gray-400">Hozirda band qilib qöyilgan (sotilişi kutilayotgan) xonadonlar va mijozlar röyxati.</p>
       </div>
 
       <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
@@ -40,7 +40,7 @@ export default async function AdminBooked() {
             <tbody>
                {booked.length === 0 ? (
                  <tr>
-                   <td colSpan={4} className="py-8 text-center text-gray-400">Hozircha bron qilingan xonadonlar yo'q</td>
+                   <td colSpan={4} className="py-8 text-center text-gray-400">Hozirça bron qilingan xonadonlar yöq</td>
                  </tr>
                ) : (
                  booked.map((book) => (

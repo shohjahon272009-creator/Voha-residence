@@ -23,7 +23,7 @@ export default function AddSaleModal({ projects, apartments }: { projects: any[]
       await addSale(formData);
       setIsOpen(false);
     } catch {
-      alert("Sotuv saqlanmadi: xonadon allaqachon sotilgan bo'lishi mumkin. Sahifani yangilab, qayta urinib ko'ring.");
+      alert("Sotuv saqlanmadi: xonadon allaqaçon sotilgan bölişi mumkin. Sahifani yangilab, qayta urinib köring.");
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ export default function AddSaleModal({ projects, apartments }: { projects: any[]
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-md">
             <div className="flex justify-between items-center p-6 border-b border-gray-100">
-              <h2 className="text-xl font-bold text-primary">Yangi sotuv qo&apos;shish</h2>
+              <h2 className="text-xl font-bold text-primary">Yangi sotuv qöşiş</h2>
               <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600">
                 <X size={24} />
               </button>
@@ -70,7 +70,7 @@ export default function AddSaleModal({ projects, apartments }: { projects: any[]
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 mb-1">Bo&apos;sh xonadonlar</label>
+                <label className="block text-xs font-bold text-gray-500 mb-1">Böş xonadonlar</label>
                 <select 
                   required 
                   name="apartment_id" 
@@ -83,7 +83,7 @@ export default function AddSaleModal({ projects, apartments }: { projects: any[]
                   ))}
                 </select>
                 {selectedProject && availableApartments.length === 0 && (
-                  <p className="text-xs text-danger mt-1">Bu loyihada bo&apos;sh xonadon qolmagan!</p>
+                  <p className="text-xs text-danger mt-1">Bu loyihada böş xonadon qolmagan!</p>
                 )}
               </div>
 
@@ -99,10 +99,10 @@ export default function AddSaleModal({ projects, apartments }: { projects: any[]
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                 <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">
-                  Bekor qilish
+                  Bekor qiliş
                 </button>
                 <button type="submit" disabled={loading || availableApartments.length === 0} className="px-5 py-2 bg-primary text-white font-bold rounded-lg hover:bg-accent disabled:opacity-50">
-                  {loading ? 'Saqlanmoqda...' : 'Saqlash'}
+                  {loading ? 'Saqlanmoqda...' : 'Saqlaş'}
                 </button>
               </div>
             </form>

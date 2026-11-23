@@ -14,7 +14,7 @@ import { VOHA_PATH, RESIDENCE_PATH } from '@/components/common/VohaLogo';
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 const T: Record<string, { kicker: string; title: string; cta: string; call: string }> = {
-  uz: { kicker: 'Keyingi qadam', title: "Orzuingizdagi uy shu yerda", cta: "Xonadon tanlash", call: "Qo'ng'iroq qilish" },
+  uz: { kicker: 'Keyingi qadam', title: "Orzuingizdagi uy şu yerda", cta: "Xonadon tanlaş", call: "Qönğiroq qiliş" },
   ru: { kicker: 'Следующий шаг', title: 'Дом вашей мечты — здесь', cta: 'Выбрать квартиру', call: 'Позвонить' },
   en: { kicker: 'Next step', title: 'Your dream home is here', cta: 'Choose an apartment', call: 'Call us' },
 };

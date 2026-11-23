@@ -35,13 +35,13 @@ export function getFaq(lang: string, s: Record<string, string>, c: { phone: stri
     ];
   }
   return [
-    { q: 'Voha Residence qayerda joylashgan?', a: `Voha Residence bloklari Urganch shahri markazida (Xorazm viloyati), Shovot kanali bo‘yida joylashgan. Sotuv ofisi: ${c.address}.` },
-    { q: 'Oylik to‘lov qancha?', a: `Oylik to‘lov standart va xonalar soniga bog‘liq: 1 xonali — ${m[0]} mln so‘m, 2 xonali — ${m[1]} mln, 3 xonali — ${m[2]} mln, 4 va undan ko‘p xonali — ${m[3]} mln so‘m.` },
-    { q: 'Xonadon narxi qancha?', a: 'Narx blok, qavat va maydonga bog‘liq. Aniq narx va qolgan summani menejer aytadi: saytda telefon raqamingizni qoldiring yoki qo‘ng‘iroq qiling.' },
+    { q: 'Voha Residence qayerda joylaşgan?', a: `Voha Residence bloklari Urganç şahri markazida (Xorazm viloyati), Şovot kanali böyida joylaşgan. Sotuv ofisi: ${c.address}.` },
+    { q: 'Oylik tölov qança?', a: `Oylik tölov standart va xonalar soniga boğliq: 1 xonali — ${m[0]} mln söm, 2 xonali — ${m[1]} mln, 3 xonali — ${m[2]} mln, 4 va undan köp xonali — ${m[3]} mln söm.` },
+    { q: 'Xonadon narxi qança?', a: 'Narx blok, qavat va maydonga boğliq. Aniq narx va qolgan summani menejer aytadi: saytda telefon raqamingizni qoldiring yoki qönğiroq qiling.' },
     { q: 'Kadastr hujjatlari tayyormi?', a: 'Ha. Tayyor bloklardagi xonadonlar kadastr hujjatlari bilan sotiladi.' },
     { q: 'Xonadonlar ta’mirlimi?', a: 'Ikki xil: ta’mirsiz va tayyor ta’mirli xonadonlar bor.' },
-    { q: 'Xonadonni borib ko‘rsa bo‘ladimi?', a: 'Ha. Sayt yoki telefon orqali ko‘rishga yoziling; qurilish maydonida ochiq eshiklar kunlari ham o‘tkaziladi.' },
-    { q: 'Sotuv bo‘limi bilan qanday bog‘lanaman?', a: `Telefonlar: ${phones}. Ish vaqti: ${c.hours}. Telegram: @voharesidence, Instagram: @voha_residence.` },
+    { q: 'Xonadonni borib körsa böladimi?', a: 'Ha. Sayt yoki telefon orqali körişga yoziling; quriliş maydonida oçiq eşiklar kunlari ham ötkaziladi.' },
+    { q: 'Sotuv bölimi bilan qanday boğlanaman?', a: `Telefonlar: ${phones}. Iş vaqti: ${c.hours}. Telegram: @voharesidence, Instagram: @voha_residence.` },
   ];
 }
 

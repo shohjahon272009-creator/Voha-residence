@@ -11,24 +11,24 @@ export const dictionaries = {
       apartments: 'Xonadonlar',
       news: 'Yangiliklar',
       contact: 'Aloqa',
-      order_call: 'Qo\'ng\'iroq buyurtma qilish'
+      order_call: 'Qönğiroq buyurtma qiliş'
     },
     hero: {
-      details: 'Batafsil ko\'rish',
-      price_from: 'dan boshlab'
+      details: 'Batafsil köriş',
+      price_from: 'dan boşlab'
     },
     projects: {
       status: {
         ongoing: 'Jarayonda',
-        completed: 'Topshirilgan',
+        completed: 'Topşirilgan',
         soon: 'Tez kunda',
         soldOut: 'Sotib tugatilgan',
         fewDaysLeft: 'Sanoqli kunlar qoldi',
         daysLeft: 'kun qoldi'
       },
-      available: 'Bo\'sh xonadonlar',
+      available: 'Böş xonadonlar',
       total: 'Jami xonadonlar',
-      more: 'Ko\'proq'
+      more: 'Köproq'
     },
     apartments: {
       filter: {
@@ -42,46 +42,46 @@ export const dictionaries = {
         sold: 'Band',
         booked: 'Bronlangan'
       },
-      book: 'Bron qilish'
+      book: 'Bron qiliş'
     },
     booking: {
-      title: 'Xonadonni bron qilish',
+      title: 'Xonadonni bron qiliş',
       form: {
         name: 'Ism',
         phone: 'Telefon raqami',
-        payment: 'To\'lov turi',
+        payment: 'Tölov turi',
         note: 'Izoh',
-        submit: 'Bron qilish'
+        submit: 'Bron qiliş'
       },
-      success: 'Menejer 30 daqiqa ichida siz bilan bog\'lanadi'
+      success: 'Menejer 30 daqiqa içida siz bilan boğlanadi'
     },
     tour3d: {
-      view3d: '3D\'da ko\'rish',
+      view3d: '3D\'da köriş',
       title: 'Mavze 3D turi',
       concept: 'Konsept',
-      conceptNote: 'Konsept ko\'rinish: bloklar joylashuvi taxminiy, haqiqiy model tez orada',
+      conceptNote: 'Konsept köriniş: bloklar joylaşuvi taxminiy, haqiqiy model tez orada',
       loading: '3D sahna yuklanmoqda…',
-      noWebgl: 'Qurilmangiz 3D ko\'rinishni qo\'llamaydi. Bloklar ro\'yxati:',
-      error: 'Ma\'lumot yuklanmadi. Sahifani yangilab ko\'ring.',
-      hint: 'Aylantirish — barmoq yoki sichqoncha, yaqinlashtirish — ikki barmoq yoki g\'ildirak',
-      available: 'bo\'sh',
+      noWebgl: 'Qurilmangiz 3D körinişni qöllamaydi. Bloklar röyxati:',
+      error: 'Ma\'lumot yuklanmadi. Sahifani yangilab köring.',
+      hint: 'Aylantiriş — barmoq yoki siçqonça, yaqinlaştiriş — ikki barmoq yoki ğildirak',
+      available: 'böş',
       total: 'jami',
       floors: 'qavat',
       apartments: 'Xonadonlar',
       noApartments: 'Xonadonlar ma\'lumoti hali kiritilmagan',
       projectPage: 'Loyiha sahifasi',
-      book: 'Ko\'rishga yozilish',
-      close: 'Yopish',
+      book: 'Körişga yoziliş',
+      close: 'Yopiş',
       floor: 'Qavat',
       number: '№',
       rooms: 'Xona',
       area: 'm²',
       status: 'Holat',
-      plan: 'Chizma',
-      priceOnRequest: 'Narx — menejerdan so\'rang',
+      plan: 'Çizma',
+      priceOnRequest: 'Narx — menejerdan sörang',
       soon: 'Tez kunda',
-      overview: 'Umumiy ko\'rinish',
-      home: 'Bosh sahifa'
+      overview: 'Umumiy köriniş',
+      home: 'Boş sahifa'
     }
   },
   ru: {

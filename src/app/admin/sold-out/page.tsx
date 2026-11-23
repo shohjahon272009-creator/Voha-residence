@@ -23,7 +23,7 @@ export default async function AdminSoldOutProjects() {
       <div className="flex items-center justify-between">
          <div>
             <h1 className="text-3xl font-bold text-primary mb-2">Sotib tugatilgan loyihalar</h1>
-            <p className="text-gray-400 text-sm">Barcha xonadonlari to'liq sotilgan va band qilingan loyihalar ro'yxati.</p>
+            <p className="text-gray-400 text-sm">Barça xonadonlari töliq sotilgan va band qilingan loyihalar röyxati.</p>
          </div>
          <AddProjectModal isSoldOut={true} />
       </div>
@@ -78,7 +78,7 @@ export default async function AdminSoldOutProjects() {
                        </td>
                       <td className="px-8 py-5">
                          <div className="text-sm">
-                           <span className="font-bold text-success">0 bo'sh</span>
+                           <span className="font-bold text-success">0 böş</span>
                            <span className="text-gray-400"> / {apts.length} jami</span>
                          </div>
                       </td>

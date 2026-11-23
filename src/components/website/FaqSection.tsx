@@ -3,7 +3,7 @@ import { faqJsonLd, ldString, type Faq } from '@/lib/faq';
 
 // Ko'p beriladigan savollar: sahifada ochiladigan ro'yxat + qidiruv tizimlari uchun FAQPage ma'lumoti
 export default function FaqSection({ lang, items }: { lang: string; items: Faq[] }) {
-  const title = lang === 'ru' ? 'Частые вопросы' : lang === 'en' ? 'Frequently asked questions' : 'Ko‘p beriladigan savollar';
+  const title = lang === 'ru' ? 'Частые вопросы' : lang === 'en' ? 'Frequently asked questions' : 'Köp beriladigan savollar';
   return (
     <section id="faq" className="py-20 px-6">
       <div className="max-container max-w-4xl">

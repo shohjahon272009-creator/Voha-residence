@@ -84,7 +84,7 @@ export default function Sidebar({
       <form action={logout} className="p-6">
          <button type="submit" className="flex items-center gap-3 w-full px-4 py-3 text-white/50 hover:text-danger hover:bg-danger/5 rounded-xl transition-all font-medium text-sm">
             <LogOut size={20} />
-            Chiqish
+            Çiqiş
          </button>
       </form>
     </aside>

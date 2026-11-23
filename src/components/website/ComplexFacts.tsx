@@ -13,20 +13,20 @@ const INTERVIEW_URL = 'https://youtu.be/sH9SmnEh2Ik';
 const T = {
   uz: {
     kicker: 'Majmua haqida',
-    title: 'Shahar ichida, kanal bo‘yida',
-    lead: 'Voha Residence 15 yildan beri Xorazmda quradi. Urganchdagi bloklar shahar markazida: universitet, maktab, yashil bog‘ va do‘konlar yonida.',
-    forBuyer: 'Xaridor uchun',
+    title: 'Şahar içida, kanal böyida',
+    lead: 'Voha Residence 15 yildan beri Xorazmda quradi. Urgançdagi bloklar şahar markazida: universitet, maktab, yaşil boğ va dökonlar yonida.',
+    forBuyer: 'Xaridor uçun',
     points: [
       ['Kadastr hujjatlari tayyor', 'Tayyor bloklardagi xonadonlar kadastri bilan sotiladi.'],
-      ['Tayyor ta’mirli xonadonlar', 'Ta’mirsiz ham, tayyor ta’mir bilan ham tanlash mumkin.'],
-      ['Muddatli to‘lov', 'Boshlang‘ich to‘lovdan keyin har oy standart summa.'],
-      ['Qurilishni o‘zingiz ko‘rasiz', 'Ochiq eshiklar kunida binoga chiqib, xonadonni ko‘rish mumkin.'],
+      ['Tayyor ta’mirli xonadonlar', 'Ta’mirsiz ham, tayyor ta’mir bilan ham tanlaş mumkin.'],
+      ['Muddatli tölov', 'Boşlanğiç tölovdan keyin har oy standart summa.'],
+      ['Qurilişni özingiz körasiz', 'Oçiq eşiklar kunida binoga çiqib, xonadonni köriş mumkin.'],
     ],
-    interview: 'Quruvchi bilan ochiq suhbat (YouTube)',
+    interview: 'Quruvçi bilan oçiq suhbat (YouTube)',
     cols: (p: { total: number; done: number; selling: number; monthlyFrom: string }) => [
-      { k: 'Joylashuv', v: 'Urganch', d: 'Shovot kanali bo‘yidagi bloklar. Aniq manzil va ko‘rish vaqtini menejer aytadi.' },
-      { k: 'Loyihalar', v: `${p.total} ta`, d: `${p.done} tasi topshirilgan, ${p.selling} tasida hozir sotuv bor.` },
-      { k: 'To‘lov', v: `${p.monthlyFrom} dan`, d: 'Oyiga standart to‘lov, xonalar soniga qarab. Qolgan summani menejer hisoblaydi.' },
+      { k: 'Joylaşuv', v: 'Urganç', d: 'Şovot kanali böyidagi bloklar. Aniq manzil va köriş vaqtini menejer aytadi.' },
+      { k: 'Loyihalar', v: `${p.total} ta`, d: `${p.done} tasi topşirilgan, ${p.selling} tasida hozir sotuv bor.` },
+      { k: 'Tölov', v: `${p.monthlyFrom} dan`, d: 'Oyiga standart tölov, xonalar soniga qarab. Qolgan summani menejer hisoblaydi.' },
     ],
   },
   ru: {

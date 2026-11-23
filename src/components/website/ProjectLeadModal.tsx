@@ -11,11 +11,11 @@ const T: Record<Locale, {
   submit: string; sending: string; success: string; successSub: string; close: string; err: string;
 }> = {
   uz: {
-    title: "Narxini bilish", sub: "loyihasi bo'yicha maxsus taklif va aniq narxni oling",
+    title: "Narxini biliş", sub: "loyihasi böyiça maxsus taklif va aniq narxni oling",
     name: "Ismingiz", namePh: "F.I.SH (ixtiyoriy)", phone: "Telefon raqami", msg: "Xabar (ixtiyoriy)",
-    msgPh: "Qiziqtirgan savolingizni yozing…", submit: "So'rov yuborish", sending: "Yuborilmoqda…",
-    success: "So'rovingiz qabul qilindi!", successSub: "Menejerlarimiz tez orada bog'lanib, narxni aytishadi.",
-    close: "Yopish", err: "Xatolik yuz berdi. Qaytadan urinib ko'ring.",
+    msgPh: "Qiziqtirgan savolingizni yozing…", submit: "Sörov yuboriş", sending: "Yuborilmoqda…",
+    success: "Sörovingiz qabul qilindi!", successSub: "Menejerlarimiz tez orada boğlanib, narxni aytişadi.",
+    close: "Yopiş", err: "Xatolik yuz berdi. Qaytadan urinib köring.",
   },
   ru: {
     title: "Узнать цену", sub: "— получите спецпредложение и точную цену по проекту",
@@ -35,7 +35,7 @@ const T: Record<Locale, {
 
 // "Ko'rishga yozilish" varianti (3D turdan): sarlavha va izoh boshqa, oqim o'sha submitContact
 const VIEWING: Record<Locale, { title: string; sub: string }> = {
-  uz: { title: "Ko'rishga yozilish", sub: "— ko'rishga yoziling, menejer vaqtni kelishib oladi" },
+  uz: { title: "Körişga yoziliş", sub: "— körişga yoziling, menejer vaqtni kelişib oladi" },
   ru: { title: 'Записаться на просмотр', sub: '— запишитесь на просмотр блока, менеджер согласует время' },
   en: { title: 'Book a viewing', sub: '— book a viewing of this block, a manager will arrange the time' },
 };
@@ -83,8 +83,8 @@ export default function ProjectLeadModal({
     fd.set(
       'message',
       variant === 'viewing'
-        ? `🏠 ${tag || projectName} — ko'rishga yozilish. ${userMsg}`.trim()
-        : `🏢 ${tag ? `${tag} — ` : ''}${projectName} — narx so'rovi. ${userMsg}`.trim(),
+        ? `🏠 ${tag || projectName} — körişga yoziliş. ${userMsg}`.trim()
+        : `🏢 ${tag ? `${tag} — ` : ''}${projectName} — narx sörovi. ${userMsg}`.trim(),
     );
     try {
       const res = await submitContact(fd);

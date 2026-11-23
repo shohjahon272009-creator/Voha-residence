@@ -30,7 +30,7 @@ function Block({ title, source, children }: { title: string; source: string; chi
   );
 }
 
-const ErrorNote = () => <p role="alert" className="text-sm text-st-error bg-st-error-bg rounded-xl p-4">Ma&apos;lumot olinmadi. Sahifani yangilang; takrorlansa server jurnalini tekshiring.</p>;
+const ErrorNote = () => <p role="alert" className="text-sm text-st-error bg-st-error-bg rounded-xl p-4">Ma&apos;lumot olinmadi. Sahifani yangilang; takrorlansa server jurnalini tekşiring.</p>;
 
 function LeadsChart({ data }: { data: DayCount[] }) {
   const max = Math.max(1, ...data.map((d) => d.total));
@@ -41,7 +41,7 @@ function LeadsChart({ data }: { data: DayCount[] }) {
   return (
     <figure>
       <svg viewBox="0 0 100 52" preserveAspectRatio="none" className="w-full h-48" role="img"
-        aria-label={`Kunlik arizalar: jami ${total} ta, eng ko'p kunda ${max} ta`}>
+        aria-label={`Kunlik arizalar: jami ${total} ta, eng köp kunda ${max} ta`}>
         {[0.5, 1].map((f) => <line key={f} x1="0" x2="100" y1={46 - 44 * f} y2={46 - 44 * f} stroke="#E2DACB" strokeWidth="0.2" />)}
         {data.map((d, i) => {
           const hA = (44 * d.apartment) / max, hG = (44 * d.general) / max;
@@ -60,14 +60,14 @@ function LeadsChart({ data }: { data: DayCount[] }) {
       <figcaption className="mt-4 flex flex-wrap gap-5 text-sm text-ink-muted">
         <span className="inline-flex items-center gap-2"><i className="w-3 h-3 rounded-sm bg-[#014242]" /> Xonadon arizasi</span>
         <span className="inline-flex items-center gap-2"><i className="w-3 h-3 rounded-sm bg-[#D18E5B]" /> Umumiy murojaat</span>
-        <span>Birlik: ariza (dona) · eng ko&apos;p kunda {max} ta · sana UTC</span>
+        <span>Birlik: ariza (dona) · eng köp kunda {max} ta · sana UTC</span>
       </figcaption>
     </figure>
   );
 }
 
 function Stock({ rows }: { rows: ProjectStock[] }) {
-  if (!rows.length) return <p className="text-sm text-ink-muted">Sotuvdagi blok yo&apos;q.</p>;
+  if (!rows.length) return <p className="text-sm text-ink-muted">Sotuvdagi blok yöq.</p>;
   return (
     <ul className="space-y-4">
       {rows.map((r) => (
@@ -83,7 +83,7 @@ function Stock({ rows }: { rows: ProjectStock[] }) {
               <span className="bg-st-sold" style={{ width: `${(100 * r.sold) / r.total}%` }} />
             </>}
           </div>
-          <p className="mt-1.5 text-xs text-ink-muted">● Bo&apos;sh {r.free} · ◐ Bron {r.reserved} · ✕ Sotilgan {r.sold}</p>
+          <p className="mt-1.5 text-xs text-ink-muted">● Böş {r.free} · ◐ Bron {r.reserved} · ✕ Sotilgan {r.sold}</p>
         </li>
       ))}
     </ul>
@@ -91,9 +91,9 @@ function Stock({ rows }: { rows: ProjectStock[] }) {
 }
 
 function Funnel({ f, days }: { f: AmoFunnel; days: number }) {
-  if (f.state === 'off') return <p className="text-sm text-ink-muted">amoCRM ulanmagan. Ulash: <code>deploy/set-amocrm-token.sh</code>.</p>;
+  if (f.state === 'off') return <p className="text-sm text-ink-muted">amoCRM ulanmagan. Ulaş: <code>deploy/set-amocrm-token.sh</code>.</p>;
   if (f.state === 'error') return <p role="alert" className="text-sm text-st-error bg-st-error-bg rounded-xl p-4">amoCRM javob bermadi: {f.message}</p>;
-  if (!f.total) return <p className="text-sm text-ink-muted">Oxirgi {days} kunda amoCRM&apos;da &quot;Sayt&quot; lidi yo&apos;q.</p>;
+  if (!f.total) return <p className="text-sm text-ink-muted">Oxirgi {days} kunda amoCRM&apos;da &quot;Sayt&quot; lidi yöq.</p>;
   const max = Math.max(1, ...f.stages.map((s) => s.n));
   return (
     <>
@@ -127,7 +127,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
         <div>
           <h1 className="text-3xl font-bold text-primary">Sayt statistikasi</h1>
           <p className="text-sm text-ink-muted mt-1">
-            Lidlar bilan ishlash (bosqichlar, mijoz kartasi) — amoCRM&apos;da.
+            Lidlar bilan işlaş (bosqiçlar, mijoz kartasi) — amoCRM&apos;da.
             {isDemo && <span className="ml-2 px-2 py-0.5 rounded-full bg-st-reserved-bg text-st-reserved font-bold">DEMO baza</span>}
           </p>
         </div>
@@ -149,7 +149,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
       <dl className="grid gap-4 sm:grid-cols-3">
         {[
           { k: `Arizalar (${days} kun)`, v: leadsTotal, s: 'sayt bazasi' },
-          { k: 'Bo‘sh xonadonlar (hozir)', v: freeTotal, s: 'sayt bazasi, Sale House sinxroni' },
+          { k: 'Böş xonadonlar (hozir)', v: freeTotal, s: 'sayt bazasi, Sale House sinxroni' },
           { k: `amoCRM'dagi sayt lidlari (${days} kun)`, v: funnel.state === 'ok' ? funnel.total : null, s: 'amoCRM' },
         ].map((c) => (
           <div key={c.k} className="bg-white rounded-2xl border border-gray-200 p-5">
@@ -173,13 +173,13 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
         </Block>
       </div>
 
-      <Block title="Arizalar holati (sayt ichida)" source={`Manba: sayt bazasi · oxirgi ${days} kun`}>
+      <Block title="Arizalar holati (sayt içida)" source={`Manba: sayt bazasi · oxirgi ${days} kun`}>
         {byStatus.ok ? (
           byStatus.v.length ? (
             <ul className="flex flex-wrap gap-3 text-sm">
               {byStatus.v.map((s) => <li key={s.status} className="px-3 py-1.5 rounded-full bg-gray-100 text-primary">{s.status}: <b className="tabular-nums">{s.n}</b></li>)}
             </ul>
-          ) : <p className="text-sm text-ink-muted">Bu davrda ariza yo&apos;q.</p>
+          ) : <p className="text-sm text-ink-muted">Bu davrda ariza yöq.</p>
         ) : <ErrorNote />}
       </Block>
     </div>

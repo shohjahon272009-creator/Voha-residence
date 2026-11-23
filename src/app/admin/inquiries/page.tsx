@@ -19,7 +19,7 @@ export default async function AdminInquiries() {
     <div className="space-y-6">
       <div>
          <h1 className="text-3xl font-bold text-primary mb-2">Mijozlar murojaati</h1>
-         <p className="text-gray-400">Saytdagi "Biz bilan bog'lanish" formasi orqali kelgan barcha savol va murojaatlar ro'yxati.</p>
+         <p className="text-gray-400">Saytdagi "Biz bilan boğlaniş" formasi orqali kelgan barça savol va murojaatlar röyxati.</p>
       </div>
 
       <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
@@ -35,7 +35,7 @@ export default async function AdminInquiries() {
             <tbody>
                {messages.length === 0 ? (
                  <tr>
-                   <td colSpan={4} className="py-8 text-center text-gray-400">Hozircha murojaatlar yo'q</td>
+                   <td colSpan={4} className="py-8 text-center text-gray-400">Hozirça murojaatlar yöq</td>
                  </tr>
                ) : (
                  messages.map((m) => (
@@ -52,7 +52,7 @@ export default async function AdminInquiries() {
                          </a>
                       </td>
                       <td className="py-4 max-w-xs text-sm text-gray-500">
-                         {m.note ? m.note : <span className="italic text-gray-300">Xabar matni yo'q</span>}
+                         {m.note ? m.note : <span className="italic text-gray-300">Xabar matni yöq</span>}
                       </td>
                       <td className="py-4 text-right text-sm text-gray-500">
                          <div className="flex items-center justify-end gap-1.5">

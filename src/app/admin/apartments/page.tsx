@@ -26,25 +26,25 @@ export default async function AdminApartments() {
     <div className="space-y-10">
       <div>
          <h1 className="text-3xl font-bold text-primary mb-2">Xonadonlar</h1>
-         <p className="text-gray-400 text-sm">Barcha xonadonlar holati va ma'lumotlari.</p>
+         <p className="text-gray-400 text-sm">Barça xonadonlar holati va ma'lumotlari.</p>
       </div>
 
       {/* Saytda ko'rsatish/yashirish — bir bosishda */}
       <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-         <h3 className="font-bold text-lg text-primary mb-1">Asosiy saytda ko‘rsatish</h3>
-         <p className="text-gray-400 text-xs mb-5">Bu yerdan xonadonlar bo‘limlarini saytda yoqish yoki o‘chirish mumkin — darhol qo‘llanadi.</p>
+         <h3 className="font-bold text-lg text-primary mb-1">Asosiy saytda körsatiş</h3>
+         <p className="text-gray-400 text-xs mb-5">Bu yerdan xonadonlar bölimlarini saytda yoqiş yoki öçiriş mumkin — darhol qöllanadi.</p>
          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SiteVisibilityToggle
               settingKey="show_search"
               initialOn={settings.show_search !== 'false'}
-              label="Xonadon tanlash (qidiruv)"
-              hint="filtr + chizma"
+              label="Xonadon tanlaş (qidiruv)"
+              hint="filtr + çizma"
             />
             <SiteVisibilityToggle
               settingKey="show_locations"
               initialOn={settings.show_locations !== 'false'}
-              label="Joylashuv bo‘yicha filtr"
-              hint="Maktab, park, suv bo‘yida ..."
+              label="Joylaşuv böyiça filtr"
+              hint="Maktab, park, suv böyida ..."
             />
          </div>
       </div>

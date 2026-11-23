@@ -38,7 +38,7 @@ export default function EditProjectModal({ project }: { project: any }) {
       await updateProject(project.id, formData);
       setIsOpen(false);
     } catch (err) {
-      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib ko'ring.");
+      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib köring.");
     } finally {
       setLoading(false);
     }
@@ -89,7 +89,7 @@ export default function EditProjectModal({ project }: { project: any }) {
       <button 
         onClick={() => setIsOpen(true)}
         className="p-2 text-gray-400 hover:text-accent hover:bg-accent/5 rounded-lg transition-all" 
-        title="Tahrirlash"
+        title="Tahrirlaş"
       >
         <Edit2 size={16} />
       </button>
@@ -99,7 +99,7 @@ export default function EditProjectModal({ project }: { project: any }) {
           <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center p-6 border-b border-gray-100">
               <div className="flex items-center gap-4">
-                <h2 className="text-xl font-bold text-primary">Loyihani Tahrirlash</h2>
+                <h2 className="text-xl font-bold text-primary">Loyihani Tahrirlaş</h2>
                 {translating && <span className="text-xs font-bold text-accent flex items-center gap-1"><Loader2 size={14} className="animate-spin" /> Tarjima qilinmoqda...</span>}
               </div>
               <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600">
@@ -125,7 +125,7 @@ export default function EditProjectModal({ project }: { project: any }) {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-1">Shahar</label>
+                  <label className="block text-xs font-bold text-gray-500 mb-1">Şahar</label>
                   <input required name="city" type="text" defaultValue={project.city} className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                 </div>
                 <div>
@@ -141,7 +141,7 @@ export default function EditProjectModal({ project }: { project: any }) {
                            <option value="Jarayonda">Jarayonda</option>
                            <option value="Tez kunda">Tez kunda</option>
                            <option value="Sanoqli kunlar qoldi">Sanoqli kunlar qoldi</option>
-                           <option value="Topshirilgan">Topshirilgan</option>
+                           <option value="Topshirilgan">Topşirilgan</option>
                         </select>
                      </div>
                      {status === 'Sanoqli kunlar qoldi' && (
@@ -166,7 +166,7 @@ export default function EditProjectModal({ project }: { project: any }) {
                 <input type="checkbox" name="is_sold_out" value="true" defaultChecked={Boolean(project.is_sold_out)} className="w-5 h-5 accent-primary rounded" />
                 <div>
                   <span className="text-sm font-bold text-primary block">Sotib tugatilgan</span>
-                  <span className="text-[11px] text-gray-400">Belgilansa: saytda &quot;Sotib tugatilgan&quot; deb ko&apos;rsatiladi va xonadon tanlash bo&apos;limida chiqmaydi.</span>
+                  <span className="text-[11px] text-gray-400">Belgilansa: saytda &quot;Sotib tugatilgan&quot; deb körsatiladi va xonadon tanlaş bölimida çiqmaydi.</span>
                 </div>
               </label>
 
@@ -176,13 +176,13 @@ export default function EditProjectModal({ project }: { project: any }) {
                 </div>
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 mb-1">
-                    Galereyaga rasm qo&apos;shish <span className="text-gray-300 font-normal">— ixtiyoriy</span>
+                    Galereyaga rasm qöşiş <span className="text-gray-300 font-normal">— ixtiyoriy</span>
                     {Array.isArray(project.gallery) && project.gallery.length > 0 && (
                       <span className="ml-2 text-accent">(hozir {project.gallery.length} ta rasm bor)</span>
                     )}
                   </label>
                   <input type="file" name="gallery_images" accept="image/*" multiple className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-accent/10 file:text-accent hover:file:bg-accent/20 cursor-pointer" />
-                  <p className="text-[11px] text-gray-400 mt-1">Tanlangan rasmlar mavjud galereyaga qo&apos;shiladi (bir nechta tanlash mumkin).</p>
+                  <p className="text-[11px] text-gray-400 mt-1">Tanlangan rasmlar mavjud galereyaga qöşiladi (bir neçta tanlaş mumkin).</p>
                 </div>
                 <div className="col-span-2 space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
                   <label className="block text-xs font-bold text-gray-600">🌐 360° Virtual Tur (ixtiyoriy)</label>
@@ -190,22 +190,22 @@ export default function EditProjectModal({ project }: { project: any }) {
                     <div className="flex flex-wrap items-center gap-3">
                       {/* eslint-disable-next-line @next/next/no-img-element -- admin oldindan ko'rinishi: data URL / tashqi panorama */}
                       <img src={project.virtual_tour_url} alt="360" className="w-24 h-14 object-cover rounded-lg border border-gray-200" />
-                      <span className="text-[11px] text-gray-400">Joriy panorama rasm. Yangisini yuklasangiz, almashtiriladi.</span>
+                      <span className="text-[11px] text-gray-400">Joriy panorama rasm. Yangisini yuklasangiz, almaştiriladi.</span>
                       <label className="flex items-center gap-1.5 text-[11px] font-bold text-danger">
-                        <input type="checkbox" name="virtual_tour_remove" value="1" /> O&apos;chirish
+                        <input type="checkbox" name="virtual_tour_remove" value="1" /> Öçiriş
                       </label>
                     </div>
                   )}
                   <div>
-                    <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Panorama rasm yuklash</span>
+                    <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Panorama rasm yuklaş</span>
                     <input type="file" name="virtual_tour_image" accept="image/*" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-accent/10 file:text-accent hover:file:bg-accent/20 cursor-pointer" />
-                    <p className="text-[11px] text-gray-400 mt-1">360° (panorama / equirectangular) rasm yuklang — foydalanuvchi uni aylantirib ko&apos;radi.</p>
+                    <p className="text-[11px] text-gray-400 mt-1">360° (panorama / equirectangular) rasm yuklang — foydalanuvçi uni aylantirib köradi.</p>
                   </div>
                   <div className="flex items-center gap-3 text-[10px] font-bold text-gray-300">
                     <span className="h-px bg-gray-200 flex-1" /> YOKI <span className="h-px bg-gray-200 flex-1" />
                   </div>
                   <div>
-                    <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tashqi tur havolasi</span>
+                    <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Taşqi tur havolasi</span>
                     <input type="text" inputMode="url" name="virtual_tour_url" defaultValue={/^https?:\/\//i.test(project.virtual_tour_url || '') ? project.virtual_tour_url : ''} placeholder="https://... (atlasvr, kuula, momento360 va h.k.)" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                 </div>
@@ -214,24 +214,24 @@ export default function EditProjectModal({ project }: { project: any }) {
               <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 mb-1">🏷️ Chegirma belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
-                    <input name="discount_label" defaultValue={project.discount_label || ''} placeholder="Masalan: Chegirma 50 mln gacha" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                    <label className="block text-xs font-bold text-gray-500 mb-1">🏷️ Çegirma belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
+                    <input name="discount_label" defaultValue={project.discount_label || ''} placeholder="Masalan: Çegirma 50 mln gaça" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 mb-1">🎁 Sovg&apos;a belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
-                    <input name="gift_label" defaultValue={project.gift_label || ''} placeholder="Masalan: Ta'mir sovg'a" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                    <label className="block text-xs font-bold text-gray-500 mb-1">🎁 Sovğa belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
+                    <input name="gift_label" defaultValue={project.gift_label || ''} placeholder="Masalan: Ta'mir sovğa" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 mb-1">🔢 Blok raqami <span className="text-gray-300 font-normal">— to&apos;lov shartlari uchun</span></label>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">🔢 Blok raqami <span className="text-gray-300 font-normal">— tölov şartlari uçun</span></label>
                     <input name="block_no" type="number" min={1} max={999} defaultValue={project.block_no ?? ''} placeholder="Masalan: 10" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 mb-1">📅 Topshirish yili <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">📅 Topşiriş yili <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
                     <input name="delivery_year" type="number" min={2024} max={2035} defaultValue={project.delivery_year || ''} placeholder="Masalan: 2027" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-2">📍 Joylashuv kategoriyalari (saytda ko&apos;rinadi)</label>
+                  <label className="block text-xs font-bold text-gray-500 mb-2">📍 Joylaşuv kategoriyalari (saytda körinadi)</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {CATEGORIES.map((c) => (
                       <label key={c.key} className="flex items-center gap-2 text-sm bg-white border border-gray-100 rounded-lg px-3 py-2 cursor-pointer hover:border-primary">
@@ -260,10 +260,10 @@ export default function EditProjectModal({ project }: { project: any }) {
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                 <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">
-                  Bekor qilish
+                  Bekor qiliş
                 </button>
                 <button type="submit" disabled={loading || translating} className="px-5 py-2 bg-primary text-white font-bold rounded-lg hover:bg-accent disabled:opacity-50">
-                  {loading ? 'Saqlanmoqda...' : 'Saqlash'}
+                  {loading ? 'Saqlanmoqda...' : 'Saqlaş'}
                 </button>
               </div>
             </form>

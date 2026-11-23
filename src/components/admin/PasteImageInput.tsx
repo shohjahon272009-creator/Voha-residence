@@ -123,14 +123,14 @@ export default function PasteImageInput({
         />
         <div className="flex items-center gap-1.5 text-[11px] text-gray-400 mt-1.5">
           {working ? (
-            <span className="text-accent font-bold">Rasm kichraytirilmoqda...</span>
+            <span className="text-accent font-bold">Rasm kiçraytirilmoqda...</span>
           ) : fileName ? (
             <>
               <ImageIcon size={12} className="text-accent" /> {fileName}
             </>
           ) : (
             <>
-              <ClipboardPaste size={12} /> Bu yerni bosib, <b className="text-primary/70">Ctrl+V</b> bilan ham qo&apos;yish mumkin
+              <ClipboardPaste size={12} /> Bu yerni bosib, <b className="text-primary/70">Ctrl+V</b> bilan ham qöyiş mumkin
             </>
           )}
         </div>

@@ -30,7 +30,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     .slice(0, 8);
 
   const t = {
-    uz: { title: 'Bizning loyihalarimiz', tag: 'Loyihalar', sub: "Urganch va Xorazm bo'ylab zamonaviy turar-joy majmualari — har biri o'z hikoyasi bilan." },
+    uz: { title: 'Bizning loyihalarimiz', tag: 'Loyihalar', sub: "Urganç va Xorazm böylab zamonaviy turar-joy majmualari — har biri öz hikoyasi bilan." },
     ru: { title: 'Наши проекты', tag: 'Проекты', sub: 'Современные жилые комплексы по Ургенчу и Хорезму — у каждого своя история.' },
     en: { title: 'Our Projects', tag: 'Projects', sub: 'Modern residential complexes across Urgench and Khorezm — each with its own story.' },
   }[localeLang] || { title: 'Bizning loyihalarimiz', tag: 'Loyihalar', sub: '' };

@@ -22,21 +22,21 @@ const CENTER = { lat: 41.544716, lng: 60.599816 };
 const PLACES: Place[] = [
   { kind: 'school', lat: 41.54749, lng: 60.6014, name: { uz: '4-son maktab', ru: 'Школа №4', en: 'School No. 4' } },
   { kind: 'hospital', lat: 41.54592, lng: 60.60383, name: { uz: 'Tez tibbiy yordam markazi', ru: 'Центр экстренной медпомощи', en: 'Emergency medical center' } },
-  { kind: 'kindergarten', lat: 41.54845, lng: 60.60119, name: { uz: "Bolalar bog'chasi", ru: 'Детский сад', en: 'Kindergarten' } },
+  { kind: 'kindergarten', lat: 41.54845, lng: 60.60119, name: { uz: "Bolalar boğçasi", ru: 'Детский сад', en: 'Kindergarten' } },
   { kind: 'park', lat: 41.54283, lng: 60.60548, name: { uz: 'Park', ru: 'Парк', en: 'Park' } },
   { kind: 'school', lat: 41.54297, lng: 60.61186, name: { uz: '9-son maktab', ru: 'Школа №9', en: 'School No. 9' } },
   { kind: 'university', lat: 41.5355, lng: 60.60034, name: { uz: "Ma'mun universiteti", ru: 'Университет Мамуна', en: "Ma'mun University" } },
-  { kind: 'university', lat: 41.55551, lng: 60.60525, name: { uz: 'Urganch davlat universiteti', ru: 'Ургенчский госуниверситет', en: 'Urgench State University' } },
-  { kind: 'mosque', lat: 41.55415, lng: 60.60898, name: { uz: "Ko'zli ota jome masjidi", ru: 'Мечеть Кўзли ота', en: "Ko'zli ota mosque" } },
-  { kind: 'park', lat: 41.55279, lng: 60.6131, name: { uz: "\"Yoshlar ko'li\" bog'i", ru: 'Парк «Ёшлар кўли»', en: '"Yoshlar ko\'li" park' } },
+  { kind: 'university', lat: 41.55551, lng: 60.60525, name: { uz: 'Urganç davlat universiteti', ru: 'Ургенчский госуниверситет', en: 'Urgench State University' } },
+  { kind: 'mosque', lat: 41.55415, lng: 60.60898, name: { uz: "Közli ota jome masjidi", ru: 'Мечеть Кўзли ота', en: "Ko'zli ota mosque" } },
+  { kind: 'park', lat: 41.55279, lng: 60.6131, name: { uz: "\"Yoşlar köli\" boği", ru: 'Парк «Ёшлар кўли»', en: '"Yoshlar ko\'li" park' } },
 ];
 
 const ICON: Record<Kind, React.ElementType> = { school: School, hospital: HeartPulse, kindergarten: Baby, park: Trees, university: GraduationCap, mosque: Landmark };
 const COLOR: Record<Kind, string> = { school: '#E07B39', hospital: '#E04848', kindergarten: '#D9A21B', park: '#2E9E5B', university: '#2F6FD6', mosque: '#7A4FD0' };
 const KIND: Record<Kind, Record<string, string>> = {
   school: { uz: 'Maktab', ru: 'Школа', en: 'School' },
-  hospital: { uz: 'Shifoxona', ru: 'Больница', en: 'Hospital' },
-  kindergarten: { uz: "Bog'cha", ru: 'Детсад', en: 'Kindergarten' },
+  hospital: { uz: 'Şifoxona', ru: 'Больница', en: 'Hospital' },
+  kindergarten: { uz: "Boğça", ru: 'Детсад', en: 'Kindergarten' },
   park: { uz: 'Park', ru: 'Парк', en: 'Park' },
   university: { uz: 'Universitet', ru: 'Университет', en: 'University' },
   mosque: { uz: 'Masjid', ru: 'Мечеть', en: 'Mosque' },
@@ -72,10 +72,10 @@ const T: Record<string, {
   office: string; address: string; hours: string; directions: string; yandex: string; openMap: string;
 }> = {
   uz: {
-    kicker: 'Joylashuv', title: 'Hamma narsa bir qadam narida', sub: "Maktab, shifoxona, bog'cha, park va masjid — barchasi piyoda yetib boriladigan masofada.",
-    walk: 'piyoda', min: 'daqiqa', km: 'km', m: 'm', hint: "Ro'yxatdagi joyni bosing — xaritada ko'rsatiladi", ring: '1 km ≈ 12 daqiqa piyoda',
-    office: 'Sotuv ofisi', address: "Urganch sh., Ulug'bek ko'chasi — Ekstrenniy shifoxonasi chorrahasi",
-    hours: 'Har kuni, 09:00 – 18:00', directions: "Yo'l ko'rsatish", yandex: "Yandex'da ochish", openMap: 'Google xarita',
+    kicker: 'Joylaşuv', title: 'Hamma narsa bir qadam narida', sub: "Maktab, şifoxona, boğça, park va masjid — barçasi piyoda yetib boriladigan masofada.",
+    walk: 'piyoda', min: 'daqiqa', km: 'km', m: 'm', hint: "Röyxatdagi joyni bosing — xaritada körsatiladi", ring: '1 km ≈ 12 daqiqa piyoda',
+    office: 'Sotuv ofisi', address: "Urganç ş., Uluğbek köçasi — Ekstrenniy şifoxonasi çorrahasi",
+    hours: 'Har kuni, 09:00 – 18:00', directions: "Yöl körsatiş", yandex: "Yandex'da oçiş", openMap: 'Google xarita',
   },
   ru: {
     kicker: 'Расположение', title: 'Всё в шаге от вас', sub: 'Школа, больница, детсад, парк и мечеть — всё в пешей доступности.',
@@ -274,7 +274,7 @@ export default function LocationShowcase({ lang, phone, address, hours }: { lang
           <div className="mt-4 rounded-3xl overflow-hidden border border-white/10 h-[380px] md:h-[440px] bg-[#0b2a2a]">
             <iframe
               src={`https://maps.google.com/maps?q=${CENTER.lat},${CENTER.lng}&z=15&output=embed`}
-              title="Voha Residence — Urganch"
+              title="Voha Residence — Urganç"
               className="w-full h-full"
               style={{ border: 0 }}
               loading="lazy"

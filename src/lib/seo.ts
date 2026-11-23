@@ -37,32 +37,32 @@ export function pageMetadata(lang: string, path: string, texts: Texts, image?: s
 
 export const PAGE_SEO: Record<string, Texts> = {
   home: {
-    uz: { title: 'Voha Residence — Urganchda yangi xonadonlar, 0% foizli muddatli to‘lov', description: '15 yillik tajribaga ega qurilish kompaniyasi. Shovot kanali bo‘yida, Urganch markazida kadastri tayyor xonadonlar: boshlang‘ich to‘lov 15% dan, oylik 4 mln so‘mdan, bank foizisiz.' },
+    uz: { title: 'Voha Residence — Urgançda yangi xonadonlar, 0% foizli muddatli tölov', description: '15 yillik tajribaga ega quriliş kompaniyasi. Şovot kanali böyida, Urganç markazida kadastri tayyor xonadonlar: boşlanğiç tölov 15% dan, oylik 4 mln sömdan, bank foizisiz.' },
     ru: { title: 'Voha Residence — новостройки в Ургенче, рассрочка без процентов', description: 'Строительная компания с 15-летним опытом. Квартиры с готовым кадастром в центре Ургенча у канала Шават: взнос от 15%, от 4 млн сумов в месяц, без банковских процентов.' },
     en: { title: 'Voha Residence — new apartments in Urgench, 0% installment plan', description: 'A construction company with 15 years of experience. Cadastre-ready apartments in central Urgench on the Shovot canal: from 15% down, from 4M UZS a month, no bank interest.' },
   },
   projects: {
-    uz: { title: 'Loyihalarimiz — Voha Residence', description: 'Voha Residence turar-joy majmualari: Shovot kanali bo‘yidagi bloklar, “Sokin Makon”, “Yangi O‘zbekiston” massivi va topshirilgan uylar.' },
+    uz: { title: 'Loyihalarimiz — Voha Residence', description: 'Voha Residence turar-joy majmualari: Şovot kanali böyidagi bloklar, “Sokin Makon”, “Yangi Özbekiston” massivi va topşirilgan uylar.' },
     ru: { title: 'Наши проекты — Voha Residence', description: 'Жилые комплексы Voha Residence: блоки у канала Шават, «Sokin Makon», массив «Янги Узбекистан» и сданные дома.' },
     en: { title: 'Our Projects — Voha Residence', description: 'Voha Residence residential complexes: Shovot canal blocks, “Sokin Makon”, the “Yangi Uzbekistan” district and completed buildings.' },
   },
   apartments: {
-    uz: { title: 'Xonadonlar — narx va to‘lovni hisoblash | Voha Residence', description: 'Blok, qavat va xonalar soni bo‘yicha xonadon tanlang: 1, 2 va 3 xonali uylar. To‘lovni darhol hisoblang — 0% foiz, boshlang‘ich 15% dan.' },
+    uz: { title: 'Xonadonlar — narx va tölovni hisoblaş | Voha Residence', description: 'Blok, qavat va xonalar soni böyiça xonadon tanlang: 1, 2 va 3 xonali uylar. Tölovni darhol hisoblang — 0% foiz, boşlanğiç 15% dan.' },
     ru: { title: 'Квартиры — цены и расчёт платежа | Voha Residence', description: 'Выберите квартиру по блоку, этажу и числу комнат: 1, 2 и 3-комнатные. Рассчитайте платёж сразу — 0% переплаты, взнос от 15%.' },
     en: { title: 'Apartments — prices & payment calculator | Voha Residence', description: 'Choose by block, floor and rooms: 1, 2 and 3-room apartments. Calculate your payment instantly — 0% interest, from 15% down.' },
   },
   about: {
-    uz: { title: 'Biz haqimizda — 15 yillik tajriba | Voha Residence', description: '2013-yildan beri: savdo majmualari, davlat obyektlari, “Arda Xiva” majmuasi va Urganchdagi zamonaviy turar-joylar. 200 dan ortiq oila tanlovi.' },
+    uz: { title: 'Biz haqimizda — 15 yillik tajriba | Voha Residence', description: '2013-yildan beri: savdo majmualari, davlat obyektlari, “Arda Xiva” majmuasi va Urgançdagi zamonaviy turar-joylar. 200 dan ortiq oila tanlovi.' },
     ru: { title: 'О нас — 15 лет опыта | Voha Residence', description: 'С 2013 года: торговые комплексы, гособъекты, комплекс «Arda Xiva» и современное жильё в Ургенче. Выбор более 200 семей.' },
     en: { title: 'About us — 15 years of experience | Voha Residence', description: 'Since 2013: shopping complexes, public buildings, the “Arda Xiva” complex and modern housing in Urgench. Chosen by 200+ families.' },
   },
   news: {
-    uz: { title: 'Yangiliklar va aksiyalar — Voha Residence', description: 'Qurilish jarayoni, yangi loyihalar, chegirma va aksiyalar haqida so‘nggi yangiliklar.' },
+    uz: { title: 'Yangiliklar va aksiyalar — Voha Residence', description: 'Quriliş jarayoni, yangi loyihalar, çegirma va aksiyalar haqida sönggi yangiliklar.' },
     ru: { title: 'Новости и акции — Voha Residence', description: 'Последние новости о ходе строительства, новых проектах, скидках и акциях.' },
     en: { title: 'News & offers — Voha Residence', description: 'Latest news on construction progress, new projects, discounts and offers.' },
   },
   contact: {
-    uz: { title: 'Aloqa — sotuv ofisi manzili | Voha Residence', description: 'Sotuv ofisi: Urganch, Ekstrenniy shifoxonasi chorrahasi. Telefon: +998 91 011 66 66, +998 97 321 66 66.' },
+    uz: { title: 'Aloqa — sotuv ofisi manzili | Voha Residence', description: 'Sotuv ofisi: Urganç, Ekstrenniy şifoxonasi çorrahasi. Telefon: +998 91 011 66 66, +998 97 321 66 66.' },
     ru: { title: 'Контакты — офис продаж | Voha Residence', description: 'Офис продаж: Ургенч, перекрёсток у больницы экстренной помощи. Тел.: +998 91 011 66 66, +998 97 321 66 66.' },
     en: { title: 'Contact — sales office | Voha Residence', description: 'Sales office: Urgench, Emergency Hospital crossroads. Phone: +998 91 011 66 66, +998 97 321 66 66.' },
   },

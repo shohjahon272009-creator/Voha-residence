@@ -13,7 +13,7 @@ import type { BlockModel } from './picker/data';
 */
 
 const T = {
-  uz: { kicker: 'Sotuvdagi bloklar', title: 'Har blok — o‘z qiyofasi bilan', all: 'Barcha loyihalar', floors: 'Qavatlar', free: 'Bo‘sh xonadonlar', rooms: 'Xonalar', area: 'Maydon', choose: 'Xonadonlarni ko‘rish', about: 'Loyiha haqida', more: 'Yana sotuvda', freeN: (n: number) => `${n} ta bo‘sh`, m2: 'm²', roomsR: (a: number, b: number) => (a === b ? `${a}` : `${a}–${b}`) },
+  uz: { kicker: 'Sotuvdagi bloklar', title: 'Har blok — öz qiyofasi bilan', all: 'Barça loyihalar', floors: 'Qavatlar', free: 'Böş xonadonlar', rooms: 'Xonalar', area: 'Maydon', choose: 'Xonadonlarni köriş', about: 'Loyiha haqida', more: 'Yana sotuvda', freeN: (n: number) => `${n} ta böş`, m2: 'm²', roomsR: (a: number, b: number) => (a === b ? `${a}` : `${a}–${b}`) },
   ru: { kicker: 'Блоки в продаже', title: 'У каждого блока свой облик', all: 'Все проекты', floors: 'Этажей', free: 'Свободных квартир', rooms: 'Комнат', area: 'Площадь', choose: 'Смотреть квартиры', about: 'О проекте', more: 'Также в продаже', freeN: (n: number) => `${n} свободно`, m2: 'м²', roomsR: (a: number, b: number) => (a === b ? `${a}` : `${a}–${b}`) },
   en: { kicker: 'Blocks on sale', title: 'Every block has its own character', all: 'All projects', floors: 'Floors', free: 'Available apartments', rooms: 'Rooms', area: 'Area', choose: 'See apartments', about: 'About the project', more: 'Also on sale', freeN: (n: number) => `${n} available`, m2: 'm²', roomsR: (a: number, b: number) => (a === b ? `${a}` : `${a}–${b}`) },
 };

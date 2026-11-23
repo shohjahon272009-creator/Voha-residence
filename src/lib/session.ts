@@ -13,7 +13,7 @@ function getSecret(): string | null {
   const secret = process.env.AUTH_SECRET;
   if (secret) return secret;
   if (process.env.NODE_ENV === 'production') {
-    console.error('AUTH_SECRET o\'rnatilmagan — admin kirishi o\'chirildi. Vercel env\'ga AUTH_SECRET qo\'shing.');
+    console.error('AUTH_SECRET örnatilmagan — admin kirişi öçirildi. Vercel env\'ga AUTH_SECRET qöşing.');
     return null;
   }
   return 'dev-insecure-secret-please-set-AUTH_SECRET'; // faqat lokal ishlab chiqish
@@ -49,7 +49,7 @@ export async function createSessionToken(userId: number, version = 0): Promise<s
   const expires = Date.now() + SESSION_MAX_AGE * 1000;
   const payload = `${userId}.${version}.${expires}`;
   const secret = getSecret();
-  if (!secret) throw new Error("AUTH_SECRET o'rnatilmagan");
+  if (!secret) throw new Error("AUTH_SECRET örnatilmagan");
   const key = await importKey(secret);
   const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(payload));
   return `${payload}.${toBase64Url(signature)}`;

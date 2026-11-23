@@ -24,7 +24,7 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
       await updateApartment(apt.id, formData);
       setIsOpen(false);
     } catch {
-      alert("Saqlab bo'lmadi. Bir oz kutib, qayta urinib ko'ring.");
+      alert("Saqlab bölmadi. Bir oz kutib, qayta urinib köring.");
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-md">
             <div className="flex justify-between items-center p-6 border-b border-gray-100">
-              <h2 className="text-xl font-bold text-primary">№{apt.number} xonadonni tahrirlash</h2>
+              <h2 className="text-xl font-bold text-primary">№{apt.number} xonadonni tahrirlaş</h2>
               <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600">
                 <X size={24} />
               </button>
@@ -94,32 +94,32 @@ export default function EditApartmentModal({ apt }: { apt: any }) {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <PasteImageInput name="plan_image" label="Xonadon chizmasi" existing={apt.plan_image} />
+                <PasteImageInput name="plan_image" label="Xonadon çizmasi" existing={apt.plan_image} />
                 <PasteImageInput name="image" label="Xonadon rasmi" existing={apt.image} />
               </div>
 
               <div className="flex items-center justify-between gap-3 pt-4 border-t border-gray-100">
                 {confirmDel ? (
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-red-500">{"O'chirilsinmi?"}</span>
+                    <span className="text-xs font-bold text-red-500">{"Öçirilsinmi?"}</span>
                     <button type="button" onClick={handleDelete} disabled={deleting} className="px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 disabled:opacity-50">
-                      {deleting ? "O'chirilmoqda..." : "Ha, o'chir"}
+                      {deleting ? "Öçirilmoqda..." : "Ha, öçir"}
                     </button>
                     <button type="button" onClick={() => setConfirmDel(false)} className="px-3 py-1.5 text-gray-500 text-xs font-bold hover:bg-gray-50 rounded-lg">
-                      {"Yo'q"}
+                      {"Yöq"}
                     </button>
                   </div>
                 ) : (
                   <button type="button" onClick={() => setConfirmDel(true)} className="flex items-center gap-1.5 px-3 py-2 text-red-500 text-xs font-bold hover:bg-red-50 rounded-lg">
-                    <Trash2 size={14} /> {"O'chirish"}
+                    <Trash2 size={14} /> {"Öçiriş"}
                   </button>
                 )}
                 <div className="flex gap-3">
                   <button type="button" onClick={() => { setIsOpen(false); setConfirmDel(false); }} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">
-                    Bekor qilish
+                    Bekor qiliş
                   </button>
                   <button type="submit" disabled={loading} className="px-5 py-2 bg-primary text-white font-bold rounded-lg hover:bg-accent disabled:opacity-50">
-                    {loading ? 'Saqlanmoqda...' : 'Saqlash'}
+                    {loading ? 'Saqlanmoqda...' : 'Saqlaş'}
                   </button>
                 </div>
               </div>

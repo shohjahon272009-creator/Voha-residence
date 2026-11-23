@@ -13,7 +13,7 @@ import { responsive } from '@/lib/responsiveImg';
 */
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const HOME: Record<string, string> = { uz: 'Bosh sahifa', ru: 'Главная', en: 'Home' };
+const HOME: Record<string, string> = { uz: 'Boş sahifa', ru: 'Главная', en: 'Home' };
 
 type Props = {
   lang: string;

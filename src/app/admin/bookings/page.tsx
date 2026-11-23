@@ -27,8 +27,8 @@ export default async function AdminBookings() {
     <div className="space-y-10">
       <div className="flex items-center justify-between">
          <div>
-            <h1 className="text-3xl font-bold text-primary mb-2">Bronlar boshqaruvi</h1>
-            <p className="text-gray-400">Kelib tushgan yangi bronlarni ko'rib chiqing va tasdiqlang.</p>
+            <h1 className="text-3xl font-bold text-primary mb-2">Bronlar boşqaruvi</h1>
+            <p className="text-gray-400">Kelib tuşgan yangi bronlarni körib çiqing va tasdiqlang.</p>
          </div>
       </div>
 
@@ -76,8 +76,8 @@ export default async function AdminBookings() {
                         }`}>{bron.status === 'Tasdiqlangan' ? 'BRON QILINDI' : bron.status}</span>
                      </td>
                      <td className="px-8 py-6">
-                        <p className="text-xs text-gray-500 max-w-[200px] truncate" title={bron.note || "Xabar yo'q"}>
-                           {bron.note ? bron.note : <span className="italic text-gray-300">Yo'q</span>}
+                        <p className="text-xs text-gray-500 max-w-[200px] truncate" title={bron.note || "Xabar yöq"}>
+                           {bron.note ? bron.note : <span className="italic text-gray-300">Yöq</span>}
                         </p>
                      </td>
                      <td className="px-8 py-6 text-right">
@@ -86,14 +86,14 @@ export default async function AdminBookings() {
                              <form action={updateBookingStatus}>
                                 <input type="hidden" name="id" value={bron.id} />
                                 <input type="hidden" name="status" value="Tasdiqlangan" />
-                                <button type="submit" className="p-2 text-success hover:bg-success/5 rounded-lg transition-all" title="Tasdiqlash (Bron qilish)">
+                                <button type="submit" className="p-2 text-success hover:bg-success/5 rounded-lg transition-all" title="Tasdiqlaş (Bron qiliş)">
                                    <CheckCircle size={18} />
                                 </button>
                              </form>
                              <form action={updateBookingStatus}>
                                 <input type="hidden" name="id" value={bron.id} />
                                 <input type="hidden" name="status" value="Bekor qilingan" />
-                                <button type="submit" className="p-2 text-danger hover:bg-danger/5 rounded-lg transition-all" title="Bekor qilish">
+                                <button type="submit" className="p-2 text-danger hover:bg-danger/5 rounded-lg transition-all" title="Bekor qiliş">
                                    <XCircle size={18} />
                                 </button>
                              </form>
@@ -106,7 +106,7 @@ export default async function AdminBookings() {
                                   <input type="hidden" name="id" value={bron.id} />
                                   <input type="hidden" name="status" value="Tasdiqlangan" />
                                   <input type="hidden" name="action_type" value="sell" />
-                                  <button type="submit" className="p-2 text-primary hover:bg-primary/5 rounded-lg transition-all" title="Sotildi (xonadon Band bo'ladi)">
+                                  <button type="submit" className="p-2 text-primary hover:bg-primary/5 rounded-lg transition-all" title="Sotildi (xonadon Band böladi)">
                                      <DollarSign size={18} />
                                   </button>
                                </form>
@@ -114,7 +114,7 @@ export default async function AdminBookings() {
                              <form action={updateBookingStatus}>
                                 <input type="hidden" name="id" value={bron.id} />
                                 <input type="hidden" name="status" value="Bekor qilingan" />
-                                <button type="submit" className="p-2 text-danger hover:bg-danger/5 rounded-lg transition-all" title="Bekor qilish">
+                                <button type="submit" className="p-2 text-danger hover:bg-danger/5 rounded-lg transition-all" title="Bekor qiliş">
                                    <XCircle size={18} />
                                 </button>
                              </form>
@@ -129,7 +129,7 @@ export default async function AdminBookings() {
                  <tr>
                     <td colSpan={6} className="px-8 py-20 text-center text-gray-300 font-medium">
                        <Clock size={48} className="mx-auto mb-4 opacity-20" />
-                       Hozircha bronlar mavjud emas
+                       Hozirça bronlar mavjud emas
                     </td>
                  </tr>
                )}

@@ -33,7 +33,7 @@ async function checkRateLimit(ip: string, phone: string): Promise<string | null>
   const count = async (where: string, args: unknown[]) =>
     Number(((await db.prepare(`SELECT count(*) AS c FROM bookings WHERE created_at > ${since}${where}`).get(...args)) as { c: number })?.c) || 0;
 
-  const tooMany = "So'rovlar soni ko'payib ketdi. Iltimos, birozdan keyin urinib ko'ring yoki bizga qo'ng'iroq qiling.";
+  const tooMany = "Sörovlar soni köpayib ketdi. Iltimos, birozdan keyin urinib köring yoki bizga qönğiroq qiling.";
   if (ip && (await count(' AND ip = ?', [ip])) >= LIMIT_PER_IP) return tooMany;
   if ((await count(' AND client_phone = ?', [phone])) >= LIMIT_PER_PHONE) return tooMany;
   if ((await count('', [])) >= LIMIT_GLOBAL) return tooMany;
@@ -67,7 +67,7 @@ async function notifyTelegram(text: string) {
 function pushToAmo(lead: AmoLead) {
   after(async () => {
     if (await sendLeadToAmo(lead)) return;
-    await notifyTelegram(`⚠️ *Ariza amoCRM'ga tushmadi*\n\n👤 *Ism:* ${md(lead.name)}\n📞 *Telefon:* ${lead.phone}\n💬 ${md(lead.note)}`);
+    await notifyTelegram(`⚠️ *Ariza amoCRM'ga tuşmadi*\n\n👤 *Ism:* ${md(lead.name)}\n📞 *Telefon:* ${lead.phone}\n💬 ${md(lead.note)}`);
   });
 }
 
@@ -76,7 +76,7 @@ export async function submitContact(formData: FormData) {
   const message = clip(formData.get('message'), 1000);
   const phone = normalizePhone(clip(formData.get('phone'), 40));
 
-  if (!name || !phone) return { success: false, error: "Ism va to'g'ri telefon raqam kiritilishi shart" };
+  if (!name || !phone) return { success: false, error: "Ism va töğri telefon raqam kiritilişi şart" };
 
   try {
     const ip = await clientIp();
@@ -90,7 +90,7 @@ export async function submitContact(formData: FormData) {
       VALUES (?, ?, ?, 'Yangi', ?)
     `).run(name, phone, message, ip);
 
-    await notifyTelegram(`🔔 *Yangi xabar (Saytdan)*\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n💬 *Xabar:* ${md(message) || "Yo'q"}`);
+    await notifyTelegram(`🔔 *Yangi xabar (Saytdan)*\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n💬 *Xabar:* ${md(message) || "Yöq"}`);
     pushToAmo({ title: `Sayt: murojaat — ${name}`, name, phone, note: message });
 
     return { success: true };
@@ -107,9 +107,9 @@ export async function submitPriceRequest(formData: FormData) {
   const phone = normalizePhone(clip(formData.get('phone'), 40));
   // "Uyingizni toping" o'yinidan — mijoz uyni ko'rishga yozilmoqda (narx so'rovi emas)
   const viewing = formData.get('kind') === 'viewing';
-  const paymentType = viewing ? "Ko'rishga yozilish (o'yin)" : 'Narxini bilish';
+  const paymentType = viewing ? "Körişga yoziliş (öyin)" : 'Narxini biliş';
 
-  if (!apartmentId || !phone) return { success: false, error: "To'g'ri telefon raqamini kiritish shart" };
+  if (!apartmentId || !phone) return { success: false, error: "Töğri telefon raqamini kiritiş şart" };
 
   try {
     const aptDetails = await db.prepare(`
@@ -127,12 +127,12 @@ export async function submitPriceRequest(formData: FormData) {
       const limitedBusy = await checkRateLimit(ipBusy, phone);
       if (limitedBusy) return { success: false, error: limitedBusy };
       if (await isRepeat(phone, null)) return { success: true };
-      const busyNote = `${message ? message + ' | ' : ''}Tanlangan xonadon band bo'lib qoldi: ${aptDetails.project_name}, №${aptDetails.number} — o'xshashini taklif qiling`;
+      const busyNote = `${message ? message + ' | ' : ''}Tanlangan xonadon band bölib qoldi: ${aptDetails.project_name}, №${aptDetails.number} — öxşaşini taklif qiling`;
       await db.prepare(`
         INSERT INTO bookings (client_name, client_phone, payment_type, note, status, ip)
         VALUES (?, ?, ?, ?, 'Yangi', ?)
       `).run(name, phone, paymentType, busyNote, ipBusy);
-      await notifyTelegram(`🏠 *Ko'rishga yozilish (xonadon band bo'lib qolgan)*\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n💬 *Izoh:* ${md(busyNote)}`);
+      await notifyTelegram(`🏠 *Körişga yoziliş (xonadon band bölib qolgan)*\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n💬 *Izoh:* ${md(busyNote)}`);
       pushToAmo({ title: `Sayt: ${paymentType} — ${name}`, name, phone, note: busyNote });
       return { success: true };
     }
@@ -148,7 +148,7 @@ export async function submitPriceRequest(formData: FormData) {
     `).run(apartmentId, name, phone, paymentType, message || null, ip);
 
     const aptInfo = `${aptDetails.project_name}, №${aptDetails.number} xonadon`;
-    const title = viewing ? "🏠 *Ko'rishga yozilish (Uy tanlash o'yini)*" : "💰 *Yangi so'rov (Narxini bilish)*";
+    const title = viewing ? "🏠 *Körişga yoziliş (Uy tanlaş öyini)*" : "💰 *Yangi sörov (Narxini biliş)*";
     await notifyTelegram(`${title}\n\n👤 *Ism:* ${md(name)}\n📞 *Telefon:* ${phone}\n🏢 *Xonadon:* ${md(aptInfo)}${message ? `\n💬 *Izoh:* ${md(message)}` : ''}`);
     pushToAmo({ title: `Sayt: ${paymentType} — ${aptInfo}`, name, phone, note: [paymentType, aptInfo, message].filter(Boolean).join('\n') });
 

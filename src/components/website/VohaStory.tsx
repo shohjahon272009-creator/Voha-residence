@@ -71,15 +71,15 @@ function Counter({ to, suffix = '', prefix = '' }: { to: number; suffix?: string
 export function PaymentTerms({ lang }: { lang: string }) {
   const t = pick({
     uz: {
-      kicker: "To'lov shartlari", title: "Bank foizisiz, o'z uyingizga",
-      sub: "Ipoteka foizlariga yillab to'lash shart emas. Voha Residence'da uy olish — adolatli va oddiy.",
+      kicker: "Tölov şartlari", title: "Bank foizisiz, öz uyingizga",
+      sub: "Ipoteka foizlariga yillab tölaş şart emas. Voha Residence'da uy oliş — adolatli va oddiy.",
       items: [
-        { n: 0, s: '%', label: 'Foiz', text: "Hech qanday bank foizi va ustama to'lovsiz" },
-        { n: 15, s: '%', label: "Boshlang'ich to'lov", text: "1 xonali uchun 15% dan, 2 xonali — 20% dan" },
-        { n: -1, s: '', label: 'Qolgan summa', text: "Kontakt qoldiring — menejer siz uchun qulay to'lov grafigini hisoblab beradi" },
-        { n: 1, s: '', label: 'Hujjat', text: "Faqat pasport — onlayn ham rasmiylashtiriladi" },
+        { n: 0, s: '%', label: 'Foiz', text: "Heç qanday bank foizi va ustama tölovsiz" },
+        { n: 15, s: '%', label: "Boşlanğiç tölov", text: "1 xonali uçun 15% dan, 2 xonali — 20% dan" },
+        { n: -1, s: '', label: 'Qolgan summa', text: "Kontakt qoldiring — menejer siz uçun qulay tölov grafigini hisoblab beradi" },
+        { n: 1, s: '', label: 'Hujjat', text: "Faqat pasport — onlayn ham rasmiylaştiriladi" },
       ],
-      cta: "To'lovni hisoblash",
+      cta: "Tölovni hisoblaş",
     },
     ru: {
       kicker: 'Условия оплаты', title: 'Без банковских процентов — в свой дом',
@@ -156,14 +156,14 @@ export function PaymentTerms({ lang }: { lang: string }) {
 export function Timeline({ lang }: { lang: string }) {
   const t = pick({
     uz: {
-      kicker: '15 yillik tajriba', title: 'Biz qurgan yo\'l',
+      kicker: '15 yillik tajriba', title: 'Biz qurgan yöl',
       items: [
-        { y: '2013', h: 'Birinchi qadam', d: "5 blokli savdo majmuasining 1-bloki qurilishi boshlandi." },
-        { y: '2013', h: 'Xalqaro loyiha', d: "Samsung kompaniyasining \"Gaz-kimyo kompleksi\" qurilish ishlari bo'yicha 3 yillik shartnoma." },
-        { y: '2014', h: 'Namunaviy uylar', d: "Urganch tumanida 10 ta namunaviy xonadon qurilishi." },
-        { y: '2015', h: 'Davlat obyektlari', d: "Strategik davlat obyektlari qurilishi va rekonstruksiyasi: universitet, hokimiyat, shifoxona, maktab, bog'cha." },
-        { y: 'Arda Xiva', h: '1 yilga yetmasdan', d: "Mashhur \"Arda Xiva\" majmuasining 40% qismini kompaniyamiz 1 yilga yetmasdan topshirdi." },
-        { y: 'Bugun', h: 'Voha Residence', d: "Shovot kanali bo'yidagi bloklar, \"Sokin Makon\" va \"Yangi O'zbekiston\" massivi — 200 dan ortiq oila tanlovi." },
+        { y: '2013', h: 'Birinçi qadam', d: "5 blokli savdo majmuasining 1-bloki qurilişi boşlandi." },
+        { y: '2013', h: 'Xalqaro loyiha', d: "Samsung kompaniyasining \"Gaz-kimyo kompleksi\" quriliş işlari böyiça 3 yillik şartnoma." },
+        { y: '2014', h: 'Namunaviy uylar', d: "Urganç tumanida 10 ta namunaviy xonadon qurilişi." },
+        { y: '2015', h: 'Davlat obyektlari', d: "Strategik davlat obyektlari qurilişi va rekonstruksiyasi: universitet, hokimiyat, şifoxona, maktab, boğça." },
+        { y: 'Arda Xiva', h: '1 yilga yetmasdan', d: "Maşhur \"Arda Xiva\" majmuasining 40% qismini kompaniyamiz 1 yilga yetmasdan topşirdi." },
+        { y: 'Bugun', h: 'Voha Residence', d: "Şovot kanali böyidagi bloklar, \"Sokin Makon\" va \"Yangi Özbekiston\" massivi — 200 dan ortiq oila tanlovi." },
       ],
     },
     ru: {
@@ -242,13 +242,13 @@ export function Timeline({ lang }: { lang: string }) {
 export function Testimonials({ lang }: { lang: string }) {
   const t = pick({
     uz: {
-      kicker: 'Mijozlar fikri', title: "Ular allaqachon uyli bo'ldi",
-      stat: [{ n: 200, s: '+', l: 'oila tanlovi' }, { n: 43, s: '', l: 'shartnoma — aksiyaning 1-kunida' }, { n: 24, s: 'K', l: 'Instagram kuzatuvchi' }],
+      kicker: 'Mijozlar fikri', title: "Ular allaqaçon uyli böldi",
+      stat: [{ n: 200, s: '+', l: 'oila tanlovi' }, { n: 43, s: '', l: 'şartnoma — aksiyaning 1-kunida' }, { n: 24, s: 'K', l: 'Instagram kuzatuvçi' }],
       q: [
-        { text: "Instagramda ko'rib kelgandik. Aytilgan to'lov shartlari shartnomada ham aynan shunday — haqiqat ekan. Hammaga tavsiya qilaman.", who: 'Mijozimiz, 2 xonali xonadon' },
-        { text: "Taqdimotda aytilgan hamma gaplar aytilgandek bo'ldi. 2 xonali uy xarid qildim, tavsiya qilaman.", who: 'Onlayn taqdimot ishtirokchisi' },
-        { text: "Asosiysi — toza shaharcha qurilayotgani va joylashuvi qulayligi. Gollandiyada turib xarid qildik.", who: 'Xorijdagi mijozimiz' },
-        { text: "50 mln boshlang'ich to'lov bilan tayyor ta'mirlangan xonadon oldim. Oylik 4 mln — rost ekan.", who: '"Sokin Makon" xaridori' },
+        { text: "Instagramda körib kelgandik. Aytilgan tölov şartlari şartnomada ham aynan şunday — haqiqat ekan. Hammaga tavsiya qilaman.", who: 'Mijozimiz, 2 xonali xonadon' },
+        { text: "Taqdimotda aytilgan hamma gaplar aytilgandek böldi. 2 xonali uy xarid qildim, tavsiya qilaman.", who: 'Onlayn taqdimot iştirokçisi' },
+        { text: "Asosiysi — toza şaharça qurilayotgani va joylaşuvi qulayligi. Gollandiyada turib xarid qildik.", who: 'Xorijdagi mijozimiz' },
+        { text: "50 mln boşlanğiç tölov bilan tayyor ta'mirlangan xonadon oldim. Oylik 4 mln — rost ekan.", who: '"Sokin Makon" xaridori' },
       ],
     },
     ru: {
@@ -312,7 +312,7 @@ export function Testimonials({ lang }: { lang: string }) {
 /* ===================== Ijtimoiy tarmoqlar ===================== */
 export function SocialStrip({ lang }: { lang: string }) {
   const t = pick({
-    uz: { kicker: 'Biz bilan qoling', title: 'Qurilish jarayoni — har kuni jonli', ig: "Instagram'da kuzating", tg: 'Telegram kanalga qo\'shiling', igS: '23,7K kuzatuvchi · aksiyalar, mijozlar, loyiha', tgS: "Onlayn taqdimotlar, chegirmalar, qurilish hisobotlari" },
+    uz: { kicker: 'Biz bilan qoling', title: 'Quriliş jarayoni — har kuni jonli', ig: "Instagram'da kuzating", tg: 'Telegram kanalga qöşiling', igS: '23,7K kuzatuvçi · aksiyalar, mijozlar, loyiha', tgS: "Onlayn taqdimotlar, çegirmalar, quriliş hisobotlari" },
     ru: { kicker: 'Оставайтесь с нами', title: 'Стройка — каждый день вживую', ig: 'Следите в Instagram', tg: 'Подпишитесь на Telegram', igS: '23,7K подписчиков · акции, клиенты, проект', tgS: 'Онлайн-презентации, скидки, отчёты о стройке' },
     en: { kicker: 'Stay with us', title: 'Construction — live, every day', ig: 'Follow on Instagram', tg: 'Join our Telegram', igS: '23.7K followers · offers, clients, project', tgS: 'Online presentations, discounts, construction reports' },
   }, lang);

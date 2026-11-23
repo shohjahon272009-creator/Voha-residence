@@ -54,7 +54,7 @@ export default function NotificationDropdown({
       {isOpen && (
         <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50 animate-fade-in">
           <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-            <h3 className="font-bold text-primary">Bildirishnomalar</h3>
+            <h3 className="font-bold text-primary">Bildirişnomalar</h3>
             <span className="bg-primary/10 text-primary text-xs font-bold px-2 py-1 rounded-lg">
               {totalNotifications} ta yangi
             </span>
@@ -92,7 +92,7 @@ export default function NotificationDropdown({
             ) : (
               <div className="p-8 text-center text-gray-400">
                 <Bell size={32} className="mx-auto mb-3 opacity-20" />
-                <p className="text-sm">Yangi xabarlar yo&apos;q</p>
+                <p className="text-sm">Yangi xabarlar yöq</p>
               </div>
             )}
           </div>

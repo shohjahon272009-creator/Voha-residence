@@ -9,14 +9,14 @@ export default function AboutSection({ lang, settings }: { lang: Locale; setting
   const T = ({
     uz: {
       tag: 'BIZ HAQIMIZDA',
-      title: 'Zamonaviy va ishonchli', accent: 'qurilish',
-      desc: "15 yildan ortiq tajribamiz davomida Xorazm bo'ylab 28 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzusidagi hayotni topdi. Har bir binomiz — mustahkam sifat, o'z vaqtida topshirish va zamonaviy me'morchilik uyg'unligi.",
+      title: 'Zamonaviy va işonçli', accent: 'quriliş',
+      desc: "15 yildan ortiq tajribamiz davomida Xorazm böylab 28 dan ortiq zamonaviy turar-joy majmuasini barpo etdik. Minglab oila bizning uylarimizda orzusidagi hayotni topdi. Har bir binomiz — mustahkam sifat, öz vaqtida topşiriş va zamonaviy me'morçilik uyğunligi.",
       s1v: '15 yil', s1l: 'Tajriba', s2v: '28+', s2l: 'Barpo etilgan loyihalar', s3v: '2500+', s3l: 'Baxtli oilalar',
       a: [
         { i: Award, t: 'Xalqaro sifat', d: 'Zamonaviy texnologiya va materiallar' },
-        { i: ShieldCheck, t: 'Kafolat', d: 'Har bir loyihaga to‘liq kafolat' },
-        { i: Clock, t: 'O‘z vaqtida', d: 'Belgilangan muddatda topshirish' },
-        { i: Wallet, t: 'Qulay to‘lov', d: 'Muddatli va ipoteka imkoniyati' },
+        { i: ShieldCheck, t: 'Kafolat', d: 'Har bir loyihaga töliq kafolat' },
+        { i: Clock, t: 'Öz vaqtida', d: 'Belgilangan muddatda topşiriş' },
+        { i: Wallet, t: 'Qulay tölov', d: 'Muddatli va ipoteka imkoniyati' },
       ],
     },
     ru: {

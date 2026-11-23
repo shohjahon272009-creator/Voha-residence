@@ -321,15 +321,15 @@ async function initSchema(b: Backend): Promise<void> {
   const initialPassword =
     process.env.INITIAL_ADMIN_PASSWORD || (process.env.NODE_ENV === 'production' ? '' : 'admin123');
   if (!initialPassword) {
-    console.error("Foydalanuvchilar jadvali bo'sh: INITIAL_ADMIN_PASSWORD env'ini o'rnating va qayta ishga tushiring.");
+    console.error("Foydalanuvçilar jadvali böş: INITIAL_ADMIN_PASSWORD env'ini örnating va qayta işga tuşiring.");
     return;
   }
   await b.run('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [
     'Admin', process.env.INITIAL_ADMIN_EMAIL || 'admin@qurilish.uz', hashPassword(initialPassword), 'superadmin',
   ]);
   const projects = [
-    { name_uz: 'Oltin Vodiy', name_ru: 'Золотая Долина', name_en: 'Golden Valley', address: 'Amir Temur ko\'chasi', city: 'Xorazm', district: 'Urganch', status: 'Jarayonda', min_price: 800000000, total_floors: 12 },
-    { name_uz: 'Crystal Tower', name_ru: 'Кристальная Башня', name_en: 'Crystal Tower', address: 'Xonqa ko\'chasi', city: 'Xorazm', district: 'Urganch', status: 'Tez kunda', min_price: 1200000000, total_floors: 16 },
+    { name_uz: 'Oltin Vodiy', name_ru: 'Золотая Долина', name_en: 'Golden Valley', address: 'Amir Temur köçasi', city: 'Xorazm', district: 'Urganç', status: 'Jarayonda', min_price: 800000000, total_floors: 12 },
+    { name_uz: 'Crystal Tower', name_ru: 'Кристальная Башня', name_en: 'Crystal Tower', address: 'Xonqa köçasi', city: 'Xorazm', district: 'Urganç', status: 'Tez kunda', min_price: 1200000000, total_floors: 16 },
   ];
   for (const p of projects) {
     const r = await b.run(

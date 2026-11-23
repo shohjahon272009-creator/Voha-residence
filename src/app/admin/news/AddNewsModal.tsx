@@ -32,7 +32,7 @@ export default function AddNewsModal() {
       setIsOpen(false);
       setPreview(null);
     } catch (err) {
-      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib ko'ring.");
+      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib köring.");
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ export default function AddNewsModal() {
         onClick={() => setIsOpen(true)}
         className="px-6 py-3 bg-primary text-white font-bold rounded-xl shadow-xl shadow-primary/20 flex items-center gap-2 hover:bg-accent transition-all"
       >
-        <Plus size={20} /> Yangilik qo'shish
+        <Plus size={20} /> Yangilik qöşiş
       </button>
 
       {isOpen && (
@@ -53,7 +53,7 @@ export default function AddNewsModal() {
           
           <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-fade-in">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <h2 className="text-2xl font-bold text-primary">Yangi yangilik qo'shish</h2>
+              <h2 className="text-2xl font-bold text-primary">Yangi yangilik qöşiş</h2>
               <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-primary transition-colors">
                 <X size={24} />
               </button>
@@ -86,7 +86,7 @@ export default function AddNewsModal() {
                       ) : (
                         <>
                           <Upload size={18} />
-                          <span>Rasm yuklash</span>
+                          <span>Rasm yuklaş</span>
                         </>
                       )}
                     </div>
@@ -101,11 +101,11 @@ export default function AddNewsModal() {
 
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-100">
                 <button type="button" onClick={() => setIsOpen(false)} className="px-6 py-3 font-bold text-gray-500 hover:bg-gray-50 rounded-xl transition-colors">
-                  Bekor qilish
+                  Bekor qiliş
                 </button>
                 <button type="submit" disabled={loading} className="px-8 py-3 bg-primary text-white font-bold rounded-xl flex items-center gap-2 hover:bg-accent transition-all disabled:opacity-50">
                   {loading && <Loader2 size={18} className="animate-spin" />}
-                  Saqlash
+                  Saqlaş
                 </button>
               </div>
             </form>

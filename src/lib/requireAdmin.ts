@@ -21,6 +21,6 @@ export async function getAdminId(): Promise<number | null> {
 
 export async function requireAdmin(): Promise<number> {
   const id = await getAdminId();
-  if (!id) throw new Error('Ruxsat yo\'q: admin sifatida kiring.');
+  if (!id) throw new Error('Ruxsat yöq: admin sifatida kiring.');
   return id;
 }

@@ -26,7 +26,7 @@ export default function SiteVisibilityToggle({
         await setSiteSetting(settingKey, next ? 'true' : 'false');
       } catch {
         setOn(!next); // saqlanmadi — tugmani avvalgi holatiga qaytaramiz
-        alert("Sozlama saqlanmadi. Qayta urinib ko'ring.");
+        alert("Sozlama saqlanmadi. Qayta urinib köring.");
       }
     });
   };
@@ -43,7 +43,7 @@ export default function SiteVisibilityToggle({
             {pending && <Loader2 size={13} className="animate-spin text-gray-400" />}
           </div>
           <div className="text-xs text-gray-400">
-            {on ? 'Saytda ko‘rinmoqda' : 'Saytda yashirilgan'}{hint ? ` — ${hint}` : ''}
+            {on ? 'Saytda körinmoqda' : 'Saytda yaşirilgan'}{hint ? ` — ${hint}` : ''}
           </div>
         </div>
       </div>

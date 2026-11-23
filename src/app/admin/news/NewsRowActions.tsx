@@ -32,24 +32,24 @@ export default function NewsRowActions({ item }: { item: any }) {
       await updateNews(item.id, formData);
       setIsEditOpen(false);
     } catch (err) {
-      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib ko'ring.");
+      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib köring.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async () => {
-    if (confirm("Rostdan ham ushbu yangilikni o'chirmoqchimisiz?")) {
+    if (confirm("Rostdan ham uşbu yangilikni öçirmoqçimisiz?")) {
       await deleteNews(item.id);
     }
   };
 
   return (
     <>
-      <button onClick={() => setIsEditOpen(true)} className="p-2 text-gray-400 hover:text-accent hover:bg-accent/5 rounded-lg transition-all" title="Tahrirlash">
+      <button onClick={() => setIsEditOpen(true)} className="p-2 text-gray-400 hover:text-accent hover:bg-accent/5 rounded-lg transition-all" title="Tahrirlaş">
          <Edit2 size={16} />
       </button>
-      <button onClick={handleDelete} className="p-2 text-gray-400 hover:text-danger hover:bg-danger/5 rounded-lg transition-all" title="O'chirish">
+      <button onClick={handleDelete} className="p-2 text-gray-400 hover:text-danger hover:bg-danger/5 rounded-lg transition-all" title="Öçiriş">
          <Trash2 size={16} />
       </button>
 
@@ -59,7 +59,7 @@ export default function NewsRowActions({ item }: { item: any }) {
           
           <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-fade-in z-10">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <h2 className="text-2xl font-bold text-primary">Yangilikni tahrirlash</h2>
+              <h2 className="text-2xl font-bold text-primary">Yangilikni tahrirlaş</h2>
               <button onClick={() => setIsEditOpen(false)} className="text-gray-400 hover:text-primary transition-colors">
                 <X size={24} />
               </button>
@@ -82,7 +82,7 @@ export default function NewsRowActions({ item }: { item: any }) {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Rasm (Ixtiyoriy, o&apos;zgartirish uchun yuklang)</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Rasm (Ixtiyoriy, özgartiriş uçun yuklang)</label>
                   <div className="relative">
                     <input 
                       type="file" 
@@ -100,7 +100,7 @@ export default function NewsRowActions({ item }: { item: any }) {
                       ) : (
                         <>
                           <Upload size={18} />
-                          <span>Rasm yuklash</span>
+                          <span>Rasm yuklaş</span>
                         </>
                       )}
                     </div>
@@ -130,11 +130,11 @@ export default function NewsRowActions({ item }: { item: any }) {
 
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-100">
                 <button type="button" onClick={() => setIsEditOpen(false)} className="px-6 py-3 font-bold text-gray-500 hover:bg-gray-50 rounded-xl transition-colors">
-                  Bekor qilish
+                  Bekor qiliş
                 </button>
                 <button type="submit" disabled={loading} className="px-8 py-3 bg-primary text-white font-bold rounded-xl flex items-center gap-2 hover:bg-accent transition-all disabled:opacity-50">
                   {loading && <Loader2 size={18} className="animate-spin" />}
-                  Saqlash
+                  Saqlaş
                 </button>
               </div>
             </form>

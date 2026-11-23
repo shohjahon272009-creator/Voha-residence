@@ -23,7 +23,7 @@ export async function GET() {
   const apartments = await db.prepare('SELECT project_id, floor, number, rooms, area, price_cash, status FROM apartments ORDER BY project_id, floor, number').all() as AptRow[];
 
   let csvContent = '﻿'; // BOM for UTF-8 Excel compatibility
-  csvContent += "Loyiha,Shahar,Tuman,Qavat,Xonadon raqami,Xonalar soni,Maydoni (m2),Narxi (UZS),Holati\n";
+  csvContent += "Loyiha,Şahar,Tuman,Qavat,Xonadon raqami,Xonalar soni,Maydoni (m2),Narxi (UZS),Holati\n";
 
   for (const apt of apartments) {
     const proj = byId.get(apt.project_id);

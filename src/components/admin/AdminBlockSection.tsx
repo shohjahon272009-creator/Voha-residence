@@ -42,7 +42,7 @@ export default function AdminBlockSection({ project, apts }: { project: Project;
       {open && (
         <div className="px-5 md:px-6 pb-6 border-t border-gray-100 pt-5">
           {empty ? (
-            <p className="text-xs text-gray-400">Hali xonadon yo&apos;q — <span className="font-bold text-primary">&quot;Xonadon qo&apos;shish&quot;</span> tugmasi bilan qo&apos;shing.</p>
+            <p className="text-xs text-gray-400">Hali xonadon yöq — <span className="font-bold text-primary">&quot;Xonadon qöşiş&quot;</span> tugmasi bilan qöşing.</p>
           ) : (
             <div className="space-y-3">
               {floors.map((floor) => (

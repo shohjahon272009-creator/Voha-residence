@@ -27,7 +27,7 @@ async function detachBookings(where: string, args: unknown[]) {
 const PROJECT_STATUSES = ['Jarayonda', 'Topshirilgan', 'Tez kunda', 'Sanoqli kunlar qoldi'];
 const APARTMENT_STATUSES = ["Bo'sh", 'Band', 'Bronlangan'];
 function assertStatus(value: string | null, allowed: string[]): string {
-  if (!value || !allowed.includes(value)) throw new Error(`Noto'g'ri holat: ${value ?? "bo'sh"}`);
+  if (!value || !allowed.includes(value)) throw new Error(`Notöğri holat: ${value ?? "böş"}`);
   return value;
 }
 
@@ -643,12 +643,12 @@ export async function addSale(formData: FormData) {
   const res = await db.prepare(
     "UPDATE apartments SET status = 'Band' WHERE id = ? AND status IN ('Bo''sh', 'Bronlangan')"
   ).run(apartment_id);
-  if (!res.changes) throw new Error("Bu xonadon allaqachon sotilgan yoki topilmadi.");
+  if (!res.changes) throw new Error("Bu xonadon allaqaçon sotilgan yoki topilmadi.");
 
   await db.prepare(`
     INSERT INTO bookings (apartment_id, client_name, client_phone, status, note)
     VALUES (?, ?, ?, 'Tasdiqlangan', ?)
-  `).run(apartment_id, client_name, client_phone, "Sotuvlar bo'limidan admin kiritdi");
+  `).run(apartment_id, client_name, client_phone, "Sotuvlar bölimidan admin kiritdi");
 
   revalidatePath('/admin/sales');
   revalidatePath('/admin/apartments');

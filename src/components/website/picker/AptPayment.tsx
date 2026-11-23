@@ -8,7 +8,7 @@ import { getApartmentPayment, type PublicPay } from '@/lib/paymentActions';
 import type { PickerLang } from './i18n';
 
 const T = {
-  uz: { title: "To'lov", down: "Boshlang'ich to'lov", monthly: "Oylik to'lov", sum: "so'm", perMonth: 'oyiga', rest: 'Qolgan summani menejer hisoblab beradi.', loading: 'Hisoblanmoqda…', agreed: 'Menejer bilan kelishiladi' },
+  uz: { title: "Tölov", down: "Boşlanğiç tölov", monthly: "Oylik tölov", sum: "söm", perMonth: 'oyiga', rest: 'Qolgan summani menejer hisoblab beradi.', loading: 'Hisoblanmoqda…', agreed: 'Menejer bilan kelişiladi' },
   ru: { title: 'Оплата', down: 'Первый взнос', monthly: 'Ежемесячный платёж', sum: 'сум', perMonth: 'в месяц', rest: 'Остаток суммы рассчитает менеджер.', loading: 'Считаем…', agreed: 'Согласуется с менеджером' },
   en: { title: 'Payment', down: 'Down payment', monthly: 'Monthly payment', sum: 'UZS', perMonth: 'per month', rest: 'A manager will calculate the remaining amount.', loading: 'Calculating…', agreed: 'Agreed with a manager' },
 };

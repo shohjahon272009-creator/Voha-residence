@@ -13,19 +13,19 @@ import { standardMonthly } from '@/lib/paymentCalc';
 
 const T = {
   uz: {
-    kicker: "To'lov tartibi",
-    title: "Boshlang'ich to'lov, keyin har oy bir xil summa",
-    lead: "Oylik to'lov xonalar soniga qarab belgilangan. Boshlang'ich to'lov foizi blokka bog'liq — xonadonni tanlaganingizda ko'rsatiladi.",
-    rooms: (n: number) => (n >= 4 ? '4 va undan ko‘p xonali' : `${n} xonali`),
-    perMonth: "mln so'm / oy",
-    tableCaption: "Standart oylik to'lov",
+    kicker: "Tölov tartibi",
+    title: "Boşlanğiç tölov, keyin har oy bir xil summa",
+    lead: "Oylik tölov xonalar soniga qarab belgilangan. Boşlanğiç tölov foizi blokka boğliq — xonadonni tanlaganingizda körsatiladi.",
+    rooms: (n: number) => (n >= 4 ? '4 va undan köp xonali' : `${n} xonali`),
+    perMonth: "mln söm / oy",
+    tableCaption: "Standart oylik tölov",
     steps: [
-      { k: '1', t: "Boshlang'ich to'lov", d: "Blokka qarab foizda. Xonadon detalida ko'rasiz." },
-      { k: '2', t: "Oylik to'lov", d: 'Jadvaldagi standart summa, har oy.' },
+      { k: '1', t: "Boşlanğiç tölov", d: "Blokka qarab foizda. Xonadon detalida körasiz." },
+      { k: '2', t: "Oylik tölov", d: 'Jadvaldagi standart summa, har oy.' },
       { k: '3', t: 'Qolgan summa', d: "Menejer hisoblab beradi — murojaat qoldiring." },
     ],
-    cta: 'Xonadon tanlash',
-    note: 'Yakuniy shartlar shartnomada belgilanadi.',
+    cta: 'Xonadon tanlaş',
+    note: 'Yakuniy şartlar şartnomada belgilanadi.',
   },
   ru: {
     kicker: 'Порядок оплаты',

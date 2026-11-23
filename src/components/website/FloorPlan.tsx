@@ -45,23 +45,23 @@ export default function FloorPlan({
     uz: {
       title: "Qavat rejasi",
       subtitle: "Kerakli qavat va xonadonni tanlang",
-      floorMap: "Qavat Chizmasi",
+      floorMap: "Qavat Çizmasi",
       apartmentsTitle: "Xonadonlar:",
       rooms: "xona",
       area: "m²",
-      aptMap: "xonadon chizmasi",
+      aptMap: "xonadon çizmasi",
       aptTitle: "xonadon",
       roomsLabel: "Xonalar",
       areaLabel: "Maydon",
       floorLabel: "Qavat",
       statusLabel: "Holati",
-      roomViews: "Xonalar ko'rinishi",
+      roomViews: "Xonalar körinişi",
       livingRoom: "Mehmonxona",
       bedroom: "Yotoqxona",
       priceLabel: "Narxi",
       priceUnit: "",
-      bookNow: "Narxini bilish",
-      emptyState: "Batafsil ma'lumot va xonalar ko'rinishini ko'rish uchun chap tomondan xonadonni tanlang"
+      bookNow: "Narxini biliş",
+      emptyState: "Batafsil ma'lumot va xonalar körinişini köriş uçun çap tomondan xonadonni tanlang"
     },
     ru: {
       title: "План этажа",
@@ -108,23 +108,23 @@ export default function FloorPlan({
   }[lang] || {
       title: "Qavat rejasi",
       subtitle: "Kerakli qavat va xonadonni tanlang",
-      floorMap: "Qavat Chizmasi",
+      floorMap: "Qavat Çizmasi",
       apartmentsTitle: "Xonadonlar:",
       rooms: "xona",
       area: "m²",
-      aptMap: "xonadon chizmasi",
+      aptMap: "xonadon çizmasi",
       aptTitle: "xonadon",
       roomsLabel: "Xonalar",
       areaLabel: "Maydon",
       floorLabel: "Qavat",
       statusLabel: "Holati",
-      roomViews: "Xonalar ko'rinishi",
+      roomViews: "Xonalar körinişi",
       livingRoom: "Mehmonxona",
       bedroom: "Yotoqxona",
       priceLabel: "Narxi",
       priceUnit: "",
-      bookNow: "Narxini bilish",
-      emptyState: "Batafsil ma'lumot va xonalar ko'rinishini ko'rish uchun chap tomondan xonadonni tanlang"
+      bookNow: "Narxini biliş",
+      emptyState: "Batafsil ma'lumot va xonalar körinişini köriş uçun çap tomondan xonadonni tanlang"
   };
 
   return (
@@ -228,7 +228,7 @@ export default function FloorPlan({
                 <div className="mb-8 p-4 bg-accent/5 rounded-xl border border-accent/20 text-center">
                    <div className="text-accent mb-2 font-bold uppercase tracking-widest">{t.priceLabel}</div>
                    <div className="text-sm font-medium text-gray-500">
-                     Sotuv bo‘limi menejerlaridan maxsus taklif va aniq narxni olish uchun so‘rov qoldiring.
+                     Sotuv bölimi menejerlaridan maxsus taklif va aniq narxni oliş uçun sörov qoldiring.
                    </div>
                 </div>
 

@@ -24,16 +24,16 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
   const companyName = settings.company_name || 'Voha Residence';
 
   const t = {
-    uz: { kicker: 'Aloqa', title: "Biz bilan bog'laning", sub: "Savolingiz bormi? Qo'ng'iroq qiling yoki xabar qoldiring — tez orada javob beramiz." },
+    uz: { kicker: 'Aloqa', title: "Biz bilan boğlaning", sub: "Savolingiz bormi? Qönğiroq qiling yoki xabar qoldiring — tez orada javob beramiz." },
     ru: { kicker: 'Контакты', title: 'Свяжитесь с нами', sub: 'Есть вопросы? Позвоните или оставьте сообщение — мы быстро ответим.' },
     en: { kicker: 'Contact', title: 'Get in touch', sub: "Questions? Call us or leave a message — we'll reply shortly." },
-  }[localeLang] || { kicker: 'Aloqa', title: "Biz bilan bog'laning", sub: '' };
+  }[localeLang] || { kicker: 'Aloqa', title: "Biz bilan boğlaning", sub: '' };
 
   const c = await getContacts();
   const faq = getFaq(localeLang, settings, {
     phone: c.phone, phone2: c.phone2,
-    address: c.address || 'Urganch sh., Ulug‘bek ko‘chasi — Ekstrenniy shifoxonasi chorrahasi',
-    hours: settings.contact_hours || (localeLang === 'ru' ? 'ежедневно с 09:00 до 18:00' : localeLang === 'en' ? 'daily 09:00–18:00' : 'har kuni 09:00 dan 18:00 gacha'),
+    address: c.address || 'Urganç ş., Uluğbek köçasi — Ekstrenniy şifoxonasi çorrahasi',
+    hours: settings.contact_hours || (localeLang === 'ru' ? 'ежедневно с 09:00 до 18:00' : localeLang === 'en' ? 'daily 09:00–18:00' : 'har kuni 09:00 dan 18:00 gaça'),
   });
 
   return (

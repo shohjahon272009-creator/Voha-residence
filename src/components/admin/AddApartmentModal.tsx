@@ -18,7 +18,7 @@ export default function AddApartmentModal({ projectId, projectName }: { projectI
       await addApartment(formData);
       setIsOpen(false);
     } catch {
-      alert("Saqlab bo'lmadi. Bir oz kutib, qayta urinib ko'ring.");
+      alert("Saqlab bölmadi. Bir oz kutib, qayta urinib köring.");
     } finally {
       setLoading(false);
     }
@@ -30,7 +30,7 @@ export default function AddApartmentModal({ projectId, projectName }: { projectI
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-1.5 px-4 py-2 bg-primary/10 text-primary font-bold rounded-xl text-xs hover:bg-primary hover:text-white transition-all"
       >
-        <Plus size={15} /> Xonadon qo&apos;shish
+        <Plus size={15} /> Xonadon qöşiş
       </button>
 
       {isOpen && (
@@ -47,7 +47,7 @@ export default function AddApartmentModal({ projectId, projectName }: { projectI
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <div className="flex gap-2.5 items-start p-3 bg-primary/5 rounded-xl text-[12px] text-primary/70 leading-relaxed">
                 <MapPin size={16} className="text-accent shrink-0 mt-0.5" />
-                <span>Joylashuv (Suv bo&apos;yida, Maktab yonida, ...) <b>{projectName}</b> loyihasi sozlamalarida belgilanadi — bu xonadon o&apos;sha joylashuvni avtomatik oladi.</span>
+                <span>Joylaşuv (Suv böyida, Maktab yonida, ...) <b>{projectName}</b> loyihasi sozlamalarida belgilanadi — bu xonadon öşa joylaşuvni avtomatik oladi.</span>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -76,17 +76,17 @@ export default function AddApartmentModal({ projectId, projectName }: { projectI
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 mb-1">Narxi (UZS) <span className="text-gray-300 font-normal">— to‘lov kalkulyatori uchun</span></label>
+                <label className="block text-xs font-bold text-gray-500 mb-1">Narxi (UZS) <span className="text-gray-300 font-normal">— tölov kalkulyatori uçun</span></label>
                 <input name="price_cash" type="number" min={0} step="any" placeholder="800000000" className="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white" />
-                <p className="text-[11px] text-gray-400 mt-1">Mijozga narx ochiq ko&apos;rsatilmaydi — faqat oylik to&apos;lov hisoblanadi.</p>
+                <p className="text-[11px] text-gray-400 mt-1">Mijozga narx oçiq körsatilmaydi — faqat oylik tölov hisoblanadi.</p>
               </div>
 
-              <PasteImageInput name="plan_image" label="Chizma (plan) rasmi — ixtiyoriy" />
+              <PasteImageInput name="plan_image" label="Çizma (plan) rasmi — ixtiyoriy" />
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">Bekor qilish</button>
+                <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">Bekor qiliş</button>
                 <button type="submit" disabled={loading} className="px-5 py-2 bg-primary text-white font-bold rounded-lg hover:bg-accent disabled:opacity-50">
-                  {loading ? 'Saqlanmoqda...' : 'Qo‘shish'}
+                  {loading ? 'Saqlanmoqda...' : 'Qöşiş'}
                 </button>
               </div>
             </form>

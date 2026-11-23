@@ -10,9 +10,9 @@ import db from '@/lib/db';
 import { headers } from 'next/headers';
 
 // Kirill (ru) harflari ham yuklansin — aks holda rus sahifasi tizim shriftida chiqardi
-const inter = Inter({ subsets: ['latin', 'cyrillic'], variable: '--font-inter' });
-const montserrat = Montserrat({ subsets: ['latin', 'cyrillic'], variable: '--font-montserrat' });
-const bebas = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--font-bebas' });
+const inter = Inter({ subsets: ['latin', 'latin-ext', 'cyrillic'], variable: '--font-inter' });
+const montserrat = Montserrat({ subsets: ['latin', 'latin-ext', 'cyrillic'], variable: '--font-montserrat' });
+const bebas = Bebas_Neue({ weight: '400', subsets: ['latin', 'latin-ext'], variable: '--font-bebas' });
 // Bebas'da kirill yo'q — rus harflari uchun unga o'xshash Oswald (font-bebas zaxirasi)
 const oswald = Oswald({ weight: ['500'], subsets: ['cyrillic'], variable: '--font-oswald' });
 
@@ -25,7 +25,7 @@ export const dynamic = 'force-dynamic';
 // SEO sarlavha/tavsif admin sozlamalaridan (Meta Title / Meta Description) olinadi
 export async function generateMetadata(): Promise<Metadata> {
   let title = "Voha Residence — Xorazmda yangi xonadonlar va turar-joy majmualari";
-  let description = "Xorazm va Urganch shahridagi zamonaviy turar-joy majmualari. Yangi xonadonlar, qulay muddatli to‘lov va ipoteka. Sifatli qurilish, o‘z vaqtida topshirish.";
+  let description = "Xorazm va Urganç şahridagi zamonaviy turar-joy majmualari. Yangi xonadonlar, qulay muddatli tölov va ipoteka. Sifatli quriliş, öz vaqtida topşiriş.";
   try {
     const rows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('meta_title_uz', 'meta_description')").all() as { key: string, value: string }[];
     const s = rows.reduce((acc, r) => ({ ...acc, [r.key]: r.value }), {} as Record<string, string>);
@@ -40,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL('https://www.voharesidence.uz'),
     title,
     description,
-    keywords: ['Voha Residence', 'Xorazm xonadonlar', 'Urganch turar-joy', 'yangi uylar Xorazm', 'kvartira Xorazm', 'muddatli to‘lov', 'ipoteka Xorazm', 'turar-joy majmuasi', 'novostroyka Xorazm'],
+    keywords: ['Voha Residence', 'Xorazm xonadonlar', 'Urganç turar-joy', 'Urganch turar-joy', 'Urganch yangi uylar', 'muddatli to‘lov', 'yangi uylar Xorazm', 'kvartira Xorazm', 'muddatli tölov', 'ipoteka Xorazm', 'turar-joy majmuasi', 'novostroyka Xorazm'],
     // Canonical + hreflang endi har sahifaning o'zida (src/lib/seo.ts) — bu yerda
     // canonical '/' hamma ichki sahifani bosh sahifaning nusxasi qilib ko'rsatardi.
     // Favicon: asosiy — vektorli SVG (haqiqiy Voha logotipi, har o'lchamda tiniq),
@@ -84,7 +84,7 @@ export default async function RootLayout({
     '@type': ['RealEstateAgent', 'Organization'],
     '@id': 'https://www.voharesidence.uz/#organization',
     name: 'Voha Residence',
-    alternateName: ['Voha Residence qurilish kompaniyasi', 'Воха Резиденс'],
+    alternateName: ['Voha Residence quriliş kompaniyasi', 'Voha Residence qurilish kompaniyasi', 'Воха Резиденс'],
     url: 'https://www.voharesidence.uz',
     logo: 'https://www.voharesidence.uz/icon.jpg',
     image: 'https://www.voharesidence.uz/cinema/poster.jpg',
@@ -98,17 +98,17 @@ export default async function RootLayout({
       opens: '09:00', closes: '18:00',
     }],
     hasMap: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
-    description: 'Xorazm va Urganch shahridagi zamonaviy turar-joy majmualari — yangi xonadonlar, qulay to‘lov va ipoteka.',
+    description: 'Xorazm va Urganç şahridagi zamonaviy turar-joy majmualari — yangi xonadonlar, qulay tölov va ipoteka.',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: s.contact_address || 'Ulug‘bek ko‘chasi',
+      streetAddress: s.contact_address || 'Uluğbek köçasi',
       addressLocality: 'Urganch',
       addressRegion: 'Xorazm',
       addressCountry: 'UZ',
     },
     geo: { '@type': 'GeoCoordinates', latitude: Number(lat), longitude: Number(lng) },
-    areaServed: [{ '@type': 'City', name: 'Urganch' }, { '@type': 'AdministrativeArea', name: 'Xorazm viloyati' }],
-    knowsAbout: ['yangi xonadonlar', 'turar-joy majmualari', 'muddatli to‘lov', 'новостройки Ургенч'],
+    areaServed: [{ '@type': 'City', name: 'Urganch', alternateName: 'Urganç' }, { '@type': 'AdministrativeArea', name: 'Xorazm viloyati' }],
+    knowsAbout: ['yangi xonadonlar', 'turar-joy majmualari', 'muddatli tölov', 'новостройки Ургенч'],
     sameAs: ['https://www.instagram.com/voha_residence', 'https://t.me/voharesidence'],
   };
   const jsonLd = {

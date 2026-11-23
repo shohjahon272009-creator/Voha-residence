@@ -21,7 +21,7 @@ export default async function AdminProjects() {
       <div className="flex items-center justify-between">
          <div>
             <h1 className="text-3xl font-bold text-primary mb-2">Loyihalar</h1>
-            <p className="text-gray-400 text-sm">Barcha qurilish loyihalari boshqaruvi.</p>
+            <p className="text-gray-400 text-sm">Barça quriliş loyihalari boşqaruvi.</p>
          </div>
          <AddProjectModal />
       </div>
@@ -71,7 +71,7 @@ export default async function AdminProjects() {
                        </td>
                       <td className="px-8 py-5">
                          <div className="text-sm">
-                           <span className="font-bold text-success">{available} bo'sh</span>
+                           <span className="font-bold text-success">{available} böş</span>
                            <span className="text-gray-400"> / {apts.length} jami</span>
                          </div>
                       </td>

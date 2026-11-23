@@ -22,7 +22,7 @@ export default function AdminLoginPage() {
               <span className="text-white font-bold text-3xl">Q</span>
             </div>
             <h1 className="text-2xl font-bold text-primary">ADMIN PANEL</h1>
-            <p className="text-gray-400 text-sm">Xush kelibsiz, boshqarish uchun kiring</p>
+            <p className="text-gray-400 text-sm">Xuş kelibsiz, boşqariş uçun kiring</p>
           </div>
 
           <form action={formAction} className="space-y-6">
@@ -63,7 +63,7 @@ export default function AdminLoginPage() {
             <div className="flex items-center justify-between py-2">
                <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
                   <input type="checkbox" className="w-4 h-4 rounded border-gray-200 accent-primary" />
-                  Eslab qolish
+                  Eslab qoliş
                </label>
                <button type="button" className="text-sm font-medium text-accent">Parolni unutdingizmi?</button>
             </div>
@@ -73,7 +73,7 @@ export default function AdminLoginPage() {
               disabled={pending}
               className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-opacity-95 transition-all flex items-center justify-center gap-2 shadow-xl shadow-primary/20 disabled:opacity-70"
             >
-              {pending ? <Loader2 className="animate-spin" /> : 'Kirish'}
+              {pending ? <Loader2 className="animate-spin" /> : 'Kiriş'}
             </button>
           </form>
         </div>

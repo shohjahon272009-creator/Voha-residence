@@ -33,7 +33,7 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
       setDescs({ uz: '', ru: '', en: '' });
       setStatus('Jarayonda');
     } catch (err) {
-      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib ko'ring.");
+      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib köring.");
     } finally {
       setLoading(false);
     }
@@ -85,7 +85,7 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
         onClick={() => setIsOpen(true)}
         className="px-6 py-3 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 flex items-center gap-2 text-sm"
       >
-        Yangi loyiha qo&apos;shish
+        Yangi loyiha qöşiş
       </button>
 
       {isOpen && (
@@ -93,7 +93,7 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
           <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center p-6 border-b border-gray-100">
               <div className="flex items-center gap-4">
-                <h2 className="text-xl font-bold text-primary">Yangi loyiha qo&apos;shish</h2>
+                <h2 className="text-xl font-bold text-primary">Yangi loyiha qöşiş</h2>
                 {translating && <span className="text-xs font-bold text-accent flex items-center gap-1"><Loader2 size={14} className="animate-spin" /> Tarjima qilinmoqda...</span>}
               </div>
               <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600">
@@ -119,7 +119,7 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-1">Shahar</label>
+                  <label className="block text-xs font-bold text-gray-500 mb-1">Şahar</label>
                   <input required name="city" type="text" defaultValue="Xorazm" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                 </div>
                 <div>
@@ -141,7 +141,7 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
                              <option value="Jarayonda">Jarayonda</option>
                              <option value="Tez kunda">Tez kunda</option>
                              <option value="Sanoqli kunlar qoldi">Sanoqli kunlar qoldi</option>
-                             <option value="Topshirilgan">Topshirilgan</option>
+                             <option value="Topshirilgan">Topşirilgan</option>
                           </select>
                        </div>
                      )}
@@ -166,22 +166,22 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
                   <PasteImageInput name="main_image" label="Loyiha Asosiy Rasmi" />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 mb-1">Qo&apos;shimcha rasmlar / galereya <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
+                  <label className="block text-xs font-bold text-gray-500 mb-1">Qöşimça rasmlar / galereya <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
                   <input type="file" name="gallery_images" accept="image/*" multiple className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-accent/10 file:text-accent hover:file:bg-accent/20 cursor-pointer" />
-                  <p className="text-[11px] text-gray-400 mt-1">Bir nechta rasm birdaniga tanlashingiz mumkin. Loyiha sahifasida galereya bo&apos;lib chiqadi.</p>
+                  <p className="text-[11px] text-gray-400 mt-1">Bir neçta rasm birdaniga tanlaşingiz mumkin. Loyiha sahifasida galereya bölib çiqadi.</p>
                 </div>
                 <div className="col-span-2 space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
                   <label className="block text-xs font-bold text-gray-600">🌐 360° Virtual Tur (ixtiyoriy)</label>
                   <div>
-                    <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Panorama rasm yuklash</span>
+                    <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Panorama rasm yuklaş</span>
                     <input type="file" name="virtual_tour_image" accept="image/*" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-accent/10 file:text-accent hover:file:bg-accent/20 cursor-pointer" />
-                    <p className="text-[11px] text-gray-400 mt-1">360° (panorama / equirectangular) rasm yuklang — foydalanuvchi uni aylantirib ko&apos;radi.</p>
+                    <p className="text-[11px] text-gray-400 mt-1">360° (panorama / equirectangular) rasm yuklang — foydalanuvçi uni aylantirib köradi.</p>
                   </div>
                   <div className="flex items-center gap-3 text-[10px] font-bold text-gray-300">
                     <span className="h-px bg-gray-200 flex-1" /> YOKI <span className="h-px bg-gray-200 flex-1" />
                   </div>
                   <div>
-                    <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tashqi tur havolasi</span>
+                    <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Taşqi tur havolasi</span>
                     <input type="text" inputMode="url" name="virtual_tour_url" placeholder="https://... (atlasvr, kuula, momento360 va h.k.)" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                 </div>
@@ -190,24 +190,24 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
               <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 mb-1">🏷️ Chegirma belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
-                    <input name="discount_label" placeholder="Masalan: Chegirma 50 mln gacha" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                    <label className="block text-xs font-bold text-gray-500 mb-1">🏷️ Çegirma belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
+                    <input name="discount_label" placeholder="Masalan: Çegirma 50 mln gaça" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 mb-1">🎁 Sovg&apos;a belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
-                    <input name="gift_label" placeholder="Masalan: Ta'mir sovg'a" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
+                    <label className="block text-xs font-bold text-gray-500 mb-1">🎁 Sovğa belgisi <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
+                    <input name="gift_label" placeholder="Masalan: Ta'mir sovğa" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 mb-1">🔢 Blok raqami <span className="text-gray-300 font-normal">— to&apos;lov shartlari uchun</span></label>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">🔢 Blok raqami <span className="text-gray-300 font-normal">— tölov şartlari uçun</span></label>
                     <input name="block_no" type="number" min={1} max={999} placeholder="Masalan: 10" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 mb-1">📅 Topshirish yili <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">📅 Topşiriş yili <span className="text-gray-300 font-normal">— ixtiyoriy</span></label>
                     <input name="delivery_year" type="number" min={2024} max={2035} placeholder="Masalan: 2027" className="w-full px-4 py-2 border rounded-lg outline-none focus:border-primary" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-2">📍 Joylashuv kategoriyalari (saytda ko&apos;rinadi)</label>
+                  <label className="block text-xs font-bold text-gray-500 mb-2">📍 Joylaşuv kategoriyalari (saytda körinadi)</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {CATEGORIES.map((c) => (
                       <label key={c.key} className="flex items-center gap-2 text-sm bg-white border border-gray-100 rounded-lg px-3 py-2 cursor-pointer hover:border-primary">
@@ -236,10 +236,10 @@ export default function AddProjectModal({ isSoldOut }: { isSoldOut?: boolean }) 
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                 <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">
-                  Bekor qilish
+                  Bekor qiliş
                 </button>
                 <button type="submit" disabled={loading || translating} className="px-5 py-2 bg-primary text-white font-bold rounded-lg hover:bg-accent disabled:opacity-50">
-                  {loading ? 'Saqlanmoqda...' : 'Saqlash'}
+                  {loading ? 'Saqlanmoqda...' : 'Saqlaş'}
                 </button>
               </div>
             </form>

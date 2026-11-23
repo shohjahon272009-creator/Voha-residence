@@ -53,7 +53,7 @@ export default function GlobalSearch() {
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
       <input 
         type="text" 
-        placeholder="Qidirish..." 
+        placeholder="Qidiriş..." 
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => {
@@ -92,7 +92,7 @@ export default function GlobalSearch() {
             </div>
           ) : (
             <div className="p-4 text-sm text-gray-500 text-center">
-              Hech narsa topilmadi
+              Heç narsa topilmadi
             </div>
           )}
         </div>

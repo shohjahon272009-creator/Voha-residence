@@ -62,7 +62,7 @@ const save = (key: string, value: string) =>
 export async function buildReport(): Promise<SyncReport> {
   const [{ blocks, apartments }, manual] = await Promise.all([salehouseFixture() ?? fetchSaleHouseInventory(), loadMap()]);
   // Xavfsizlik: bo'sh/yarim javob bilan butun saytni "topshirilgan" qilib yubormaslik uchun
-  if (blocks.length === 0 || apartments.length === 0) throw new Error("Sale House bo'sh javob qaytardi — hech narsa o'zgartirilmadi");
+  if (blocks.length === 0 || apartments.length === 0) throw new Error("Sale House böş javob qaytardi — heç narsa özgartirilmadi");
 
   const projects = await db.prepare('SELECT id, name_uz, block_no, status FROM projects').all() as SiteProject[];
   const siteApts = await db.prepare('SELECT id, project_id, number, status, floor, rooms, area FROM apartments').all() as SiteApt[];

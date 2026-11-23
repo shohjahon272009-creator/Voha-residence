@@ -20,7 +20,7 @@ import { getPublicSettings } from '@/lib/settings';
 
 // Yon panel matnlari (avval faqat o'zbekcha va har loyihaga bir xil "afzalliklar" yozilgan edi)
 const SIDE: Record<string, { adv: string; office: string; officeSub: string; call: string; fallbackSub: string }> = {
-  uz: { adv: 'Loyiha afzalliklari', office: 'Sotuv ofisi', officeSub: "Savollar bormi? Mutaxassislarimiz bilan bog'laning!", call: "Qo'ng'iroq qilish", fallbackSub: 'Zamonaviy turar-joy majmuasi' },
+  uz: { adv: 'Loyiha afzalliklari', office: 'Sotuv ofisi', officeSub: "Savollar bormi? Mutaxassislarimiz bilan boğlaning!", call: "Qönğiroq qiliş", fallbackSub: 'Zamonaviy turar-joy majmuasi' },
   ru: { adv: 'Преимущества проекта', office: 'Офис продаж', officeSub: 'Есть вопросы? Свяжитесь с нашими специалистами!', call: 'Позвонить', fallbackSub: 'Современный жилой комплекс' },
   en: { adv: 'Project highlights', office: 'Sales office', officeSub: 'Have questions? Talk to our specialists!', call: 'Call us', fallbackSub: 'Modern residential complex' },
 };
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     ? `${name} — современный жилой комплекс (${city}). Квартиры, планировки, цены и удобные условия оплаты.`
     : lang === 'en'
       ? `${name} — a modern residential complex in ${city}. Apartments, floor plans, prices and convenient payment terms.`
-      : `${name} — ${city}dagi zamonaviy turar-joy majmuasi. Xonadonlar, chizmalar, narx va qulay to‘lov shartlari.`;
+      : `${name} — ${city}dagi zamonaviy turar-joy majmuasi. Xonadonlar, çizmalar, narx va qulay tölov şartlari.`;
   const desc = (project as unknown as Record<string, string>)[`description_${lang}`] || fallback;
   const where = lang === 'ru' ? `${city}, новые квартиры` : lang === 'en' ? `${city}, new apartments` : `${city}, yangi xonadonlar`;
   const t = { title: `${name} — ${where} | Voha Residence`, description: desc.slice(0, 160) };

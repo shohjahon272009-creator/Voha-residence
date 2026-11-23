@@ -16,10 +16,10 @@ const T: Record<string, {
   send: string; done: string; doneSub: string; close: string; err: string;
 }> = {
   uz: {
-    title: 'Ariza qoldirish', sub: (n, f) => `№ ${n} xonadon, ${f}-qavat. Telefon raqamingizni qoldiring — menejer narx va qolgan summani aytadi.`,
-    name: 'Ismingiz', namePh: 'Ixtiyoriy', phone: 'Telefon raqam', msg: "Qo'shimcha xabar (ixtiyoriy)", msgPh: "Savol yoki xohishingizni yozing…",
-    send: 'Ariza yuborish', done: "So'rovingiz qabul qilindi!", doneSub: "Tez orada menejerlarimiz siz bilan bog'lanishadi.", close: 'Yopish',
-    err: "Xatolik yuz berdi. Qayta urinib ko'ring yoki qo'ng'iroq qiling.",
+    title: 'Ariza qoldiriş', sub: (n, f) => `№ ${n} xonadon, ${f}-qavat. Telefon raqamingizni qoldiring — menejer narx va qolgan summani aytadi.`,
+    name: 'Ismingiz', namePh: 'Ixtiyoriy', phone: 'Telefon raqam', msg: "Qöşimça xabar (ixtiyoriy)", msgPh: "Savol yoki xohişingizni yozing…",
+    send: 'Ariza yuboriş', done: "Sörovingiz qabul qilindi!", doneSub: "Tez orada menejerlarimiz siz bilan boğlanişadi.", close: 'Yopiş',
+    err: "Xatolik yuz berdi. Qayta urinib köring yoki qönğiroq qiling.",
   },
   ru: {
     title: 'Оставить заявку', sub: (n, f) => `Квартира № ${n}, ${f}-этаж. Оставьте номер телефона — менеджер сообщит цену и оставшуюся сумму.`,

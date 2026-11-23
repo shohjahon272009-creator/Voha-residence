@@ -26,15 +26,15 @@ export default async function WebsiteLayout({
 
   const t = {
     uz: {
-      desc: "Urganch shahridagi turar-joy bloklari: bo'sh xonadonlar, to'lov tartibi va sotuv ofisi bilan aloqa.",
-      sections: "Bo'limlar",
+      desc: "Urganç şahridagi turar-joy bloklari: böş xonadonlar, tölov tartibi va sotuv ofisi bilan aloqa.",
+      sections: "Bölimlar",
       project: "Loyiha",
       about: "Biz haqimizda",
       apartments: "Xonadonlar",
       news: "Yangiliklar",
       contact: "Aloqa",
-      address: "Xorazm viloyati, Urganch shahri",
-      rights: `© ${new Date().getFullYear()} ${companyName}. Barcha huquqlar himoyalangan.`,
+      address: "Xorazm viloyati, Urganç şahri",
+      rights: `© ${new Date().getFullYear()} ${companyName}. Barça huquqlar himoyalangan.`,
       links: "Foydali havolalar"
     },
     ru: {
@@ -62,15 +62,15 @@ export default async function WebsiteLayout({
       links: "Useful Links"
     }
   }[lang] || {
-      desc: "Urganch shahridagi turar-joy bloklari: bo'sh xonadonlar, to'lov tartibi va sotuv ofisi bilan aloqa.",
-      sections: "Bo'limlar",
+      desc: "Urganç şahridagi turar-joy bloklari: böş xonadonlar, tölov tartibi va sotuv ofisi bilan aloqa.",
+      sections: "Bölimlar",
       project: "Loyiha",
       about: "Biz haqimizda",
       apartments: "Xonadonlar",
       news: "Yangiliklar",
       contact: "Aloqa",
-      address: "Xorazm viloyati, Urganch shahri",
-      rights: `© ${new Date().getFullYear()} ${companyName}. Barcha huquqlar himoyalangan.`,
+      address: "Xorazm viloyati, Urganç şahri",
+      rights: `© ${new Date().getFullYear()} ${companyName}. Barça huquqlar himoyalangan.`,
       links: "Foydali havolalar"
   };
 
@@ -127,7 +127,7 @@ export default async function WebsiteLayout({
            {t.rights}
            {/* Xodimlar uchun — mijoz navigatsiyasidan alohida */}
            <Link href="/admin/login" rel="nofollow" className="ml-4 underline underline-offset-4 hover:text-white transition-colors">
-             {lang === 'ru' ? 'Вход для сотрудников' : lang === 'en' ? 'Staff login' : 'Xodimlar uchun kirish'}
+             {lang === 'ru' ? 'Вход для сотрудников' : lang === 'en' ? 'Staff login' : 'Xodimlar uçun kiriş'}
            </Link>
         </div>
       </footer>
@@ -136,7 +136,7 @@ export default async function WebsiteLayout({
       <a 
         href={telHref(contacts.phone)} 
         className="call-fab md:hidden fixed bottom-5 right-5 z-40 w-14 h-14 md:w-16 md:h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(37,211,102,0.5)] hover:scale-110 hover:shadow-[0_8px_30px_rgba(37,211,102,0.7)] transition-all"
-        aria-label={lang === 'ru' ? 'Позвонить' : lang === 'en' ? 'Call us' : 'Qo‘ng‘iroq qilish'}
+        aria-label={lang === 'ru' ? 'Позвонить' : lang === 'en' ? 'Call us' : 'Qönğiroq qiliş'}
       >
         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
       </a>

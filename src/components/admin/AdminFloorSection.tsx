@@ -26,7 +26,7 @@ export default function AdminFloorSection({ floor, apts }: { floor: number; apts
           <div className="text-[10px] text-gray-400 font-medium mt-1">{apts.length} ta xonadon</div>
         </div>
         <div className="flex-1" />
-        <span className="text-[11px] font-bold text-gray-300 mr-1">{open ? 'yepish' : 'ochish'}</span>
+        <span className="text-[11px] font-bold text-gray-300 mr-1">{open ? 'yepiş' : 'oçiş'}</span>
         <ChevronDown size={18} className={`text-gray-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
 

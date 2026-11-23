@@ -22,7 +22,7 @@ export default async function AdminCustomers() {
     <div className="space-y-6">
       <div>
          <h1 className="text-3xl font-bold text-primary mb-2">Mijozlar</h1>
-         <p className="text-gray-400">Xonadon bron qilgan barcha mijozlar ro'yxati.</p>
+         <p className="text-gray-400">Xonadon bron qilgan barça mijozlar röyxati.</p>
       </div>
 
       <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
@@ -38,7 +38,7 @@ export default async function AdminCustomers() {
             <tbody>
                {clients.length === 0 ? (
                  <tr>
-                   <td colSpan={4} className="py-8 text-center text-gray-400">Hozircha mijozlar yo'q</td>
+                   <td colSpan={4} className="py-8 text-center text-gray-400">Hozirça mijozlar yöq</td>
                  </tr>
                ) : (
                  clients.map((c) => (

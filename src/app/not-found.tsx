@@ -13,12 +13,12 @@ export default function NotFound() {
       <h1 className="mt-6 text-2xl md:text-3xl font-extrabold">Sahifa topilmadi</h1>
       <p className="mt-2 text-white/60">Страница не найдена · Page not found</p>
       <div className="mt-10 flex flex-wrap justify-center gap-3">
-        <Link href="/uz" className="px-7 py-3.5 rounded-full bg-accent text-primary font-bold hover:bg-white transition-colors">Bosh sahifa</Link>
+        <Link href="/uz" className="px-7 py-3.5 rounded-full bg-accent text-primary font-bold hover:bg-white transition-colors">Boş sahifa</Link>
         <Link href="/ru" className="px-7 py-3.5 rounded-full border border-white/30 font-bold hover:bg-white hover:text-primary transition-colors">Главная</Link>
         <Link href="/en" className="px-7 py-3.5 rounded-full border border-white/30 font-bold hover:bg-white hover:text-primary transition-colors">Home</Link>
       </div>
       <Link href="/uz/apartments" className="mt-8 text-sm text-white/60 underline underline-offset-4 hover:text-white">
-        Xonadonlarni ko&apos;rish · Квартиры · Apartments
+        Xonadonlarni köriş · Квартиры · Apartments
       </Link>
     </main>
   );

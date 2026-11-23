@@ -6,7 +6,7 @@ import { Locale } from '@/lib/dictionaries';
 import { TourScene } from '@/lib/types';
 
 const labels: Record<Locale, { pin: string; title: string; loading: string; newTab: string; hint: string; hintTour: string }> = {
-  uz: { pin: "360° Virtual sayohat", title: "360° Virtual sayohat", loading: "Yuklanmoqda…", newTab: "Yangi oynada ochish", hint: "Atrofga qarash uchun sichqoncha bilan suring", hintTour: "Belgilarni bosib boshqa nuqtalarga o'ting" },
+  uz: { pin: "360° Virtual sayohat", title: "360° Virtual sayohat", loading: "Yuklanmoqda…", newTab: "Yangi oynada oçiş", hint: "Atrofga qaraş uçun siçqonça bilan suring", hintTour: "Belgilarni bosib boşqa nuqtalarga öting" },
   ru: { pin: "360° Виртуальный тур", title: "360° Виртуальный тур", loading: "Загрузка…", newTab: "Открыть в новом окне", hint: "Перетаскивайте мышью, чтобы осмотреться", hintTour: "Нажимайте на метки для перехода" },
   en: { pin: "360° Virtual Tour", title: "360° Virtual Tour", loading: "Loading…", newTab: "Open in new tab", hint: "Drag with your mouse to look around", hintTour: "Click the markers to move between points" },
 };

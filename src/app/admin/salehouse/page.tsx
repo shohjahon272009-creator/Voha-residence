@@ -32,11 +32,11 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
     <div className="space-y-8 max-w-6xl">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-primary">Sale House&apos;dan yuklash</h1>
+          <h1 className="text-3xl font-bold text-primary">Sale House&apos;dan yuklaş</h1>
           <p className="text-gray-500 mt-1">Loyihalar va xonadonlar (raqam, qavat, xona, m², holat) Sale House&apos;dan saytga olinadi. Narx olinmaydi.</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-success font-bold bg-success/10 px-4 py-2 rounded-xl">
-          <ShieldCheck size={18} /> Faqat o&apos;qish — Sale House&apos;da hech narsa o&apos;zgarmaydi
+          <ShieldCheck size={18} /> Faqat öqiş — Sale House&apos;da heç narsa özgarmaydi
         </div>
       </div>
 
@@ -44,26 +44,26 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
         <div className="bg-white rounded-3xl p-8 border border-gray-100">
           <h3 className="font-bold text-lg text-primary mb-2">Ulanmagan</h3>
           <p className="text-gray-500 text-sm">
-            Sale House&apos;dan sayt uchun alohida, faqat o&apos;qish huquqli Inventory API kaliti olinib, serverdagi
-            sozlama fayliga qo&apos;yilishi kerak (SALEHOUSE_API_URL, SALEHOUSE_API_TOKEN). Kalit bu sahifaga yoki saytga kiritilmaydi.
+            Sale House&apos;dan sayt uçun alohida, faqat öqiş huquqli Inventory API kaliti olinib, serverdagi
+            sozlama fayliga qöyilişi kerak (SALEHOUSE_API_URL, SALEHOUSE_API_TOKEN). Kalit bu sahifaga yoki saytga kiritilmaydi.
           </p>
         </div>
       ) : (
         <>
           {applied != null && (
             <div className="flex items-center gap-3 bg-success/10 text-success font-bold rounded-2xl p-4">
-              <CheckCircle2 size={20} /> Saytga yozildi: {applied} ta o&apos;zgarish.
+              <CheckCircle2 size={20} /> Saytga yozildi: {applied} ta özgariş.
             </div>
           )}
           {s._salehouse_error && (
             <div className="flex items-start gap-3 bg-danger/10 text-danger rounded-2xl p-4 text-sm">
-              <AlertTriangle size={18} className="shrink-0 mt-0.5" /> Oxirgi avtomatik urinish xatosi: {s._salehouse_error}
+              <AlertTriangle size={18} className="shrink-0 mt-0.5" /> Oxirgi avtomatik uriniş xatosi: {s._salehouse_error}
             </div>
           )}
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-white rounded-3xl p-6 border border-gray-100">
-              <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Oxirgi sinxronlash</div>
+              <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Oxirgi sinxronlaş</div>
               <div className="text-primary font-bold">{last.at ? new Date(last.at).toLocaleString('ru-RU') : '—'}</div>
               {last.at && <div className="text-sm text-gray-500 mt-1">{last.applied ?? 0} ta xonadon yangilangan</div>}
             </div>
@@ -71,16 +71,16 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
               <div>
                 <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Avtomatik (har 10 daqiqada)</div>
                 <div className={`font-bold ${auto && cron.alive ? 'text-success' : 'text-gray-500'}`}>
-                  {!auto ? "O'chirilgan" : cron.alive ? 'Ishlayapti' : 'Yoqilgan, lekin ishlamayapti'}
+                  {!auto ? "Öçirilgan" : cron.alive ? 'Işlayapti' : 'Yoqilgan, lekin işlamayapti'}
                 </div>
                 {auto && !cron.alive && (
-                  <div className="text-[11px] text-warning mt-1">Serverda 10 daqiqalik vazifa o&apos;rnatilmagan — hozircha faqat qo&apos;lda &quot;Qo&apos;llash&quot;.</div>
+                  <div className="text-[11px] text-warning mt-1">Serverda 10 daqiqalik vazifa örnatilmagan — hozirça faqat qölda &quot;Qöllaş&quot;.</div>
                 )}
-                {cron.lastAt && <div className="text-[11px] text-gray-400 mt-1">Oxirgi tekshiruv: {new Date(cron.lastAt).toLocaleString('ru-RU')}</div>}
+                {cron.lastAt && <div className="text-[11px] text-gray-400 mt-1">Oxirgi tekşiruv: {new Date(cron.lastAt).toLocaleString('ru-RU')}</div>}
               </div>
               <input type="hidden" name="on" value={auto ? '0' : '1'} />
               <button className={`px-5 py-2.5 rounded-xl font-bold text-sm ${auto ? 'bg-gray-100 text-gray-600' : 'bg-primary text-white'}`}>
-                {auto ? "O'chirish" : 'Yoqish'}
+                {auto ? "Öçiriş" : 'Yoqiş'}
               </button>
             </form>
           </div>
@@ -88,13 +88,13 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
           <div className="flex flex-wrap gap-3">
             <form action={startSaleHouseReport}>
               <button disabled={running} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-bold disabled:opacity-60">
-                <RefreshCw size={18} className={running ? 'animate-spin' : ''} /> {running ? 'Hisobot tayyorlanmoqda…' : 'Solishtirish (hisobot)'}
+                <RefreshCw size={18} className={running ? 'animate-spin' : ''} /> {running ? 'Hisobot tayyorlanmoqda…' : 'Soliştiriş (hisobot)'}
               </button>
             </form>
             {report && reportSize(report) > 0 && (
               <form action={applySaleHouseSync}>
                 <button className="px-6 py-3 rounded-xl bg-accent text-white font-bold">
-                  Qo&apos;llash — {reportSize(report)} ta o&apos;zgarishni saytga yozish
+                  Qöllaş — {reportSize(report)} ta özgarişni saytga yoziş
                 </button>
               </form>
             )}
@@ -102,11 +102,11 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
 
           {running && (
             <div className="bg-primary/5 text-primary rounded-2xl p-4 text-sm">
-              Sale House&apos;dan ma&apos;lumot olinmoqda (1–2 daqiqa, Sale House cheklovi tufayli sekin). Sahifa o&apos;zi yangilanadi — kutib turing yoki keyinroq qaytib keling.
+              Sale House&apos;dan ma&apos;lumot olinmoqda (1–2 daqiqa, Sale House çeklovi tufayli sekin). Sahifa özi yangilanadi — kutib turing yoki keyinroq qaytib keling.
               <AutoRefresh seconds={5} />
             </div>
           )}
-          {stale && <div className="bg-warning/10 text-warning rounded-2xl p-4 text-sm">Hisobot eskirgan — avval qayta solishtiring.</div>}
+          {stale && <div className="bg-warning/10 text-warning rounded-2xl p-4 text-sm">Hisobot eskirgan — avval qayta soliştiring.</div>}
           {error && <div className="bg-danger/10 text-danger rounded-2xl p-4 text-sm">Hisobot xatosi: {error}</div>}
           {report && (
             <p className="text-xs text-gray-400">Hisobot vaqti: {new Date(report.at).toLocaleString('ru-RU')}</p>
@@ -116,13 +116,13 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
             <div className="space-y-6">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  ["Qo'shiladigan xonadonlar", report.creates?.length ?? report.notOnSite],
-                  ["Holati o'zgaradigan", report.changes.length],
+                  ["Qöşiladigan xonadonlar", report.creates?.length ?? report.notOnSite],
+                  ["Holati özgaradigan", report.changes.length],
                   ['Qavat / xona / m² tuzatiladigan', report.updates?.length ?? 0],
-                  ["Sotuvdan chiqadigan (Sale House'da yo'q)", report.hides?.length ?? report.notInSaleHouse],
+                  ["Sotuvdan çiqadigan (Sale House'da yöq)", report.hides?.length ?? report.notInSaleHouse],
                   ['Yangi loyihalar', report.newProjects?.length ?? 0],
-                  ["“Topshirilgan” bo'ladigan loyihalar", report.retire?.length ?? 0],
-                  ["Olinmagan (do'kon, parkovka)", report.skipped ?? 0],
+                  ["“Topşirilgan” böladigan loyihalar", report.retire?.length ?? 0],
+                  ["Olinmagan (dökon, parkovka)", report.skipped ?? 0],
                   ['Sale House bloklari', report.blocks.length],
                 ].map(([l, v]) => (
                   <div key={String(l)} className="bg-white rounded-2xl p-5 border border-gray-100">
@@ -153,7 +153,7 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
 
               {report.changes.length > 0 && (
                 <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden">
-                  <div className="px-6 py-4 font-bold text-primary border-b border-gray-100">Qo&apos;llansa o&apos;zgaradigan holatlar</div>
+                  <div className="px-6 py-4 font-bold text-primary border-b border-gray-100">Qöllansa özgaradigan holatlar</div>
                   <table className="w-full text-sm">
                     <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
                       <tr><th className="text-left px-6 py-3">Loyiha</th><th className="text-left px-6 py-3">Xonadon</th><th className="text-left px-6 py-3">Hozir saytda</th><th className="text-left px-6 py-3">Sale House&apos;da</th></tr>
@@ -174,7 +174,7 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
 
               {(report.retire?.length ?? 0) > 0 && (
                 <div className="bg-white rounded-3xl border border-gray-100 p-6 text-sm">
-                  <div className="font-bold text-primary mb-2">Sale House&apos;da yo&apos;q — &quot;Topshirilgan&quot; bo&apos;ladi (xonadonlari sotuvdan chiqadi, o&apos;chirilmaydi)</div>
+                  <div className="font-bold text-primary mb-2">Sale House&apos;da yöq — &quot;Topşirilgan&quot; böladi (xonadonlari sotuvdan çiqadi, öçirilmaydi)</div>
                   <ul className="text-gray-600 space-y-1">
                     {report.retire.map((p) => <li key={p.projectId}>{p.name} — hozir: {p.from}, sotuvdagi xonadonlar: {p.freeApts}</li>)}
                   </ul>
@@ -182,7 +182,7 @@ export default async function SaleHousePage({ searchParams }: { searchParams: Pr
               )}
               {(report.creates?.length ?? 0) > 0 && (
                 <p className="text-xs text-gray-400">
-                  Yangi xonadonlar rasmsiz qo&apos;shiladi — chizma va rasmlarni &quot;Xonadonlar&quot; bo&apos;limida qo&apos;shasiz.
+                  Yangi xonadonlar rasmsiz qöşiladi — çizma va rasmlarni &quot;Xonadonlar&quot; bölimida qöşasiz.
                 </p>
               )}
             </div>

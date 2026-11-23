@@ -10,7 +10,7 @@ import { Locale } from '@/lib/dictionaries';
 import AnimatedReveal from './AnimatedReveal';
 import VohaLogo from '@/components/common/VohaLogo';
 
-export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPANIYA', limit }: { lang: Locale, companyName?: string, limit?: number }) {
+export default async function ProjectsList({ lang, companyName = 'QURILIŞ KOMPANIYA', limit }: { lang: Locale, companyName?: string, limit?: number }) {
   const projects = await getPublicProjects();
   // "Sotib tugatilgan" endi xonadon holatidan emas, admin belgilagan loyiha bayrog'idan
   // ('is_sold_out'). Xonadon holati/inventar mijozga umuman yuborilmaydi.
@@ -23,7 +23,7 @@ export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPA
   const hasMore = limit ? allCards.length > limit : false;
 
   const sectionLabels: Record<Locale, { title: string; subtitle: string; viewAll: string }> = {
-    uz: { title: "Bizning turar-joy majmualarimiz", subtitle: "LOYIHALARIMIZ", viewAll: "Hammasini ko'rish" },
+    uz: { title: "Bizning turar-joy majmualarimiz", subtitle: "LOYIHALARIMIZ", viewAll: "Hammasini köriş" },
     ru: { title: "Наши жилые комплексы", subtitle: "ПРОЕКТЫ", viewAll: "Смотреть все" },
     en: { title: "Our Residential Complexes", subtitle: "OUR PROJECTS", viewAll: "View All" },
   };
@@ -87,7 +87,7 @@ export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPA
                  <VohaLogo isScrolled={true} className="w-full h-auto" />
               </div>
               <p className="text-gray-600 mb-8 md:mb-10 max-w-md text-base sm:text-lg font-medium leading-relaxed">
-                {lang === 'uz' ? "2026-yilda topshiriladigan maxsus loyihadan xonadon xarid qiling! Boshlang'ich to'lovni amalga oshirib, 15 oylik muddatli to'lovda orzuingizdagi uyni xarid qilishingiz mumkin." :
+                {lang === 'uz' ? "2026-yilda topşiriladigan maxsus loyihadan xonadon xarid qiling! Boşlanğiç tölovni amalga oşirib, 15 oylik muddatli tölovda orzuingizdagi uyni xarid qilişingiz mumkin." :
                  lang === 'ru' ? "Приобретайте квартиру в специальном проекте, который будет сдан в 2026 году! Внеся первоначальный взнос, вы можете купить дом своей мечты в рассрочку на 15 месяцев." :
                  "Buy an apartment in a special project to be delivered in 2026! By making an initial payment, you can buy your dream home in installments for 15 months."}
               </p>
@@ -109,7 +109,7 @@ export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPA
                 <div className="text-right">
                    <span className="text-6xl sm:text-7xl lg:text-[100px] font-black tracking-tighter text-white drop-shadow-2xl">2026</span>
                    <p className="text-xs sm:text-sm lg:text-base uppercase tracking-widest text-accent font-bold mt-[-5px] md:mt-[-10px] drop-shadow-md">
-                     {lang === 'uz' ? "loyiha kalitlari topshiriladi" : lang === 'ru' ? "сдача ключей проекта" : "project keys handed over"}
+                     {lang === 'uz' ? "loyiha kalitlari topşiriladi" : lang === 'ru' ? "сдача ключей проекта" : "project keys handed over"}
                    </p>
                 </div>
                 
@@ -120,7 +120,7 @@ export default async function ProjectsList({ lang, companyName = 'QURILISH KOMPA
                         {lang === 'uz' ? "oylik" : lang === 'ru' ? "месяцев" : "months"}
                       </p>
                       <p className="text-lg sm:text-2xl lg:text-5xl font-black text-accent drop-shadow-lg leading-tight">
-                        {lang === 'uz' ? "muddatli to'lov" : lang === 'ru' ? "рассрочка" : "installment plan"}
+                        {lang === 'uz' ? "muddatli tölov" : lang === 'ru' ? "рассрочка" : "installment plan"}
                       </p>
                    </div>
                 </div>

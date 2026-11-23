@@ -15,7 +15,7 @@ import Scene3DLoader from '@/components/website/Scene3DLoader';
 export const dynamic = 'force-dynamic';
 
 const SEO = {
-  uz: { title: 'Mavze 3D turi — Voha Residence', description: "Voha Residence mavzesini 3D'da aylantirib ko'ring: blokni bosing, qavatlar va bo'sh xonadonlarni ko'ring, ko'rishga yoziling." },
+  uz: { title: 'Mavze 3D turi — Voha Residence', description: "Voha Residence mavzesini 3D'da aylantirib köring: blokni bosing, qavatlar va böş xonadonlarni köring, körişga yoziling." },
   ru: { title: '3D-тур по комплексу — Voha Residence', description: 'Осмотрите комплекс Voha Residence в 3D: нажмите на блок, посмотрите этажи и свободные квартиры, запишитесь на просмотр.' },
   en: { title: 'Complex 3D tour — Voha Residence', description: 'Explore the Voha Residence complex in 3D: tap a block to see floors and available apartments, and book a viewing.' },
 };

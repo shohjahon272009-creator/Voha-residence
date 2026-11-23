@@ -47,7 +47,7 @@ export default function MortgageCalculator({
   const failed = !ready && !!selected && failId === selected.id;
 
   const T = ({
-    uz: { tag: 'TO‘LOV TIZIMI', title: 'To‘lov shartlari', selApt: 'Tanlangan xonadon', xona: 'xona', prompt: 'To‘lovni ko‘rish uchun yuqoridan xonadonni tanlang', down: 'Boshlang‘ich to‘lov', monthly: 'Oylik to‘lov', sum: 'so‘m', perMonth: 'oyiga', agreed: 'Kelishiladi', restTitle: 'Qolgan summa', rest: 'Qolgan summani bilish uchun kontakt qoldiring', cta: 'Kontakt qoldirish', note: '* Yakuniy shartlar menejer bilan kelishiladi.' },
+    uz: { tag: 'TÖLOV TIZIMI', title: 'Tölov şartlari', selApt: 'Tanlangan xonadon', xona: 'xona', prompt: 'Tölovni köriş uçun yuqoridan xonadonni tanlang', down: 'Boşlanğiç tölov', monthly: 'Oylik tölov', sum: 'söm', perMonth: 'oyiga', agreed: 'Kelişiladi', restTitle: 'Qolgan summa', rest: 'Qolgan summani biliş uçun kontakt qoldiring', cta: 'Kontakt qoldiriş', note: '* Yakuniy şartlar menejer bilan kelişiladi.' },
     ru: { tag: 'СИСТЕМА ОПЛАТЫ', title: 'Условия оплаты', selApt: 'Выбранная квартира', xona: 'комн.', prompt: 'Выберите квартиру выше, чтобы увидеть оплату', down: 'Первый взнос', monthly: 'Ежемесячный платёж', sum: 'сум', perMonth: 'в месяц', agreed: 'По договорённости', restTitle: 'Оставшаяся сумма', rest: 'Чтобы узнать оставшуюся сумму, оставьте контакт', cta: 'Оставить контакт', note: '* Окончательные условия согласовываются с менеджером.' },
     en: { tag: 'PAYMENT PLAN', title: 'Payment terms', selApt: 'Selected apartment', xona: 'rooms', prompt: 'Select an apartment above to see the payment', down: 'Down payment', monthly: 'Monthly payment', sum: 'UZS', perMonth: '/ month', agreed: 'By agreement', restTitle: 'Remaining amount', rest: 'Leave your contact to learn the remaining amount', cta: 'Leave contact', note: '* Final terms are agreed with a manager.' },
   } as const)[lang] || ({} as never);
@@ -55,7 +55,7 @@ export default function MortgageCalculator({
   // "Standart: 2 xonali" kabi izoh — oylik xonalar soniga bog'liqligini tushuntiradi
   const r = selected ? Math.min(4, Math.max(1, Number(selected.rooms) || 1)) : 1;
   const rl = `${r}${r >= 4 ? '+' : ''}`;
-  const stdNote = ({ uz: `${rl} xonali uchun standart`, ru: `Стандарт для ${rl}-комнатных`, en: `Standard for ${rl}-room` } as Record<string, string>)[lang] || '';
+  const stdNote = ({ uz: `${rl} xonali uçun standart`, ru: `Стандарт для ${rl}-комнатных`, en: `Standard for ${rl}-room` } as Record<string, string>)[lang] || '';
 
   const downText = ready
     ? (srv!.downFixed != null ? `${nf(srv!.downFixed)} ${T.sum}` : srv!.downPct != null ? `${srv!.downPct}%` : T.agreed)
@@ -92,7 +92,7 @@ export default function MortgageCalculator({
                     <div className="text-white text-lg font-black truncate">№{selected.number} · {selected.rooms} {T.xona} · {selected.area} m²</div>
                     {selected.projectName && <div className="text-white/40 text-xs truncate">{selected.projectName}</div>}
                   </div>
-                  <button type="button" onClick={onClearSelected} aria-label="Bekor qilish" className="w-9 h-9 shrink-0 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"><X size={16} /></button>
+                  <button type="button" onClick={onClearSelected} aria-label="Bekor qiliş" className="w-9 h-9 shrink-0 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"><X size={16} /></button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

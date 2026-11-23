@@ -19,7 +19,7 @@ export default async function AdminNews() {
       <div className="flex items-center justify-between">
          <div>
             <h1 className="text-3xl font-bold text-primary mb-2">Yangiliklar</h1>
-            <p className="text-gray-400">Kompaniya va loyihalar bo'yicha so'nggi yangiliklar.</p>
+            <p className="text-gray-400">Kompaniya va loyihalar böyiça sönggi yangiliklar.</p>
          </div>
          
          <AddNewsModal />
@@ -38,7 +38,7 @@ export default async function AdminNews() {
             <tbody>
                {news.length === 0 ? (
                  <tr>
-                   <td colSpan={4} className="py-8 text-center text-gray-400">Hozircha yangiliklar yo'q</td>
+                   <td colSpan={4} className="py-8 text-center text-gray-400">Hozirça yangiliklar yöq</td>
                  </tr>
                ) : (
                  news.map((item, i) => (
@@ -58,7 +58,7 @@ export default async function AdminNews() {
                       </td>
                       <td className="py-4">
                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${item.visible ? 'bg-success/10 text-success' : 'bg-gray-100 text-gray-500'}`}>
-                            {item.visible ? 'Faol' : 'Yashiringan'}
+                            {item.visible ? 'Faol' : 'Yaşiringan'}
                          </span>
                       </td>
                       <td className="py-4 text-right">

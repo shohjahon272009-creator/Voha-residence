@@ -20,15 +20,15 @@ const isGood = (src?: string | null) => Boolean(src) && !String(src).includes('n
 
 const T = {
   uz: {
-    place: 'Urganch · Shovot kanali bo‘yida',
-    title: 'Kanal bo‘yidagi zamonaviy uylar',
-    desc: 'Bo‘sh xonadonlarni blok, qavat va xonalar soni bo‘yicha tanlang. Narx va qolgan summani menejer aytadi.',
-    cta: 'Xonadon tanlash',
-    call: 'Qo‘ng‘iroq qilish',
+    place: 'Urganç · Şovot kanali böyida',
+    title: 'Kanal böyidagi zamonaviy uylar',
+    desc: 'Böş xonadonlarni blok, qavat va xonalar soni böyiça tanlang. Narx va qolgan summani menejer aytadi.',
+    cta: 'Xonadon tanlaş',
+    call: 'Qönğiroq qiliş',
     now: 'Hozir sotuvda',
-    free: (n: number) => `${n} ta bo‘sh`,
-    none: 'Bo‘sh xonadonlar ro‘yxati yangilanmoqda',
-    total: (n: number) => `Jami ${n} ta bo‘sh xonadon`,
+    free: (n: number) => `${n} ta böş`,
+    none: 'Böş xonadonlar röyxati yangilanmoqda',
+    total: (n: number) => `Jami ${n} ta böş xonadon`,
   },
   ru: {
     place: 'Ургенч · у канала Шават',

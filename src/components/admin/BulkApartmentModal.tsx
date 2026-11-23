@@ -48,7 +48,7 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
       setText('');
       setIsOpen(false);
     } catch (err) {
-      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib ko'ring.");
+      alert("Saqlanmadi: " + ((err as Error)?.message || "server xatosi") + ". Qayta urinib köring.");
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-1.5 px-4 py-2 bg-accent/10 text-accent font-bold rounded-xl text-xs hover:bg-accent hover:text-white transition-all"
       >
-        <Rows3 size={15} /> Ko&apos;p qo&apos;shish
+        <Rows3 size={15} /> Köp qöşiş
       </button>
 
       {isOpen && (
@@ -68,7 +68,7 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto">
             <div className="flex justify-between items-center p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl z-10">
               <div>
-                <h2 className="text-lg font-bold text-primary">Ko&apos;p xonadon qo&apos;shish</h2>
+                <h2 className="text-lg font-bold text-primary">Köp xonadon qöşiş</h2>
                 <p className="text-xs text-gray-400">{projectName}</p>
               </div>
               <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600"><X size={22} /></button>
@@ -79,16 +79,16 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
               <div>
                 <p className="text-[13px] font-bold text-primary mb-2">
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white text-[11px] mr-1.5">1</span>
-                  Har bir xonadonni shunday yozing:
+                  Har bir xonadonni şunday yozing:
                 </p>
                 <div className="bg-primary/5 rounded-xl border border-primary/15 p-3 overflow-x-auto">
                   <div className="flex items-stretch gap-1 text-center min-w-max">
                     {[
                       { v: '5', l: 'qavat' },
                       { v: '58', l: 'xonadon raqami' },
-                      { v: '2', l: 'nechta xona' },
+                      { v: '2', l: 'neçta xona' },
                       { v: '74.54', l: 'maydon (m²)' },
-                      { v: '483000000', l: 'narx (so‘m)' },
+                      { v: '483000000', l: 'narx (söm)' },
                     ].map((c, i, arr) => (
                       <React.Fragment key={c.l}>
                         <div className="px-1.5">
@@ -102,7 +102,7 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
                 </div>
                 <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">
                   Raqamlarni <b className="text-gray-500">vergul (,)</b> bilan ajrating. Har bir qatorда — bitta xonadon.
-                  Excel jadvalidan nusxa ko&apos;chirib qo&apos;ysangiz ham bo&apos;ladi.
+                  Excel jadvalidan nusxa köçirib qöysangiz ham böladi.
                 </p>
               </div>
 
@@ -110,7 +110,7 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
               <div>
                 <p className="text-[13px] font-bold text-primary mb-2">
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white text-[11px] mr-1.5">2</span>
-                  Shu yerga yozing:
+                  Şu yerga yozing:
                 </p>
                 <textarea
                   value={text}
@@ -128,7 +128,7 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
                 <div>
                   <p className="text-[13px] font-bold text-primary mb-2">
                     <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white text-[11px] mr-1.5">3</span>
-                    Tekshiring — shu xonadonlar qo&apos;shiladi:
+                    Tekşiring — şu xonadonlar qöşiladi:
                   </p>
                   <div className="border border-gray-100 rounded-xl overflow-hidden">
                     <table className="w-full text-sm">
@@ -138,7 +138,7 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
                           <th className="px-3 py-2 font-bold">Xonadon №</th>
                           <th className="px-3 py-2 font-bold">Xona</th>
                           <th className="px-3 py-2 font-bold">Maydon</th>
-                          <th className="px-3 py-2 font-bold text-right">Narx (so&apos;m)</th>
+                          <th className="px-3 py-2 font-bold text-right">Narx (söm)</th>
                           <th className="px-2 py-2 w-8"></th>
                         </tr>
                       </thead>
@@ -162,16 +162,16 @@ export default function BulkApartmentModal({ projectId, projectName }: { project
                   </div>
                   {okCount < parsed.length && (
                     <p className="text-[11px] text-red-500 mt-2 flex items-center gap-1">
-                      <AlertCircle size={12} /> Qizil qatorlarda biror ma&apos;lumot yetishmayapti — to&apos;ldiring.
+                      <AlertCircle size={12} /> Qizil qatorlarda biror ma&apos;lumot yetişmayapti — töldiring.
                     </p>
                   )}
                 </div>
               )}
 
               <div className="flex justify-end items-center gap-3 pt-3 border-t border-gray-100">
-                <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">Bekor qilish</button>
+                <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2 text-gray-500 font-bold hover:bg-gray-50 rounded-lg">Bekor qiliş</button>
                 <button onClick={submit} disabled={loading || okCount === 0} className="px-5 py-2 bg-primary text-white font-bold rounded-lg hover:bg-accent disabled:opacity-50">
-                  {loading ? 'Qo‘shilmoqda...' : `${okCount} ta xonadon qo‘shish`}
+                  {loading ? 'Qöşilmoqda...' : `${okCount} ta xonadon qöşiş`}
                 </button>
               </div>
             </div>

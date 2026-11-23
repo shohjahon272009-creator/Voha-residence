@@ -30,7 +30,7 @@ export default async function AdminSales() {
       <div className="flex justify-between items-center">
          <div>
             <h1 className="text-3xl font-bold text-primary mb-2">Sotilgan xonadonlar (Band)</h1>
-            <p className="text-gray-400">To&apos;liq sotilgan va band qilingan barcha xonadonlar hamda xaridorlar ro&apos;yxati.</p>
+            <p className="text-gray-400">Töliq sotilgan va band qilingan barça xonadonlar hamda xaridorlar röyxati.</p>
          </div>
          <AddSaleModal projects={projects} apartments={apartments} />
       </div>
@@ -48,7 +48,7 @@ export default async function AdminSales() {
             <tbody>
                {sales.length === 0 ? (
                  <tr>
-                   <td colSpan={4} className="py-8 text-center text-gray-400">Hozircha sotilgan xonadonlar yo&apos;q</td>
+                   <td colSpan={4} className="py-8 text-center text-gray-400">Hozirça sotilgan xonadonlar yöq</td>
                  </tr>
                ) : (
                  sales.map((sale) => (

@@ -15,7 +15,7 @@ declare global {
   interface Window { __introDone?: boolean }
 }
 
-const WELCOME: Record<string, string> = { uz: 'Xush kelibsiz', ru: 'Добро пожаловать', en: 'Welcome' };
+const WELCOME: Record<string, string> = { uz: 'Xuş kelibsiz', ru: 'Добро пожаловать', en: 'Welcome' };
 const HOLD = 1100;   // logo + hisoblagich
 const OPEN = 900;    // parda ochilishi
 
@@ -98,7 +98,7 @@ export default function IntroScreen() {
       </div>
 
       <div className="vx-count font-bebas">{String(count).padStart(3, '0')}</div>
-      <div className="vx-meta">{lang === 'ru' ? 'Ургенч · Хорезм' : lang === 'en' ? 'Urgench · Khorezm' : 'Urganch · Xorazm'}</div>
+      <div className="vx-meta">{lang === 'ru' ? 'Ургенч · Хорезм' : lang === 'en' ? 'Urgench · Khorezm' : 'Urganç · Xorazm'}</div>
 
       <style jsx global>{`
         .vx { position: fixed; inset: 0; z-index: 9999; pointer-events: auto; }

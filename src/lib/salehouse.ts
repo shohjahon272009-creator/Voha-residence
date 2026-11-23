@@ -77,7 +77,7 @@ function client() {
         res = await fetch(root + path, { method: 'GET', headers, cache: 'no-store', signal: AbortSignal.timeout(TIMEOUT_MS) });
       } catch (e) {
         if (attempt < 3) { await sleep(1500); continue; }
-        throw new Error(`Sale House bilan aloqa yo'q: ${(e as Error).name}`);
+        throw new Error(`Sale House bilan aloqa yöq: ${(e as Error).name}`);
       }
       if ((res.status === 429 || res.status >= 500) && attempt < 3) {
         await sleep(Math.min(10, Number(res.headers.get('retry-after')) || 3) * 1000);

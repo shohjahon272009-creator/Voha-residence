@@ -9,7 +9,7 @@ import Link from 'next/link';
   xatosi o'rniga brendlangan sahifa: qayta urinish va qo'ng'iroq qilish.
 */
 const T: Record<string, { title: string; sub: string; retry: string; home: string; call: string }> = {
-  uz: { title: 'Nimadir xato ketdi', sub: "Sahifa vaqtincha ochilmadi. Bir necha soniyadan keyin qayta urinib ko'ring.", retry: 'Qayta urinish', home: 'Bosh sahifa', call: "Qo'ng'iroq qilish" },
+  uz: { title: 'Nimadir xato ketdi', sub: "Sahifa vaqtinça oçilmadi. Bir neça soniyadan keyin qayta urinib köring.", retry: 'Qayta uriniş', home: 'Boş sahifa', call: "Qönğiroq qiliş" },
   ru: { title: 'Что-то пошло не так', sub: 'Страница временно недоступна. Попробуйте ещё раз через несколько секунд.', retry: 'Повторить', home: 'Главная', call: 'Позвонить' },
   en: { title: 'Something went wrong', sub: 'The page is temporarily unavailable. Please try again in a few seconds.', retry: 'Try again', home: 'Home', call: 'Call us' },
 };

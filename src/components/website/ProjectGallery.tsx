@@ -7,7 +7,7 @@ import { X, ChevronLeft, ChevronRight, Expand } from 'lucide-react';
 import { Locale } from '@/lib/dictionaries';
 
 const L: Record<Locale, { eyebrow: string; title: string; view: string }> = {
-  uz: { eyebrow: 'GALEREYA', title: 'Loyiha galereyasi', view: "Rasmni kattalashtirish" },
+  uz: { eyebrow: 'GALEREYA', title: 'Loyiha galereyasi', view: "Rasmni kattalaştiriş" },
   ru: { eyebrow: 'ГАЛЕРЕЯ', title: 'Галерея проекта', view: 'Увеличить фото' },
   en: { eyebrow: 'GALLERY', title: 'Project gallery', view: 'View larger' },
 };

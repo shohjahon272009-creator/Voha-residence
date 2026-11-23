@@ -8,16 +8,16 @@ import { motion } from 'framer-motion';
 export default function SalesOfficesSection({ lang, phone, address, hours, officeLat, officeLng }: { lang: Locale; phone?: string; address?: string; hours?: string; officeLat?: string; officeLng?: string }) {
   const dict = {
     uz: {
-      tag: "JOYLASHUV",
+      tag: "JOYLAŞUV",
       title: "Bizning sotuv ofisimiz",
-      subtitle: "Mutaxassislarimiz sizni kutib oladi va barcha savollaringizga javob beradi.",
+      subtitle: "Mutaxassislarimiz sizni kutib oladi va barça savollaringizga javob beradi.",
       badge: "Asosiy ofis",
       officeName: "Voha Residence Sotuv Ofisi",
-      address: "Urganch sh., Ulug'bek ko'chasi — Ekstrenniy shifoxonasi chorrahasi",
+      address: "Urganç ş., Uluğbek köçasi — Ekstrenniy şifoxonasi çorrahasi",
       phoneLabel: "Telefon",
-      hoursLabel: "Ish vaqti",
+      hoursLabel: "Iş vaqti",
       hours: "Har kuni, 09:00 – 18:00",
-      directions: "Yo'l ko'rsatish",
+      directions: "Yöl körsatiş",
       loading: "Xarita yuklanmoqda…",
       onMap: "Xaritada",
     },
@@ -50,16 +50,16 @@ export default function SalesOfficesSection({ lang, phone, address, hours, offic
       onMap: "On the map",
     }
   }[lang] || {
-      tag: "JOYLASHUV",
+      tag: "JOYLAŞUV",
       title: "Bizning sotuv ofisimiz",
-      subtitle: "Mutaxassislarimiz sizni kutib oladi va barcha savollaringizga javob beradi.",
+      subtitle: "Mutaxassislarimiz sizni kutib oladi va barça savollaringizga javob beradi.",
       badge: "Asosiy ofis",
       officeName: "Voha Residence Sotuv Ofisi",
-      address: "Urganch sh., Ulug'bek ko'chasi — Ekstrenniy shifoxonasi chorrahasi",
+      address: "Urganç ş., Uluğbek köçasi — Ekstrenniy şifoxonasi çorrahasi",
       phoneLabel: "Telefon",
-      hoursLabel: "Ish vaqti",
+      hoursLabel: "Iş vaqti",
       hours: "Har kuni, 09:00 – 18:00",
-      directions: "Yo'l ko'rsatish",
+      directions: "Yöl körsatiş",
       loading: "Xarita yuklanmoqda…",
       onMap: "Xaritada",
   };
@@ -212,7 +212,7 @@ export default function SalesOfficesSection({ lang, phone, address, hours, offic
               {showMap && (
                 <iframe
                   src={mapEmbedUrl}
-                  title="Voha Residence — Urganch"
+                  title="Voha Residence — Urganç"
                   width="100%"
                   height="100%"
                   style={{ border: 0, minHeight: '416px' }}
