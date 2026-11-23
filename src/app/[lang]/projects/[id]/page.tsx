@@ -24,6 +24,7 @@ const SIDE: Record<string, { adv: string; office: string; officeSub: string; cal
   ru: { adv: 'Преимущества проекта', office: 'Офис продаж', officeSub: 'Есть вопросы? Свяжитесь с нашими специалистами!', call: 'Позвонить', fallbackSub: 'Современный жилой комплекс' },
   en: { adv: 'Project highlights', office: 'Sales office', officeSub: 'Have questions? Talk to our specialists!', call: 'Call us', fallbackSub: 'Modern residential complex' },
 };
+import { ldString } from '@/lib/faq';
 import { pageMetadata } from '@/lib/seo';
 
 // Doim yangi ma'lumot — admin o'zgartirsa darhol ko'rinadi
@@ -43,7 +44,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       ? `${name} — a modern residential complex in ${city}. Apartments, floor plans, prices and convenient payment terms.`
       : `${name} — ${city}dagi zamonaviy turar-joy majmuasi. Xonadonlar, chizmalar, narx va qulay to‘lov shartlari.`;
   const desc = (project as unknown as Record<string, string>)[`description_${lang}`] || fallback;
-  const t = { title: `${name} — Voha Residence`, description: desc.slice(0, 160) };
+  const where = lang === 'ru' ? `${city}, новые квартиры` : lang === 'en' ? `${city}, new apartments` : `${city}, yangi xonadonlar`;
+  const t = { title: `${name} — ${where} | Voha Residence`, description: desc.slice(0, 160) };
   const img = project.main_image && !project.main_image.startsWith('data:') ? project.main_image : undefined;
   return pageMetadata(lang, `/projects/${id}`, { uz: t, ru: t, en: t }, img);
 }
@@ -93,6 +95,30 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   return (
     <WebsiteLayout lang={lang as Locale}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldString({
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'ApartmentComplex',
+            name: `${projectName} — Voha Residence`,
+            url: `https://www.voharesidence.uz/${lang}/projects/${project.id}`,
+            ...(projectDesc ? { description: String(projectDesc).slice(0, 300) } : {}),
+            ...(project.main_image && !project.main_image.startsWith('data:') ? { image: `https://www.voharesidence.uz${project.main_image}` } : {}),
+            address: { '@type': 'PostalAddress', addressLocality: project.city || 'Urganch', addressRegion: 'Xorazm', addressCountry: 'UZ', ...(project.address ? { streetAddress: project.address } : {}) },
+            ...(project.lat && project.lng ? { geo: { '@type': 'GeoCoordinates', latitude: project.lat, longitude: project.lng } } : {}),
+            ...(project.total_floors ? { numberOfFloors: project.total_floors } : {}),
+            brand: { '@id': 'https://www.voharesidence.uz/#organization' },
+          },
+          {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Voha Residence', item: `https://www.voharesidence.uz/${lang}` },
+              { '@type': 'ListItem', position: 2, name: dict.nav.projects, item: `https://www.voharesidence.uz/${lang}/projects` },
+              { '@type': 'ListItem', position: 3, name: projectName },
+            ],
+          },
+        ],
+      }) }} />
       {/* Kino-sarlavha: loyiha rasmi + galereyadan bir nechtasi sekin almashadi */}
       <PageHero
         lang={lang}
