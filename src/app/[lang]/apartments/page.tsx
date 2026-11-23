@@ -26,13 +26,8 @@ export default async function ApartmentsPage({ params }: { params: Promise<{ lan
   const companyName = settings.company_name || 'Voha Residence';
 
   const allProjects = await getPublicProjects();
-  const selling = allProjects.filter((p) => p.status !== 'Topshirilgan' && !p.is_sold_out);
-  // Xonadon tanlovchi uchun — faqat sotuvdagi bloklar va faqat kerakli maydonlar.
-  // Narx, izoh va topshirilgan bloklar xonadonlari brauzerga umuman yuborilmaydi.
-  const sellingIds = new Set(selling.map((p) => p.id));
-  const browserApartments = (await getApartments())
-    .filter((a) => sellingIds.has(a.project_id))
-    .map((a) => ({ id: a.id, project_id: a.project_id, floor: a.floor, number: a.number, rooms: a.rooms, area: a.area, status: a.status, plan_image: a.plan_image, image: a.image, price_cash: 0, price_installment: 0, orientation: '', note: '' }));
+  // Narxlar mijozga yuborilmaydi (xavfsizlik) — faqat serverda hisoblanadi
+  const browserApartments = (await getApartments()).map((a) => ({ ...a, price_cash: 0, price_installment: 0, note: '' }));
 
   const t = {
     uz: { kicker: 'Xonadonlar', title: 'Xonadoningizni tanlang', sub: "Blok, qavat va xonalar soni böyiça qidiring — tölovni darhol hisoblang." },
@@ -50,6 +45,14 @@ export default async function ApartmentsPage({ params }: { params: Promise<{ lan
           lang={localeLang}
           showSearch
           showMortgage={settings.show_mortgage !== 'false'}
+          showLocations={settings.show_locations !== 'false'}
+          terms={{
+            down: Number(settings.calc_down) || 30,
+            months: Number(settings.calc_months) || 12,
+            rate: Number(settings.calc_rate) || 18,
+            mDown: Number(settings.calc_m_down) || 15,
+            mMonths: Number(settings.calc_m_months) || 24,
+          }}
         />
       </div>
       <HomeQuest lang={localeLang} />

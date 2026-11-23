@@ -33,30 +33,16 @@ const T: Record<Locale, {
   },
 };
 
-// "Ko'rishga yozilish" varianti (3D turdan): sarlavha va izoh boshqa, oqim o'sha submitContact
-const VIEWING: Record<Locale, { title: string; sub: string }> = {
-  uz: { title: "Körişga yoziliş", sub: "— körişga yoziling, menejer vaqtni kelişib oladi" },
-  ru: { title: 'Записаться на просмотр', sub: '— запишитесь на просмотр блока, менеджер согласует время' },
-  en: { title: 'Book a viewing', sub: '— book a viewing of this block, a manager will arrange the time' },
-};
-
 export default function ProjectLeadModal({
   projectName,
   lang,
   onClose,
-  variant = 'price',
-  tag,
 }: {
   projectName: string;
   lang: Locale;
   onClose: () => void;
-  /** 'viewing' — ko'rishga yozilish (3D tur); standart — narx so'rovi */
-  variant?: 'price' | 'viewing';
-  /** Izohga qo'shiladigan manba belgisi, masalan "3D tur, 10-blok" — rahbar 3D qancha lid berganini ko'radi */
-  tag?: string;
 }) {
-  const base = T[lang] || T.uz;
-  const t = variant === 'viewing' ? { ...base, ...(VIEWING[lang] || VIEWING.uz) } : base;
+  const t = T[lang] || T.uz;
   const [loading, setLoading] = useState(false);
   // JS yuklanmaguncha yuborilmasin — aks holda brauzer formani GET qilib, ism/telefonni URL'ga yozardi
   const hydrated = useHydrated();
@@ -78,14 +64,7 @@ export default function ProjectLeadModal({
     const fd = new FormData(form);
     // Tag the lead with the project so the admin knows what it's about
     const userMsg = String(fd.get('message') || '');
-    // Ism maydoni ixtiyoriy, server esa bo'sh ismni rad etadi — bo'sh qolsa "Mijoz" (narx so'rovidagi kabi)
-    if (!String(fd.get('name') || '').trim()) fd.set('name', 'Mijoz');
-    fd.set(
-      'message',
-      variant === 'viewing'
-        ? `🏠 ${tag || projectName} — körişga yoziliş. ${userMsg}`.trim()
-        : `🏢 ${tag ? `${tag} — ` : ''}${projectName} — narx sörovi. ${userMsg}`.trim(),
-    );
+    fd.set('message', `🏢 ${projectName} — narx sörovi. ${userMsg}`.trim());
     try {
       const res = await submitContact(fd);
       if (res.success) setSuccess(true);

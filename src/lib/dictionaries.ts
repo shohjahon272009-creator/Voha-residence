@@ -54,34 +54,6 @@ export const dictionaries = {
         submit: 'Bron qiliş'
       },
       success: 'Menejer 30 daqiqa içida siz bilan boğlanadi'
-    },
-    tour3d: {
-      view3d: '3D\'da köriş',
-      title: 'Mavze 3D turi',
-      concept: 'Konsept',
-      conceptNote: 'Konsept köriniş: bloklar joylaşuvi taxminiy, haqiqiy model tez orada',
-      loading: '3D sahna yuklanmoqda…',
-      noWebgl: 'Qurilmangiz 3D körinişni qöllamaydi. Bloklar röyxati:',
-      error: 'Ma\'lumot yuklanmadi. Sahifani yangilab köring.',
-      hint: 'Aylantiriş — barmoq yoki siçqonça, yaqinlaştiriş — ikki barmoq yoki ğildirak',
-      available: 'böş',
-      total: 'jami',
-      floors: 'qavat',
-      apartments: 'Xonadonlar',
-      noApartments: 'Xonadonlar ma\'lumoti hali kiritilmagan',
-      projectPage: 'Loyiha sahifasi',
-      book: 'Körişga yoziliş',
-      close: 'Yopiş',
-      floor: 'Qavat',
-      number: '№',
-      rooms: 'Xona',
-      area: 'm²',
-      status: 'Holat',
-      plan: 'Çizma',
-      priceOnRequest: 'Narx — menejerdan sörang',
-      soon: 'Tez kunda',
-      overview: 'Umumiy köriniş',
-      home: 'Boş sahifa'
     }
   },
   ru: {
@@ -134,34 +106,6 @@ export const dictionaries = {
         submit: 'Забронировать'
       },
       success: 'Менеджер свяжется с вами в течение 30 минут'
-    },
-    tour3d: {
-      view3d: 'Смотреть в 3D',
-      title: '3D-тур по комплексу',
-      concept: 'Концепт',
-      conceptNote: 'Концептуальный вид: расположение блоков условное, реальная модель скоро',
-      loading: 'Загрузка 3D-сцены…',
-      noWebgl: 'Ваше устройство не поддерживает 3D. Список блоков:',
-      error: 'Данные не загрузились. Обновите страницу.',
-      hint: 'Вращение — палец или мышь, приближение — два пальца или колесо',
-      available: 'свободно',
-      total: 'всего',
-      floors: 'этажей',
-      apartments: 'Квартиры',
-      noApartments: 'Данные о квартирах ещё не внесены',
-      projectPage: 'Страница проекта',
-      book: 'Записаться на просмотр',
-      close: 'Закрыть',
-      floor: 'Этаж',
-      number: '№',
-      rooms: 'Комн.',
-      area: 'м²',
-      status: 'Статус',
-      plan: 'План',
-      priceOnRequest: 'Цена — уточните у менеджера',
-      soon: 'Скоро',
-      overview: 'Общий вид',
-      home: 'Главная'
     }
   },
   en: {
@@ -214,34 +158,6 @@ export const dictionaries = {
         submit: 'Book Now'
       },
       success: 'Our manager will contact you within 30 minutes'
-    },
-    tour3d: {
-      view3d: 'View in 3D',
-      title: 'Complex 3D tour',
-      concept: 'Concept',
-      conceptNote: 'Concept view: block layout is approximate, the real model is coming soon',
-      loading: 'Loading the 3D scene…',
-      noWebgl: 'Your device does not support 3D. List of blocks:',
-      error: 'Could not load the data. Please refresh the page.',
-      hint: 'Rotate with a finger or the mouse, zoom with two fingers or the wheel',
-      available: 'available',
-      total: 'total',
-      floors: 'floors',
-      apartments: 'Apartments',
-      noApartments: 'Apartment details have not been added yet',
-      projectPage: 'Project page',
-      book: 'Book a viewing',
-      close: 'Close',
-      floor: 'Floor',
-      number: 'No.',
-      rooms: 'Rooms',
-      area: 'm²',
-      status: 'Status',
-      plan: 'Plan',
-      priceOnRequest: 'Price — ask a manager',
-      soon: 'Coming soon',
-      overview: 'Overview',
-      home: 'Home'
     }
   }
 };
