@@ -5,7 +5,7 @@ import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Hero from '@/components/website/Hero';
 import { getPublicProjects, getApartments } from '@/lib/actions';
-import ProjectsList from '@/components/website/ProjectsList';
+import FeaturedProjects from '@/components/website/FeaturedProjects';
 import ApartmentAndPayment from '@/components/website/ApartmentAndPayment';
 import ComplexFacts from '@/components/website/ComplexFacts';
 import ContactSection from '@/components/website/ContactSection';
@@ -59,7 +59,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   // Hero paneli: sotuvdagi bloklar va ulardagi bo'sh xonadonlar — tanlovchi bilan bir xil hisob
   // (bir manba: buildModel; takroriy yozuvlar bir marta sanaladi)
-  const availability = buildModel(allProjects, browserApartments).blocks.map((b) => ({
+  const model = buildModel(allProjects, browserApartments);
+  const availability = model.blocks.map((b) => ({
     id: b.id,
     name: (localeLang === 'ru' ? b.project.name_ru : localeLang === 'en' ? b.project.name_en : b.project.name_uz) || b.project.name_uz,
     free: b.counts.available,
@@ -78,6 +79,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         showSearch={settings.show_search !== 'false'}
         showMortgage={settings.show_mortgage !== 'false'}
       />
+      {settings.show_projects !== 'false' && <FeaturedProjects lang={localeLang} blocks={model.blocks} />}
       <ComplexFacts
         lang={localeLang}
         total={allProjects.length}
@@ -87,7 +89,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       />
       <PaymentPlan lang={localeLang} settings={settings} ctaHref={ctaHref} />
       <BuildStory lang={localeLang} />
-      {settings.show_projects !== 'false' && <ProjectsList lang={localeLang} companyName={companyName} limit={6} />}
       {settings.show_contact !== 'false' && (
         <ContactSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />
       )}

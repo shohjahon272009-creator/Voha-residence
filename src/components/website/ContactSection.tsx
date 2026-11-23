@@ -1,13 +1,12 @@
  
  
  
-/* eslint-disable @next/next/no-img-element */
  
 'use client';
 
 import React, { useRef, useState } from 'react';
 import { Locale } from '@/lib/dictionaries';
-import { MapPin, Phone, Clock, Send, CheckCircle2 } from 'lucide-react';
+import { Send, CheckCircle2 } from 'lucide-react';
 import { submitContact } from '@/lib/contactActions';
 import { useHydrated } from '@/lib/useHydrated';
 
@@ -123,88 +122,59 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
   };
 
   return (
-    <section id="contact" className="py-32 px-6 bg-primary relative overflow-hidden">
-      {/* Abstract Map Background */}
-      <div className="absolute inset-0 z-0 opacity-10">
-         <img loading="lazy" decoding="async" src="/cinema/stills/life-1.webp" className="w-full h-full object-cover" alt="map bg" />
-      </div>
-      <div className="absolute inset-0 bg-grid opacity-40 z-0 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
-
-      <div className="max-container relative z-10">
-        <div className="text-center mb-16 flex flex-col items-center">
-          <span className="eyebrow eyebrow--center mb-5">{t.subtitle}</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white">{t.title}</h2>
+    <section id="contact" className="bg-canvas text-ink py-[var(--v-section-y)]">
+      <div className="max-w-page mx-auto px-[var(--v-gutter)] grid gap-12 lg:grid-cols-12">
+        <div className="lg:col-span-5">
+          <p className="text-small font-semibold text-accent-text">{t.subtitle}</p>
+          <h2 className="mt-3 text-h1 font-montserrat">{t.title}</h2>
+          <dl className="mt-10 border-t border-line">
+            <div className="border-b border-line py-5">
+              <dt className="text-small text-ink-muted">{t.phoneLabel}</dt>
+              <dd className="mt-1 flex flex-col">
+                <a href={telHref} className="font-montserrat text-h2 tabular-nums hover:underline underline-offset-4">{phoneVal}</a>
+                {showPhone2 && (
+                  <a href={'tel:' + phone2.replace(/[^\d+]/g, '')} className="font-montserrat text-h3 tabular-nums text-ink-muted hover:underline underline-offset-4">{phone2}</a>
+                )}
+              </dd>
+            </div>
+            <div className="border-b border-line py-5">
+              <dt className="text-small text-ink-muted">{t.addressLabel}</dt>
+              <dd className="mt-1 text-body-lg">{addressVal}</dd>
+            </div>
+            <div className="border-b border-line py-5">
+              <dt className="text-small text-ink-muted">{t.timeLabel}</dt>
+              <dd className="mt-1 text-body-lg">{hoursVal}</dd>
+            </div>
+          </dl>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 bg-white/5 rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl">
-           
-           <div className="lg:col-span-2 space-y-10">
-             <div className="flex gap-6 items-start">
-                <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center shrink-0 border border-accent/30 shadow-[0_0_15px_rgba(250,218,165,0.2)] hover:bg-accent/30 hover:scale-105 transition-all duration-300">
-                   <MapPin className="text-accent" size={24} />
-                </div>
-                <div>
-                   <h4 className="text-lg font-bold text-white mb-2">{t.addressLabel}</h4>
-                   <p className="text-white/60 leading-relaxed">{addressVal}</p>
-                </div>
-             </div>
-             
-             <div className="flex gap-6 items-start">
-                <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center shrink-0 border border-accent/30 shadow-[0_0_15px_rgba(250,218,165,0.2)] hover:bg-accent/30 hover:scale-105 transition-all duration-300">
-                   <Phone className="text-accent" size={24} />
-                </div>
-                <div>
-                   <h4 className="text-lg font-bold text-white mb-2">{t.phoneLabel}</h4>
-                   <a href={telHref} className="text-white/60 text-xl font-medium tracking-wide hover:text-accent transition-colors">{phoneVal}</a>
-                   {showPhone2 && (
-                     <a href={'tel:' + phone2.replace(/[^\d+]/g, '')} className="block mt-1 text-white/60 text-xl font-medium tracking-wide hover:text-accent transition-colors">{phone2}</a>
-                   )}
-                </div>
-             </div>
-
-             <div className="flex gap-6 items-start">
-                <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center shrink-0 border border-accent/30 shadow-[0_0_15px_rgba(250,218,165,0.2)] hover:bg-accent/30 hover:scale-105 transition-all duration-300">
-                   <Clock className="text-accent" size={24} />
-                </div>
-                <div>
-                   <h4 className="text-lg font-bold text-white mb-2">{t.timeLabel}</h4>
-                   <p className="text-white/60">{hoursVal}</p>
-                </div>
-             </div>
-           </div>
-
-           <div className="lg:col-span-3">
-              <form onSubmit={handleSubmit} method="post" className="space-y-6">
-                 {success && (
-                   <div className="bg-success/20 text-green-300 border border-success/30 p-4 rounded-xl flex items-center gap-3">
-                     <CheckCircle2 size={20} />
-                     <p className="font-medium text-sm">{t.successMsg}</p>
-                   </div>
-                 )}
-                 {error && (
-                   <div className="bg-danger/20 text-red-300 border border-danger/30 p-4 rounded-xl font-medium text-sm">
-                     {error}
-                   </div>
-                 )}
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                       <label className="text-xs font-bold text-white/70 uppercase tracking-wider">{t.namePlaceholder}</label>
-                       <input name="name" required type="text" autoComplete="name" maxLength={100} className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors" placeholder={t.nameValue} />
-                    </div>
-                    <div className="space-y-2">
-                       <label className="text-xs font-bold text-white/70 uppercase tracking-wider">{t.phoneLabel}</label>
-                       <input name="phone" required type="tel" inputMode="tel" autoComplete="tel" maxLength={40} className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors" placeholder="+998 __ ___ __ __" />
-                    </div>
-                 </div>
-                 <div className="space-y-2">
-                    <label className="text-xs font-bold text-white/70 uppercase tracking-wider">{t.msgPlaceholder}</label>
-                    <textarea name="message" rows={4} className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent transition-colors resize-none" placeholder={t.msgValue}></textarea>
-                 </div>
-                 <button disabled={loading || !hydrated} type="submit" className="w-full min-h-[52px] py-4 bg-cta text-cta-ink font-bold rounded-xl hover:brightness-105 active:scale-[0.99] transition duration-v-fast ease-v flex justify-center items-center gap-3 disabled:opacity-60">
-                    {loading ? (lang === 'ru' ? 'Отправка…' : lang === 'en' ? 'Sending…' : 'Yuborilmoqda…') : t.send} {!loading && <Send size={18} />}
-                 </button>
-              </form>
-           </div>
+        <div className="lg:col-span-6 lg:col-start-7">
+          <form onSubmit={handleSubmit} method="post" className="rounded-v-xl bg-surface p-6 sm:p-9 shadow-v-md space-y-5">
+            {success && (
+              <div role="status" className="bg-st-available-bg text-st-available p-4 rounded-v-md flex items-center gap-3">
+                <CheckCircle2 size={20} aria-hidden="true" />
+                <p className="font-semibold text-small">{t.successMsg}</p>
+              </div>
+            )}
+            {error && <div role="alert" className="bg-st-error-bg text-st-error p-4 rounded-v-md font-semibold text-small">{error}</div>}
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label htmlFor="cs-name" className="block text-small font-semibold mb-2">{t.namePlaceholder}</label>
+                <input id="cs-name" name="name" required type="text" autoComplete="name" maxLength={100} className="w-full h-13 min-h-[52px] bg-surface border border-line-strong rounded-v-md px-4 text-ink placeholder:text-ink-muted/70" placeholder={t.nameValue} />
+              </div>
+              <div>
+                <label htmlFor="cs-phone" className="block text-small font-semibold mb-2">{t.phoneLabel}</label>
+                <input id="cs-phone" name="phone" required type="tel" inputMode="tel" autoComplete="tel" maxLength={40} className="w-full min-h-[52px] bg-surface border border-line-strong rounded-v-md px-4 text-ink placeholder:text-ink-muted/70" placeholder="+998 __ ___ __ __" />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="cs-msg" className="block text-small font-semibold mb-2">{t.msgPlaceholder}</label>
+              <textarea id="cs-msg" name="message" rows={4} className="w-full bg-surface border border-line-strong rounded-v-md px-4 py-3 text-ink placeholder:text-ink-muted/70 resize-none" placeholder={t.msgValue}></textarea>
+            </div>
+            <button disabled={loading || !hydrated} type="submit" className="w-full min-h-[52px] bg-cta text-cta-ink font-bold rounded-full hover:brightness-105 active:scale-[0.99] transition duration-v-fast ease-v flex justify-center items-center gap-3 disabled:opacity-60">
+              {loading ? (lang === 'ru' ? 'Отправка…' : lang === 'en' ? 'Sending…' : 'Yuborilmoqda…') : t.send} {!loading && <Send size={18} aria-hidden="true" />}
+            </button>
+          </form>
         </div>
       </div>
     </section>

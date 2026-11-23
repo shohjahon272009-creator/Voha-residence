@@ -1,10 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
 // "Xonadon tanlash": majmua → blok → qavat → xonadon (bosqichma-bosqich).
 // 3D — faqat konsept ko'rinish va ixtiyoriy; hamma amal ro'yxat/tugmalar orqali ham bajariladi.
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ChevronLeft, ChevronRight, ChevronsLeft, Box, List, SlidersHorizontal, Building2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronsLeft, Box, List, SlidersHorizontal } from 'lucide-react';
 import type { Apartment, Project } from '@/lib/types';
 import {
   areaBounds, availableShare, blockApartments, buildModel, countAvailableMatching, EMPTY_FILTERS, EMPTY_SEL,
@@ -210,7 +209,7 @@ export default function ComplexPicker({ lang, projects, apartments, onRequest, r
   return (
     <section ref={rootRef} id="xonadon-picker" aria-labelledby={titleId} className="bg-canvas text-ink">
       <div className="mx-auto max-w-page px-[var(--v-gutter)] py-[var(--v-section-y)]">
-        <p className="text-caption uppercase text-accent-text">{t.tag}</p>
+        <p className="text-small font-semibold text-accent-text">{t.tag}</p>
         <h2 id={titleId} className="mt-4 text-h1 font-montserrat text-ink">{t.title}</h2>
         <p className="mt-4 max-w-2xl text-body-lg text-ink-muted">{t.hint}</p>
 
@@ -317,34 +316,24 @@ export default function ComplexPicker({ lang, projects, apartments, onRequest, r
               model.blocks.length === 0 ? (
                 <p className="text-body text-ink-muted">{t.noBlocks}</p>
               ) : (
-                <ul className="grid gap-4 sm:grid-cols-2">
+                <ul className="grid gap-2 sm:grid-cols-2">
+                  {/* Ixcham qatorlar: bloklarning rasmlari pastdagi "Sotuvdagi bloklar" bo'limida */}
                   {model.blocks.map((b) => {
                     const free = freeByBlock.get(b.id) ?? 0;
-                    const c = b.counts;
                     return (
                       <li key={b.id}>
                         <button
                           type="button"
                           onClick={() => goBlock(b)}
-                          className="group flex w-full flex-col overflow-hidden rounded-v-lg border border-line bg-surface text-left shadow-v-md transition-transform duration-v-base ease-v motion-safe:hover:-translate-y-0.5"
+                          className="group flex min-h-[64px] w-full items-center justify-between gap-4 rounded-v-md border border-line bg-surface px-4 py-3 text-left transition-colors duration-v-base ease-v hover:border-line-strong"
                         >
-                          <span className="relative block aspect-[16/10] w-full bg-surface-sunken">
-                            {b.project.main_image ? (
-                              <img src={b.project.main_image} alt="" loading="lazy" className="h-full w-full object-cover" />
-                            ) : (
-                              <span className="grid h-full w-full place-items-center text-ink-muted"><Building2 size={36} aria-hidden="true" /></span>
-                            )}
+                          <span>
+                            <span className="block font-montserrat text-h3 text-ink">{projName(b.project, lang)}</span>
+                            <span className="block text-small text-ink-muted">{t.floorsN(b.maxFloor)}</span>
                           </span>
-                          <span className="flex flex-col gap-1 p-4">
-                            <span className="text-h3 text-ink">{projName(b.project, lang)}</span>
-                            <span className="text-body font-semibold text-st-available">● {t.freeN(free)}</span>
-                            <span className="text-small text-ink-muted">{t.floorsN(b.maxFloor)}</span>
-                            {c.total > 0 && (
-                              <span className="mt-1 flex h-2 w-full overflow-hidden rounded-full bg-st-sold-bg" aria-hidden="true">
-                                <span className="bg-st-available" style={{ width: `${(c.available / c.total) * 100}%` }} />
-                                <span className="bg-st-reserved" style={{ width: `${(c.reserved / c.total) * 100}%` }} />
-                              </span>
-                            )}
+                          <span className="flex items-center gap-2 text-body font-semibold text-st-available">
+                            <span aria-hidden="true">●</span>{t.freeN(free)}
+                            <ChevronRight size={18} aria-hidden="true" className="text-ink-muted transition-transform duration-v-base ease-v group-hover:translate-x-0.5" />
                           </span>
                         </button>
                       </li>

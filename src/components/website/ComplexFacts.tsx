@@ -48,7 +48,7 @@ export default function ComplexFacts({ lang, total, done, selling, monthlyFrom }
     <section id="majmua" className="bg-canvas text-ink py-[var(--v-section-y)]">
       <div className="max-w-page mx-auto px-[var(--v-gutter)] grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-5">
-          <p className="text-caption uppercase text-accent-text">{t.kicker}</p>
+          <p className="text-small font-semibold text-accent-text">{t.kicker}</p>
           <h2 className="mt-4 text-h1 font-montserrat">{t.title}</h2>
         </div>
         <p className="lg:col-span-6 lg:col-start-7 self-end text-body-lg text-ink-muted">{t.lead}</p>

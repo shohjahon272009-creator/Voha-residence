@@ -68,7 +68,7 @@ export default function PaymentPlan({ lang, settings, ctaHref }: { lang: Locale;
     <section id="tolov" className="bg-inverse text-ink-inverse py-[var(--v-section-y)]">
       <div className="max-w-page mx-auto px-[var(--v-gutter)] grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-6">
-          <p className="text-caption uppercase text-ink-inverse-muted">{t.kicker}</p>
+          <p className="text-small font-semibold text-ink-inverse-muted">{t.kicker}</p>
           <h2 className="mt-4 text-h1 font-montserrat">{t.title}</h2>
           <p className="mt-6 text-body-lg text-ink-inverse-muted max-w-[52ch]">{t.lead}</p>
           <Link

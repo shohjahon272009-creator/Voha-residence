@@ -168,18 +168,28 @@ export function createEngine(canvas: HTMLCanvasElement, opts: EngineOpts): Engin
 
   // Bloklar maydonchada qatorma-qator joylashadi
   // Uzun korpus oldinda (ko'cha tomonda), minoralar orqa qatorda — har qator o'z o'qida markazlanadi
-  const SPACE = 6, Z_FRONT = 7, Z_BACK = -7;
+  const SPACE = 6, ROW_GAP = 15, PER_ROW = 5;
   const shapes = opts.blocks.map((b) => shapeFor(b.label));
-  const rowW = (back: boolean) => shapes.filter((q) => q.back === back).reduce((a, q) => a + q.w + SPACE, -SPACE);
-  const cursor = { front: -Math.max(0, rowW(false)) / 2, back: -Math.max(0, rowW(true)) / 2 };
-  const twoRows = shapes.some((q) => q.back) && shapes.some((q) => !q.back);
-  const totalW = Math.max(W, rowW(false), rowW(true));
+  // Qatorlar: 0 — old (uzun korpuslar), keyingilari — minoralar, har qatorda PER_ROW tagacha
+  const rowsOf: number[][] = [[]];
+  shapes.forEach((q, i) => {
+    if (!q.back) { rowsOf[0].push(i); return; }
+    let r = rowsOf.length - 1;
+    if (r === 0 || rowsOf[r].length >= PER_ROW) { rowsOf.push([]); r++; }
+    rowsOf[r].push(i);
+  });
+  const usedRows = rowsOf.filter((r) => r.length);
+  const widthOf = (r: number[]) => r.reduce((acc, i) => acc + shapes[i].w + SPACE, -SPACE);
+  const totalW = Math.max(W, ...usedRows.map(widthOf));
+  const depth = (usedRows.length - 1) * ROW_GAP;
+  const place = new Map<number, { x: number; z: number }>();
+  usedRows.forEach((r, ri) => {
+    let x = -widthOf(r) / 2;
+    for (const i of r) { place.set(i, { x: x + shapes[i].w / 2, z: depth / 2 - ri * ROW_GAP }); x += shapes[i].w + SPACE; }
+  });
   opts.blocks.forEach((b, i) => {
-    const { w, d, back } = shapes[i];
-    const key = back ? 'back' : 'front';
-    const x = cursor[key] + w / 2;
-    cursor[key] += w + SPACE;
-    const z = twoRows ? (back ? Z_BACK : Z_FRONT) : 0;
+    const { w, d } = shapes[i];
+    const { x, z } = place.get(i) as { x: number; z: number };
     const slabGeo = new BoxGeometry(w, H, d);
     const bandGeo = new BoxGeometry(w + 0.5, 0.1, d + 0.5);
     const baysLong = Math.max(3, Math.round(w / 1.7)), baysShort = Math.max(2, Math.round(d / 1.6));
@@ -233,7 +243,7 @@ export function createEngine(canvas: HTMLCanvasElement, opts: EngineOpts): Engin
   });
 
   // Maydoncha: yo'lak, yashil hudud va bir chetda kanal (majmua kanal bo'yida joylashgan)
-  const GW = totalW + 44, GD = 58;
+  const GW = totalW + 44, GD = depth + 44;
   const flat = (w: number, d: number, color: string, x: number, y: number, z: number) => {
     const m = new Mesh(new PlaneGeometry(w, d), new MeshLambertMaterial({ color }));
     m.rotation.x = -Math.PI / 2;
@@ -242,7 +252,6 @@ export function createEngine(canvas: HTMLCanvasElement, opts: EngineOpts): Engin
   };
   flat(GW, GD, C_GROUND, 0, -0.02, 0);
   flat(GW, 9, '#9DB58C', 0, -0.01, GD / 2 - 6);        // old tomondagi ko'kalamzor
-  flat(GW, 7, '#9DB58C', 0, -0.01, -1);                // hovli
   flat(GW, 8, '#5E9AA3', 0, -0.01, -GD / 2 + 4);       // kanal
   flat(GW, 1.2, '#C9BFA9', 0, 0, -GD / 2 + 8.6);       // qirg'oq yo'lagi
 
@@ -339,7 +348,7 @@ export function createEngine(canvas: HTMLCanvasElement, opts: EngineOpts): Engin
     const node = s.pid !== null ? blocks.get(s.pid) : undefined;
     const fit = aspect < 1 ? 1.15 / aspect : 1;
     if (!node) {
-      const span = Math.max(totalW, 34);
+      const span = Math.max(totalW, depth * 1.4, 34);
       const tallest = Math.max(1, ...Array.from(blocks.values()).map((b) => b.h));
       return { target: new Vector3(0, tallest / 2, 0), dir: new Vector3(0.45, 0.62, 1).normalize(), dist: (span * 0.95 + tallest + 16) * fit };
     }

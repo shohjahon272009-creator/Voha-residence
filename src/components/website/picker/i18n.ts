@@ -2,7 +2,7 @@
 export type PickerLang = 'uz' | 'ru' | 'en';
 
 const uz = {
-  tag: 'XONADON TANLASH',
+  tag: 'Xonadon tanlash',
   title: 'Majmuadan xonadoningizni tanlang',
   hint: 'Blok, qavat va xonadonni bosqichma-bosqich tanlang.',
   complex: 'Majmua',
@@ -83,7 +83,7 @@ export type Dict = typeof uz;
 
 const ru: Dict = {
   ...uz,
-  tag: 'ВЫБОР КВАРТИРЫ',
+  tag: 'Выбор квартиры',
   title: 'Выберите квартиру в комплексе',
   hint: 'Выбирайте блок, этаж и квартиру шаг за шагом.',
   complex: 'Комплекс',
@@ -159,7 +159,7 @@ const ru: Dict = {
 
 const en: Dict = {
   ...uz,
-  tag: 'CHOOSE AN APARTMENT',
+  tag: 'Choose an apartment',
   title: 'Pick your apartment in the complex',
   hint: 'Choose a block, a floor and an apartment step by step.',
   complex: 'Complex',

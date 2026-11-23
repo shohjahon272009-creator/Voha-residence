@@ -74,10 +74,9 @@ export default function Hero({ lang, heroTitle, heroDesc, slides = [], availabil
   const srcSet = img.srcSet?.split(', ').filter((x) => x.includes('/_w/')).join(', ');
   const tel = 'tel:' + phone.replace(/[^\d+]/g, '');
   const selling = availability.filter((a) => a.free > 0);
-  const totalFree = selling.reduce((s, a) => s + a.free, 0);
 
   return (
-    <section className="relative isolate min-h-[88svh] flex items-end bg-inverse text-ink-inverse overflow-hidden">
+    <section className="relative isolate min-h-[100svh] flex flex-col justify-end bg-inverse text-ink-inverse overflow-hidden">
       <img
         src={img.src}
         srcSet={srcSet}
@@ -87,49 +86,48 @@ export default function Hero({ lang, heroTitle, heroDesc, slides = [], availabil
         decoding="async"
         className="absolute inset-0 -z-10 h-full w-full object-cover"
       />
-      {/* Matn ostida pastdan to'q qatlam — rasm qanday bo'lmasin kontrast saqlanadi */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#014242] via-[#014242]/70 to-[#014242]/20" aria-hidden="true" />
+      {/* Rasm ochiq qoladi: faqat pastki yarmi qorayadi (matn kontrasti uchun), tepada navbar uchun yengil soya */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#014242] from-[18%] via-[#014242]/55 via-[52%] to-transparent" aria-hidden="true" />
+      <div className="absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/45 to-transparent" aria-hidden="true" />
 
-      <div className="w-full max-w-page mx-auto px-[var(--v-gutter)] pb-12 pt-32 md:pb-20 grid gap-10 lg:grid-cols-12 lg:items-end">
-        <div className="lg:col-span-7">
-          <p className="text-caption uppercase text-ink-inverse-muted">{t.place}</p>
-          <h1 className="mt-4 text-display font-montserrat max-w-[14ch]">{title}</h1>
-          <p className="mt-6 text-body-lg text-ink-inverse-muted max-w-[52ch]">{desc}</p>
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <Link
-              href={ctaHref || `/${lang}#xonadon-tanlash`}
-              className="inline-flex items-center gap-2 min-h-[52px] px-7 rounded-full bg-cta text-cta-ink font-bold text-body shadow-v-md hover:brightness-105 active:scale-[0.98] transition duration-v-fast ease-v"
-            >
-              {t.cta} <ArrowRight size={18} aria-hidden="true" />
-            </Link>
-            {tour && <Link href={tour.href} className="inline-flex items-center min-h-[44px] font-semibold underline underline-offset-4">{tour.label}</Link>}
-            {/* Keng ekranda telefon navbar'da turadi — bu yerda takrorlanmaydi */}
-            <a href={tel} className="xl:hidden inline-flex items-center gap-2 min-h-[44px] font-semibold underline-offset-4 hover:underline">
-              <Phone size={18} aria-hidden="true" /> {phone}
-            </a>
-          </div>
+      <div className="w-full max-w-page mx-auto px-[var(--v-gutter)] pt-32 pb-10">
+        <p className="text-small font-semibold text-ink-inverse-muted">{t.place}</p>
+        <h1 className="mt-4 text-display font-montserrat max-w-[15ch]">{title}</h1>
+        <p className="mt-5 text-body-lg text-ink-inverse-muted max-w-[50ch]">{desc}</p>
+        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+          <Link
+            href={ctaHref || `/${lang}#xonadon-tanlash`}
+            className="inline-flex items-center gap-2 min-h-[52px] px-7 rounded-full bg-cta text-cta-ink font-bold text-body hover:brightness-105 active:scale-[0.98] transition duration-v-fast ease-v"
+          >
+            {t.cta} <ArrowRight size={18} aria-hidden="true" />
+          </Link>
+          {tour && <Link href={tour.href} className="inline-flex items-center min-h-[44px] font-semibold underline underline-offset-4">{tour.label}</Link>}
+          {/* Keng ekranda telefon navbar'da turadi — bu yerda takrorlanmaydi */}
+          <a href={tel} className="xl:hidden inline-flex items-center gap-2 min-h-[44px] font-semibold underline-offset-4 hover:underline">
+            <Phone size={18} aria-hidden="true" /> {phone}
+          </a>
         </div>
-
-        {/* Yagona glass panel: bazadagi jonli bo'sh xonadonlar soni */}
-        <aside className="lg:col-span-4 lg:col-start-9 rounded-v-lg border border-line-inverse bg-[#014242]/60 backdrop-blur-md p-5" aria-label={t.now}>
-          <p className="text-caption uppercase text-ink-inverse-muted">{t.now}</p>
-          {selling.length ? (
-            <>
-              <ul className="mt-3 divide-y divide-white/10">
-                {selling.map((a) => (
-                  <li key={a.id} className="flex items-center justify-between py-2.5 text-body">
-                    <span className="font-semibold">{a.name}</span>
-                    <span className="text-ink-inverse-muted">{t.free(a.free)}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 text-small text-ink-inverse-muted">{t.total(totalFree)}</p>
-            </>
-          ) : (
-            <p className="mt-3 text-small text-ink-inverse-muted">{t.none}</p>
-          )}
-        </aside>
       </div>
+
+      {/* Sotuvdagi bloklar qatori: bazadagi bo'sh xonadonlar soni, bosilganda o'sha blok ochiladi */}
+      <nav aria-label={t.now} className="w-full border-t border-line-inverse">
+        <div className="max-w-page mx-auto px-[var(--v-gutter)]">
+          {selling.length ? (
+            <ul className="flex overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-[var(--v-gutter)] pl-[calc(var(--v-gutter)-1.25rem)] pr-24 lg:-mx-6 lg:px-0">
+              {selling.slice(0, 6).map((a) => (
+                <li key={a.id} className="shrink-0 lg:flex-1 border-l border-line-inverse first:border-l-0">
+                  <Link href={`/${lang}#xonadon=${a.id}`} className="block min-h-[72px] px-5 py-4 lg:px-6 hover:bg-white/5 transition-colors duration-v-base">
+                    <span className="block font-montserrat text-h3 whitespace-nowrap">{a.name}</span>
+                    <span className="block text-small text-ink-inverse-muted whitespace-nowrap">{t.free(a.free)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="py-5 text-small text-ink-inverse-muted">{t.none}</p>
+          )}
+        </div>
+      </nav>
     </section>
   );
 }
