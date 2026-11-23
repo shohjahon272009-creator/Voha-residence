@@ -7,6 +7,9 @@ import { Locale } from '@/lib/dictionaries';
 import { getPublicSettings } from '@/lib/settings';
 import type { Metadata } from 'next';
 import { pageMetadata, PAGE_SEO } from '@/lib/seo';
+import FaqSection from '@/components/website/FaqSection';
+import { getFaq } from '@/lib/faq';
+import { getContacts } from '@/lib/contacts';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -26,12 +29,20 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     en: { kicker: 'Contact', title: 'Get in touch', sub: "Questions? Call us or leave a message — we'll reply shortly." },
   }[localeLang] || { kicker: 'Aloqa', title: "Biz bilan bog'laning", sub: '' };
 
+  const c = await getContacts();
+  const faq = getFaq(localeLang, settings, {
+    phone: c.phone, phone2: c.phone2,
+    address: c.address || 'Urganch sh., Ulug‘bek ko‘chasi — Ekstrenniy shifoxonasi chorrahasi',
+    hours: settings.contact_hours || (localeLang === 'ru' ? 'ежедневно с 09:00 до 18:00' : localeLang === 'en' ? 'daily 09:00–18:00' : 'har kuni 09:00 dan 18:00 gacha'),
+  });
+
   return (
     <WebsiteLayout lang={localeLang} companyName={companyName}>
       <PageHero lang={localeLang} kicker={t.kicker} title={t.title} subtitle={t.sub} images={['/cinema/stills/life-2.webp']} />
       <div className="min-h-screen bg-[#FDFBF7]">
         <ContactSection lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />
         <LocationShowcase lang={localeLang} phone={settings.contact_phone} address={settings.contact_address} hours={settings.contact_hours} />
+        <FaqSection lang={localeLang} items={faq} />
       </div>
     </WebsiteLayout>
   );

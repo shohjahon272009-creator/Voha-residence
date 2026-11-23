@@ -78,14 +78,26 @@ export default async function RootLayout({
   }
 
   // Struktura ma'lumot (JSON-LD) — Google biznesni to'liq tushunadi (mahalliy qidiruv uchun muhim)
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'RealEstateAgent',
+  // Ofis koordinatasi: admin sozlamasi, bo'lmasa sotuv ofisining ma'lum nuqtasi (xaritadagi bilan bir xil)
+  const lat = s.office_lat || '41.544716', lng = s.office_lng || '60.599816';
+  const org = {
+    '@type': ['RealEstateAgent', 'Organization'],
+    '@id': 'https://www.voharesidence.uz/#organization',
     name: 'Voha Residence',
+    alternateName: ['Voha Residence qurilish kompaniyasi', 'Воха Резиденс'],
     url: 'https://www.voharesidence.uz',
     logo: 'https://www.voharesidence.uz/icon.jpg',
-    image: 'https://www.voharesidence.uz/icon.jpg',
+    image: 'https://www.voharesidence.uz/cinema/poster.jpg',
     telephone: (s.contact_phone || '+998 91 011 66 66').replace(/\s/g, ''),
+    contactPoint: [
+      { '@type': 'ContactPoint', telephone: (s.contact_phone || '+998 91 011 66 66').replace(/\s/g, ''), contactType: 'sales', areaServed: 'UZ', availableLanguage: ['uz', 'ru'] },
+    ],
+    openingHoursSpecification: [{
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '09:00', closes: '18:00',
+    }],
+    hasMap: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
     description: 'Xorazm va Urganch shahridagi zamonaviy turar-joy majmualari — yangi xonadonlar, qulay to‘lov va ipoteka.',
     address: {
       '@type': 'PostalAddress',
@@ -94,9 +106,24 @@ export default async function RootLayout({
       addressRegion: 'Xorazm',
       addressCountry: 'UZ',
     },
-    ...(s.office_lat && s.office_lng ? { geo: { '@type': 'GeoCoordinates', latitude: s.office_lat, longitude: s.office_lng } } : {}),
-    areaServed: 'Xorazm',
+    geo: { '@type': 'GeoCoordinates', latitude: Number(lat), longitude: Number(lng) },
+    areaServed: [{ '@type': 'City', name: 'Urganch' }, { '@type': 'AdministrativeArea', name: 'Xorazm viloyati' }],
+    knowsAbout: ['yangi xonadonlar', 'turar-joy majmualari', 'muddatli to‘lov', 'новостройки Ургенч'],
     sameAs: ['https://www.instagram.com/voha_residence', 'https://t.me/voharesidence'],
+  };
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      org,
+      {
+        '@type': 'WebSite',
+        '@id': 'https://www.voharesidence.uz/#website',
+        url: 'https://www.voharesidence.uz',
+        name: 'Voha Residence',
+        inLanguage: ['uz', 'ru', 'en'],
+        publisher: { '@id': 'https://www.voharesidence.uz/#organization' },
+      },
+    ],
   };
 
   return (
