@@ -243,11 +243,9 @@ h1, h2, h3 {
       radial-gradient(ellipse 70% 55% at 88% -6%, rgba(1, 66, 66, 0.16), transparent 62%),
       radial-gradient(ellipse 62% 52% at 3% 94%, rgba(209, 142, 91, 0.22), transparent 60%),
       radial-gradient(ellipse 55% 46% at 82% 114%, rgba(130, 140, 76, 0.16), transparent 56%),
-      radial-gradient(circle at 50% 26%, rgba(255, 251, 242, 0.6), transparent 58%),
-      linear-gradient(rgba(1, 66, 66, 0.028) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(1, 66, 66, 0.028) 1px, transparent 1px);
-    background-size: auto, auto, auto, auto, 46px 46px, 46px 46px;
-    background-position: center, center, center, center, center, center;
+      radial-gradient(circle at 50% 26%, rgba(255, 251, 242, 0.6), transparent 58%);
+    /* 46px'li panjara chiziqlari olib tashlandi: deyarli ko'rinmasdi (2.8%), lekin bir necha ming piksel
+       balandlikdagi bo'limda har scroll'da qayta chizilib, sahifani qotirardi */
   }
 
   /* Richer variant for hero-adjacent / feature sections: adds a warm top sheen
@@ -258,10 +256,7 @@ h1, h2, h3 {
       linear-gradient(180deg, rgba(255, 252, 245, 0.9) 0%, transparent 26%),
       radial-gradient(ellipse 75% 60% at 92% -8%, rgba(1, 66, 66, 0.17), transparent 60%),
       radial-gradient(ellipse 60% 55% at -4% 88%, rgba(209, 142, 91, 0.24), transparent 58%),
-      radial-gradient(ellipse 58% 48% at 78% 116%, rgba(130, 140, 76, 0.15), transparent 55%),
-      linear-gradient(rgba(1, 66, 66, 0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(1, 66, 66, 0.025) 1px, transparent 1px);
-    background-size: auto, auto, auto, auto, 52px 52px, 52px 52px;
+      radial-gradient(ellipse 58% 48% at 78% 116%, rgba(130, 140, 76, 0.15), transparent 55%);
   }
 
   /* Soft radial glow */
@@ -391,4 +386,6 @@ img[data-cine="in"] { opacity: 1; transform: none; }
 .soft-blob {
   -webkit-mask-image: radial-gradient(closest-side, #000 0%, transparent 100%);
   mask-image: radial-gradient(closest-side, #000 0%, transparent 100%);
+  /* Alohida qatlam: niqobli katta dog' bir marta chiziladi, scroll'da qayta chizilmaydi */
+  will-change: transform;
 }
