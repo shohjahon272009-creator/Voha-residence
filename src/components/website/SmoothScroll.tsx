@@ -13,9 +13,14 @@ declare global {
   interface Window { __lenis?: Lenis }
 }
 
+// Lenis scroll'ni JavaScript orqali yuritadi: sahifa band bo'lgan har lahzada scroll ham qotardi
+// (o'lchov: 4x sekinlashtirilgan protsessorda 17–29 kadr/s). O'chirilgan — brauzerning o'z scroll'i
+// alohida oqimda ishlaydi va sahifa band bo'lsa ham silliq qoladi. Qayta yoqish: ENABLED = true.
+const ENABLED = false;
+
 export default function SmoothScroll() {
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!ENABLED || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const lenis = new Lenis({
       duration: 1.15,

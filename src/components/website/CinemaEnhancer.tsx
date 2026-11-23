@@ -53,10 +53,13 @@ export default function CinemaEnhancer() {
       checkQueued = window.setTimeout(() => {
         checkQueued = 0;
         const vh = window.innerHeight;
-        document.querySelectorAll<HTMLElement>('[data-cine="pending"]').forEach((el) => {
+        // Avval hammasini o'lchaymiz, keyin ochamiz: o'lchash va yozish aralashsa brauzer har elementda
+        // sahifani qayta hisoblaydi (scroll qotishining sababi)
+        const due = Array.from(document.querySelectorAll<HTMLElement>('[data-cine="pending"]')).filter((el) => {
           const r = el.getBoundingClientRect();
-          if (r.top < vh && r.bottom > 0) reveal(el);
+          return r.top < vh && r.bottom > 0;
         });
+        due.forEach(reveal);
       }, 250);
     };
     window.addEventListener('scroll', safety, { passive: true });
@@ -64,10 +67,12 @@ export default function CinemaEnhancer() {
     const ro = new ResizeObserver(safety);
 
     const scan = () => {
-      const els = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR));
+      // Bir marta ko'rilgan element qayta o'lchanmaydi (data-cine-seen); o'lchash (eligible) va yozish alohida bosqichda
+      const fresh = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR)).filter((el) => !el.dataset.cineSeen);
+      const els = fresh.filter(eligible);
+      for (const el of fresh) el.dataset.cineSeen = '1';
       const gridIndex = new Map<Element, number>();
       for (const el of els) {
-        if (!eligible(el)) continue;
         // Bir grid ichidagi kartalar navbatma-navbat chiqadi
         if (el.parentElement?.classList.contains('grid')) {
           const n = gridIndex.get(el.parentElement) ?? 0;
