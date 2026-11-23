@@ -140,6 +140,11 @@ export default function ContactSection({ lang, phone, address, hours }: { lang: 
             <div className="border-b border-line py-5">
               <dt className="text-small text-ink-muted">{t.addressLabel}</dt>
               <dd className="mt-1 text-body-lg">{addressVal}</dd>
+              <dd className="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=41.544716,60.599816" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center font-semibold text-accent-text underline underline-offset-4">
+                  {lang === 'ru' ? 'Открыть на карте' : lang === 'en' ? 'Open in maps' : 'Xaritada ochish'}
+                </a>
+              </dd>
             </div>
             <div className="border-b border-line py-5">
               <dt className="text-small text-ink-muted">{t.timeLabel}</dt>

@@ -5,13 +5,24 @@ import { Locale } from '@/lib/dictionaries';
   "Majmua haqida" — faqat tekshirsa bo'ladigan faktlar: loyihalar soni bazadan, standart oylik to'lov
   sozlamalardan. Mijoz soni, mukofot, "a'lo sifat" kabi tasdiqlanmagan da'volar yo'q.
   Editorial ko'rinish: kartalar emas, ustunlar va ingichka chiziqlar.
+  "Xaridor uchun" ro'yxati kompaniyaning rasmiy Telegram kanalidagi (t.me/voharesidence) e'lonlardan olingan.
 */
+
+const INTERVIEW_URL = 'https://youtu.be/sH9SmnEh2Ik';
 
 const T = {
   uz: {
     kicker: 'Majmua haqida',
     title: 'Shahar ichida, kanal bo‘yida',
-    lead: 'Voha Residence — Urganch shahridagi turar-joy bloklari. Har bir blokda bo‘sh xonadonlar ro‘yxati sotuv bazasidan yangilanib turadi.',
+    lead: 'Voha Residence 15 yildan beri Xorazmda quradi. Urganchdagi bloklar shahar markazida: universitet, maktab, yashil bog‘ va do‘konlar yonida.',
+    forBuyer: 'Xaridor uchun',
+    points: [
+      ['Kadastr hujjatlari tayyor', 'Tayyor bloklardagi xonadonlar kadastri bilan sotiladi.'],
+      ['Tayyor ta’mirli xonadonlar', 'Ta’mirsiz ham, tayyor ta’mir bilan ham tanlash mumkin.'],
+      ['Muddatli to‘lov', 'Boshlang‘ich to‘lovdan keyin har oy standart summa.'],
+      ['Qurilishni o‘zingiz ko‘rasiz', 'Ochiq eshiklar kunida binoga chiqib, xonadonni ko‘rish mumkin.'],
+    ],
+    interview: 'Quruvchi bilan ochiq suhbat (YouTube)',
     cols: (p: { total: number; done: number; selling: number; monthlyFrom: string }) => [
       { k: 'Joylashuv', v: 'Urganch', d: 'Shovot kanali bo‘yidagi bloklar. Aniq manzil va ko‘rish vaqtini menejer aytadi.' },
       { k: 'Loyihalar', v: `${p.total} ta`, d: `${p.done} tasi topshirilgan, ${p.selling} tasida hozir sotuv bor.` },
@@ -21,7 +32,15 @@ const T = {
   ru: {
     kicker: 'О комплексе',
     title: 'В городе, у канала',
-    lead: 'Voha Residence — жилые блоки в Ургенче. Список свободных квартир в каждом блоке обновляется из базы продаж.',
+    lead: 'Voha Residence строит в Хорезме 15 лет. Блоки в Ургенче находятся в центре города: рядом университет, школа, зелёный парк и магазины.',
+    forBuyer: 'Покупателю',
+    points: [
+      ['Кадастр готов', 'Квартиры в готовых блоках продаются с кадастровыми документами.'],
+      ['Квартиры с ремонтом', 'Можно выбрать без ремонта или с готовым ремонтом.'],
+      ['Рассрочка', 'После первого взноса — стандартная сумма каждый месяц.'],
+      ['Стройку можно увидеть', 'В день открытых дверей можно подняться в дом и посмотреть квартиру.'],
+    ],
+    interview: 'Открытый разговор с застройщиком (YouTube)',
     cols: (p: { total: number; done: number; selling: number; monthlyFrom: string }) => [
       { k: 'Расположение', v: 'Ургенч', d: 'Блоки у канала Шават. Точный адрес и время показа сообщит менеджер.' },
       { k: 'Проекты', v: `${p.total}`, d: `${p.done} сдано, в ${p.selling} сейчас идут продажи.` },
@@ -31,7 +50,15 @@ const T = {
   en: {
     kicker: 'About the complex',
     title: 'In the city, by the canal',
-    lead: 'Voha Residence is a set of residential blocks in Urgench. The list of available apartments in each block is updated from the sales database.',
+    lead: 'Voha Residence has been building in Khorezm for 15 years. The Urgench blocks are in the city centre, next to the university, a school, a green park and shops.',
+    forBuyer: 'For buyers',
+    points: [
+      ['Cadastre documents ready', 'Apartments in completed blocks are sold with cadastre documents.'],
+      ['Finished apartments', 'Choose a shell apartment or one with finished renovation.'],
+      ['Instalment plan', 'After the down payment, a standard amount every month.'],
+      ['See the construction yourself', 'On open days you can go up into the building and see the apartment.'],
+    ],
+    interview: 'An open talk with the developer (YouTube)',
     cols: (p: { total: number; done: number; selling: number; monthlyFrom: string }) => [
       { k: 'Location', v: 'Urgench', d: 'Blocks on the Shovot canal. A manager will share the exact address and viewing time.' },
       { k: 'Projects', v: `${p.total}`, d: `${p.done} delivered, ${p.selling} currently on sale.` },
@@ -61,6 +88,24 @@ export default function ComplexFacts({ lang, total, done, selling, monthlyFrom }
             </div>
           ))}
         </dl>
+
+        <div className="lg:col-span-12 grid gap-10 lg:grid-cols-12 border-t border-line pt-10">
+          <div className="lg:col-span-4">
+            <h3 className="text-h2 font-montserrat">{t.forBuyer}</h3>
+            <a href={INTERVIEW_URL} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex min-h-[44px] items-center font-semibold text-accent-text underline underline-offset-4">
+              {t.interview}
+            </a>
+          </div>
+          <ul className="lg:col-span-8 grid gap-x-10 sm:grid-cols-2">
+            {t.points.map(([head, text], i) => (
+              <li key={head} className="border-b border-line py-5">
+                <p className="text-small text-ink-muted tabular-nums">0{i + 1}</p>
+                <p className="mt-1 text-h3 font-montserrat">{head}</p>
+                <p className="mt-1 text-body text-ink-muted">{text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );
